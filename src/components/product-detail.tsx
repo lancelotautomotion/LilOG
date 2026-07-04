@@ -45,58 +45,60 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
           <Icon.arrowL /> {t.pdp.back}
         </Link>
 
-        <ProductGallery images={product.images} name={product.name} />
+        <div className="pdp-row">
+          <ProductGallery images={product.images} name={product.name} />
 
-        <div className="pdp-info">
-          {eyebrow && <div className="pdp-eyebrow">{eyebrow}</div>}
-          <h1 className="pdp-title">{product.name}</h1>
+          <div className="pdp-info">
+            {eyebrow && <div className="pdp-eyebrow">{eyebrow}</div>}
+            <h1 className="pdp-title">{product.name}</h1>
 
-          <div className="pdp-price-row">
-            {product.was && <s>£{product.was}</s>}
-            <span className="pdp-price-now">£{product.price}</span>
-            {discount !== null && <span className="pdp-discount">-{discount}%</span>}
-          </div>
-
-          {displayTags.length > 0 && (
-            <div className="pdp-tags">
-              {displayTags.map((tg) => (
-                <span className="pdp-tag" key={tg}>{tg}</span>
-              ))}
+            <div className="pdp-price-row">
+              {product.was && <s>£{product.was}</s>}
+              <span className="pdp-price-now">£{product.price}</span>
+              {discount !== null && <span className="pdp-discount">-{discount}%</span>}
             </div>
-          )}
 
-          {hasVariants && (
-            <div className="pdp-variants">
-              {product.variants.map((v) => (
-                <button
-                  key={v.id}
-                  className={"pdp-variant" + (variant?.id === v.id ? " on" : "")}
-                  disabled={!v.availableForSale}
-                  onClick={() => setVariant(v)}
-                >
-                  {v.title}
-                </button>
-              ))}
+            {displayTags.length > 0 && (
+              <div className="pdp-tags">
+                {displayTags.map((tg) => (
+                  <span className="pdp-tag" key={tg}>{tg}</span>
+                ))}
+              </div>
+            )}
+
+            {hasVariants && (
+              <div className="pdp-variants">
+                {product.variants.map((v) => (
+                  <button
+                    key={v.id}
+                    className={"pdp-variant" + (variant?.id === v.id ? " on" : "")}
+                    disabled={!v.availableForSale}
+                    onClick={() => setVariant(v)}
+                  >
+                    {v.title}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <button className={"pdp-add" + (added ? " added" : "")} onClick={add} disabled={sold}>
+              {sold ? t.pdp.soldOut : added ? t.pdp.added : t.pdp.addToCart}
+            </button>
+
+            {product.descriptionHtml && (
+              <div className="pdp-desc" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+            )}
+
+            <div className="pdp-accordion">
+              <details className="pdp-acc-item">
+                <summary>{t.pdp.detailsH} <Icon.chevD className="chev" /></summary>
+                <div className="pdp-acc-body">{t.pdp.detailsBody}</div>
+              </details>
+              <details className="pdp-acc-item">
+                <summary>{t.pdp.shippingH} <Icon.chevD className="chev" /></summary>
+                <div className="pdp-acc-body">{t.pdp.shippingBody}</div>
+              </details>
             </div>
-          )}
-
-          <button className={"pdp-add" + (added ? " added" : "")} onClick={add} disabled={sold}>
-            {sold ? t.pdp.soldOut : added ? t.pdp.added : t.pdp.addToCart}
-          </button>
-
-          {product.descriptionHtml && (
-            <div className="pdp-desc" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
-          )}
-
-          <div className="pdp-accordion">
-            <details className="pdp-acc-item">
-              <summary>{t.pdp.detailsH} <Icon.chevD className="chev" /></summary>
-              <div className="pdp-acc-body">{t.pdp.detailsBody}</div>
-            </details>
-            <details className="pdp-acc-item">
-              <summary>{t.pdp.shippingH} <Icon.chevD className="chev" /></summary>
-              <div className="pdp-acc-body">{t.pdp.shippingBody}</div>
-            </details>
           </div>
         </div>
 
