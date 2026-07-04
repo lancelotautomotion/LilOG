@@ -16,7 +16,6 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   const wrapperRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const [translateY, setTranslateY] = useState(0);
-  const [wrapperHeight, setWrapperHeight] = useState<number>();
 
   // Keeps the gallery pinned to the viewport while the (much longer) info
   // column scrolls past, then lets it travel down with the page once its
@@ -24,6 +23,9 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   // because its containing block is the whole grid, not just this row.
   // Driven purely by `transform: translateY`, so it's compositor-only work
   // (no layout thrash from toggling position/top on every scroll frame).
+  // The wrapper itself is left at its natural (unset) height — the grid row
+  // is already as tall as the info column regardless, and forcing it to
+  // match triggered a needless reflow right as scrolling started.
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const inner = innerRef.current;
@@ -35,14 +37,11 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
       raf = 0;
 
       if (window.innerWidth < 1000) {
-        setWrapperHeight(undefined);
         setTranslateY(0);
         return;
       }
 
       const rowHeight = row.offsetHeight;
-      setWrapperHeight(rowHeight);
-
       const innerHeight = inner.offsetHeight;
       const rowTopPage = row.getBoundingClientRect().top + window.scrollY;
       const maxTranslate = Math.max(0, rowHeight - innerHeight);
@@ -69,7 +68,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   const next = () => setActive((i) => (i + 1) % count);
 
   return (
-    <div className="pdp-gallery" ref={wrapperRef} style={{ height: wrapperHeight }}>
+    <div className="pdp-gallery" ref={wrapperRef}>
       <div
         className="pdp-gallery-inner"
         ref={innerRef}
