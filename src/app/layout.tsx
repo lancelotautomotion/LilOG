@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Grenze_Gotisch, Montserrat, Space_Mono } from "next/font/google";
+import { LanguageProvider } from "@/lib/i18n-context";
+import { CartProvider } from "@/lib/cart-context";
 import "./globals.css";
 
 const serif = Grenze_Gotisch({
@@ -28,7 +30,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
-      <body className="grain">{children}</body>
+      <body className="grain">
+        <LanguageProvider>
+          <CartProvider>{children}</CartProvider>
+        </LanguageProvider>
+      </body>
     </html>
   );
 }

@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { LanguageProvider } from "@/lib/i18n-context";
-import { CartProvider } from "@/lib/cart-context";
 import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Hero } from "@/components/hero";
@@ -16,18 +14,16 @@ export function HomeShell({ products }: { products: Product[] }) {
   const [menu, setMenu] = useState(false);
 
   return (
-    <LanguageProvider>
-      <CartProvider>
-        <Nav onMenu={() => setMenu(true)} />
-        <Drawer open={menu} onClose={() => setMenu(false)} />
-        <Hero />
-        <main>
-          <FeaturedDrops products={products} />
-          <Lookbook />
-          <Editorial />
-        </main>
-        <Footer />
-      </CartProvider>
-    </LanguageProvider>
+    <>
+      <Nav onMenu={() => setMenu(true)} />
+      <Drawer open={menu} onClose={() => setMenu(false)} />
+      <Hero />
+      <main>
+        <FeaturedDrops products={products} />
+        <Lookbook />
+        <Editorial />
+      </main>
+      <Footer />
+    </>
   );
 }

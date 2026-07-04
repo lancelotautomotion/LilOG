@@ -537,6 +537,7 @@ a { color: inherit; text-decoration: none; }
 }
 .card { position: relative; min-width: 0; }
 .card-media {
+  display: block;
   position: relative;
   aspect-ratio: 3 / 4;
   overflow: hidden;
@@ -809,6 +810,186 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ============================================================
+   PRODUCT DETAIL PAGE
+   ============================================================ */
+.pdp {
+  padding: clamp(96px, 11vw, 148px) clamp(20px, 5vw, 80px) clamp(64px, 9vw, 120px);
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: clamp(28px, 4vw, 72px);
+  align-items: start;
+}
+
+.pdp-back {
+  grid-column: 1 / -1;
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: var(--ui-track);
+  font-size: 0.7rem;
+  color: var(--choco-soft);
+  margin-bottom: clamp(8px, 1.6vw, 18px);
+  width: max-content;
+  transition: color 0.2s;
+}
+.pdp-back:hover { color: var(--accent); }
+.pdp-back svg { transform: scaleX(-1); width: 15px; height: 15px; }
+
+/* ---- gallery ---- */
+.pdp-gallery { position: relative; }
+.pdp-frame {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--cream-2);
+}
+.pdp-frame img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.pdp-frame img.on { opacity: 1; }
+.pdp-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 3;
+  background: rgba(250,245,234,0.85);
+  border: none;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--choco);
+  opacity: 0.9;
+  transition: opacity 0.2s, background 0.2s, color 0.2s;
+}
+.pdp-arrow:hover { background: var(--choco); color: var(--paper); opacity: 1; }
+.pdp-arrow.prev { left: 16px; }
+.pdp-arrow.next { right: 16px; }
+.pdp-dots {
+  display: flex; justify-content: center; gap: 8px;
+  margin-top: 14px;
+}
+.pdp-dots button {
+  width: 22px; height: 2px;
+  background: rgba(50,47,55,0.25);
+  border: none; padding: 0;
+  transition: background 0.3s;
+}
+.pdp-dots button.on { background: var(--choco); }
+
+/* ---- info panel ---- */
+.pdp-info { align-self: start; }
+.pdp-eyebrow {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 0.68rem;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.pdp-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  line-height: 1.05;
+  margin: 0 0 16px;
+}
+.pdp-price-row {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  font-family: var(--mono);
+  padding-bottom: clamp(18px, 2.4vw, 28px);
+  border-bottom: 1px solid rgba(56,34,21,0.14);
+  margin-bottom: clamp(18px, 2.4vw, 28px);
+}
+.pdp-price-row s { color: var(--choco-soft); opacity: 0.6; font-size: 0.95rem; }
+.pdp-price-now { font-size: 1.15rem; }
+.pdp-discount {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.66rem;
+  background: var(--butter);
+  color: var(--choco);
+  padding: 4px 9px;
+}
+.pdp-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: clamp(22px, 3vw, 32px); }
+.pdp-tag {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.62rem;
+  color: var(--choco-soft);
+  border: 1px solid rgba(56,34,21,0.2);
+  padding: 5px 10px;
+}
+.pdp-variants { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: clamp(18px, 2.4vw, 26px); }
+.pdp-variant {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  background: none;
+  border: 1px solid var(--choco);
+  color: var(--choco);
+  padding: 9px 16px;
+  transition: background 0.2s, color 0.2s;
+}
+.pdp-variant.on { background: var(--choco); color: var(--paper); }
+.pdp-variant:disabled { opacity: 0.35; text-decoration: line-through; cursor: not-allowed; }
+
+.pdp-add {
+  width: 100%;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: var(--ui-track);
+  font-size: 0.78rem;
+  background: var(--choco);
+  color: var(--paper);
+  border: none;
+  padding: 18px;
+  transition: background 0.25s;
+}
+.pdp-add:hover:not(:disabled) { background: var(--accent); }
+.pdp-add.added { background: var(--accent); }
+.pdp-add:disabled { background: var(--choco-soft); cursor: not-allowed; }
+
+.pdp-desc {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--choco);
+  margin: clamp(24px, 3vw, 34px) 0 0;
+  max-width: 52ch;
+}
+
+.pdp-accordion { margin-top: clamp(18px, 2.4vw, 28px); }
+.pdp-acc-item { border-top: 1px solid rgba(56,34,21,0.14); }
+.pdp-acc-item:last-child { border-bottom: 1px solid rgba(56,34,21,0.14); }
+.pdp-acc-item summary {
+  list-style: none;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 0;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+.pdp-acc-item summary::-webkit-details-marker { display: none; }
+.pdp-acc-item summary .chev { transition: transform 0.3s; flex-shrink: 0; }
+.pdp-acc-item[open] summary .chev { transform: rotate(180deg); }
+.pdp-acc-body { padding: 0 0 20px; font-size: 0.9rem; line-height: 1.65; color: var(--choco-soft); max-width: 52ch; }
+
+.pdp-cross { grid-column: 1 / -1; margin-top: clamp(40px, 6vw, 80px); }
+.pdp-cross h3 {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.7rem;
+  color: var(--choco-soft);
+  margin: 0 0 18px;
+}
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1000px) {
@@ -817,6 +998,8 @@ a { color: inherit; text-decoration: none; }
   .lb-cell { height: 72vh; }
   .editorial-grid { grid-template-columns: 1fr; }
   .footer-cols { grid-template-columns: 1fr 1fr; }
+  .pdp { grid-template-columns: 1fr; }
+  .pdp-info { position: static; }
 }
 @media (max-width: 560px) {
   .drops-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }

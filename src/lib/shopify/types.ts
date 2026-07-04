@@ -25,6 +25,48 @@ export interface FeaturedProductsResponse {
   products: { edges: { node: ShopifyProductNode }[] };
 }
 
+export interface ShopifyProductDetailNode extends ShopifyProductNode {
+  description: string;
+  images: { edges: { node: ShopifyImage }[] };
+  variants: {
+    edges: {
+      node: {
+        id: string;
+        title: string;
+        availableForSale: boolean;
+        price: ShopifyMoney;
+      };
+    }[];
+  };
+}
+
+export interface ProductByHandleResponse {
+  product: ShopifyProductDetailNode | null;
+}
+
+export interface ProductVariant {
+  id: string;
+  title: string;
+  price: number;
+  availableForSale: boolean;
+}
+
+// Richer shape for the PDP — full image set, description, variants.
+export interface ProductDetail {
+  id: string;
+  handle: string;
+  name: string;
+  description: string;
+  tags: string[];
+  price: number;
+  was: number | null;
+  currency: string;
+  tag: "NEW" | "1 OF 1" | "SOLD" | null;
+  available: boolean;
+  images: string[];
+  variants: ProductVariant[];
+}
+
 // Flat shape consumed by <ProductCard> — mirrors the design prototype's data.jsx shape.
 export interface Product {
   id: string;
