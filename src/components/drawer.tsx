@@ -3,14 +3,15 @@
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/i18n-context";
 import { Icon } from "@/components/icons";
+import { CATEGORIES } from "@/lib/categories";
 
-const LINKS: { key: string; sub?: string[] }[] = [
-  { key: "newin" },
-  { key: "clothing", sub: ["tops", "shirts", "cardigans", "sweatshirts", "dresses", "skirts", "shorts", "jumpsuits", "jeans", "trousers", "leather", "lingerie", "swimwear"] },
-  { key: "accessories", sub: ["jewelry", "scarves", "hats", "bags", "wallets", "sunglasses", "gloves", "belts"] },
-  { key: "shoes", sub: ["sneakers", "heels", "flats", "ballet", "boots", "open"] },
-  { key: "luxe" },
-];
+// Each of these maps to a real Shopify collection — see src/lib/categories.ts.
+// `sub` is kept optional (unused today) so finer-grained subcategories can be
+// added later without reshaping this component.
+const LINKS: { key: string; href: string; sub?: string[] }[] = CATEGORIES.map((c) => ({
+  key: c.catKey,
+  href: `/category/${c.handle}`,
+}));
 
 export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useLanguage();
@@ -54,7 +55,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
                   <Icon.chevD className="caret" />
                 </button>
               ) : (
-                <a className="drawer-link" href="#drops" onClick={onClose}>
+                <a className="drawer-link" href={l.href} onClick={onClose}>
                   {t.cat[l.key]}
                   <span className="idx">{String(i + 1).padStart(2, "0")}</span>
                 </a>

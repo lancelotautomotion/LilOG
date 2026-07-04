@@ -4,6 +4,17 @@ import { useLanguage } from "@/lib/i18n-context";
 import { SmartImg } from "@/components/smart-img";
 import { Icon } from "@/components/icons";
 import { LOOKBOOK } from "@/data/editorial-images";
+import { CATEGORIES } from "@/lib/categories";
+
+// Lookbook tile keys that correspond to a real category page — "skirts"
+// covers the merged "Robes & Jupes" collection. Tiles without an entry here
+// (newin, ogdresses, luxe) keep pointing at the homepage's Featured Drops.
+const TILE_HREF: Record<string, string> = {
+  tops: `/category/${CATEGORIES.find((c) => c.catKey === "tops")!.handle}`,
+  skirts: `/category/${CATEGORIES.find((c) => c.catKey === "dressesSkirts")!.handle}`,
+  accessories: `/category/${CATEGORIES.find((c) => c.catKey === "accessories")!.handle}`,
+  shoes: `/category/${CATEGORIES.find((c) => c.catKey === "shoes")!.handle}`,
+};
 
 export function Lookbook() {
   const { t } = useLanguage();
@@ -17,7 +28,7 @@ export function Lookbook() {
         p.type === "split" ? (
           <div className="lb-split" key={idx}>
             {p.items.map((c, j) => (
-              <a className="lb-cell" href="#drops" key={j}>
+              <a className="lb-cell" href={TILE_HREF[c.key] ?? "#drops"} key={j}>
                 <SmartImg src={c.img} alt={nameOf(c.key)} tone={c.tone} />
                 <div className="lb-cap">
                   <h2 className="lb-name">{nameOf(c.key)}</h2>
@@ -27,7 +38,7 @@ export function Lookbook() {
             ))}
           </div>
         ) : (
-          <a className={"lb-full align-" + p.align} href="#drops" key={idx}>
+          <a className={"lb-full align-" + p.align} href={TILE_HREF[p.name] ?? "#drops"} key={idx}>
             <SmartImg src={p.img} alt={nameOf(p.name)} tone={p.tone} />
             <div className="lb-cap">
               {p.kicker && <span className="lb-kicker">{t.lb[p.kicker]}</span>}

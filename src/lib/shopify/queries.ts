@@ -97,6 +97,59 @@ export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
   }
 `;
 
+export const COLLECTION_BY_HANDLE_QUERY = /* GraphQL */ `
+  query CollectionByHandle($handle: String!, $first: Int!) {
+    collection(handle: $handle) {
+      id
+      title
+      products(first: $first) {
+        edges {
+          node {
+            id
+            handle
+            title
+            tags
+            availableForSale
+            featuredImage {
+              url
+              altText
+            }
+            images(first: 2) {
+              edges {
+                node {
+                  url
+                  altText
+                }
+              }
+            }
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            compareAtPriceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
+            }
+            variants(first: 1) {
+              edges {
+                node {
+                  id
+                  title
+                  availableForSale
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 const CART_FRAGMENT = /* GraphQL */ `
   fragment CartFields on Cart {
     id

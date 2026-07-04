@@ -1,6 +1,7 @@
 import { shopifyFetch } from "./client";
-import { FEATURED_PRODUCTS_QUERY, PRODUCT_BY_HANDLE_QUERY } from "./queries";
+import { COLLECTION_BY_HANDLE_QUERY, FEATURED_PRODUCTS_QUERY, PRODUCT_BY_HANDLE_QUERY } from "./queries";
 import type {
+  CollectionByHandleResponse,
   FeaturedProductsResponse,
   Product,
   ProductByHandleResponse,
@@ -49,6 +50,19 @@ function mapProduct(node: ShopifyProductNode): Product {
 export async function getFeaturedProducts(count = 8): Promise<Product[]> {
   const data = await shopifyFetch<FeaturedProductsResponse>(FEATURED_PRODUCTS_QUERY, { first: count });
   return data.products.edges.map((e) => mapProduct(e.node));
+}
+
+export async function getCollectionProducts(
+  handle: string,
+  count = 100,
+): Promise<{ title: string; products: Product[] } | null> {
+  const data = await shopifyFetch<CollectionByHandleResponse>(COLLECTION_BY_HANDLE_QUERY, { handle, first: count });
+  const collection = data.collection;
+  if (!collection) return null;
+  return {
+    title: collection.title,
+    products: collection.products.edges.map((e) => mapProduct(e.node)),
+  };
 }
 
 export async function getProductByHandle(handle: string): Promise<ProductDetail | null> {

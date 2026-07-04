@@ -47,6 +47,7 @@ export interface Dict {
     subtotal: string; subtotalNote: string; checkout: string;
     remove: string; each: string;
   };
+  category: { empty: string };
 }
 
 export const DICT: Record<LangCode, Dict> = {
@@ -61,6 +62,7 @@ export const DICT: Record<LangCode, Dict> = {
       sneakers: "Sneakers", heels: "Heels", flats: "Flats", ballet: "Ballet flats", boots: "Boots", open: "Open-toe",
       jewelry: "Jewelry", scarves: "Scarves", hats: "Hats", bags: "Bags", wallets: "Wallets",
       sunglasses: "Sunglasses", gloves: "Gloves", belts: "Belts",
+      outerwear: "Coats & Jackets", dressesSkirts: "Dresses & Skirts", bottoms: "Trousers & Jeans",
     },
     foot: { selltous: "Sell to us", tagline: "Pre-loved since the Y2K — London" },
     hero: { kicker: "Lil'OG — Vintage, Reborn", line: "We are born to",
@@ -90,6 +92,7 @@ export const DICT: Record<LangCode, Dict> = {
       subtotal: "Subtotal", subtotalNote: "Shipping and taxes calculated at checkout.", checkout: "Checkout",
       remove: "Remove", each: "each",
     },
+    category: { empty: "No pieces in this category yet — check back soon." },
   },
 
   fr: {
@@ -103,6 +106,7 @@ export const DICT: Record<LangCode, Dict> = {
       sneakers: "Baskets", heels: "Talons", flats: "Plates", ballet: "Ballerines", boots: "Bottes", open: "Ouvertes",
       jewelry: "Bijoux", scarves: "Foulards/Écharpes", hats: "Chapeaux", bags: "Sacs", wallets: "Porte-monnaie",
       sunglasses: "Lunettes", gloves: "Gants", belts: "Ceintures",
+      outerwear: "Vestes & Manteaux", dressesSkirts: "Robes & Jupes", bottoms: "Pantalons & Jeans",
     },
     foot: { selltous: "Vendez-nous", tagline: "Seconde main depuis le Y2K — Londres" },
     hero: { kicker: "Lil'OG — Vintage, Renaissance", line: "Nous sommes nés pour",
@@ -132,6 +136,7 @@ export const DICT: Record<LangCode, Dict> = {
       subtotal: "Sous-total", subtotalNote: "Livraison et taxes calculées au paiement.", checkout: "Passer commande",
       remove: "Retirer", each: "l'unité",
     },
+    category: { empty: "Aucune pièce dans cette catégorie pour l'instant — reviens bientôt." },
   },
 
   es: {
@@ -145,6 +150,7 @@ export const DICT: Record<LangCode, Dict> = {
       sneakers: "Zapatillas", heels: "Tacones", flats: "Planos", ballet: "Bailarinas", boots: "Botas", open: "Abiertos",
       jewelry: "Joyas", scarves: "Pañuelos/Bufandas", hats: "Sombreros", bags: "Bolsos", wallets: "Monederos",
       sunglasses: "Gafas", gloves: "Guantes", belts: "Cinturones",
+      outerwear: "Abrigos & Chaquetas", dressesSkirts: "Vestidos & Faldas", bottoms: "Pantalones & Vaqueros",
     },
     foot: { selltous: "Véndenos", tagline: "Segunda mano desde el Y2K — Londres" },
     hero: { kicker: "Lil'OG — Vintage, Renacido", line: "Nacimos para",
@@ -174,6 +180,7 @@ export const DICT: Record<LangCode, Dict> = {
       subtotal: "Subtotal", subtotalNote: "Envío e impuestos calculados al finalizar la compra.", checkout: "Finalizar compra",
       remove: "Quitar", each: "cada uno",
     },
+    category: { empty: "Todavía no hay piezas en esta categoría — vuelve pronto." },
   },
 
   it: {
@@ -187,6 +194,7 @@ export const DICT: Record<LangCode, Dict> = {
       sneakers: "Sneakers", heels: "Tacchi", flats: "Basse", ballet: "Ballerine", boots: "Stivali", open: "Aperte",
       jewelry: "Gioielli", scarves: "Foulard/Sciarpe", hats: "Cappelli", bags: "Borse", wallets: "Portamonete",
       sunglasses: "Occhiali", gloves: "Guanti", belts: "Cinture",
+      outerwear: "Giacche & Cappotti", dressesSkirts: "Vestiti & Gonne", bottoms: "Pantaloni & Jeans",
     },
     foot: { selltous: "Vendi a noi", tagline: "Seconda mano dal Y2K — Londra" },
     hero: { kicker: "Lil'OG — Vintage, Rinato", line: "Siamo nati per",
@@ -216,6 +224,7 @@ export const DICT: Record<LangCode, Dict> = {
       subtotal: "Subtotale", subtotalNote: "Spedizione e tasse calcolate al checkout.", checkout: "Vai alla cassa",
       remove: "Rimuovi", each: "cad.",
     },
+    category: { empty: "Ancora nessun pezzo in questa categoria — torna presto." },
   },
 
   de: {
@@ -229,6 +238,7 @@ export const DICT: Record<LangCode, Dict> = {
       sneakers: "Sneaker", heels: "Absätze", flats: "Flache", ballet: "Ballerinas", boots: "Stiefel", open: "Offen",
       jewelry: "Schmuck", scarves: "Tücher/Schals", hats: "Hüte", bags: "Taschen", wallets: "Geldbörsen",
       sunglasses: "Brillen", gloves: "Handschuhe", belts: "Gürtel",
+      outerwear: "Jacken & Mäntel", dressesSkirts: "Kleider & Röcke", bottoms: "Hosen & Jeans",
     },
     foot: { selltous: "Verkauf an uns", tagline: "Pre-loved seit dem Y2K — London" },
     hero: { kicker: "Lil'OG — Vintage, Wiedergeboren", line: "Wir sind geboren, um zu",
@@ -258,6 +268,7 @@ export const DICT: Record<LangCode, Dict> = {
       subtotal: "Zwischensumme", subtotalNote: "Versand und Steuern werden an der Kasse berechnet.", checkout: "Zur Kasse",
       remove: "Entfernen", each: "je",
     },
+    category: { empty: "Noch keine Teile in dieser Kategorie — schau bald wieder vorbei." },
   },
 
   ru: {
@@ -271,6 +282,7 @@ export const DICT: Record<LangCode, Dict> = {
       sneakers: "Кроссовки", heels: "Каблуки", flats: "Без каблука", ballet: "Балетки", boots: "Ботинки", open: "Открытые",
       jewelry: "Украшения", scarves: "Платки/Шарфы", hats: "Шляпы", bags: "Сумки", wallets: "Кошельки",
       sunglasses: "Очки", gloves: "Перчатки", belts: "Ремни",
+      outerwear: "Куртки и пальто", dressesSkirts: "Платья и юбки", bottoms: "Брюки и джинсы",
     },
     foot: { selltous: "Продать нам", tagline: "Секонд-хенд со времён Y2K — Лондон" },
     hero: { kicker: "Lil'OG — Винтаж, Возрождённый", line: "Мы рождены, чтобы",
@@ -300,6 +312,7 @@ export const DICT: Record<LangCode, Dict> = {
       subtotal: "Промежуточный итог", subtotalNote: "Доставка и налоги рассчитываются при оформлении заказа.", checkout: "Оформить заказ",
       remove: "Удалить", each: "за шт.",
     },
+    category: { empty: "В этой категории пока нет вещей — загляните позже." },
   },
 
   zh: {
@@ -313,6 +326,7 @@ export const DICT: Record<LangCode, Dict> = {
       sneakers: "运动鞋", heels: "高跟鞋", flats: "平底鞋", ballet: "芭蕾鞋", boots: "靴子", open: "露趾鞋",
       jewelry: "珠宝", scarves: "丝巾/围巾", hats: "帽子", bags: "包袋", wallets: "钱包",
       sunglasses: "墨镜", gloves: "手套", belts: "腰带",
+      outerwear: "外套 & 夹克", dressesSkirts: "连衣裙 & 半裙", bottoms: "长裤 & 牛仔裤",
     },
     foot: { selltous: "卖给我们", tagline: "自 Y2K 起的二手好物 — 伦敦" },
     hero: { kicker: "Lil'OG — 复古，重生", line: "我们生来",
@@ -342,6 +356,7 @@ export const DICT: Record<LangCode, Dict> = {
       subtotal: "小计", subtotalNote: "运费和税费将在结账时计算。", checkout: "去结账",
       remove: "移除", each: "单价",
     },
+    category: { empty: "这个分类暂时还没有商品，敬请期待。" },
   },
 
   ja: {
@@ -355,6 +370,7 @@ export const DICT: Record<LangCode, Dict> = {
       sneakers: "スニーカー", heels: "ヒール", flats: "フラット", ballet: "バレエシューズ", boots: "ブーツ", open: "オープントゥ",
       jewelry: "ジュエリー", scarves: "スカーフ/マフラー", hats: "帽子", bags: "バッグ", wallets: "財布",
       sunglasses: "サングラス", gloves: "手袋", belts: "ベルト",
+      outerwear: "アウター & コート", dressesSkirts: "ワンピース & スカート", bottoms: "パンツ & ジーンズ",
     },
     foot: { selltous: "買取", tagline: "Y2K以来の古着 — ロンドン" },
     hero: { kicker: "Lil'OG — ヴィンテージ、再生", line: "私たちは生まれた",
@@ -384,6 +400,7 @@ export const DICT: Record<LangCode, Dict> = {
       subtotal: "小計", subtotalNote: "配送料と税金はチェックアウト時に計算されます。", checkout: "レジに進む",
       remove: "削除", each: "単価",
     },
+    category: { empty: "このカテゴリーにはまだアイテムがありません。近日公開。" },
   },
 
   ko: {
@@ -397,6 +414,7 @@ export const DICT: Record<LangCode, Dict> = {
       sneakers: "스니커즈", heels: "힐", flats: "플랫", ballet: "발레슈즈", boots: "부츠", open: "오픈토",
       jewelry: "주얼리", scarves: "스카프/머플러", hats: "모자", bags: "백", wallets: "지갑",
       sunglasses: "선글라스", gloves: "장갑", belts: "벨트",
+      outerwear: "코트 & 재킷", dressesSkirts: "원피스 & 스커트", bottoms: "팬츠 & 진",
     },
     foot: { selltous: "판매하기", tagline: "Y2K부터의 빈티지 — 런던" },
     hero: { kicker: "Lil'OG — 빈티지, 다시 태어나다", line: "우리는 태어났다",
@@ -426,5 +444,6 @@ export const DICT: Record<LangCode, Dict> = {
       subtotal: "소계", subtotalNote: "배송비와 세금은 결제 시 계산됩니다.", checkout: "결제하기",
       remove: "삭제", each: "개당",
     },
+    category: { empty: "아직 이 카테고리에 상품이 없습니다 — 곧 다시 확인해 주세요." },
   },
 };

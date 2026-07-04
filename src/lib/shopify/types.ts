@@ -25,6 +25,10 @@ export interface FeaturedProductsResponse {
   products: { edges: { node: ShopifyProductNode }[] };
 }
 
+export interface CollectionByHandleResponse {
+  collection: { id: string; title: string; products: { edges: { node: ShopifyProductNode }[] } } | null;
+}
+
 export interface ShopifyProductDetailNode extends ShopifyProductNode {
   descriptionHtml: string;
   images: { edges: { node: ShopifyImage }[] };
