@@ -15,7 +15,6 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   const count = images.length;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
-  const [translateY, setTranslateY] = useState(0);
 
   // Keeps the gallery pinned to the viewport while the (much longer) info
   // column scrolls past, then lets it travel down with the page once its
@@ -23,43 +22,53 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   // because its containing block is the whole grid, not just this row.
   // Driven purely by `transform: translateY`, so it's compositor-only work
   // (no layout thrash from toggling position/top on every scroll frame).
-  // The wrapper itself is left at its natural (unset) height — the grid row
-  // is already as tall as the info column regardless, and forcing it to
-  // match triggered a needless reflow right as scrolling started.
+  // The transform is written straight to the DOM via the ref on every scroll
+  // frame instead of through React state — a state update would re-render
+  // (and re-run this effect's callers) 60+ times a second, which is enough
+  // overhead on some machines to show up as a stutter.
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const inner = innerRef.current;
     if (!wrapper || !inner) return;
     const row = (wrapper.closest(".pdp-row") as HTMLElement) ?? wrapper;
 
+    // Row/inner height only change on resize (or content/image load), so
+    // they're measured separately from the per-scroll-frame hot path below.
+    let rowHeight = 0;
+    let innerHeight = 0;
+    const measure = () => {
+      rowHeight = row.offsetHeight;
+      innerHeight = inner.offsetHeight;
+      applyForScroll();
+    };
+
     let raf = 0;
-    const update = () => {
+    const applyForScroll = () => {
       raf = 0;
 
       if (window.innerWidth < 1000) {
-        setTranslateY(0);
+        inner.style.transform = "";
         return;
       }
 
-      const rowHeight = row.offsetHeight;
-      const innerHeight = inner.offsetHeight;
       const rowTopPage = row.getBoundingClientRect().top + window.scrollY;
       const maxTranslate = Math.max(0, rowHeight - innerHeight);
       const desiredPageY = window.scrollY + topOffset();
+      const translateY = Math.min(Math.max(desiredPageY - rowTopPage, 0), maxTranslate);
 
-      setTranslateY(Math.min(Math.max(desiredPageY - rowTopPage, 0), maxTranslate));
+      inner.style.transform = `translateY(${translateY}px)`;
     };
 
     const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
+      if (!raf) raf = requestAnimationFrame(applyForScroll);
     };
 
-    update();
+    measure();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", measure);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", measure);
       if (raf) cancelAnimationFrame(raf);
     };
   }, []);
@@ -69,11 +78,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
 
   return (
     <div className="pdp-gallery" ref={wrapperRef}>
-      <div
-        className="pdp-gallery-inner"
-        ref={innerRef}
-        style={{ transform: `translateY(${translateY}px)` }}
-      >
+      <div className="pdp-gallery-inner" ref={innerRef}>
         <div className="pdp-frame">
           {images.map((src, i) => (
             <SmartImg key={src + i} className={i === active ? "on" : ""} src={src} alt={name} tone={i} />
