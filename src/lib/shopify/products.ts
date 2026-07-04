@@ -72,6 +72,7 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
     tag: computeTag(node.tags, node.availableForSale),
     available: node.availableForSale,
     images: images.length > 0 ? images : node.featuredImage ? [node.featuredImage.url] : [],
+    defaultVariantId: node.variants.edges[0]?.node.id ?? null,
     variants: node.variants.edges
       .map((e) => ({
         id: e.node.id,

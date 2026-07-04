@@ -1,15 +1,64 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
+import { addToCartAction, removeCartLineAction, updateCartLineAction } from "@/lib/actions/cart-actions";
+import type { Cart } from "@/lib/shopify/types";
 
-// Placeholder cart state (count only) so Nav/ProductCard can wire up quick-add
-// before the real Shopify Cart API (cartCreate/cartLinesAdd) is connected.
-const CartContext = createContext<{ count: number; addItem: () => void } | null>(null);
+interface CartContextValue {
+  cart: Cart | null;
+  count: number;
+  pending: boolean;
+  addItem: (variantId: string, quantity?: number) => Promise<void>;
+  updateQuantity: (lineId: string, quantity: number) => Promise<void>;
+  removeItem: (lineId: string) => Promise<void>;
+}
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [count, setCount] = useState(0);
-  const addItem = () => setCount((c) => c + 1);
-  return <CartContext.Provider value={{ count, addItem }}>{children}</CartContext.Provider>;
+const CartContext = createContext<CartContextValue | null>(null);
+
+export function CartProvider({
+  children,
+  initialCart,
+}: {
+  children: React.ReactNode;
+  initialCart: Cart | null;
+}) {
+  const [cart, setCart] = useState<Cart | null>(initialCart);
+  const [pending, setPending] = useState(false);
+
+  const addItem = useCallback(async (variantId: string, quantity = 1) => {
+    setPending(true);
+    try {
+      setCart(await addToCartAction(variantId, quantity));
+    } finally {
+      setPending(false);
+    }
+  }, []);
+
+  const updateQuantity = useCallback(async (lineId: string, quantity: number) => {
+    setPending(true);
+    try {
+      setCart(await updateCartLineAction(lineId, quantity));
+    } finally {
+      setPending(false);
+    }
+  }, []);
+
+  const removeItem = useCallback(async (lineId: string) => {
+    setPending(true);
+    try {
+      setCart(await removeCartLineAction(lineId));
+    } finally {
+      setPending(false);
+    }
+  }, []);
+
+  const count = cart?.totalQuantity ?? 0;
+
+  return (
+    <CartContext.Provider value={{ cart, count, pending, addItem, updateQuantity, removeItem }}>
+      {children}
+    </CartContext.Provider>
+  );
 }
 
 export function useCart() {

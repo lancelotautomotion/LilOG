@@ -75,7 +75,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
           <div className="row">
             <a className="mono-label" href="#">{t.nav.search}</a>
             <a className="mono-label" href="#">{t.nav.login}</a>
-            <a className="mono-label" href="#">{t.nav.bag}</a>
+            <a className="mono-label" href="/cart">{t.nav.bag}</a>
           </div>
           <div className="row">
             <a className="mono-label" href="#">Instagram</a>

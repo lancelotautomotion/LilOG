@@ -42,6 +42,11 @@ export interface Dict {
     shippingH: string; shippingBody: string;
     completeLook: string;
   };
+  cart: {
+    title: string; empty: string; emptyCta: string;
+    subtotal: string; subtotalNote: string; checkout: string;
+    remove: string; each: string;
+  };
 }
 
 export const DICT: Record<LangCode, Dict> = {
@@ -80,6 +85,11 @@ export const DICT: Record<LangCode, Dict> = {
       shippingH: "Shipping & returns", shippingBody: "Tracked shipping from London. As every piece is one of one, returns are accepted within 14 days if unworn with tags attached.",
       completeLook: "Complete your look",
     },
+    cart: {
+      title: "Your cart", empty: "Your cart is empty", emptyCta: "Continue shopping",
+      subtotal: "Subtotal", subtotalNote: "Shipping and taxes calculated at checkout.", checkout: "Checkout",
+      remove: "Remove", each: "each",
+    },
   },
 
   fr: {
@@ -116,6 +126,11 @@ export const DICT: Record<LangCode, Dict> = {
       detailsH: "Détails & entretien", detailsBody: "Sourcée à la main et authentifiée à Londres. Lavage délicat ou nettoyage à sec recommandé pour préserver la matière vintage.",
       shippingH: "Livraison & retours", shippingBody: "Livraison suivie depuis Londres. Chaque pièce étant unique, les retours sont acceptés sous 14 jours si non portée, étiquette attachée.",
       completeLook: "Complétez votre look",
+    },
+    cart: {
+      title: "Votre panier", empty: "Ton panier est vide", emptyCta: "Continuer mes achats",
+      subtotal: "Sous-total", subtotalNote: "Livraison et taxes calculées au paiement.", checkout: "Passer commande",
+      remove: "Retirer", each: "l'unité",
     },
   },
 
@@ -154,6 +169,11 @@ export const DICT: Record<LangCode, Dict> = {
       shippingH: "Envío y devoluciones", shippingBody: "Envío rastreado desde Londres. Como cada pieza es única, se aceptan devoluciones en 14 días si no se ha usado y con la etiqueta puesta.",
       completeLook: "Completa tu look",
     },
+    cart: {
+      title: "Tu cesta", empty: "Tu cesta está vacía", emptyCta: "Seguir comprando",
+      subtotal: "Subtotal", subtotalNote: "Envío e impuestos calculados al finalizar la compra.", checkout: "Finalizar compra",
+      remove: "Quitar", each: "cada uno",
+    },
   },
 
   it: {
@@ -190,6 +210,11 @@ export const DICT: Record<LangCode, Dict> = {
       detailsH: "Dettagli e cura", detailsBody: "Selezionato a mano e autenticato a Londra. Si consiglia lavaggio delicato o lavaggio a secco per preservare il tessuto vintage.",
       shippingH: "Spedizione e resi", shippingBody: "Spedizione tracciata da Londra. Essendo ogni pezzo unico, i resi sono accettati entro 14 giorni se non indossato e con l'etichetta.",
       completeLook: "Completa il tuo look",
+    },
+    cart: {
+      title: "Il tuo carrello", empty: "Il tuo carrello è vuoto", emptyCta: "Continua lo shopping",
+      subtotal: "Subtotale", subtotalNote: "Spedizione e tasse calcolate al checkout.", checkout: "Vai alla cassa",
+      remove: "Rimuovi", each: "cad.",
     },
   },
 
@@ -228,6 +253,11 @@ export const DICT: Record<LangCode, Dict> = {
       shippingH: "Versand & Rückgabe", shippingBody: "Versand mit Sendungsverfolgung aus London. Da jedes Stück ein Einzelstück ist, sind Rückgaben innerhalb von 14 Tagen ungetragen mit Etikett möglich.",
       completeLook: "Vervollständige deinen Look",
     },
+    cart: {
+      title: "Dein Warenkorb", empty: "Dein Warenkorb ist leer", emptyCta: "Weiter einkaufen",
+      subtotal: "Zwischensumme", subtotalNote: "Versand und Steuern werden an der Kasse berechnet.", checkout: "Zur Kasse",
+      remove: "Entfernen", each: "je",
+    },
   },
 
   ru: {
@@ -264,6 +294,11 @@ export const DICT: Record<LangCode, Dict> = {
       detailsH: "Детали и уход", detailsBody: "Найдено вручную и проверено на подлинность в Лондоне. Рекомендуется деликатная стирка или химчистка для сохранения винтажной ткани.",
       shippingH: "Доставка и возврат", shippingBody: "Доставка с трек-номером из Лондона. Поскольку каждая вещь единственная в своём роде, возврат принимается в течение 14 дней при сохранении бирки и товарного вида.",
       completeLook: "Дополните образ",
+    },
+    cart: {
+      title: "Ваша корзина", empty: "Ваша корзина пуста", emptyCta: "Продолжить покупки",
+      subtotal: "Промежуточный итог", subtotalNote: "Доставка и налоги рассчитываются при оформлении заказа.", checkout: "Оформить заказ",
+      remove: "Удалить", each: "за шт.",
     },
   },
 
@@ -302,6 +337,11 @@ export const DICT: Record<LangCode, Dict> = {
       shippingH: "配送与退货", shippingBody: "伦敦发货，可追踪物流。由于每件单品独一无二，未穿着且吊牌完好可在14天内退货。",
       completeLook: "搭配全look",
     },
+    cart: {
+      title: "购物袋", empty: "购物袋是空的", emptyCta: "继续购物",
+      subtotal: "小计", subtotalNote: "运费和税费将在结账时计算。", checkout: "去结账",
+      remove: "移除", each: "单价",
+    },
   },
 
   ja: {
@@ -339,6 +379,11 @@ export const DICT: Record<LangCode, Dict> = {
       shippingH: "配送＆返品", shippingBody: "ロンドンから追跡可能な配送。一点物のため、未着用でタグ付きの場合14日以内の返品が可能です。",
       completeLook: "コーディネートを完成させる",
     },
+    cart: {
+      title: "カート", empty: "カートは空です", emptyCta: "ショッピングを続ける",
+      subtotal: "小計", subtotalNote: "配送料と税金はチェックアウト時に計算されます。", checkout: "レジに進む",
+      remove: "削除", each: "単価",
+    },
   },
 
   ko: {
@@ -375,6 +420,11 @@ export const DICT: Record<LangCode, Dict> = {
       detailsH: "상세 정보 & 관리", detailsBody: "런던에서 직접 소싱하고 정품 인증을 거쳤습니다. 빈티지 원단 보존을 위해 손세탁이나 드라이클리닝을 권장합니다.",
       shippingH: "배송 & 반품", shippingBody: "런던에서 추적 가능한 배송. 모든 제품이 단 하나뿐이므로, 미착용 상태로 태그가 부착되어 있으면 14일 이내 반품이 가능합니다.",
       completeLook: "룩 완성하기",
+    },
+    cart: {
+      title: "장바구니", empty: "장바구니가 비어 있습니다", emptyCta: "쇼핑 계속하기",
+      subtotal: "소계", subtotalNote: "배송비와 세금은 결제 시 계산됩니다.", checkout: "결제하기",
+      remove: "삭제", each: "개당",
     },
   },
 };

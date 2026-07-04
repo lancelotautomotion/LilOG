@@ -24,15 +24,16 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
   const [variant, setVariant] = useState(() => product.variants.find((v) => v.availableForSale) ?? product.variants[0]);
 
   const sold = hasVariants ? !variant?.availableForSale : !product.available;
+  const variantId = hasVariants ? (variant?.id ?? null) : product.defaultVariantId;
   const displayTags = product.tags.filter((tg) => !INTERNAL_TAGS.has(tg.toLowerCase())).slice(0, 6);
   const discount = product.was ? Math.round((1 - product.price / product.was) * 100) : null;
 
   const eyebrow = product.tag === "1 OF 1" ? t.pdp.unique : product.tag === "NEW" ? t.pdp.newIn : null;
 
-  const add = () => {
-    if (sold) return;
+  const add = async () => {
+    if (sold || !variantId) return;
     setAdded(true);
-    addItem();
+    await addItem(variantId, 1);
     setTimeout(() => setAdded(false), 1400);
   };
 
@@ -81,7 +82,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
               </div>
             )}
 
-            <button className={"pdp-add" + (added ? " added" : "")} onClick={add} disabled={sold}>
+            <button className={"pdp-add" + (added ? " added" : "")} onClick={add} disabled={sold || !variantId}>
               {sold ? t.pdp.soldOut : added ? t.pdp.added : t.pdp.addToCart}
             </button>
 

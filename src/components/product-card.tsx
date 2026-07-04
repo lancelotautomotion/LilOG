@@ -11,13 +11,13 @@ export function ProductCard({ product, idx }: { product: Product; idx: number })
   const { addItem } = useCart();
   const [fav, setFav] = useState(false);
   const [added, setAdded] = useState(false);
-  const sold = product.tag === "SOLD";
+  const sold = product.tag === "SOLD" || !product.variantId;
 
-  const add = (e: React.MouseEvent) => {
+  const add = async (e: React.MouseEvent) => {
     e.preventDefault();
-    if (sold) return;
+    if (sold || !product.variantId) return;
     setAdded(true);
-    addItem();
+    await addItem(product.variantId, 1);
     setTimeout(() => setAdded(false), 1400);
   };
 

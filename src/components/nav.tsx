@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { useCart } from "@/lib/cart-context";
 import { LangSwitch } from "@/components/lang-switch";
@@ -32,7 +33,7 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
       <div className="nav-right">
         <a className="nav-link nav-search" href="#drops">{t.nav.search}</a>
         <div className="nav-account">
-          <a className="nav-link" href="#">{t.nav.bag} <span className="count">{count}</span></a>
+          <Link className="nav-link" href="/cart">{t.nav.bag} <span className="count">{count}</span></Link>
           <a className="nav-link" href="#">{t.nav.login}</a>
           <LangSwitch />
         </div>
