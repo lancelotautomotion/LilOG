@@ -9,7 +9,7 @@ export async function generateMetadata({
   params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
   const { handle } = await params;
-  const product = await getProductByHandle(handle).catch(() => null);
+  const product = await getProductByHandle(decodeURIComponent(handle)).catch(() => null);
   if (!product) return { title: "Lil'OG" };
   const plainDescription = product.descriptionHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
   return {
@@ -23,7 +23,8 @@ export default async function ProductPage({
 }: {
   params: Promise<{ handle: string }>;
 }) {
-  const { handle } = await params;
+  const { handle: rawHandle } = await params;
+  const handle = decodeURIComponent(rawHandle);
   const product = await getProductByHandle(handle).catch(() => null);
   if (!product) notFound();
 
