@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SmartImg } from "@/components/smart-img";
 import { Icon } from "@/components/icons";
 
@@ -15,45 +15,40 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   const count = images.length;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
-  const [pinStyle, setPinStyle] = useState<CSSProperties>({});
+  const [translateY, setTranslateY] = useState(0);
   const [wrapperHeight, setWrapperHeight] = useState<number>();
 
-  // Pins the gallery to the viewport while the (much longer) info column
-  // scrolls past, then docks it at the bottom of the row once its companion
-  // column runs out — plain CSS `position: sticky` can't do this because its
-  // containing block is the whole grid, not just this row (see git history).
+  // Keeps the gallery pinned to the viewport while the (much longer) info
+  // column scrolls past, then lets it travel down with the page once its
+  // companion column runs out — plain CSS `position: sticky` can't do this
+  // because its containing block is the whole grid, not just this row.
+  // Driven purely by `transform: translateY`, so it's compositor-only work
+  // (no layout thrash from toggling position/top on every scroll frame).
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const inner = innerRef.current;
     if (!wrapper || !inner) return;
-    // The release point is governed by the whole row's height (i.e. the
-    // taller info column), not the gallery's own — otherwise it "docks"
-    // the instant it would start pinning.
-    const row = wrapper.closest(".pdp-row") as HTMLElement | null;
+    const row = (wrapper.closest(".pdp-row") as HTMLElement) ?? wrapper;
 
     let raf = 0;
     const update = () => {
       raf = 0;
-      // Stretch the wrapper to the full row height (matching the taller info
-      // column) so "dock at wrapper bottom" lands at the row's actual bottom
-      // instead of the gallery's own (shorter) natural height.
-      setWrapperHeight((row ?? wrapper).offsetHeight);
 
       if (window.innerWidth < 1000) {
-        setPinStyle({});
+        setWrapperHeight(undefined);
+        setTranslateY(0);
         return;
       }
 
-      const colRect = wrapper.getBoundingClientRect();
-      const offset = topOffset();
+      const rowHeight = row.offsetHeight;
+      setWrapperHeight(rowHeight);
 
-      if (colRect.top > offset) {
-        setPinStyle({});
-      } else if (colRect.bottom - inner.offsetHeight < offset) {
-        setPinStyle({ position: "absolute", left: 0, right: 0, bottom: 0 });
-      } else {
-        setPinStyle({ position: "fixed", top: offset, left: colRect.left, width: colRect.width });
-      }
+      const innerHeight = inner.offsetHeight;
+      const rowTopPage = row.getBoundingClientRect().top + window.scrollY;
+      const maxTranslate = Math.max(0, rowHeight - innerHeight);
+      const desiredPageY = window.scrollY + topOffset();
+
+      setTranslateY(Math.min(Math.max(desiredPageY - rowTopPage, 0), maxTranslate));
     };
 
     const onScroll = () => {
@@ -75,7 +70,11 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
 
   return (
     <div className="pdp-gallery" ref={wrapperRef} style={{ height: wrapperHeight }}>
-      <div className="pdp-gallery-inner" ref={innerRef} style={pinStyle}>
+      <div
+        className="pdp-gallery-inner"
+        ref={innerRef}
+        style={{ transform: `translateY(${translateY}px)` }}
+      >
         <div className="pdp-frame">
           {images.map((src, i) => (
             <SmartImg key={src + i} className={i === active ? "on" : ""} src={src} alt={name} tone={i} />
