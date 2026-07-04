@@ -961,6 +961,14 @@ a { color: inherit; text-decoration: none; }
   margin: clamp(24px, 3vw, 34px) 0 0;
   max-width: 52ch;
 }
+.pdp-desc p { margin: 0 0 1.1em; }
+.pdp-desc p:last-child { margin-bottom: 0; }
+.pdp-desc strong, .pdp-desc b { font-weight: 700; }
+.pdp-desc em, .pdp-desc i { font-style: italic; }
+.pdp-desc ul, .pdp-desc ol { margin: 0 0 1.1em; padding-left: 1.3em; }
+.pdp-desc li { margin-bottom: 0.35em; }
+.pdp-desc a { text-decoration: underline; text-underline-offset: 2px; }
+.pdp-desc br + br { display: none; }
 
 .pdp-accordion { margin-top: clamp(18px, 2.4vw, 28px); }
 .pdp-acc-item { border-top: 1px solid rgba(56,34,21,0.14); }

@@ -84,7 +84,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
             {sold ? t.pdp.soldOut : added ? t.pdp.added : t.pdp.addToCart}
           </button>
 
-          {product.description && <p className="pdp-desc">{product.description}</p>}
+          {product.descriptionHtml && (
+            <div className="pdp-desc" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+          )}
 
           <div className="pdp-accordion">
             <details className="pdp-acc-item">

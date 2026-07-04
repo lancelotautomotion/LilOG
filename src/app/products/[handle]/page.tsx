@@ -11,9 +11,10 @@ export async function generateMetadata({
   const { handle } = await params;
   const product = await getProductByHandle(handle).catch(() => null);
   if (!product) return { title: "Lil'OG" };
+  const plainDescription = product.descriptionHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
   return {
     title: `${product.name} — Lil'OG`,
-    description: product.description || undefined,
+    description: plainDescription || undefined,
   };
 }
 

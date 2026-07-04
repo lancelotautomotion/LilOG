@@ -53,7 +53,7 @@ export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
       id
       handle
       title
-      description
+      descriptionHtml
       tags
       availableForSale
       featuredImage {

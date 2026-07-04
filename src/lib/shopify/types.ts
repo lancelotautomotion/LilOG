@@ -26,7 +26,7 @@ export interface FeaturedProductsResponse {
 }
 
 export interface ShopifyProductDetailNode extends ShopifyProductNode {
-  description: string;
+  descriptionHtml: string;
   images: { edges: { node: ShopifyImage }[] };
   variants: {
     edges: {
@@ -56,7 +56,7 @@ export interface ProductDetail {
   id: string;
   handle: string;
   name: string;
-  description: string;
+  descriptionHtml: string;
   tags: string[];
   price: number;
   was: number | null;

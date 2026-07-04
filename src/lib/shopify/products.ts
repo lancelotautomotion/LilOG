@@ -64,7 +64,7 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
     id: node.id,
     handle: node.handle,
     name: node.title,
-    description: node.description,
+    descriptionHtml: node.descriptionHtml,
     tags: node.tags,
     price,
     was: compareAt > price ? compareAt : null,
