@@ -1173,22 +1173,20 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   overflow: hidden;
 }
-.auth-page::before {
-  content: "";
+.auth-page > * { position: relative; z-index: 1; }
+.auth-flower {
   position: absolute;
-  /* the logo PNG is flower (top ~55%) + text (bottom 45%) — scale huge and
-     shift up so only the flower fills the viewport */
-  width: 130vmax;
-  height: 130vmax;
+  width: 110vmax;
+  height: 110vmax;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -68%);
-  background: url("/logo-black.png") center / contain no-repeat;
-  opacity: 0.055;
+  transform: translate(-50%, -62%);
+  object-fit: contain;
+  opacity: 0.09;
+  mix-blend-mode: multiply;
   pointer-events: none;
   z-index: 0;
 }
-.auth-page > * { position: relative; z-index: 1; }
 .auth-back {
   position: absolute;
   top: 24px;

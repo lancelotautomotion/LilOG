@@ -11,6 +11,8 @@ export default async function LoginPage() {
 
   return (
     <main className="auth-page">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="auth-flower" src="/logo-black.png" alt="" aria-hidden />
       <a className="auth-back" href="/">← Retour</a>
       <div className="auth-brand">Lil&#39;OG</div>
       <h1 className="auth-title">Mon compte</h1>
