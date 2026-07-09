@@ -45,7 +45,7 @@ export function ProductCard({ product, idx }: { product: Product; idx: number })
           {product.meta && <div className="card-meta">{product.meta}</div>}
         </div>
         <div className="card-price">
-          {product.was && <s>£{product.was}</s>}£{product.price}
+          {product.was && <s>€{product.was}</s>}€{product.price}
         </div>
       </Link>
     </article>

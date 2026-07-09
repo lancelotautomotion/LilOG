@@ -608,7 +608,7 @@ a { color: inherit; text-decoration: none; }
 .card-text { min-width: 0; }
 .card-name { font-size: 0.92rem; font-weight: 500; line-height: 1.25; }
 .card-meta { font-family: var(--mono); font-size: 0.68rem; color: var(--choco-soft); margin-top: 5px; letter-spacing: 0.04em; }
-.card-price { font-family: var(--mono); font-size: 0.85rem; white-space: nowrap; flex-shrink: 0; }
+.card-price { font-family: var(--mono); font-size: 0.85rem; white-space: nowrap; flex-shrink: 0; color: #e0006e; }
 .card-price s { color: var(--choco-soft); opacity: 0.6; margin-right: 6px; }
 
 /* ============================================================
@@ -906,7 +906,7 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: clamp(18px, 2.4vw, 28px);
 }
 .pdp-price-row s { color: var(--choco-soft); opacity: 0.6; font-size: 0.95rem; }
-.pdp-price-now { font-size: 1.15rem; }
+.pdp-price-now { font-size: 1.15rem; color: #e0006e; }
 .pdp-discount {
   font-family: var(--mono);
   text-transform: uppercase;

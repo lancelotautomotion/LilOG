@@ -20,6 +20,10 @@ function computeTag(tags: string[], availableForSale: boolean): Product["tag"] {
         : null;
 }
 
+function stripEmoji(str: string): string {
+  return str.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/u, "").trim();
+}
+
 function mapProduct(node: ShopifyProductNode): Product {
   const price = Number(node.priceRange.minVariantPrice.amount);
   const compareAt = Number(node.compareAtPriceRange.minVariantPrice.amount);
@@ -35,7 +39,7 @@ function mapProduct(node: ShopifyProductNode): Product {
   return {
     id: node.id,
     handle: node.handle,
-    name: node.title,
+    name: stripEmoji(node.title),
     meta,
     price,
     was: compareAt > price ? compareAt : null,
@@ -77,7 +81,7 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
   return {
     id: node.id,
     handle: node.handle,
-    name: node.title,
+    name: stripEmoji(node.title),
     descriptionHtml: node.descriptionHtml,
     tags: node.tags,
     price,

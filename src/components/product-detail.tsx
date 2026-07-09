@@ -54,8 +54,8 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
             <h1 className="pdp-title">{product.name}</h1>
 
             <div className="pdp-price-row">
-              {product.was && <s>£{product.was}</s>}
-              <span className="pdp-price-now">£{product.price}</span>
+              {product.was && <s>€{product.was}</s>}
+              <span className="pdp-price-now">€{product.price}</span>
               {discount !== null && <span className="pdp-discount">-{discount}%</span>}
             </div>
 
