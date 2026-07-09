@@ -322,12 +322,13 @@ a { color: inherit; text-decoration: none; }
 .drawer-parent .caret { width: 22px; height: 22px; opacity: 0.55; flex-shrink: 0; transition: transform 0.35s cubic-bezier(.76,0,.24,1), opacity 0.3s; }
 .drawer-item.open .drawer-parent { color: var(--pink); }
 .drawer-item.open .caret { transform: rotate(180deg); opacity: 1; }
-.drawer-link .idx {
+.drawer-link .idx, .drawer-parent .idx {
   font-family: var(--mono);
   font-size: 0.62rem;
   vertical-align: super;
   color: var(--accent);
   margin-left: 8px;
+  margin-right: auto;
 }
 .drawer-sub { overflow: hidden; max-height: 0; transition: max-height 0.5s cubic-bezier(.76,0,.24,1); }
 .drawer-item.open .drawer-sub { max-height: 720px; }
@@ -608,7 +609,7 @@ a { color: inherit; text-decoration: none; }
 .card-text { min-width: 0; }
 .card-name { font-size: 0.92rem; font-weight: 500; line-height: 1.25; }
 .card-meta { font-family: var(--mono); font-size: 0.68rem; color: var(--choco-soft); margin-top: 5px; letter-spacing: 0.04em; }
-.card-price { font-family: var(--mono); font-size: 0.85rem; white-space: nowrap; flex-shrink: 0; color: #e0006e; }
+.card-price { font-family: var(--mono); font-size: 0.85rem; font-weight: 700; white-space: nowrap; flex-shrink: 0; color: #e0006e; }
 .card-price s { color: var(--choco-soft); opacity: 0.6; margin-right: 6px; }
 
 /* ============================================================
@@ -906,7 +907,7 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: clamp(18px, 2.4vw, 28px);
 }
 .pdp-price-row s { color: var(--choco-soft); opacity: 0.6; font-size: 0.95rem; }
-.pdp-price-now { font-size: 1.15rem; color: #e0006e; }
+.pdp-price-now { font-size: 1.15rem; font-weight: 700; color: #e0006e; }
 .pdp-discount {
   font-family: var(--mono);
   text-transform: uppercase;

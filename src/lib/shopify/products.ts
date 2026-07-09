@@ -41,6 +41,7 @@ function mapProduct(node: ShopifyProductNode): Product {
     handle: node.handle,
     name: stripEmoji(node.title),
     meta,
+    productType: node.productType ?? "",
     price,
     was: compareAt > price ? compareAt : null,
     currency: node.priceRange.minVariantPrice.currencyCode,

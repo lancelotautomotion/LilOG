@@ -16,10 +16,13 @@ export async function generateMetadata({
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ handle: string }>;
+  searchParams: Promise<{ sub?: string }>;
 }) {
   const { handle: rawHandle } = await params;
+  const { sub } = await searchParams;
   const handle = decodeURIComponent(rawHandle);
 
   const known = CATEGORIES.find((c) => c.handle === handle);
@@ -28,5 +31,5 @@ export default async function Page({
   const collection = await getCollectionProducts(handle).catch(() => null);
   if (!collection) notFound();
 
-  return <CategoryPage catKey={known.catKey} products={collection.products} />;
+  return <CategoryPage catKey={known.catKey} products={collection.products} sub={sub} />;
 }

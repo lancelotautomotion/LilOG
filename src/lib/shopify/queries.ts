@@ -6,6 +6,7 @@ export const FEATURED_PRODUCTS_QUERY = /* GraphQL */ `
           id
           handle
           title
+          productType
           tags
           availableForSale
           featuredImage {
@@ -108,6 +109,7 @@ export const COLLECTION_BY_HANDLE_QUERY = /* GraphQL */ `
             id
             handle
             title
+            productType
             tags
             availableForSale
             featuredImage {

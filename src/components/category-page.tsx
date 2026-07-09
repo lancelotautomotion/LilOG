@@ -8,10 +8,23 @@ import { Footer } from "@/components/footer";
 import { ProductCard } from "@/components/product-card";
 import type { Product } from "@/lib/shopify/types";
 
-export function CategoryPage({ catKey, products }: { catKey: string; products: Product[] }) {
+export function CategoryPage({
+  catKey,
+  products,
+  sub,
+}: {
+  catKey: string;
+  products: Product[];
+  sub?: string;
+}) {
   const { t } = useLanguage();
   const [menu, setMenu] = useState(false);
   const label = t.cat[catKey] ?? catKey;
+
+  const filtered =
+    sub
+      ? products.filter((p) => p.productType.toLowerCase() === sub.toLowerCase())
+      : products;
 
   return (
     <>
@@ -20,11 +33,11 @@ export function CategoryPage({ catKey, products }: { catKey: string; products: P
       <main className="category-page">
         <h1 className="category-title">{label}</h1>
 
-        {products.length === 0 ? (
+        {filtered.length === 0 ? (
           <p className="category-empty">{t.category.empty}</p>
         ) : (
           <div className="drops-grid">
-            {products.map((p, idx) => (
+            {filtered.map((p, idx) => (
               <ProductCard key={p.id} product={p} idx={idx} />
             ))}
           </div>

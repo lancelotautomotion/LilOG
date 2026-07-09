@@ -12,6 +12,7 @@ export interface ShopifyProductNode {
   id: string;
   handle: string;
   title: string;
+  productType: string;
   tags: string[];
   availableForSale: boolean;
   featuredImage: ShopifyImage | null;
@@ -81,6 +82,7 @@ export interface Product {
   handle: string;
   name: string;
   meta: string;
+  productType: string;
   price: number;
   was: number | null;
   currency: string;
