@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useLanguage } from "@/lib/i18n-context";
 import { useCart } from "@/lib/cart-context";
 import { LangSwitch } from "@/components/lang-switch";
@@ -12,6 +13,7 @@ import logoBlack from "../../public/logo-black.png";
 export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: boolean }) {
   const { t } = useLanguage();
   const { count } = useCart();
+  const { data: session } = useSession();
   const [solid, setSolid] = useState(false);
 
   useEffect(() => {
@@ -34,7 +36,9 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
         <a className="nav-link nav-search" href="#drops">{t.nav.search}</a>
         <div className="nav-account">
           <Link className="nav-link" href="/cart">{t.nav.bag} <span className="count">{count}</span></Link>
-          <a className="nav-link" href="#">{t.nav.login}</a>
+          <Link className="nav-link" href={session ? "/account" : "/login"}>
+            {session ? (session.user?.name?.split(" ")[0] ?? "Mon compte") : t.nav.login}
+          </Link>
           <LangSwitch />
         </div>
       </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Grenze_Gotisch, Montserrat, Space_Mono } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
+import { SessionProvider } from "@/components/session-provider";
 import { getCartAction } from "@/lib/actions/cart-actions";
 import "./globals.css";
 
@@ -34,9 +35,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
       <body className="grain">
-        <LanguageProvider>
-          <CartProvider initialCart={initialCart}>{children}</CartProvider>
-        </LanguageProvider>
+        <SessionProvider>
+          <LanguageProvider>
+            <CartProvider initialCart={initialCart}>{children}</CartProvider>
+          </LanguageProvider>
+        </SessionProvider>
       </body>
     </html>
   );
