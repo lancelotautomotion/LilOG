@@ -10,9 +10,9 @@ export default async function LoginPage() {
   if (session) redirect("/account");
 
   return (
-    <main className="auth-page">
+    <main className="auth-page auth-page--bg">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className="auth-flower" src="/logo-black.png" alt="" aria-hidden />
+      <img className="auth-bg-img" src="/login-bg.jpeg" alt="" aria-hidden />
       <a className="auth-back" href="/">← Retour</a>
       <div className="auth-brand">Lil&#39;OG</div>
       <h1 className="auth-title">Mon compte</h1>
