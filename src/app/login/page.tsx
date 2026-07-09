@@ -10,7 +10,7 @@ export default async function LoginPage() {
   if (session) redirect("/account");
 
   return (
-    <main className="auth-page auth-page--bg">
+    <main className="auth-page" style={{ backgroundImage: "url('/login-bg.jpeg')", backgroundSize: "cover", backgroundPosition: "center" }}>
       <a className="auth-back" href="/">← Retour</a>
       <div className="auth-brand">Lil&#39;OG</div>
       <h1 className="auth-title">Mon compte</h1>
