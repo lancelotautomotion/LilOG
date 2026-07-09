@@ -45,6 +45,12 @@ export const CATEGORIES: Category[] = [
   {
     handle: "jupes",
     catKey: "skirts",
+    sub: [
+      { label: "Tout voir", type: "" },
+      { label: "Courtes", type: "jupe-courte" },
+      { label: "Mi-longues", type: "jupe-mi-longue" },
+      { label: "Longues", type: "jupe-longue" },
+    ],
   },
   {
     handle: "shorts-bermudas",
