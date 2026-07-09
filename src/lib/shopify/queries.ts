@@ -81,6 +81,13 @@ export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
           currencyCode
         }
       }
+      collections(first: 10) {
+        edges {
+          node {
+            handle
+          }
+        }
+      }
       variants(first: 10) {
         edges {
           node {

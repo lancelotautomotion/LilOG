@@ -90,6 +90,7 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
     currency: node.priceRange.minVariantPrice.currencyCode,
     tag: computeTag(node.tags, node.availableForSale),
     available: node.availableForSale,
+    collections: node.collections.edges.map((e) => e.node.handle),
     images: images.length > 0 ? images : node.featuredImage ? [node.featuredImage.url] : [],
     defaultVariantId: node.variants.edges[0]?.node.id ?? null,
     variants: node.variants.edges
