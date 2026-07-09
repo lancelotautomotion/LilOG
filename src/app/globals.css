@@ -1173,7 +1173,7 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   overflow: hidden;
 }
-.auth-page > * { position: relative; z-index: 1; }
+.auth-page > *:not(.auth-bg-img) { position: relative; z-index: 1; }
 .auth-flower {
   position: fixed;
   width: 110vmax;
@@ -1187,8 +1187,11 @@ a { color: inherit; text-decoration: none; }
   pointer-events: none;
   z-index: 0;
 }
+.auth-page--bg {
+  background: none;
+}
 .auth-bg-img {
-  position: fixed;
+  position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
