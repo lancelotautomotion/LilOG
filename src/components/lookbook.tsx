@@ -11,9 +11,9 @@ import { CATEGORIES } from "@/lib/categories";
 // (newin, ogdresses, luxe) keep pointing at the homepage's Featured Drops.
 const TILE_HREF: Record<string, string> = {
   tops: `/category/${CATEGORIES.find((c) => c.catKey === "tops")!.handle}`,
-  skirts: `/category/${CATEGORIES.find((c) => c.catKey === "dressesSkirts")!.handle}`,
-  accessories: `/category/${CATEGORIES.find((c) => c.catKey === "accessories")!.handle}`,
-  shoes: `/category/${CATEGORIES.find((c) => c.catKey === "shoes")!.handle}`,
+  skirts: `/category/${CATEGORIES.find((c) => c.catKey === "skirts")!.handle}`,
+  accessories: "#drops",
+  shoes: "#drops",
 };
 
 export function Lookbook() {
