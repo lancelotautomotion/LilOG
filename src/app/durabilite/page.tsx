@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Footer } from "@/components/footer";
 
 export const metadata: Metadata = { title: "Durabilité — Lil'OG" };
@@ -7,9 +8,21 @@ export default function DurabilitePage() {
   return (
     <>
       <main className="static-page">
-        <div className="static-hero">
-          <p className="static-eyebrow">À propos</p>
-          <h1 className="static-title">La mode qui<br /><em>respecte la planète.</em></h1>
+        <div className="static-hero static-hero--light">
+          <div className="static-hero-text">
+            <p className="static-eyebrow">À propos</p>
+            <h1 className="static-title">La mode qui<br /><em>respecte la planète.</em></h1>
+          </div>
+          <div className="static-hero-img">
+            <Image
+              src="/durabilite-hero.png"
+              alt=""
+              width={420}
+              height={560}
+              style={{ objectFit: "contain", maxHeight: "480px", width: "auto" }}
+              priority
+            />
+          </div>
         </div>
 
         <div className="static-body">
