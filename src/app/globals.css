@@ -1381,9 +1381,9 @@ a { color: inherit; text-decoration: none; }
   background: rgba(240,234,226,0.72);
   pointer-events: none;
 }
-.static-hero--bg > * { position: relative; z-index: 1; }
+.static-hero--bg > * { position: relative; z-index: 1; isolation: auto; }
 .static-hero-text { flex: 1; min-width: 0; }
-.static-title-line1 { display: inline-flex; align-items: center; gap: 28px; }
+.static-title-line1 { display: inline-flex; align-items: center; gap: 28px; isolation: auto; }
 .static-eyebrow {
   font-family: var(--mono);
   text-transform: uppercase;
