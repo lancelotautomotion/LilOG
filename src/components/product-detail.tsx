@@ -81,7 +81,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
             )}
 
             <button className={"pdp-add" + (added ? " added" : "")} onClick={add} disabled={sold || !variantId}>
-              {sold ? t.pdp.soldOut : added ? t.pdp.added : t.pdp.addToCart}
+              <span style={{ position: "relative", zIndex: 1 }}>
+                {sold ? t.pdp.soldOut : added ? t.pdp.added : t.pdp.addToCart}
+              </span>
             </button>
 
             {product.descriptionHtml && (
