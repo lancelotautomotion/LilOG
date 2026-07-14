@@ -16,7 +16,7 @@ export function DurabiliteShell() {
       <main className="static-page">
         <div className="static-hero static-hero--light">
           <div className="static-hero-text">
-            <p className="static-eyebrow">À propos</p>
+            <p className="static-eyebrow">Durabilité</p>
             <h1 className="static-title">
               <span className="static-title-line1">
                 La mode qui
