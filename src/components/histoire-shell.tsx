@@ -27,7 +27,7 @@ export function HistoireShell() {
                   alt=""
                   width={220}
                   height={150}
-                  style={{ objectFit: "contain", width: "260px", height: "auto", display: "inline-block", verticalAlign: "top", marginTop: "-0.5em" }}
+                  style={{ objectFit: "contain", width: "260px", height: "auto", display: "inline-block", verticalAlign: "top", marginTop: "-0.5em", mixBlendMode: "screen" }}
                   priority
                 />
               </span>
