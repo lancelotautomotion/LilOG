@@ -30,7 +30,11 @@ export function Footer() {
         {cols.map((c) => (
           <div key={c.h}>
             <h4>{c.h}</h4>
-            <ul>{c.links.map((l) => <li key={l}><a href="#">{l}</a></li>)}</ul>
+            <ul>{c.links.map((l) => (
+              <li key={l}>
+                <a href={l === t.footer.aboutLinks[2] ? "/durabilite" : "#"}>{l}</a>
+              </li>
+            ))}</ul>
           </div>
         ))}
       </div>
