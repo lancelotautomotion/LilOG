@@ -32,7 +32,7 @@ export function Footer() {
             <h4>{c.h}</h4>
             <ul>{c.links.map((l) => (
               <li key={l}>
-                <a href={l === t.footer.aboutLinks[1] ? "/durabilite" : l === t.footer.aboutLinks[0] ? "/histoire" : l === t.footer.helpLinks[1] ? "/retours" : "#"}>{l}</a>
+                <a href={l === t.footer.aboutLinks[1] ? "/durabilite" : l === t.footer.aboutLinks[0] ? "/histoire" : l === t.footer.helpLinks[1] ? "/retours" : l === t.footer.helpLinks[0] ? "/livraison" : "#"}>{l}</a>
               </li>
             ))}</ul>
           </div>
