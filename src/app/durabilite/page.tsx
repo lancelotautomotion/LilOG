@@ -17,9 +17,9 @@ export default function DurabilitePage() {
             <Image
               src="/durabilite-hero.png"
               alt=""
-              width={525}
-              height={700}
-              style={{ objectFit: "contain", maxHeight: "600px", width: "auto" }}
+              width={280}
+              height={370}
+              style={{ objectFit: "contain", maxHeight: "300px", width: "auto" }}
               priority
             />
           </div>
