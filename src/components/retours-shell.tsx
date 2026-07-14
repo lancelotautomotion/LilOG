@@ -46,7 +46,7 @@ export function RetoursShell() {
             </p>
             <p>
               Pour exercer ce droit, contacte-nous avant l'expiration du délai à l'adresse :
-              <strong> contact@lil-og.com</strong> en précisant ton numéro de commande et le ou les articles concernés.
+              <strong> lilog.shop@gmail.com</strong> en précisant ton numéro de commande et le ou les articles concernés.
             </p>
           </section>
 
