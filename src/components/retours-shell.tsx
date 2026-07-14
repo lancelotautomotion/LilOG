@@ -64,8 +64,19 @@ export function RetoursShell() {
             <p>
               Adresse de retour :
             </p>
-            <p style={{ fontFamily: "var(--mono)", fontSize: "0.95rem", lineHeight: "1.8", marginTop: "8px" }}>
-              <strong>Lil'OG</strong><br />
+            <p style={{
+              fontFamily: "var(--mono)",
+              fontSize: "0.95rem",
+              lineHeight: "1.8",
+              marginTop: "8px",
+              display: "inline-block",
+              color: "#d4006e",
+              fontWeight: 700,
+              border: "2px solid #d4006e",
+              borderRadius: "6px",
+              padding: "14px 24px",
+            }}>
+              Lil'OG<br />
               26 rue Soubise<br />
               93400 Saint-Ouen-Sur-Seine<br />
               France
