@@ -50,7 +50,15 @@ export function LivraisonShell() {
             </p>
           </section>
 
-          <section className="static-section static-section--right histoire-section--accent">
+          <section className="static-section static-section--right histoire-section--accent" style={{ display: "flex", alignItems: "center", gap: "clamp(24px, 4vw, 60px)", maxWidth: "100%" }}>
+            <Image
+              src="/modes-livraison-img.png"
+              alt=""
+              width={200}
+              height={200}
+              style={{ flexShrink: 0, width: "clamp(140px, 16vw, 220px)", height: "auto" }}
+            />
+            <div style={{ flex: 1, minWidth: 0 }}>
             <h2>Modes de livraison</h2>
             <p>
               Nous expédions via <strong>Colissimo</strong> (France) et <strong>Mondial Relay</strong> (France & Europe),
@@ -63,6 +71,7 @@ export function LivraisonShell() {
               Pour toute demande de livraison express ou internationale hors zone standard, contacte-nous à
               <strong> lilog.shop@gmail.com</strong> avant de passer commande.
             </p>
+            </div>
           </section>
 
           <section className="static-section static-section--left">
