@@ -1452,5 +1452,57 @@ a { color: inherit; text-decoration: none; }
 .static-bottom-img { width: 100%; overflow: hidden; }
 .static-section--engagement { display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); padding-left: clamp(16px, 4vw, 60px); }
 .static-section--engagement-reverse { flex-direction: row-reverse; }
+
+/* ── Notre Histoire ──────────────────────────────────────────────────────── */
+.histoire-hero {
+  display: flex;
+  align-items: stretch;
+  min-height: 80vh;
+}
+.histoire-photo {
+  flex: 0 0 42%;
+  position: relative;
+  overflow: hidden;
+}
+.histoire-intro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(48px, 8vw, 120px) clamp(32px, 6vw, 100px);
+  background: var(--cream);
+}
+.histoire-tagline {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--choco-soft);
+  margin-top: 28px;
+  max-width: 480px;
+}
+.histoire-body {
+  padding: clamp(40px, 6vw, 80px) clamp(24px, 8vw, 120px);
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+.histoire-section h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: 700;
+  margin: 0 0 20px;
+}
+.histoire-section p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--choco-soft);
+  margin: 0 0 16px;
+  max-width: 680px;
+}
+.histoire-section p:last-child { margin-bottom: 0; }
+.histoire-section--accent {
+  border-left: 3px solid #e0006e;
+  padding-left: clamp(20px, 3vw, 40px);
+}
+.histoire-section--accent h2 { color: var(--choco); }
 .engagement-text { flex: 1; min-width: 0; }
 .engagement-img { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
