@@ -11,19 +11,21 @@ export default function DurabilitePage() {
         <div className="static-hero static-hero--light">
           <div className="static-hero-text">
             <p className="static-eyebrow">À propos</p>
-            <div className="static-title-row">
-              <h1 className="static-title">La mode qui<br /><em>respecte la planète.</em></h1>
-              <div className="static-hero-img">
+            <h1 className="static-title">
+              <span className="static-title-line1">
+                La mode qui
                 <Image
                   src="/durabilite-hero.png"
                   alt=""
-                  width={240}
-                  height={160}
-                  style={{ objectFit: "contain", width: "240px", height: "auto" }}
+                  width={220}
+                  height={150}
+                  style={{ objectFit: "contain", width: "220px", height: "auto", display: "inline-block", verticalAlign: "middle" }}
                   priority
                 />
-              </div>
-            </div>
+              </span>
+              <br />
+              <em>respecte la planète.</em>
+            </h1>
           </div>
         </div>
 
