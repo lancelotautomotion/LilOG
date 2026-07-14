@@ -88,9 +88,9 @@ export function RetoursShell() {
               lineHeight: "1.8",
               marginTop: "8px",
               display: "inline-block",
-              color: "#d4006e",
+              color: "#1a1a1a",
               fontWeight: 700,
-              border: "2px solid #d4006e",
+              border: "2px solid #1a1a1a",
               borderRadius: "6px",
               padding: "14px 24px",
             }}>
