@@ -84,7 +84,7 @@ export function DurabiliteShell() {
             </p>
           </section>
 
-          <section className="static-section static-section--accent static-section--engagement">
+          <section className="static-section static-section--accent static-section--engagement static-section--engagement-reverse">
             <div className="engagement-text">
               <h2>Notre engagement</h2>
               <ul className="static-list">
