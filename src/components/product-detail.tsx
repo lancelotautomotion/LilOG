@@ -61,7 +61,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
 
             {product.etat && (
               <div className="pdp-tags">
-                <span className="pdp-tag pdp-tag--etat">{product.etat}</span>
+                <span className="pdp-tag pdp-tag--etat">État : {product.etat}</span>
               </div>
             )}
 
