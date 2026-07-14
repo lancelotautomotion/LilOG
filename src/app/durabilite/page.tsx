@@ -19,7 +19,7 @@ export default function DurabilitePage() {
                   alt=""
                   width={220}
                   height={150}
-                  style={{ objectFit: "contain", width: "220px", height: "auto", display: "inline-block", verticalAlign: "middle" }}
+                  style={{ objectFit: "contain", width: "260px", height: "auto", display: "inline-block", verticalAlign: "top", marginTop: "-0.5em" }}
                   priority
                 />
               </span>
