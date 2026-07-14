@@ -54,9 +54,9 @@ export function RetoursShell() {
             <Image
               src="/metalik-sticker.png"
               alt=""
-              width={120}
-              height={120}
-              style={{ position: "absolute", left: "-60px", top: "50%", transform: "translateY(-50%)", width: "110px", height: "auto", pointerEvents: "none" }}
+              width={160}
+              height={160}
+              style={{ position: "absolute", left: "-180px", top: "50%", transform: "translateY(-50%)", width: "149px", height: "auto", pointerEvents: "none" }}
             />
             <h2>Conditions de retour</h2>
             <p>
