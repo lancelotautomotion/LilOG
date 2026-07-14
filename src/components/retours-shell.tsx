@@ -19,8 +19,18 @@ export function RetoursShell() {
           <div className="static-hero-text">
             <p className="static-eyebrow">Aide</p>
             <h1 className="static-title">
-              Retours &<br />
-              <em>remboursements.</em>
+              <span className="static-title-line1">
+                Retours &
+                <Image
+                  src="/really.png"
+                  alt=""
+                  width={220}
+                  height={150}
+                  style={{ objectFit: "contain", width: "200px", height: "auto", display: "inline-block", verticalAlign: "top", marginTop: "-0.5em" }}
+                  priority
+                />
+              </span>
+              <em style={{ display: "block", marginTop: "-0.5em" }}>remboursements.</em>
             </h1>
           </div>
         </div>
