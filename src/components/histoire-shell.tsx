@@ -21,7 +21,7 @@ export function HistoireShell() {
             <p className="static-eyebrow">Notre histoire</p>
             <h1 className="static-title">
               <span className="static-title-line1">
-                La mode,
+                La mode
                 <Image
                   src="/histoire-hero-img.png"
                   alt=""
@@ -69,10 +69,7 @@ export function HistoireShell() {
           <section className="histoire-section static-section--right histoire-section--accent">
             <h2>Le tournant OMAJ</h2>
             <p>
-              Puis est venue la seconde main. Deux ans chez <strong>OMAJ</strong> à plonger dans les coulisses
-              d'une plateforme — à expertiser, trier, valoriser des pièces. J'y ai vu ce qu'une plateforme peut
-              rater : la curation, le goût, l'exigence éditoriale. Et j'y ai surtout découvert ce que la seconde main
-              <em> peut être</em> quand elle est traitée avec le même sérieux que le neuf.
+              Avant d'embrasser pleinement le métier de styliste, j'ai passé deux ans chez <strong>OMAJ</strong> à plonger dans les coulisses d'une plateforme de seconde main — à expertiser, trier, valoriser des pièces. J'y ai vu ce qu'une plateforme peut rater : la curation, le goût, l'exigence éditoriale. Et j'y ai surtout compris ce que la seconde main<em> peut être</em> quand elle est traitée avec le même sérieux que le neuf.
             </p>
             <p>
               Un terrain de jeu incroyable pour qui aime vraiment la mode. Des pièces avec une histoire.
