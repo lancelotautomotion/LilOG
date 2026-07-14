@@ -17,25 +17,14 @@ export function HistoireShell() {
 
         <div className="histoire-hero">
           <div className="histoire-photo">
-            <div className="camera-frame">
-              <Image
-                src="/vintage-camera.jpeg"
-                alt=""
-                width={500}
-                height={700}
-                className="camera-img"
-                priority
-              />
-              <div className="camera-portrait">
-                <Image
-                  src="/louna.jpeg"
-                  alt="Louna Lili Guitton"
-                  width={260}
-                  height={360}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", filter: "grayscale(100%)" }}
-                />
-              </div>
-            </div>
+            <Image
+              src="/Lou.png"
+              alt="Louna Lili Guitton"
+              width={480}
+              height={620}
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
+              priority
+            />
           </div>
           <div className="histoire-intro">
             <p className="static-eyebrow">Notre histoire</p>
