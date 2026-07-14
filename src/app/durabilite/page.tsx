@@ -86,6 +86,16 @@ export default function DurabilitePage() {
           </section>
 
         </div>
+
+        <div className="static-bottom-img">
+          <Image
+            src="/durabilite-bottom.png"
+            alt=""
+            width={800}
+            height={600}
+            style={{ width: "100%", height: "auto", display: "block" }}
+          />
+        </div>
       </main>
       <Footer />
     </>
