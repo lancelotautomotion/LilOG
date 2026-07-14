@@ -51,7 +51,6 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
                     onClick={() => setExpanded(expanded === i ? null : i)}
                   >
                     {t.cat[l.key]}
-                    <span className="idx">{String(i + 1).padStart(2, "0")}</span>
                     <Icon.chevD className="caret" />
                   </button>
                   <div className="drawer-sub">
@@ -67,7 +66,6 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               ) : (
                 <a className="drawer-link" href={l.href} onClick={onClose}>
                   {t.cat[l.key]}
-                  <span className="idx">{String(i + 1).padStart(2, "0")}</span>
                 </a>
               )}
             </div>

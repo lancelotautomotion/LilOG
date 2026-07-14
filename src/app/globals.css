@@ -279,7 +279,7 @@ a { color: inherit; text-decoration: none; }
   position: fixed;
   top: 0; left: 0; bottom: 0;
   width: min(440px, 88vw);
-  background: var(--choco);
+  background: #000;
   color: var(--paper);
   z-index: var(--z-drawer);
   transform: translateX(-102%);
@@ -319,7 +319,7 @@ a { color: inherit; text-decoration: none; }
 .drawer-link { width: max-content; }
 .drawer-parent { width: 100%; cursor: pointer; }
 .drawer-link:hover, .drawer-parent:hover { color: var(--pink); padding-left: 20px; }
-.drawer-parent .caret { width: 22px; height: 22px; opacity: 0.55; flex-shrink: 0; transition: transform 0.35s cubic-bezier(.76,0,.24,1), opacity 0.3s; }
+.drawer-parent .caret { width: 22px; height: 22px; opacity: 1; flex-shrink: 0; transition: transform 0.35s cubic-bezier(.76,0,.24,1), opacity 0.3s; color: #e0006e; }
 .drawer-item.open .drawer-parent { color: var(--pink); }
 .drawer-item.open .caret { transform: rotate(180deg); opacity: 1; }
 .drawer-link .idx, .drawer-parent .idx {
