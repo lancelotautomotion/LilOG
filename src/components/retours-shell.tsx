@@ -22,7 +22,7 @@ export function RetoursShell() {
               <span className="static-title-line1">
                 Retours &
                 <Image
-                  src="/really.png"
+                  src="/retours-hero-img.png"
                   alt=""
                   width={220}
                   height={150}
