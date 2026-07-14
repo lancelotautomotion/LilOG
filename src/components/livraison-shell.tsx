@@ -89,17 +89,26 @@ export function LivraisonShell() {
             </p>
           </section>
 
-          <section className="static-section static-section--left">
-            <h2>Colis endommagé ou manquant</h2>
-            <p>
-              Si ton colis arrive endommagé, <strong>signale-le immédiatement au transporteur</strong> et
-              prends des photos avant d'ouvrir le colis. Envoie-nous ensuite ces photos à
-              <strong> lilog.shop@gmail.com</strong> avec ton numéro de commande.
-            </p>
-            <p>
-              Nous prenons en charge les litiges liés au transport et trouvons une solution rapide —
-              renvoi ou remboursement — selon les cas.
-            </p>
+          <section className="static-section static-section--left" style={{ display: "flex", alignItems: "center", gap: "clamp(24px, 4vw, 60px)", maxWidth: "100%" }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h2>Colis endommagé ou manquant</h2>
+              <p>
+                Si ton colis arrive endommagé, <strong>signale-le immédiatement au transporteur</strong> et
+                prends des photos avant d'ouvrir le colis. Envoie-nous ensuite ces photos à
+                <strong> lilog.shop@gmail.com</strong> avec ton numéro de commande.
+              </p>
+              <p>
+                Nous prenons en charge les litiges liés au transport et trouvons une solution rapide —
+                renvoi ou remboursement — selon les cas.
+              </p>
+            </div>
+            <Image
+              src="/colis-img.png"
+              alt=""
+              width={200}
+              height={200}
+              style={{ flexShrink: 0, width: "clamp(140px, 16vw, 220px)", height: "auto" }}
+            />
           </section>
 
         </div>
