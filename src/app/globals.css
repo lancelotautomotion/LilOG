@@ -1456,21 +1456,21 @@ a { color: inherit; text-decoration: none; }
 /* ── Notre Histoire ──────────────────────────────────────────────────────── */
 .histoire-hero {
   display: flex;
-  align-items: stretch;
-  min-height: 80vh;
-}
-.histoire-photo {
-  flex: 0 0 42%;
-  position: relative;
-  overflow: hidden;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(48px, 8vw, 100px) clamp(24px, 8vw, 120px) clamp(32px, 5vw, 60px);
+  background: var(--cream);
+  text-align: center;
 }
 .histoire-intro {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+.histoire-photo {
+  margin-top: 40px;
+  display: flex;
   justify-content: center;
-  padding: clamp(48px, 8vw, 120px) clamp(32px, 6vw, 100px);
-  background: var(--cream);
 }
 .histoire-tagline {
   font-size: 1.1rem;

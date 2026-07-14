@@ -16,16 +16,6 @@ export function HistoireShell() {
       <main className="static-page">
 
         <div className="histoire-hero">
-          <div className="histoire-photo">
-            <Image
-              src="/Lou.png"
-              alt="Louna Lili Guitton"
-              width={480}
-              height={620}
-              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
-              priority
-            />
-          </div>
           <div className="histoire-intro">
             <p className="static-eyebrow">Notre histoire</p>
             <h1 className="static-title">
@@ -36,6 +26,16 @@ export function HistoireShell() {
               Normande de cœur, parisienne d'adoption, styliste de formation —
               et convaincue, depuis toujours, que le style n'a pas besoin d'être neuf pour être fort.
             </p>
+          </div>
+          <div className="histoire-photo">
+            <Image
+              src="/Lou.png"
+              alt="Louna Lili Guitton"
+              width={336}
+              height={434}
+              style={{ width: "336px", height: "auto", mixBlendMode: "multiply" }}
+              priority
+            />
           </div>
         </div>
 
