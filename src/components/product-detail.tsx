@@ -59,11 +59,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
               {discount !== null && <span className="pdp-discount">-{discount}%</span>}
             </div>
 
-            {product.etat && (
-              <div className="pdp-tags">
-                <span className="pdp-tag pdp-tag--etat">État : {product.etat}</span>
-              </div>
-            )}
+            <div className="pdp-tags">
+              <span className="pdp-tag pdp-tag--etat">État : {product.etat ?? "Non renseigné"}</span>
+            </div>
 
             {hasVariants && (
               <div className="pdp-variants">
