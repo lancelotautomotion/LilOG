@@ -14,7 +14,7 @@ export function DurabiliteShell() {
       <Nav onMenu={() => setMenu(true)} forceSolid />
       <Drawer open={menu} onClose={() => setMenu(false)} />
       <main className="static-page">
-        <div className="static-hero static-hero--light">
+        <div className="static-hero static-hero--light static-hero--bg" style={{ backgroundImage: "url('/leo.jpeg')" }}>
           <div className="static-hero-text">
             <p className="static-eyebrow">Durabilité</p>
             <h1 className="static-title">

@@ -1371,6 +1371,19 @@ a { color: inherit; text-decoration: none; }
   color: var(--choco);
 }
 .static-hero--light .static-title em { color: #e0006e; }
+.static-hero--bg {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.static-hero--bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(240,234,226,0.72);
+  pointer-events: none;
+}
+.static-hero--bg > * { position: relative; z-index: 1; }
 .static-hero-text { flex: 1; min-width: 0; }
 .static-title-line1 { display: inline-flex; align-items: center; gap: 28px; }
 .static-eyebrow {
