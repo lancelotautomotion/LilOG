@@ -15,48 +15,48 @@ export function HistoireShell() {
       <Drawer open={menu} onClose={() => setMenu(false)} />
       <main className="static-page">
 
-        <div className="histoire-hero">
-          <div className="histoire-intro">
+        {/* Hero : titre à gauche, fond léopard */}
+        <div className="static-hero static-hero--light static-hero--bg" style={{ backgroundImage: "url('/leo.jpeg')" }}>
+          <div className="static-hero-text">
             <p className="static-eyebrow">Notre histoire</p>
             <h1 className="static-title">
               La mode,<br />
               <em>autrement.</em>
             </h1>
-            <p className="histoire-tagline">
-              Normande de cœur, parisienne d'adoption, styliste de formation —
-              et convaincue, depuis toujours, que le style n'a pas besoin d'être neuf pour être fort.
-            </p>
-          </div>
-          <div className="histoire-photo">
-            <Image
-              src="/Lou.png"
-              alt="Louna Lili Guitton"
-              width={336}
-              height={434}
-              style={{ width: "336px", height: "auto", mixBlendMode: "multiply" }}
-              priority
-            />
           </div>
         </div>
 
         <div className="static-body histoire-body">
 
-          <section className="histoire-section">
-            <h2>De la Normandie aux plateaux</h2>
-            <p>
-              Je m'appelle Louna Lili Guitton. Je suis originaire de l'Orne — le genre d'endroit où tu apprends vite
-              que le style, c'est ce que tu construis toi-même, pas ce que tu trouves au centre commercial du coin.
-              Adolescente, la mode était ma fenêtre sur autre chose. Une façon de dire quelque chose sans parler.
-            </p>
-            <p>
-              Alors j'ai fait mes valises pour Paris. J'ai étudié la mode, j'ai appris le métier, et j'ai eu la chance
-              de travailler avec des stars, de signer des éditos pour <strong>Vogue, Elle Arabia, Vanity Fair</strong>…
-              J'ai été de l'autre côté de l'objectif aussi — photographe pour une marque de prêt-à-porter —
-              parce que la mode, c'est une image, un geste, une histoire entière.
-            </p>
-          </section>
+          {/* Bloc 1 : texte à gauche + photo à droite */}
+          <div className="histoire-split">
+            <section className="histoire-section static-section--left">
+              <h2>De la Normandie aux plateaux</h2>
+              <p>
+                Je m'appelle Louna Lili Guitton. Je suis originaire de l'Orne — le genre d'endroit où tu apprends vite
+                que le style, c'est ce que tu construis toi-même, pas ce que tu trouves au centre commercial du coin.
+                Adolescente, la mode était ma fenêtre sur autre chose. Une façon de dire quelque chose sans parler.
+              </p>
+              <p>
+                Alors j'ai fait mes valises pour Paris. J'ai étudié la mode, j'ai appris le métier, et j'ai eu la chance
+                de travailler avec des stars, de signer des éditos pour <strong>Vogue, Elle Arabia, Vanity Fair</strong>…
+                J'ai été de l'autre côté de l'objectif aussi — photographe pour une marque de prêt-à-porter —
+                parce que la mode, c'est une image, un geste, une histoire entière.
+              </p>
+            </section>
+            <div className="histoire-lou">
+              <Image
+                src="/Lou.png"
+                alt="Louna Lili Guitton"
+                width={320}
+                height={420}
+                style={{ width: "320px", height: "auto", mixBlendMode: "multiply" }}
+              />
+            </div>
+          </div>
 
-          <section className="histoire-section histoire-section--accent">
+          {/* Bloc 2 : texte à droite */}
+          <section className="histoire-section static-section--right histoire-section--accent">
             <h2>Le tournant OMAJ</h2>
             <p>
               Puis est venue la seconde main. Deux ans chez <strong>OMAJ</strong> à plonger dans les coulisses
@@ -71,7 +71,8 @@ export function HistoireShell() {
             </p>
           </section>
 
-          <section className="histoire-section">
+          {/* Bloc 3 : texte à gauche */}
+          <section className="histoire-section static-section--left">
             <h2>Lil'OG : combler le vide</h2>
             <p>
               Je cherchais une plateforme qui proposerait une vraie <strong>sélection mode</strong> — pas des lots,
