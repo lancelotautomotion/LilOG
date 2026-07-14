@@ -769,7 +769,7 @@ a { color: inherit; text-decoration: none; }
 }
 .footer-brand { margin: 0 0 clamp(30px, 5vw, 60px); }
 .footer-logo {
-  width: min(640px, 80%);
+  width: min(448px, 56%);
   height: auto;
   display: block;
 }
