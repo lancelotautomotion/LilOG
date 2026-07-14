@@ -56,7 +56,7 @@ export function RetoursShell() {
               alt=""
               width={160}
               height={160}
-              style={{ position: "absolute", left: "-180px", top: "50%", transform: "translateY(-50%)", width: "149px", height: "auto", pointerEvents: "none" }}
+              style={{ position: "absolute", left: "-320px", top: "50%", transform: "translateY(-50%)", width: "220px", height: "auto", pointerEvents: "none" }}
             />
             <h2>Conditions de retour</h2>
             <p>
