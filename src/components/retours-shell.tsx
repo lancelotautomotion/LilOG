@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
@@ -39,7 +40,14 @@ export function RetoursShell() {
             </p>
           </section>
 
-          <section className="static-section static-section--right histoire-section--accent">
+          <section className="static-section static-section--right histoire-section--accent" style={{ position: "relative" }}>
+            <Image
+              src="/metalik-sticker.png"
+              alt=""
+              width={120}
+              height={120}
+              style={{ position: "absolute", left: "-60px", top: "50%", transform: "translateY(-50%)", width: "110px", height: "auto", pointerEvents: "none" }}
+            />
             <h2>Conditions de retour</h2>
             <p>
               Chaque pièce Lil'OG est unique et sélectionnée avec soin. Pour être accepté, tout article retourné doit être :
