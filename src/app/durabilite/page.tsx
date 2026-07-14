@@ -75,26 +75,27 @@ export default function DurabilitePage() {
             </p>
           </section>
 
-          <section className="static-section static-section--accent">
-            <h2>Notre engagement</h2>
-            <ul className="static-list">
-              <li><strong>100% seconde main</strong> — aucune production neuve, jamais.</li>
-              <li><strong>Sélection rigoureuse</strong> — on ne vend que des pièces en bon état, contrôlées une à une.</li>
-              <li><strong>Pièces uniques</strong> — chaque article est un exemplaire. Pas de surproduction, pas de doublon.</li>
-              <li><strong>Emballages réduits</strong> — on limite les emballages au strict nécessaire.</li>
-            </ul>
+          <section className="static-section static-section--accent static-section--engagement">
+            <div className="engagement-text">
+              <h2>Notre engagement</h2>
+              <ul className="static-list">
+                <li><strong>100% seconde main</strong> — aucune production neuve, jamais.</li>
+                <li><strong>Sélection rigoureuse</strong> — on ne vend que des pièces en bon état, contrôlées une à une.</li>
+                <li><strong>Pièces uniques</strong> — chaque article est un exemplaire. Pas de surproduction, pas de doublon.</li>
+                <li><strong>Emballages réduits</strong> — on limite les emballages au strict nécessaire.</li>
+              </ul>
+            </div>
+            <div className="engagement-img">
+              <Image
+                src="/durabilite-bottom.png"
+                alt=""
+                width={260}
+                height={200}
+                style={{ width: "260px", height: "auto", objectFit: "contain" }}
+              />
+            </div>
           </section>
 
-        </div>
-
-        <div className="static-bottom-img">
-          <Image
-            src="/durabilite-bottom.png"
-            alt=""
-            width={800}
-            height={600}
-            style={{ width: "100%", height: "auto", display: "block" }}
-          />
         </div>
       </main>
       <Footer />

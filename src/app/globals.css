@@ -1439,3 +1439,6 @@ a { color: inherit; text-decoration: none; }
   color: #e0006e;
 }
 .static-bottom-img { width: 100%; overflow: hidden; }
+.static-section--engagement { display: flex; align-items: center; gap: clamp(32px, 5vw, 80px); padding-left: clamp(16px, 4vw, 60px); }
+.engagement-text { flex: 1; min-width: 0; }
+.engagement-img { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
