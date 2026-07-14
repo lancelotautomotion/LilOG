@@ -129,7 +129,7 @@ export function RetoursShell() {
               alt=""
               width={200}
               height={200}
-              style={{ flexShrink: 0, width: "clamp(120px, 14vw, 200px)", height: "auto" }}
+              style={{ flexShrink: 0, width: "clamp(156px, 18vw, 260px)", height: "auto" }}
             />
           </section>
 
