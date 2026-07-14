@@ -20,8 +20,18 @@ export function HistoireShell() {
           <div className="static-hero-text">
             <p className="static-eyebrow">Notre histoire</p>
             <h1 className="static-title">
-              La mode,<br />
-              <em>autrement.</em>
+              <span className="static-title-line1">
+                La mode,
+                <Image
+                  src="/histoire-hero-img.png"
+                  alt=""
+                  width={220}
+                  height={150}
+                  style={{ objectFit: "contain", width: "260px", height: "auto", display: "inline-block", verticalAlign: "top", marginTop: "-0.5em" }}
+                  priority
+                />
+              </span>
+              <em style={{ display: "block", marginTop: "-0.5em" }}>autrement.</em>
             </h1>
           </div>
         </div>
