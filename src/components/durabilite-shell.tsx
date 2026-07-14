@@ -11,7 +11,7 @@ export function DurabiliteShell() {
 
   return (
     <>
-      <Nav onMenu={() => setMenu(true)} />
+      <Nav onMenu={() => setMenu(true)} forceSolid />
       <Drawer open={menu} onClose={() => setMenu(false)} />
       <main className="static-page">
         <div className="static-hero static-hero--light">
