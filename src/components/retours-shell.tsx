@@ -113,15 +113,24 @@ export function RetoursShell() {
             </p>
           </section>
 
-          <section className="static-section static-section--left">
-            <h2>Exceptions</h2>
-            <p>
-              Conformément à l'article L.221-28 du Code de la consommation, le droit de rétractation ne s'applique
-              pas aux articles qui ont été manifestement portés, altérés ou endommagés après réception.
-            </p>
-            <p>
-              En cas de litige, tu peux contacter le médiateur de la consommation compétent ou la DGCCRF.
-            </p>
+          <section className="static-section static-section--left" style={{ display: "flex", alignItems: "center", gap: "clamp(24px, 4vw, 60px)", maxWidth: "100%" }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h2>Exceptions</h2>
+              <p>
+                Conformément à l'article L.221-28 du Code de la consommation, le droit de rétractation ne s'applique
+                pas aux articles qui ont été manifestement portés, altérés ou endommagés après réception.
+              </p>
+              <p>
+                En cas de litige, tu peux contacter le médiateur de la consommation compétent ou la DGCCRF.
+              </p>
+            </div>
+            <Image
+              src="/exceptions-img.png"
+              alt=""
+              width={200}
+              height={200}
+              style={{ flexShrink: 0, width: "clamp(120px, 14vw, 200px)", height: "auto" }}
+            />
           </section>
 
         </div>
