@@ -84,7 +84,7 @@ export const DICT: Record<LangCode, Dict> = {
       back: "Back to shop", unique: "One of one", newIn: "New in", soldOut: "Sold out",
       addToCart: "Add to cart", added: "Added ✓", ref: "Ref.",
       detailsH: "Details & care", detailsBody: "Hand-sourced and authenticated in London. Gentle wash or dry clean recommended to preserve the vintage fabric.",
-      shippingH: "Shipping & returns", shippingBody: "Tracked shipping from London. As every piece is one of one, returns are accepted within 14 days if unworn with tags attached.",
+      shippingH: "Shipping & returns", shippingBody: "Tracked shipping from Paris. Orders are dispatched within 3 business days. As every piece is one of one, returns are accepted within 14 days if unworn.",
       completeLook: "Complete your look",
     },
     cart: {
@@ -128,7 +128,7 @@ export const DICT: Record<LangCode, Dict> = {
       back: "Retour à la boutique", unique: "Pièce unique", newIn: "Nouveauté", soldOut: "Épuisé",
       addToCart: "Ajouter au panier", added: "Ajouté ✓", ref: "Réf.",
       detailsH: "Détails & entretien", detailsBody: "Sourcée à la main et authentifiée à Londres. Lavage délicat ou nettoyage à sec recommandé pour préserver la matière vintage.",
-      shippingH: "Livraison & retours", shippingBody: "Livraison suivie depuis Londres. Chaque pièce étant unique, les retours sont acceptés sous 14 jours si non portée, étiquette attachée.",
+      shippingH: "Livraison & retours", shippingBody: "Livraison suivie depuis Paris. Les commandes sont expédiées sous 3 jours ouvrés. Chaque pièce étant unique, les retours sont acceptés sous 14 jours si non portée.",
       completeLook: "Complétez votre look",
     },
     cart: {
@@ -172,7 +172,7 @@ export const DICT: Record<LangCode, Dict> = {
       back: "Volver a la tienda", unique: "Pieza única", newIn: "Novedad", soldOut: "Agotado",
       addToCart: "Añadir a la cesta", added: "Añadido ✓", ref: "Ref.",
       detailsH: "Detalles y cuidado", detailsBody: "Buscada a mano y autenticada en Londres. Se recomienda lavado delicado o limpieza en seco para preservar el tejido vintage.",
-      shippingH: "Envío y devoluciones", shippingBody: "Envío rastreado desde Londres. Como cada pieza es única, se aceptan devoluciones en 14 días si no se ha usado y con la etiqueta puesta.",
+      shippingH: "Envío y devoluciones", shippingBody: "Envío rastreado desde París. Los pedidos se envían en 3 días hábiles. Como cada pieza es única, se aceptan devoluciones en 14 días si no se ha usado.",
       completeLook: "Completa tu look",
     },
     cart: {
@@ -216,7 +216,7 @@ export const DICT: Record<LangCode, Dict> = {
       back: "Torna al negozio", unique: "Pezzo unico", newIn: "Novità", soldOut: "Esaurito",
       addToCart: "Aggiungi al carrello", added: "Aggiunto ✓", ref: "Rif.",
       detailsH: "Dettagli e cura", detailsBody: "Selezionato a mano e autenticato a Londra. Si consiglia lavaggio delicato o lavaggio a secco per preservare il tessuto vintage.",
-      shippingH: "Spedizione e resi", shippingBody: "Spedizione tracciata da Londra. Essendo ogni pezzo unico, i resi sono accettati entro 14 giorni se non indossato e con l'etichetta.",
+      shippingH: "Spedizione e resi", shippingBody: "Spedizione tracciata da Parigi. Gli ordini vengono spediti entro 3 giorni lavorativi. Essendo ogni pezzo unico, i resi sono accettati entro 14 giorni se non indossato.",
       completeLook: "Completa il tuo look",
     },
     cart: {
@@ -260,7 +260,7 @@ export const DICT: Record<LangCode, Dict> = {
       back: "Zurück zum Shop", unique: "Einzelstück", newIn: "Neu", soldOut: "Ausverkauft",
       addToCart: "In den Warenkorb", added: "Hinzugefügt ✓", ref: "Ref.",
       detailsH: "Details & Pflege", detailsBody: "Handverlesen und in London authentifiziert. Schonwäsche oder chemische Reinigung empfohlen, um den Vintage-Stoff zu erhalten.",
-      shippingH: "Versand & Rückgabe", shippingBody: "Versand mit Sendungsverfolgung aus London. Da jedes Stück ein Einzelstück ist, sind Rückgaben innerhalb von 14 Tagen ungetragen mit Etikett möglich.",
+      shippingH: "Versand & Rückgabe", shippingBody: "Versand mit Sendungsverfolgung aus Paris. Bestellungen werden innerhalb von 3 Werktagen versandt. Da jedes Stück ein Einzelstück ist, sind Rückgaben innerhalb von 14 Tagen ungetragen möglich.",
       completeLook: "Vervollständige deinen Look",
     },
     cart: {
@@ -304,7 +304,7 @@ export const DICT: Record<LangCode, Dict> = {
       back: "Вернуться в магазин", unique: "Единственный экземпляр", newIn: "Новинка", soldOut: "Продано",
       addToCart: "В корзину", added: "Добавлено ✓", ref: "Арт.",
       detailsH: "Детали и уход", detailsBody: "Найдено вручную и проверено на подлинность в Лондоне. Рекомендуется деликатная стирка или химчистка для сохранения винтажной ткани.",
-      shippingH: "Доставка и возврат", shippingBody: "Доставка с трек-номером из Лондона. Поскольку каждая вещь единственная в своём роде, возврат принимается в течение 14 дней при сохранении бирки и товарного вида.",
+      shippingH: "Доставка и возврат", shippingBody: "Доставка с трек-номером из Парижа. Заказы отправляются в течение 3 рабочих дней. Поскольку каждая вещь единственная в своём роде, возврат принимается в течение 14 дней без следов носки.",
       completeLook: "Дополните образ",
     },
     cart: {
@@ -348,7 +348,7 @@ export const DICT: Record<LangCode, Dict> = {
       back: "返回商店", unique: "独一无二", newIn: "新品", soldOut: "已售罄",
       addToCart: "加入购物袋", added: "已加入 ✓", ref: "货号",
       detailsH: "细节与保养", detailsBody: "在伦敦手工甄选并鉴真。建议轻柔洗涤或干洗，以保护复古面料。",
-      shippingH: "配送与退货", shippingBody: "伦敦发货，可追踪物流。由于每件单品独一无二，未穿着且吊牌完好可在14天内退货。",
+      shippingH: "配送与退货", shippingBody: "巴黎发货，可追踪物流。订单将在3个工作日内发出。由于每件单品独一无二，未穿着可在14天内退货。",
       completeLook: "搭配全look",
     },
     cart: {
@@ -392,7 +392,7 @@ export const DICT: Record<LangCode, Dict> = {
       back: "ショップに戻る", unique: "一点物", newIn: "新着", soldOut: "売り切れ",
       addToCart: "バッグに追加", added: "追加済み ✓", ref: "品番",
       detailsH: "詳細＆お手入れ", detailsBody: "ロンドンで手作業により仕入れ、真贋を確認済み。ヴィンテージ生地を守るため、優しい洗濯またはドライクリーニングを推奨します。",
-      shippingH: "配送＆返品", shippingBody: "ロンドンから追跡可能な配送。一点物のため、未着用でタグ付きの場合14日以内の返品が可能です。",
+      shippingH: "配送＆返品", shippingBody: "パリから追跡可能な配送。ご注文は3営業日以内に発送されます。一点物のため、未着用の場合14日以内の返品が可能です。",
       completeLook: "コーディネートを完成させる",
     },
     cart: {
@@ -436,7 +436,7 @@ export const DICT: Record<LangCode, Dict> = {
       back: "쇼핑으로 돌아가기", unique: "단 하나", newIn: "신상품", soldOut: "품절",
       addToCart: "장바구니에 담기", added: "담김 ✓", ref: "품번",
       detailsH: "상세 정보 & 관리", detailsBody: "런던에서 직접 소싱하고 정품 인증을 거쳤습니다. 빈티지 원단 보존을 위해 손세탁이나 드라이클리닝을 권장합니다.",
-      shippingH: "배송 & 반품", shippingBody: "런던에서 추적 가능한 배송. 모든 제품이 단 하나뿐이므로, 미착용 상태로 태그가 부착되어 있으면 14일 이내 반품이 가능합니다.",
+      shippingH: "배송 & 반품", shippingBody: "파리에서 추적 가능한 배송. 주문은 영업일 기준 3일 이내에 발송됩니다. 모든 제품이 단 하나뿐이므로, 미착용 상태로 14일 이내 반품이 가능합니다.",
       completeLook: "룩 완성하기",
     },
     cart: {
