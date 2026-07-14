@@ -930,8 +930,8 @@ a { color: inherit; text-decoration: none; }
 .pdp-tag--etat {
   text-transform: none;
   font-size: 0.75rem;
-  color: var(--pink);
-  border-color: var(--pink);
+  color: #e0006e;
+  border-color: #e0006e;
   font-weight: 600;
 }
 .pdp-variants { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: clamp(18px, 2.4vw, 26px); }
