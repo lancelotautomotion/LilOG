@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
@@ -69,8 +70,18 @@ export function FaqShell() {
           <div className="static-hero-text">
             <p className="static-eyebrow">Aide</p>
             <h1 className="static-title">
-              Questions<br />
-              <em>fréquentes.</em>
+              <span className="static-title-line1">
+                Questions
+                <Image
+                  src="/faq-hero-img.png"
+                  alt=""
+                  width={220}
+                  height={150}
+                  style={{ objectFit: "contain", width: "200px", height: "auto", display: "inline-block", verticalAlign: "top", marginTop: "-0.5em" }}
+                  priority
+                />
+              </span>
+              <em style={{ display: "block", marginTop: "-0.5em" }}>fréquentes.</em>
             </h1>
           </div>
         </div>
