@@ -78,7 +78,7 @@ export const DICT: Record<LangCode, Dict> = {
       newsP: "First dibs on every drop. No spam — just the good stuff, before it's gone.",
       email: "your@email.com", join: "Join →", shop: "Shop", help: "Help", about: "About",
       helpLinks: ["Shipping", "Returns", "Sizing", "Authenticity"],
-      aboutLinks: ["Our story", "Sell to us", "Sustainability"],
+      aboutLinks: ["Our story", "Sustainability"],
       copy: "© 2026 Lil'OG — Pre-loved Y2K, London", legal: "Terms · Privacy · Cookies" },
     pdp: {
       back: "Back to shop", unique: "One of one", newIn: "New in", soldOut: "Sold out",
@@ -122,7 +122,7 @@ export const DICT: Record<LangCode, Dict> = {
       newsP: "La priorité sur chaque drop. Pas de spam — juste le meilleur, avant que tout parte.",
       email: "votre@email.com", join: "Rejoindre →", shop: "Boutique", help: "Aide", about: "À propos",
       helpLinks: ["Livraison", "Retours", "Tailles", "Authenticité"],
-      aboutLinks: ["Notre histoire", "Vendez-nous", "Durabilité"],
+      aboutLinks: ["Notre histoire", "Durabilité"],
       copy: "© 2026 Lil'OG — Seconde main Y2K, Londres", legal: "Conditions · Confidentialité · Cookies" },
     pdp: {
       back: "Retour à la boutique", unique: "Pièce unique", newIn: "Nouveauté", soldOut: "Épuisé",
@@ -166,7 +166,7 @@ export const DICT: Record<LangCode, Dict> = {
       newsP: "Prioridad en cada drop. Sin spam — solo lo bueno, antes de que vuele.",
       email: "tu@email.com", join: "Unirme →", shop: "Tienda", help: "Ayuda", about: "Acerca de",
       helpLinks: ["Envíos", "Devoluciones", "Tallas", "Autenticidad"],
-      aboutLinks: ["Nuestra historia", "Véndenos", "Sostenibilidad"],
+      aboutLinks: ["Nuestra historia", "Sostenibilidad"],
       copy: "© 2026 Lil'OG — Segunda mano Y2K, Londres", legal: "Términos · Privacidad · Cookies" },
     pdp: {
       back: "Volver a la tienda", unique: "Pieza única", newIn: "Novedad", soldOut: "Agotado",
@@ -210,7 +210,7 @@ export const DICT: Record<LangCode, Dict> = {
       newsP: "Priorità su ogni drop. Niente spam — solo il meglio, prima che finisca.",
       email: "tua@email.com", join: "Iscriviti →", shop: "Shop", help: "Aiuto", about: "Chi siamo",
       helpLinks: ["Spedizioni", "Resi", "Taglie", "Autenticità"],
-      aboutLinks: ["La nostra storia", "Vendi a noi", "Sostenibilità"],
+      aboutLinks: ["La nostra storia", "Sostenibilità"],
       copy: "© 2026 Lil'OG — Seconda mano Y2K, Londra", legal: "Termini · Privacy · Cookie" },
     pdp: {
       back: "Torna al negozio", unique: "Pezzo unico", newIn: "Novità", soldOut: "Esaurito",
@@ -254,7 +254,7 @@ export const DICT: Record<LangCode, Dict> = {
       newsP: "Zuerst bei jedem Drop. Kein Spam — nur das Gute, bevor es weg ist.",
       email: "deine@email.com", join: "Beitreten →", shop: "Shop", help: "Hilfe", about: "Über uns",
       helpLinks: ["Versand", "Rückgabe", "Größen", "Echtheit"],
-      aboutLinks: ["Unsere Geschichte", "Verkauf an uns", "Nachhaltigkeit"],
+      aboutLinks: ["Unsere Geschichte", "Nachhaltigkeit"],
       copy: "© 2026 Lil'OG — Pre-loved Y2K, London", legal: "AGB · Datenschutz · Cookies" },
     pdp: {
       back: "Zurück zum Shop", unique: "Einzelstück", newIn: "Neu", soldOut: "Ausverkauft",
@@ -298,7 +298,7 @@ export const DICT: Record<LangCode, Dict> = {
       newsP: "Первыми о каждом дропе. Без спама — только лучшее, пока не разобрали.",
       email: "ваш@email.com", join: "Вступить →", shop: "Магазин", help: "Помощь", about: "О нас",
       helpLinks: ["Доставка", "Возврат", "Размеры", "Подлинность"],
-      aboutLinks: ["Наша история", "Продать нам", "Устойчивость"],
+      aboutLinks: ["Наша история", "Устойчивость"],
       copy: "© 2026 Lil'OG — Секонд-хенд Y2K, Лондон", legal: "Условия · Конфиденциальность · Cookies" },
     pdp: {
       back: "Вернуться в магазин", unique: "Единственный экземпляр", newIn: "Новинка", soldOut: "Продано",
@@ -342,7 +342,7 @@ export const DICT: Record<LangCode, Dict> = {
       newsP: "每次上新优先知晓。没有垃圾邮件——只有好物，售罄之前。",
       email: "你的@email.com", join: "加入 →", shop: "商店", help: "帮助", about: "关于",
       helpLinks: ["配送", "退货", "尺码", "正品保证"],
-      aboutLinks: ["我们的故事", "卖给我们", "可持续"],
+      aboutLinks: ["我们的故事", "可持续"],
       copy: "© 2026 Lil'OG — Y2K 二手好物，伦敦", legal: "条款 · 隐私 · Cookie" },
     pdp: {
       back: "返回商店", unique: "独一无二", newIn: "新品", soldOut: "已售罄",
@@ -386,7 +386,7 @@ export const DICT: Record<LangCode, Dict> = {
       newsP: "すべてのドロップを最速で。スパムなし — 売り切れる前に、良いものだけ。",
       email: "your@email.com", join: "登録 →", shop: "ショップ", help: "ヘルプ", about: "私たちについて",
       helpLinks: ["配送", "返品", "サイズ", "真贋保証"],
-      aboutLinks: ["私たちの物語", "買取", "サステナビリティ"],
+      aboutLinks: ["私たちの物語", "サステナビリティ"],
       copy: "© 2026 Lil'OG — Y2K 古着、ロンドン", legal: "規約 · プライバシー · Cookie" },
     pdp: {
       back: "ショップに戻る", unique: "一点物", newIn: "新着", soldOut: "売り切れ",
@@ -430,7 +430,7 @@ export const DICT: Record<LangCode, Dict> = {
       newsP: "모든 드롭을 가장 먼저. 스팸 없이 — 좋은 것만, 사라지기 전에.",
       email: "your@email.com", join: "등록 →", shop: "쇼핑", help: "도움말", about: "소개",
       helpLinks: ["배송", "반품", "사이즈", "정품 인증"],
-      aboutLinks: ["우리의 이야기", "판매하기", "지속가능성"],
+      aboutLinks: ["우리의 이야기", "지속가능성"],
       copy: "© 2026 Lil'OG — Y2K 빈티지, 런던", legal: "약관 · 개인정보 · 쿠키" },
     pdp: {
       back: "쇼핑으로 돌아가기", unique: "단 하나", newIn: "신상품", soldOut: "품절",
