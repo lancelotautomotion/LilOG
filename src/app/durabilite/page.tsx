@@ -23,8 +23,7 @@ export default function DurabilitePage() {
                   priority
                 />
               </span>
-              <br />
-              <em>respecte la planète.</em>
+              <em style={{ display: "block", marginTop: "-0.35em" }}>respecte la planète.</em>
             </h1>
           </div>
         </div>
