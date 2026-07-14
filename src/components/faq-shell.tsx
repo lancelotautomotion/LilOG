@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
@@ -76,32 +75,20 @@ export function FaqShell() {
           </div>
         </div>
 
-        <div className="static-body faq-body">
-          <div className="faq-main">
-            <div className="faq-intro">
-              <p className="faq-intro-sub">Des questions ? On a les réponses.</p>
-            </div>
-
-            <div className="faq-list">
-              {FAQS.map((item) => (
-                <FaqItem key={item.q} q={item.q} a={item.a} />
-              ))}
-            </div>
-
-            <div className="faq-contact">
-              <p>Tu ne trouves pas ta réponse ?</p>
-              <a href="mailto:lilog.shop@gmail.com">lilog.shop@gmail.com →</a>
-            </div>
+        <div className="static-body">
+          <div className="faq-intro">
+            <p className="faq-intro-sub">Des questions ? On a les réponses.</p>
           </div>
 
-          <div className="faq-side-img">
-            <Image
-              src="/faq-side-img.png"
-              alt=""
-              width={260}
-              height={500}
-              style={{ width: "100%", height: "auto" }}
-            />
+          <div className="faq-list">
+            {FAQS.map((item) => (
+              <FaqItem key={item.q} q={item.q} a={item.a} />
+            ))}
+          </div>
+
+          <div className="faq-contact">
+            <p>Tu ne trouves pas ta réponse ?</p>
+            <a href="mailto:lilog.shop@gmail.com">lilog.shop@gmail.com →</a>
           </div>
         </div>
 
