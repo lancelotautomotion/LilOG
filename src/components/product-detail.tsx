@@ -59,11 +59,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
               {discount !== null && <span className="pdp-discount">-{discount}%</span>}
             </div>
 
-            {displayTags.length > 0 && (
+            {product.etat && (
               <div className="pdp-tags">
-                {displayTags.map((tg) => (
-                  <span className="pdp-tag" key={tg}>{tg}</span>
-                ))}
+                <span className="pdp-tag pdp-tag--etat">{product.etat}</span>
               </div>
             )}
 

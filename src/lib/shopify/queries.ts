@@ -81,6 +81,9 @@ export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
           currencyCode
         }
       }
+      etat: metafield(namespace: "custom", key: "etat") {
+        value
+      }
       collections(first: 10) {
         edges {
           node {

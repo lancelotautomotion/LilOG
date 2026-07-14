@@ -32,6 +32,7 @@ export interface CollectionByHandleResponse {
 
 export interface ShopifyProductDetailNode extends ShopifyProductNode {
   descriptionHtml: string;
+  etat: { value: string } | null;
   collections: { edges: { node: { handle: string } }[] };
   images: { edges: { node: ShopifyImage }[] };
   variants: {
@@ -69,6 +70,7 @@ export interface ProductDetail {
   currency: string;
   tag: "NEW" | "1 OF 1" | "SOLD" | null;
   available: boolean;
+  etat: string | null;
   collections: string[];
   images: string[];
   // `variants` excludes the synthetic "Default Title" variant Shopify creates
