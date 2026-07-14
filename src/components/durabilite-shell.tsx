@@ -36,7 +36,7 @@ export function DurabiliteShell() {
 
         <div className="static-body">
 
-          <section className="static-section">
+          <section className="static-section static-section--left">
             <h2>L'industrie textile : le problème qu'on ne voit pas</h2>
             <p>
               La mode est la <strong>deuxième industrie la plus polluante au monde</strong>, juste derrière le pétrole.
@@ -54,7 +54,7 @@ export function DurabiliteShell() {
             </p>
           </section>
 
-          <section className="static-section static-section--accent">
+          <section className="static-section static-section--accent static-section--right">
             <h2>La seconde main, c'est pas un plan B. C'est le move.</h2>
             <p>
               Acheter une pièce de seconde main, c'est lui éviter la décharge et éviter la production d'une nouvelle.
@@ -67,7 +67,7 @@ export function DurabiliteShell() {
             </p>
           </section>
 
-          <section className="static-section">
+          <section className="static-section static-section--left">
             <h2>Lil'OG : la preuve que la seconde main est stylée</h2>
             <p>
               On a créé Lil'OG parce qu'on refusait de choisir entre avoir du style et avoir une conscience.

@@ -1410,6 +1410,9 @@ a { color: inherit; text-decoration: none; }
   margin: 0 0 16px;
 }
 .static-section p:last-child { margin-bottom: 0; }
+.static-section--left { margin-left: 0; margin-right: auto; max-width: 60%; }
+.static-section--right { margin-left: auto; margin-right: 0; max-width: 60%; text-align: right; }
+.static-section--right .static-list { text-align: left; }
 .static-section--accent {
   background: var(--cream);
   border-left: 3px solid #e0006e;
