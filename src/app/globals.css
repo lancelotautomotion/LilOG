@@ -2814,7 +2814,7 @@ html, body {
   box-shadow: 0 -2px 0 #000 !important;
 }
 .footer-cols h4, .footer-news h4 {
-  color: #000080 !important;
+  color: #d4006e !important;
   font-family: var(--mono) !important;
   letter-spacing: 0.12em !important;
 }
