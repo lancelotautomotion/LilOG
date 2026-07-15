@@ -1346,6 +1346,7 @@ a { color: inherit; text-decoration: none; }
   .cat-vibe-card    { grid-column: 1; grid-row: 2; margin-left: 0; }
   .filter-sidebar   { grid-column: 1; grid-row: 3; display: none; position: static; }
   .category-grid-wrap { grid-column: 1; grid-row: 4; }
+  .category-grid-top { display: flex; }
   .filter-trigger { display: inline-flex; }
   .filter-scrim { display: block; }
   .filter-sheet { display: block; }
@@ -3030,9 +3031,9 @@ html, body {
 }
 /* Title row mirrors category-layout grid exactly */
 
-/* Category grid-top: filter trigger */
+/* Category grid-top: filter trigger — hidden on desktop, shown on mobile */
 .category-grid-top {
-  display: flex;
+  display: none;
   justify-content: flex-end;
   margin-bottom: 16px;
 }
