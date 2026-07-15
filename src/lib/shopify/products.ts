@@ -20,6 +20,25 @@ function computeTag(tags: string[], availableForSale: boolean): Product["tag"] {
         : null;
 }
 
+function extractColorValues(node: ShopifyProductNode): string[] {
+  // 1. Shopify taxonomy metafield (color-pattern) — list or single value
+  if (node.colorMeta?.value) {
+    try {
+      const parsed = JSON.parse(node.colorMeta.value);
+      if (Array.isArray(parsed)) return parsed.map(String).filter(Boolean);
+    } catch {
+      // not JSON — plain string
+    }
+    if (node.colorMeta.value.trim()) return [node.colorMeta.value.trim()];
+  }
+  // 2. Product option named "Couleur" / "Color" / "Colour"
+  const colorOption = node.options?.find((o) =>
+    /cou?le?ur|colou?r/i.test(o.name)
+  );
+  if (colorOption?.values?.length) return colorOption.values;
+  return [];
+}
+
 function stripEmoji(str: string): string {
   return str.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/u, "").trim();
 }
@@ -49,7 +68,7 @@ function mapProduct(node: ShopifyProductNode): Product {
     imageA,
     imageB,
     tags: node.tags,
-    colors: node.options?.find((o) => o.name.toLowerCase() === "couleur")?.values ?? [],
+    colors: extractColorValues(node),
     variantId: variant?.id ?? null,
   };
 }
