@@ -1235,7 +1235,7 @@ a { color: inherit; text-decoration: none; }
    CATEGORY PAGE
    ============================================================ */
 .category-page {
-  padding: clamp(96px, 11vw, 148px) clamp(20px, 5vw, 80px) clamp(64px, 9vw, 120px);
+  padding: clamp(56px, 7vw, 80px) clamp(20px, 5vw, 80px) clamp(64px, 9vw, 120px);
   min-height: 60vh;
 }
 .category-header {
@@ -3033,7 +3033,9 @@ html, body {
 
 /* Category vibe card */
 .cat-vibe-card {
+  width: 100%;
   min-width: 0;
+  max-width: none;
   background: #c0c0c0;
   border-top: 3px solid #fff;
   border-left: 3px solid #fff;
