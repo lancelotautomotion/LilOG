@@ -15,6 +15,7 @@ export interface ShopifyProductNode {
   productType: string;
   tags: string[];
   availableForSale: boolean;
+  options?: { name: string; values: string[] }[];
   featuredImage: ShopifyImage | null;
   images: { edges: { node: ShopifyImage }[] };
   priceRange: { minVariantPrice: ShopifyMoney };
@@ -92,6 +93,7 @@ export interface Product {
   currency: string;
   tag: "NEW" | "1 OF 1" | "SOLD" | null;
   tags: string[];
+  colors: string[];
   imageA: string;
   imageB: string;
   variantId: string | null;

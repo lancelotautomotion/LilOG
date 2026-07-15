@@ -49,6 +49,7 @@ function mapProduct(node: ShopifyProductNode): Product {
     imageA,
     imageB,
     tags: node.tags,
+    colors: node.options?.find((o) => o.name.toLowerCase() === "couleur")?.values ?? [],
     variantId: variant?.id ?? null,
   };
 }

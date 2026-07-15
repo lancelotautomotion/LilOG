@@ -10,77 +10,51 @@ import type { Product } from "@/lib/shopify/types";
 
 type Sort = "default" | "price-asc" | "price-desc";
 
-// Map of lowercase tag keywords → display label + CSS color value
-const COLOR_MAP: Record<string, { label: string; css: string }> = {
-  noir:      { label: "Noir",    css: "#111" },
-  black:     { label: "Noir",    css: "#111" },
-  blanc:     { label: "Blanc",   css: "#f5f5f5" },
-  white:     { label: "Blanc",   css: "#f5f5f5" },
-  beige:     { label: "Beige",   css: "#d4b896" },
-  crème:     { label: "Crème",   css: "#f3ece6" },
-  creme:     { label: "Crème",   css: "#f3ece6" },
-  cream:     { label: "Crème",   css: "#f3ece6" },
-  marron:    { label: "Marron",  css: "#7b4f2e" },
-  brown:     { label: "Marron",  css: "#7b4f2e" },
-  rouge:     { label: "Rouge",   css: "#c0392b" },
-  red:       { label: "Rouge",   css: "#c0392b" },
-  rose:      { label: "Rose",    css: "#f7a3c8" },
-  pink:      { label: "Rose",    css: "#f7a3c8" },
-  fuchsia:   { label: "Fuchsia", css: "#d4006e" },
-  violet:    { label: "Violet",  css: "#6c3d8f" },
-  purple:    { label: "Violet",  css: "#6c3d8f" },
-  bleu:      { label: "Bleu",    css: "#2c5f9e" },
-  blue:      { label: "Bleu",    css: "#2c5f9e" },
-  vert:      { label: "Vert",    css: "#2d7a4f" },
-  green:     { label: "Vert",    css: "#2d7a4f" },
-  jaune:     { label: "Jaune",   css: "#f2c94c" },
-  yellow:    { label: "Jaune",   css: "#f2c94c" },
-  orange:    { label: "Orange",  css: "#e07b2a" },
-  gris:      { label: "Gris",    css: "#888" },
-  grey:      { label: "Gris",    css: "#888" },
-  gray:      { label: "Gris",    css: "#888" },
-  argent:    { label: "Argent",  css: "#c0c0c0" },
-  silver:    { label: "Argent",  css: "#c0c0c0" },
-  or:        { label: "Or",      css: "#c9a84c" },
-  gold:      { label: "Or",      css: "#c9a84c" },
-  léopard:   { label: "Léopard", css: "linear-gradient(135deg,#c8a060 25%,#3d2000 25%,#3d2000 50%,#c8a060 50%,#c8a060 75%,#3d2000 75%)" },
-  leopard:   { label: "Léopard", css: "linear-gradient(135deg,#c8a060 25%,#3d2000 25%,#3d2000 50%,#c8a060 50%,#c8a060 75%,#3d2000 75%)" },
-  multicolore: { label: "Multi", css: "conic-gradient(#c0392b,#f2c94c,#2d7a4f,#2c5f9e,#c0392b)" },
-  multicolor:  { label: "Multi", css: "conic-gradient(#c0392b,#f2c94c,#2d7a4f,#2c5f9e,#c0392b)" },
+// CSS swatch per Shopify color label (case-insensitive key)
+const COLOR_SWATCH: Record<string, string> = {
+  noir:        "#111",
+  blanc:       "#f5f5f5",
+  beige:       "#d4b896",
+  crème:       "#f3ece6",
+  marron:      "#7b4f2e",
+  rouge:       "#c0392b",
+  rose:        "#f7a3c8",
+  fuchsia:     "#d4006e",
+  violet:      "#6c3d8f",
+  bleu:        "#2c5f9e",
+  marine:      "#1a2e5a",
+  vert:        "#2d7a4f",
+  kaki:        "#6b6b3a",
+  jaune:       "#f2c94c",
+  orange:      "#e07b2a" ,
+  corail:      "#e8604c",
+  gris:        "#888",
+  argent:      "#c0c0c0",
+  or:          "#c9a84c",
+  léopard:     "linear-gradient(135deg,#c8a060 25%,#3d2000 25%,#3d2000 50%,#c8a060 50%,#c8a060 75%,#3d2000 75%)",
+  multicolore: "conic-gradient(#c0392b,#f2c94c,#2d7a4f,#2c5f9e,#c0392b)",
+  multicolor:  "conic-gradient(#c0392b,#f2c94c,#2d7a4f,#2c5f9e,#c0392b)",
+  floral:      "conic-gradient(#f7a3c8,#2d7a4f,#f2c94c,#f7a3c8)",
+  géométriques:"conic-gradient(#2c5f9e,#888,#111,#2c5f9e)",
 };
 
-function matchColorInTag(tag: string): { label: string; css: string } | null {
-  const lower = tag.toLowerCase().trim();
-  // Exact match first
-  if (COLOR_MAP[lower]) return COLOR_MAP[lower];
-  // Partial match: tag contains the color keyword as a word
-  for (const [keyword, color] of Object.entries(COLOR_MAP)) {
-    const re = new RegExp(`(^|[-_\\s])${keyword}($|[-_\\s])`, "i");
-    if (re.test(lower)) return color;
-  }
-  return null;
+function swatchForColor(label: string): string {
+  return COLOR_SWATCH[label.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")]
+    ?? COLOR_SWATCH[label.toLowerCase()]
+    ?? "#ccc";
 }
 
-function extractColors(products: Product[]): { key: string; label: string; css: string }[] {
-  const seen = new Map<string, { label: string; css: string }>();
+function extractColors(products: Product[]): { key: string; css: string }[] {
+  const seen = new Set<string>();
   for (const p of products) {
-    for (const tag of p.tags) {
-      const match = matchColorInTag(tag);
-      if (match && !seen.has(match.label)) {
-        seen.set(match.label, { label: match.label, css: match.css });
-      }
-    }
+    for (const c of p.colors) seen.add(c);
   }
-  return [...seen.entries()].map(([label, v]) => ({ key: label, ...v })).sort((a, b) => a.label.localeCompare(b.label));
+  return [...seen].sort().map((key) => ({ key, css: swatchForColor(key) }));
 }
 
 function productMatchesColor(p: Product, activeColors: Set<string>): boolean {
   if (activeColors.size === 0) return true;
-  for (const tag of p.tags) {
-    const match = matchColorInTag(tag);
-    if (match && activeColors.has(match.label)) return true;
-  }
-  return false;
+  return p.colors.some((c) => activeColors.has(c));
 }
 
 function FilterPanel({
@@ -174,7 +148,7 @@ function FilterPanel({
               <button
                 key={c.key}
                 className={"filter-swatch" + (activeColors.has(c.key) ? " active" : "")}
-                title={c.label}
+                title={c.key}
                 onClick={() => toggleColor(c.key)}
                 style={{ background: c.css }}
                 aria-pressed={activeColors.has(c.key)}

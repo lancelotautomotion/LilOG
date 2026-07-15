@@ -146,6 +146,10 @@ export const COLLECTION_BY_HANDLE_QUERY = /* GraphQL */ `
                 currencyCode
               }
             }
+            options {
+              name
+              values
+            }
             variants(first: 1) {
               edges {
                 node {
