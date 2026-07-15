@@ -350,7 +350,7 @@ a { color: inherit; text-decoration: none; }
 .drawer-sub-inner a:hover { color: var(--pink); opacity: 1; padding-left: 8px; }
 
 /* 3rd level — Bijoux sub-sub */
-.drawer-subsub-wrap { grid-column: 1 / -1; }
+.drawer-subsub-wrap { }
 .drawer-subsub-toggle {
   display: flex; align-items: center; gap: 6px; width: 100%;
   background: none; border: none; cursor: pointer; text-align: left;
