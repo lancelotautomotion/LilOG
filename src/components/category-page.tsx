@@ -326,41 +326,42 @@ export function CategoryPage({
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
       <main className="category-page">
+        {/* 2×2 grid: col1=sidebar col2=content, row1=header row2=main */}
         <div className="category-layout">
-          {/* Left sticky column: title + filter */}
-          <div className="category-col-left">
-            <h1 className="category-title cat-grid-title">{label}</h1>
-            <div className="filter-sidebar">
-              <FilterPanel {...filterProps} />
-            </div>
+          {/* [col1, row1] Title */}
+          <h1 className="category-title cat-grid-title">{label}</h1>
+
+          {/* [col2, row1] Vibe description — right-aligned */}
+          <CategoryVibe catKey={catKey} />
+
+          {/* [col1, row2] Filter sidebar — sticky */}
+          <div className="filter-sidebar">
+            <FilterPanel {...filterProps} />
           </div>
 
-          {/* Right scrollable column: vibe card + product grid */}
-          <div className="category-col-right">
-            <CategoryVibe catKey={catKey} />
-            <div className="category-grid-wrap">
-              <div className="category-grid-top">
-                <button
-                  className={"filter-trigger" + (activeFilterCount > 0 ? " active" : "")}
-                  onClick={() => setFilterOpen(true)}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-                    <path d="M3 6h18M7 12h10M11 18h2" />
-                  </svg>
-                  Filtrer
-                  {activeFilterCount > 0 && <span className="filter-badge">{activeFilterCount}</span>}
-                </button>
-              </div>
-              {filtered.length === 0 ? (
-                <p className="category-empty">{t.category.empty}</p>
-              ) : (
-                <div className="drops-grid">
-                  {filtered.map((p, idx) => (
-                    <ProductCard key={p.id} product={p} idx={idx} />
-                  ))}
-                </div>
-              )}
+          {/* [col2, row2] Products */}
+          <div className="category-grid-wrap">
+            <div className="category-grid-top">
+              <button
+                className={"filter-trigger" + (activeFilterCount > 0 ? " active" : "")}
+                onClick={() => setFilterOpen(true)}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                  <path d="M3 6h18M7 12h10M11 18h2" />
+                </svg>
+                Filtrer
+                {activeFilterCount > 0 && <span className="filter-badge">{activeFilterCount}</span>}
+              </button>
             </div>
+            {filtered.length === 0 ? (
+              <p className="category-empty">{t.category.empty}</p>
+            ) : (
+              <div className="drops-grid">
+                {filtered.map((p, idx) => (
+                  <ProductCard key={p.id} product={p} idx={idx} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>
