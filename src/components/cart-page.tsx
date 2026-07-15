@@ -66,7 +66,7 @@ export function CartPage() {
                     </div>
                     <div className="oc-item-label">
                       <span className="oc-item-name">{item.title}</span>
-                      <span className="oc-item-price">£{(item.price * item.quantity).toFixed(2)}</span>
+                      <span className="oc-item-price">€{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   </div>
                 )}
@@ -131,7 +131,7 @@ export function CartPage() {
                           <div className="oc-summary-info">
                             <span className="oc-summary-name">{line.title}</span>
                             {line.variantTitle && <span className="oc-summary-variant">{line.variantTitle}</span>}
-                            <span className="oc-summary-price">£{(line.price * line.quantity).toFixed(2)}{line.quantity > 1 && ` ×${line.quantity}`}</span>
+                            <span className="oc-summary-price">€{(line.price * line.quantity).toFixed(2)}{line.quantity > 1 && ` ×${line.quantity}`}</span>
                           </div>
                           <button
                             className="oc-summary-remove"
@@ -146,7 +146,7 @@ export function CartPage() {
                     <div className="oc-summary-footer">
                       <div className="oc-summary-total">
                         <span>TOTAL</span>
-                        <span>£{cart?.subtotal.toFixed(2)}</span>
+                        <span>€{cart?.subtotal.toFixed(2)}</span>
                       </div>
                       <p className="oc-summary-note">{t.cart.subtotalNote}</p>
                       {cart?.checkoutUrl && (

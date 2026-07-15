@@ -81,8 +81,7 @@ function FilterPanel({
 
   const colors = useMemo(() => extractColors(products), [products]);
 
-  const currency = products[0]?.currency ?? "EUR";
-  const sym = currency === "GBP" ? "£" : currency === "USD" ? "$" : "€";
+  const sym = "€";
 
   return (
     <aside className="filter-panel">
