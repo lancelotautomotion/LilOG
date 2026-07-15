@@ -2995,7 +2995,22 @@ html, body {
   border-radius: 0 !important;
 }
 /* Category page header */
-.category-header h1 { font-family: var(--mono) !important; text-transform: uppercase !important; letter-spacing: 0.08em !important; }
+.category-header h1,
+.category-title {
+  font-family: var(--font-script), "Great Vibes", cursive !important;
+  font-weight: 400 !important;
+  font-size: clamp(3.5rem, 8vw, 6.5rem) !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+  line-height: 1.1 !important;
+  color: #fff !important;
+  text-shadow:
+    2px 2px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    0 3px 14px rgba(212,0,110,0.5) !important;
+}
 /* Filter trigger button */
 .filter-trigger {
   background: #c0c0c0 !important;
