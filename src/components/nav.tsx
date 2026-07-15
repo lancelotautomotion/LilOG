@@ -40,8 +40,11 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
       </a>
       <div className="nav-right">
         <div className="nav-account">
-          <Link className="nav-link" href={session ? "/account" : "/login"}>
+          <Link className="nav-link nav-login-text" href={session ? "/account" : "/login"}>
             {session ? (session.user?.name?.split(" ")[0] ?? "Mon compte") : t.nav.login}
+          </Link>
+          <Link className="nav-icon-btn nav-login-icon" href={session ? "/account" : "/login"} aria-label={t.nav.login}>
+            <Icon.user width={18} height={18} />
           </Link>
           <Link className="nav-icon-btn" href="/cart" aria-label={t.nav.bag}>
             <Icon.bag width={18} height={18} />
