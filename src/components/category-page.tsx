@@ -74,14 +74,13 @@ function CategoryVibe({ catKey }: { catKey: string }) {
   return (
     <div className="cat-vibe-card">
       <div className="cat-vibe-w95-bar">
-          <span className="cat-vibe-w95-title">{vibe.tagline}</span>
-          <div className="w95-dots"><span /><span /><span /></div>
-        </div>
-        <div className="cat-vibe-body">
-          <p className="cat-vibe-desc">{vibe.desc}</p>
-          <div className="cat-vibe-tags">
-            {vibe.tags.map((tag) => <span key={tag} className="cat-vibe-tag">#{tag}</span>)}
-          </div>
+        <span className="cat-vibe-w95-title">{vibe.tagline}</span>
+        <div className="w95-dots"><span /><span /><span /></div>
+      </div>
+      <div className="cat-vibe-body">
+        <p className="cat-vibe-desc">{vibe.desc}</p>
+        <div className="cat-vibe-tags">
+          {vibe.tags.map((tag) => <span key={tag} className="cat-vibe-tag">#{tag}</span>)}
         </div>
       </div>
     </div>
