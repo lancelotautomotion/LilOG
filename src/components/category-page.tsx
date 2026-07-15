@@ -49,13 +49,25 @@ const COLOR_MAP: Record<string, { label: string; css: string }> = {
   multicolor:  { label: "Multi", css: "conic-gradient(#c0392b,#f2c94c,#2d7a4f,#2c5f9e,#c0392b)" },
 };
 
+function matchColorInTag(tag: string): { label: string; css: string } | null {
+  const lower = tag.toLowerCase().trim();
+  // Exact match first
+  if (COLOR_MAP[lower]) return COLOR_MAP[lower];
+  // Partial match: tag contains the color keyword as a word
+  for (const [keyword, color] of Object.entries(COLOR_MAP)) {
+    const re = new RegExp(`(^|[-_\\s])${keyword}($|[-_\\s])`, "i");
+    if (re.test(lower)) return color;
+  }
+  return null;
+}
+
 function extractColors(products: Product[]): { key: string; label: string; css: string }[] {
   const seen = new Map<string, { label: string; css: string }>();
   for (const p of products) {
     for (const tag of p.tags) {
-      const key = tag.toLowerCase().trim();
-      if (COLOR_MAP[key] && !seen.has(COLOR_MAP[key].label)) {
-        seen.set(COLOR_MAP[key].label, { label: COLOR_MAP[key].label, css: COLOR_MAP[key].css });
+      const match = matchColorInTag(tag);
+      if (match && !seen.has(match.label)) {
+        seen.set(match.label, { label: match.label, css: match.css });
       }
     }
   }
@@ -65,9 +77,8 @@ function extractColors(products: Product[]): { key: string; label: string; css: 
 function productMatchesColor(p: Product, activeColors: Set<string>): boolean {
   if (activeColors.size === 0) return true;
   for (const tag of p.tags) {
-    const key = tag.toLowerCase().trim();
-    const mapped = COLOR_MAP[key];
-    if (mapped && activeColors.has(mapped.label)) return true;
+    const match = matchColorInTag(tag);
+    if (match && activeColors.has(match.label)) return true;
   }
   return false;
 }
