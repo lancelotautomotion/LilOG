@@ -39,11 +39,13 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
     <>
       <div className={"drawer-scrim" + (open ? " open" : "")} onClick={onClose}></div>
       <aside className={"drawer" + (open ? " open" : "")} aria-hidden={!open}>
-        <div className="drawer-top">
-          <span className="mono-label">{t.menu.title}</span>
-          <button className="drawer-close" onClick={onClose}>
-            <Icon.x /> {t.menu.close}
-          </button>
+        {/* Win95 title bar */}
+        <div className="drawer-w95-bar">
+          <span className="drawer-w95-title">{t.menu.title}</span>
+          <div className="drawer-w95-dots">
+            <span /><span />
+            <button className="drawer-w95-close" onClick={onClose} aria-label={t.menu.close}>✕</button>
+          </div>
         </div>
         <nav className="drawer-nav">
           {LINKS.map((l, i) => (
