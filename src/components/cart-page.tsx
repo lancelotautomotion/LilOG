@@ -14,173 +14,177 @@ export function CartPage() {
   const { cart, pending, removeItem } = useCart();
   const [menu, setMenu] = useState(false);
   const [current, setCurrent] = useState(0);
-  const [viewAll, setViewAll] = useState(false);
+  const [mode, setMode] = useState<"clueless" | "classic">("clueless");
 
   const lines = cart?.lines ?? [];
   const total = lines.length;
-  const item = lines[current];
+  const item = lines[Math.min(current, Math.max(0, total - 1))];
 
   const prev = () => setCurrent((i) => (i - 1 + total) % total);
   const next = () => setCurrent((i) => (i + 1) % total);
+
+  const handleRemove = (id: string) => {
+    removeItem(id);
+    setCurrent((i) => Math.max(0, Math.min(i, total - 2)));
+  };
 
   return (
     <>
       <Nav onMenu={() => setMenu(true)} forceSolid />
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
-      <main className="clueless-page">
-        {/* Leopard background */}
-        <div className="clueless-bg" />
+      <main className={`oc-root${mode === "classic" ? " oc-classic-mode" : ""}`}>
 
-        <div className="clueless-wrap">
-          <h1 className="clueless-title">MON DRESSING</h1>
+        {/* ── CLUELESS VIEW ── */}
+        <div className="oc-clueless">
+          {/* Left leopard panel */}
+          <div className="oc-panel oc-panel-left" />
 
-          {lines.length === 0 ? (
-            <div className="clueless-empty">
-              <p>Votre dressing est vide.</p>
-              <Link href="/" className="clueless-empty-cta">Shopper maintenant →</Link>
-            </div>
-          ) : (
-            <>
-              {/* Machine */}
-              <div className="clueless-machine">
+          {/* Center */}
+          <div className="oc-center">
+            <div className="oc-win95-outer">
+              <div className="oc-win95-titlebar">
+                <span className="oc-win95-title">DRESSING DE CHER — {total} article{total !== 1 ? "s" : ""}</span>
+                <div className="oc-win95-dots">
+                  <span /><span /><span />
+                </div>
+              </div>
 
-                {/* Screen */}
-                {!viewAll ? (
-                  <div className="clueless-screen">
-                    <div className="clueless-screen-inner">
-                      <Link href={`/products/${item.handle}`}>
+              <div className="oc-win95-screen">
+                {total === 0 ? (
+                  <div className="oc-screen-empty">
+                    <p>Votre dressing est vide.</p>
+                    <Link href="/" className="oc-link">Shopper maintenant →</Link>
+                  </div>
+                ) : (
+                  <div className="oc-screen-item">
+                    <div className="oc-screen-bg">
+                      <Link href={`/products/${item.handle}`} className="oc-img-wrap">
                         <SmartImg src={item.image} alt={item.title} />
                       </Link>
                     </div>
-                    <div className="clueless-counter">
-                      {current + 1} / {total}
+                    <div className="oc-item-label">
+                      <span className="oc-item-name">{item.title}</span>
+                      <span className="oc-item-price">£{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
-                  </div>
-                ) : (
-                  <div className="clueless-grid-screen">
-                    {lines.map((line, i) => (
-                      <button
-                        key={line.id}
-                        className={"clueless-thumb" + (i === current ? " active" : "")}
-                        onClick={() => { setCurrent(i); setViewAll(false); }}
-                      >
-                        <SmartImg src={line.image} alt={line.title} />
-                      </button>
-                    ))}
+                    <div className="oc-counter">{current + 1} / {total}</div>
                   </div>
                 )}
-
-                {/* Info bar */}
-                <div className="clueless-info">
-                  {!viewAll && (
-                    <>
-                      <span className="clueless-item-name">{item.title}</span>
-                      <span className="clueless-item-price">
-                        £{(item.price * item.quantity).toFixed(2)}
-                      </span>
-                    </>
-                  )}
-                </div>
-
-                {/* Controls */}
-                <div className="clueless-controls">
-                  <button
-                    className="clueless-btn clueless-btn-nav"
-                    onClick={prev}
-                    aria-label="Précédent"
-                    disabled={viewAll}
-                  >
-                    <CluelessArrowL />
-                  </button>
-
-                  <button
-                    className={"clueless-btn clueless-btn-all" + (viewAll ? " active" : "")}
-                    onClick={() => setViewAll((v) => !v)}
-                    aria-label="Voir tout"
-                  >
-                    <CluelessGrid />
-                  </button>
-
-                  <button
-                    className="clueless-btn clueless-btn-remove"
-                    onClick={() => { removeItem(item.id); if (current >= total - 1) setCurrent(Math.max(0, total - 2)); }}
-                    disabled={pending || viewAll}
-                    aria-label="Retirer"
-                  >
-                    <CluelessTrash />
-                  </button>
-
-                  <button
-                    className="clueless-btn clueless-btn-nav"
-                    onClick={next}
-                    aria-label="Suivant"
-                    disabled={viewAll}
-                  >
-                    <CluelessArrowR />
-                  </button>
-                </div>
               </div>
 
-              {/* Summary */}
-              <div className="clueless-summary">
-                <div className="clueless-summary-row">
-                  <span>SOUS-TOTAL</span>
-                  <span>£{cart?.subtotal.toFixed(2)}</span>
-                </div>
-                <p className="clueless-summary-note">{t.cart.subtotalNote}</p>
-                {cart?.checkoutUrl && (
-                  <a className="clueless-checkout" href={cart.checkoutUrl}>
-                    PASSER COMMANDE
-                  </a>
-                )}
+              {/* Navigation buttons */}
+              <div className="oc-nav-row">
+                <button className="oc-nav-btn" onClick={prev} disabled={total < 2} aria-label="Précédent">
+                  <span className="oc-btn-face">
+                    <svg viewBox="0 0 28 18" width="28" height="18" fill="none">
+                      <path d="M18 9H4M4 9l6-5M4 9l6 5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <rect x="20" y="3" width="6" height="12" rx="1" fill="currentColor" opacity=".5"/>
+                    </svg>
+                  </span>
+                </button>
+
+                <button
+                  className="oc-nav-btn oc-nav-remove"
+                  onClick={() => item && handleRemove(item.id)}
+                  disabled={pending || total === 0}
+                  aria-label="Retirer"
+                >
+                  <span className="oc-btn-face">
+                    <svg viewBox="0 0 20 20" width="20" height="20" fill="none">
+                      <path d="M5 5l10 10M15 5 5 15" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
+                    </svg>
+                  </span>
+                </button>
+
+                <button
+                  className="oc-nav-btn oc-nav-checkout"
+                  onClick={() => setMode("classic")}
+                  aria-label="Voir panier"
+                >
+                  <span className="oc-btn-face oc-btn-face-wide">
+                    <svg viewBox="0 0 20 20" width="16" height="16" fill="none">
+                      <path d="M3 5h14M5 5V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1M6 9v6M10 9v6M14 9v6M4 5l1 12h10L16 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                    </svg>
+                    PANIER
+                  </span>
+                </button>
+
+                <button className="oc-nav-btn" onClick={next} disabled={total < 2} aria-label="Suivant">
+                  <span className="oc-btn-face">
+                    <svg viewBox="0 0 28 18" width="28" height="18" fill="none">
+                      <path d="M10 9h14M24 9l-6-5M24 9l-6 5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <rect x="2" y="3" width="6" height="12" rx="1" fill="currentColor" opacity=".5"/>
+                    </svg>
+                  </span>
+                </button>
               </div>
-            </>
-          )}
+            </div>
+          </div>
+
+          {/* Right leopard panel */}
+          <div className="oc-panel oc-panel-right" />
         </div>
-      </main>
 
+        {/* ── CLASSIC VIEW ── */}
+        <div className="oc-classic">
+          <div className="oc-classic-inner">
+            <div className="oc-classic-header">
+              <h1 className="oc-classic-title">Mon panier</h1>
+              <button className="oc-back-btn" onClick={() => setMode("clueless")}>
+                ← Retour au dressing
+              </button>
+            </div>
+
+            {lines.length === 0 ? (
+              <div className="cart-empty">
+                <p>{t.cart.empty}</p>
+                <Link className="link-arrow" href="/">{t.cart.emptyCta} →</Link>
+              </div>
+            ) : (
+              <div className="cart-layout">
+                <ul className="cart-lines">
+                  {lines.map((line) => (
+                    <li key={line.id}>
+                      <div className="cart-line">
+                        <Link href={`/products/${line.handle}`} className="cart-line-img">
+                          <SmartImg src={line.image} alt={line.title} />
+                        </Link>
+                        <div className="cart-line-body">
+                          <div className="cart-line-info">
+                            <Link href={`/products/${line.handle}`} className="cart-line-name">{line.title}</Link>
+                            {line.variantTitle && <div className="cart-line-variant">{line.variantTitle}</div>}
+                            <div className="cart-line-unit">£{line.price} {t.cart.each}</div>
+                          </div>
+                          <div className="cart-line-actions">
+                            <div className="cart-line-price">£{(line.price * line.quantity).toFixed(2)}</div>
+                            {line.quantity > 1 && <div className="cart-qty-static">×{line.quantity}</div>}
+                            <button className="cart-line-remove" disabled={pending} onClick={() => removeItem(line.id)}>
+                              {t.cart.remove}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <aside className="cart-summary">
+                  <div className="cart-summary-row">
+                    <span>{t.cart.subtotal}</span>
+                    <span>£{cart?.subtotal.toFixed(2)}</span>
+                  </div>
+                  <p className="cart-summary-note">{t.cart.subtotalNote}</p>
+                  {cart?.checkoutUrl && (
+                    <a className="cart-checkout" href={cart.checkoutUrl}>{t.cart.checkout}</a>
+                  )}
+                </aside>
+              </div>
+            )}
+          </div>
+        </div>
+
+      </main>
       <Footer />
     </>
-  );
-}
-
-function CluelessArrowL() {
-  return (
-    <svg viewBox="0 0 40 24" width="36" height="22" fill="none" aria-hidden>
-      <rect x="1" y="1" width="38" height="22" rx="3" stroke="currentColor" strokeWidth="2"/>
-      <path d="M24 12H10m0 0 5-5m-5 5 5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      <rect x="28" y="8" width="8" height="8" rx="1" fill="currentColor" opacity=".25"/>
-    </svg>
-  );
-}
-
-function CluelessArrowR() {
-  return (
-    <svg viewBox="0 0 40 24" width="36" height="22" fill="none" aria-hidden>
-      <rect x="1" y="1" width="38" height="22" rx="3" stroke="currentColor" strokeWidth="2"/>
-      <path d="M16 12h14m0 0-5-5m5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      <rect x="4" y="8" width="8" height="8" rx="1" fill="currentColor" opacity=".25"/>
-    </svg>
-  );
-}
-
-function CluelessGrid() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden>
-      <rect x="2" y="2" width="9" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.8"/>
-      <rect x="13" y="2" width="9" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.8"/>
-      <rect x="2" y="13" width="9" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.8"/>
-      <rect x="13" y="13" width="9" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.8"/>
-    </svg>
-  );
-}
-
-function CluelessTrash() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden>
-      <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-      <path d="M10 11v5M14 11v5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-    </svg>
   );
 }
