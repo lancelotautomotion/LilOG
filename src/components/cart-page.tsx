@@ -14,7 +14,6 @@ export function CartPage() {
   const { cart, pending, removeItem } = useCart();
   const [menu, setMenu] = useState(false);
   const [current, setCurrent] = useState(0);
-  const [showSummary, setShowSummary] = useState(false);
 
   const lines = cart?.lines ?? [];
   const total = lines.length;
@@ -92,23 +91,8 @@ export function CartPage() {
                   </span>
                 </button>
 
-                <button
-                  className="oc-nav-btn"
-                  onClick={() => setShowSummary((v) => !v)}
-                  aria-label="Voir tout le panier"
-                >
-                  <span className="oc-btn-face oc-btn-face-wide">
-                    <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
-                      <rect x="2" y="2" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.6"/>
-                      <rect x="11" y="2" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.6"/>
-                      <rect x="2" y="11" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.6"/>
-                      <rect x="11" y="11" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.6"/>
-                    </svg>
-                    TOUT
-                  </span>
-                </button>
 
-                <button className="oc-nav-btn" onClick={next} disabled={total < 2} aria-label="Suivant">
+<button className="oc-nav-btn" onClick={next} disabled={total < 2} aria-label="Suivant">
                   <span className="oc-btn-face">
                     <svg viewBox="0 0 28 18" width="28" height="18" fill="none">
                       <path d="M10 9h14M24 9l-6-5M24 9l-6 5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -121,13 +105,11 @@ export function CartPage() {
           </div>
 
           {/* ── Summary panel ── */}
-          <div className={`oc-summary${showSummary ? " oc-summary-open" : ""}`}>
+          <div className="oc-summary">
             <div className="oc-win95-outer oc-summary-win">
               <div className="oc-win95-titlebar">
                 <span className="oc-win95-title">MON PANIER — {total} article{total !== 1 ? "s" : ""}</span>
-                <button className="oc-summary-close" onClick={() => setShowSummary(false)} aria-label="Fermer">
-                  <span className="oc-btn-face" style={{ padding: "2px 6px", minWidth: "auto" }}>✕</span>
-                </button>
+                <div className="oc-win95-dots"><span /><span /><span /></div>
               </div>
 
               <div className="oc-summary-body">
@@ -138,7 +120,7 @@ export function CartPage() {
                     <ul className="oc-summary-list">
                       {lines.map((line, i) => (
                         <li key={line.id} className={`oc-summary-line${i === current ? " oc-summary-line-active" : ""}`}>
-                          <button className="oc-summary-thumb" onClick={() => { setCurrent(i); setShowSummary(false); }}>
+                          <button className="oc-summary-thumb" onClick={() => setCurrent(i)}>
                             <SmartImg src={line.image} alt={line.title} />
                           </button>
                           <div className="oc-summary-info">
