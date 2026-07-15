@@ -68,8 +68,9 @@ export function Footer() {
             <li><a href="/category/pantalons">Pantalons</a></li>
             <li><a href="/category/jupes">Jupes</a></li>
             <li><a href="/category/manteaux-et-vestes">Vestes &amp; Manteaux</a></li>
-            <li><a href="#">Sacs</a></li>
-            <li><a href="#">Accessoires</a></li>
+            <li><a href="/category/sacs">Sacs</a></li>
+            <li><a href="/category/accessoires">Accessoires</a></li>
+            <li><a href="/category/chaussures">Chaussures</a></li>
           </ul>
         </div>
 
