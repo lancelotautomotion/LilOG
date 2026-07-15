@@ -1,5 +1,3 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { AuthForm } from "@/components/auth-form";
 import Image from "next/image";
 import type { Metadata } from "next";
@@ -8,8 +6,6 @@ import logoWhite from "../../../public/logo-white.png";
 export const metadata: Metadata = { title: "Connexion — Lil'OG" };
 
 export default async function LoginPage() {
-  const session = await auth();
-  if (session) redirect("/account");
 
   return (
     <main className="auth-split">
