@@ -46,6 +46,11 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
           <Icon.arrowL /> {t.pdp.back}
         </Link>
 
+        <div className="pdp-win">
+          <div className="w95-bar">
+            <span className="w95-title">{product.name}</span>
+            <div className="w95-dots"><span /><span /><span /></div>
+          </div>
         <div className="pdp-row">
           <ProductGallery images={product.images} name={product.name} />
 
@@ -100,6 +105,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
             </div>
           </div>
         </div>
+        </div>{/* .pdp-win */}
 
         {related.length > 0 && (
           <div className="pdp-cross">

@@ -17,7 +17,10 @@ export function FeaturedDrops({ products }: { products: Product[] }) {
           <div className="eyebrow">{t.drops.eyebrow}</div>
           <h2 className="section-title">{t.drops.title}</h2>
         </div>
-        <a className="link-arrow" href="#drops">{t.drops.shopAll} <Icon.upRight /></a>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <a className="link-arrow" href="#drops">{t.drops.shopAll} <Icon.upRight /></a>
+          <div className="w95-dots"><span /><span /><span /></div>
+        </div>
       </div>
       <div className="drops-grid">
         {products.map((p, idx) => (

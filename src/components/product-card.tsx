@@ -28,6 +28,11 @@ export function ProductCard({ product, idx }: { product: Product; idx: number })
 
   return (
     <article className="card">
+      {/* Win95 titlebar */}
+      <div className="card-w95-bar">
+        <span className="card-w95-title">{product.name}</span>
+        <div className="card-w95-dots"><span /><span /><span /></div>
+      </div>
       <Link href={`/products/${product.handle}`} className="card-media">
         {product.tag && <span className={"card-tag" + (sold ? " sold" : "")}>{product.tag}</span>}
         <button className={"card-fav" + (fav ? " on" : "")} aria-label="Save" onClick={toggleFav}>
