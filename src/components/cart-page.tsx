@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { useCart } from "@/lib/cart-context";
@@ -11,7 +12,9 @@ import { SmartImg } from "@/components/smart-img";
 
 export function CartPage() {
   const { t } = useLanguage();
+  const { data: session } = useSession();
   const { cart, pending, removeItem } = useCart();
+  const firstName = session?.user?.name?.split(" ")[0] ?? null;
   const [menu, setMenu] = useState(false);
   const [current, setCurrent] = useState(0);
 
@@ -39,7 +42,9 @@ export function CartPage() {
           <div className="oc-center">
             <div className="oc-win95-outer">
               <div className="oc-win95-titlebar">
-                <span className="oc-win95-title">DRESSING DE CHER</span>
+                <span className="oc-win95-title">
+                  {firstName ? `Dressing de ${firstName}` : "Dressing"}
+                </span>
                 {total > 0 && <span className="oc-counter">{current + 1}/{total}</span>}
                 <div className="oc-win95-dots">
                   <span /><span /><span />
