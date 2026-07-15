@@ -76,9 +76,12 @@ export function Footer() {
 
         <div>
           <h4>{t.footer.help}</h4>
-          <ul>{t.footer.helpLinks.map((l) => (
-            <li key={l}><a href={helpHref(l)}>{l}</a></li>
-          ))}</ul>
+          <ul>
+            {t.footer.helpLinks.map((l) => (
+              <li key={l}><a href={helpHref(l)}>{l}</a></li>
+            ))}
+            <li><a href="/contact">Contact</a></li>
+          </ul>
         </div>
 
         <div>

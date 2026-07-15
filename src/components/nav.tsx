@@ -39,6 +39,7 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
           <Link className="nav-link" href={session ? "/account" : "/login"}>
             {session ? (session.user?.name?.split(" ")[0] ?? "Mon compte") : t.nav.login}
           </Link>
+          <Link className="nav-link" href="/contact">Contact</Link>
           <LangSwitch />
         </div>
       </div>

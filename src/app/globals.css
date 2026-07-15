@@ -1519,6 +1519,39 @@ a { color: inherit; text-decoration: none; }
   .auth-left { padding: 28px 24px; }
   .auth-back { margin-bottom: 32px; }
 }
+/* ── Contact page ───────────────────────────────────────────────────────── */
+.contact-split { display: grid; grid-template-columns: 1fr 1fr; min-height: 100dvh; }
+.contact-left { background: var(--paper); display: flex; flex-direction: column; position: relative; padding: 32px clamp(32px, 6vw, 80px); }
+.contact-left-inner { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-top: 40px; max-width: 520px; }
+.contact-eyebrow { display: block; color: #d4006e; margin-bottom: 18px; }
+.contact-heading { font-family: var(--display, var(--serif)); font-size: clamp(1.8rem, 3.5vw, 2.8rem); color: var(--choco); line-height: 1.1; margin-bottom: 20px; font-weight: 700; }
+.contact-heading em { font-style: italic; color: #d4006e; display: block; }
+.contact-sub { font-family: var(--sans); font-size: 0.95rem; color: var(--choco-soft); line-height: 1.6; margin-bottom: 36px; }
+.contact-form { display: flex; flex-direction: column; gap: 14px; }
+.contact-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.contact-input { font-family: var(--sans); font-size: 0.95rem; padding: 13px 16px; border: 1.5px solid rgba(50,47,55,0.18); border-radius: 8px; background: #fff; color: var(--choco); outline: none; transition: border-color 0.2s; }
+.contact-input:focus { border-color: #d4006e; }
+.contact-textarea { resize: vertical; min-height: 120px; }
+.contact-submit { margin-top: 6px; }
+.contact-thanks { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 48px 0; text-align: center; }
+.contact-thanks-icon { font-size: 2.4rem; color: #d4006e; }
+.contact-thanks p { font-family: var(--sans); font-size: 1rem; color: var(--choco); }
+.contact-socials { margin-top: 40px; padding-top: 28px; border-top: 1px solid rgba(50,47,55,0.1); }
+.contact-social-links { display: flex; gap: 24px; margin-top: 12px; }
+.contact-social-links a { font-family: var(--sans); font-size: 0.9rem; color: var(--choco); text-decoration: none; border-bottom: 1px solid #d4006e; padding-bottom: 2px; transition: color 0.2s; }
+.contact-social-links a:hover { color: #d4006e; }
+.contact-right { background: #111; display: flex; align-items: center; justify-content: center; padding: 48px; min-height: 100dvh; position: sticky; top: 0; background-image: url('/leo.jpeg'); background-size: cover; background-position: center; }
+.contact-right-inner { position: relative; z-index: 1; }
+.contact-right::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.55); }
+.contact-right-quote { position: relative; z-index: 1; font-family: var(--display, var(--serif)); font-size: clamp(1.4rem, 2.8vw, 2.2rem); color: #fff; line-height: 1.3; text-align: center; font-weight: 700; }
+.contact-right-quote em { color: #d4006e; font-style: italic; display: block; margin-top: 6px; }
+@media (max-width: 768px) {
+  .contact-split { grid-template-columns: 1fr; }
+  .contact-right { display: none; }
+  .contact-left { padding: 28px 24px; }
+  .contact-row { grid-template-columns: 1fr; }
+}
+
 .account-info { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
 .account-row { display: flex; flex-direction: column; gap: 4px; }
 .account-label { font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--choco-soft); opacity: 0.6; }
