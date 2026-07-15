@@ -330,7 +330,7 @@ a { color: inherit; text-decoration: none; }
   margin-right: auto;
 }
 .drawer-sub { overflow: hidden; max-height: 0; transition: max-height 0.5s cubic-bezier(.76,0,.24,1); }
-.drawer-item.open .drawer-sub { max-height: 720px; }
+.drawer-item.open .drawer-sub { max-height: 1200px; }
 .drawer-sub-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -348,6 +348,33 @@ a { color: inherit; text-decoration: none; }
   transition: color 0.2s, opacity 0.2s, padding-left 0.25s;
 }
 .drawer-sub-inner a:hover { color: var(--pink); opacity: 1; padding-left: 8px; }
+
+/* 3rd level — Bijoux sub-sub */
+.drawer-subsub-wrap { grid-column: 1 / -1; }
+.drawer-subsub-toggle {
+  display: flex; align-items: center; gap: 6px; width: 100%;
+  background: none; border: none; cursor: pointer; text-align: left;
+  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em;
+  font-size: 0.72rem; color: var(--cream-2); opacity: 0.78;
+  padding: 6px 0; transition: color 0.2s, opacity 0.2s;
+}
+.drawer-subsub-toggle:hover { color: var(--pink); opacity: 1; }
+.drawer-subsub-toggle .caret-sm { width: 10px; height: 10px; transition: transform 0.3s; }
+.drawer-subsub-wrap.open .drawer-subsub-toggle .caret-sm { transform: rotate(180deg); }
+.drawer-subsub {
+  overflow: hidden; max-height: 0;
+  transition: max-height 0.4s cubic-bezier(.76,0,.24,1);
+  display: flex; flex-direction: column; padding-left: 14px;
+}
+.drawer-subsub-wrap.open .drawer-subsub { max-height: 400px; }
+.drawer-subsub a {
+  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em;
+  font-size: 0.68rem; color: var(--cream-2); opacity: 0.65;
+  padding: 5px 0; transition: color 0.2s, opacity 0.2s, padding-left 0.25s;
+}
+.drawer-subsub a:hover { color: var(--pink); opacity: 1; padding-left: 6px; }
+.drawer-subsub-all { opacity: 0.45 !important; }
+
 .drawer-foot { display: flex; flex-direction: column; gap: 14px; }
 .drawer-foot .row { display: flex; gap: 22px; flex-wrap: wrap; }
 .drawer-foot a.mono-label { color: var(--cream-2); opacity: 0.7; transition: opacity 0.2s; }

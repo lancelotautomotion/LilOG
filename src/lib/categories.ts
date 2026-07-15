@@ -1,6 +1,12 @@
+export interface SubSubCategory {
+  label: string;
+  type: string;
+}
+
 export interface SubCategory {
   label: string;
   type: string; // matches Shopify product type; empty = "Tout voir"
+  sub?: SubSubCategory[];
 }
 
 export interface Category {
@@ -85,6 +91,49 @@ export const CATEGORIES: Category[] = [
       { label: "Slim", type: "jean-slim" },
       { label: "Droit", type: "jean-droit" },
       { label: "Large", type: "jean-large" },
+    ],
+  },
+  {
+    handle: "sacs",
+    catKey: "bags",
+    sub: [
+      { label: "Tout voir", type: "" },
+      { label: "Sacs", type: "sac" },
+      { label: "Portefeuilles", type: "portefeuille" },
+    ],
+  },
+  {
+    handle: "chaussures",
+    catKey: "shoes",
+    sub: [
+      { label: "Tout voir", type: "" },
+      { label: "Talons", type: "talon" },
+      { label: "Plates", type: "plate" },
+      { label: "Bottes", type: "botte" },
+      { label: "Sandales", type: "sandale" },
+      { label: "Baskets", type: "basket" },
+    ],
+  },
+  {
+    handle: "accessoires",
+    catKey: "accessories",
+    sub: [
+      { label: "Tout voir", type: "" },
+      {
+        label: "Bijoux",
+        type: "bijou",
+        sub: [
+          { label: "Colliers", type: "collier" },
+          { label: "Boucles d'oreilles", type: "boucle-oreille" },
+          { label: "Bracelets", type: "bracelet" },
+          { label: "Bagues", type: "bague" },
+          { label: "Bijoux de corps", type: "bijou-de-corps" },
+        ],
+      },
+      { label: "Foulards & Écharpes", type: "foulard" },
+      { label: "Ceintures", type: "ceinture" },
+      { label: "Chapeaux", type: "chapeau" },
+      { label: "Lunettes", type: "lunettes" },
     ],
   },
 ];
