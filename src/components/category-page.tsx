@@ -326,19 +326,20 @@ export function CategoryPage({
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
       <main className="category-page">
-        {/* Title row: mirrors the grid columns exactly */}
-        <div className="category-title-row">
-          <h1 className="category-title">{label}</h1>
-          <CategoryVibe catKey={catKey} />
-        </div>
-
+        {/* Single grid: col1=sidebar col2=content, row1=header row2=main */}
         <div className="category-layout">
-          {/* Sidebar column: filters */}
+          {/* [col1, row1] Title */}
+          <h1 className="category-title cat-grid-title">{label}</h1>
+
+          {/* [col2, row1] Vibe description */}
+          <CategoryVibe catKey={catKey} />
+
+          {/* [col1, row2] Filter sidebar */}
           <div className="filter-sidebar">
             <FilterPanel {...filterProps} />
           </div>
 
-          {/* Grid column: filter trigger + products */}
+          {/* [col2, row2] Products */}
           <div className="category-grid-wrap">
             <div className="category-grid-top">
               <button
