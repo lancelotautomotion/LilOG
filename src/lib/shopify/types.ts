@@ -91,6 +91,7 @@ export interface Product {
   was: number | null;
   currency: string;
   tag: "NEW" | "1 OF 1" | "SOLD" | null;
+  tags: string[];
   imageA: string;
   imageB: string;
   variantId: string | null;

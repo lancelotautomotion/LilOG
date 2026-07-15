@@ -48,6 +48,7 @@ function mapProduct(node: ShopifyProductNode): Product {
     tag,
     imageA,
     imageB,
+    tags: node.tags,
     variantId: variant?.id ?? null,
   };
 }
