@@ -39,7 +39,8 @@ export function CartPage() {
           <div className="oc-center">
             <div className="oc-win95-outer">
               <div className="oc-win95-titlebar">
-                <span className="oc-win95-title">DRESSING DE CHER — {total} article{total !== 1 ? "s" : ""}</span>
+                <span className="oc-win95-title">DRESSING DE CHER</span>
+                {total > 0 && <span className="oc-counter">{current + 1}/{total}</span>}
                 <div className="oc-win95-dots">
                   <span /><span /><span />
                 </div>
@@ -62,7 +63,6 @@ export function CartPage() {
                       <span className="oc-item-name">{item.title}</span>
                       <span className="oc-item-price">£{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
-                    <div className="oc-counter">{current + 1} / {total}</div>
                   </div>
                 )}
               </div>
