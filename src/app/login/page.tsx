@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { AuthForm } from "@/components/auth-form";
 import Image from "next/image";
 import type { Metadata } from "next";
+import logoWhite from "../../../public/logo-white.png";
 
 export const metadata: Metadata = { title: "Connexion — Lil'OG" };
 
@@ -11,19 +12,24 @@ export default async function LoginPage() {
   if (session) redirect("/account");
 
   return (
-    <main className="auth-page" style={{ position: "relative", background: "none" }}>
-      <Image
-        src="/login-bg.jpeg"
-        alt=""
-        fill
-        priority
-        style={{ objectFit: "cover", zIndex: 0 }}
-      />
-      <a className="auth-back" href="/" style={{ position: "relative", zIndex: 1, color: "#fff", textShadow: "0 1px 4px rgba(0,0,0,0.6)" }}>← Retour</a>
-      <div className="auth-brand" style={{ position: "relative", zIndex: 1, color: "#fff", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}>Lil&#39;OG</div>
-      <h1 className="auth-title" style={{ position: "relative", zIndex: 1, color: "#fff", textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}>Mon compte</h1>
-      <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
-        <AuthForm />
+    <main className="auth-split">
+      {/* Left — form */}
+      <div className="auth-left">
+        <a className="auth-back" href="/">← Retour</a>
+        <div className="auth-left-inner">
+          <h1 className="auth-welcome">Bienvenue,<br /><em>disciple de Regina George</em></h1>
+          <AuthForm />
+        </div>
+      </div>
+
+      {/* Right — logo */}
+      <div className="auth-right">
+        <Image
+          src={logoWhite}
+          alt="Lil'OG"
+          className="auth-right-logo"
+          priority
+        />
       </div>
     </main>
   );
