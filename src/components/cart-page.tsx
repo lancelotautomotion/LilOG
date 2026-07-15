@@ -77,7 +77,7 @@ export function CartPage() {
                     <>
                       <span className="clueless-item-name">{item.title}</span>
                       <span className="clueless-item-price">
-                        {item.currency === "GBP" ? "£" : "€"}{(item.price * item.quantity).toFixed(2)}
+                        £{(item.price * item.quantity).toFixed(2)}
                       </span>
                     </>
                   )}
