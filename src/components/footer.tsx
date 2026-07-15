@@ -62,9 +62,15 @@ export function Footer() {
 
         <div>
           <h4>{t.footer.shop}</h4>
-          <ul>{["newin", "clothing", "accessories", "shoes", "luxe"].map((k) => (
-            <li key={k}><a href="#">{t.cat[k]}</a></li>
-          ))}</ul>
+          <ul>
+            <li><a href="/category/tops">Tops</a></li>
+            <li><a href="/category/robes">Robes</a></li>
+            <li><a href="/category/pantalons">Pantalons</a></li>
+            <li><a href="/category/jupes">Jupes</a></li>
+            <li><a href="/category/manteaux-et-vestes">Vestes &amp; Manteaux</a></li>
+            <li><a href="#">Sacs</a></li>
+            <li><a href="#">Accessoires</a></li>
+          </ul>
         </div>
 
         <div>
