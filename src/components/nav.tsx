@@ -34,7 +34,7 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
           <Icon.search width={18} height={18} />
         </a>
       </div>
-      <a className="nav-brand" href="#top" aria-label="Lil'OG">
+      <a className="nav-brand" href="/" aria-label="Lil'OG">
         <Image className="brand-logo light" src={logoWhite} alt="Lil'OG" priority />
         <Image className="brand-logo dark" src={logoBlack} alt="Lil'OG" priority />
       </a>
