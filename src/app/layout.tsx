@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Grenze_Gotisch, Montserrat, Space_Mono } from "next/font/google";
+import { Grenze_Gotisch, Montserrat, Space_Mono, Great_Vibes } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
@@ -18,6 +18,12 @@ const sans = Montserrat({
   weight: ["400", "500", "600", "700"],
 });
 
+const script = Great_Vibes({
+  variable: "--font-script",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 const mono = Space_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
@@ -33,7 +39,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const initialCart = await getCartAction().catch(() => null);
 
   return (
-    <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable} ${script.variable}`}>
       <body className="grain">
         <SessionProvider>
           <LanguageProvider>

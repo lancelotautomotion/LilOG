@@ -1246,11 +1246,19 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: clamp(28px, 4vw, 48px);
 }
 .category-title {
-  font-family: var(--serif);
-  font-weight: 500;
-  font-size: clamp(2rem, 4.4vw, 3.4rem);
+  font-family: var(--font-script), cursive;
+  font-weight: 400;
+  font-size: clamp(3.5rem, 8vw, 6.5rem);
   line-height: 1;
   margin: 0;
+  color: #fff;
+  text-shadow:
+    2px 2px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    0 3px 12px rgba(212,0,110,0.45);
+  letter-spacing: 0.01em;
 }
 .category-empty { font-size: 1rem; color: var(--choco-soft); }
 .category-layout { display: grid; grid-template-columns: 220px 1fr; gap: clamp(24px, 3vw, 48px); align-items: start; }
