@@ -49,11 +49,9 @@ export function Footer() {
 
   return (
     <footer className="footer">
-      <div className="footer-brand">
-        <Image className="footer-logo" src={logoWhite} alt="Lil'OG" />
-      </div>
       <div className="footer-cols">
         <div className="footer-news">
+          <Image className="footer-logo" src={logoWhite} alt="Lil'OG" />
           <h4>{t.footer.newsH}</h4>
           <p>{t.footer.newsP}</p>
           <form onSubmit={(e) => e.preventDefault()}>
