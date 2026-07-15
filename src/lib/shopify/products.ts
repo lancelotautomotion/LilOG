@@ -20,22 +20,31 @@ function computeTag(tags: string[], availableForSale: boolean): Product["tag"] {
         : null;
 }
 
+function parseMetaColors(raw: string): string[] {
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed.map(String).filter(Boolean);
+  } catch { /* not JSON */ }
+  if (raw.trim()) return raw.split(/[,;|]/).map((s) => s.trim()).filter(Boolean);
+  return [];
+}
+
 function extractColorValues(node: ShopifyProductNode): string[] {
-  // 1. Shopify taxonomy metafield (color-pattern) — list or single value
-  if (node.colorMeta?.value) {
-    try {
-      const parsed = JSON.parse(node.colorMeta.value);
-      if (Array.isArray(parsed)) return parsed.map(String).filter(Boolean);
-    } catch {
-      // not JSON — plain string
+  // Try all metafield candidates in order
+  for (const meta of [node.colorMeta, node.colorMeta2, node.colorMeta3, node.colorMeta4]) {
+    if (meta?.value) {
+      const vals = parseMetaColors(meta.value);
+      if (vals.length) return vals;
     }
-    if (node.colorMeta.value.trim()) return [node.colorMeta.value.trim()];
   }
-  // 2. Product option named "Couleur" / "Color" / "Colour"
-  const colorOption = node.options?.find((o) =>
-    /cou?le?ur|colou?r/i.test(o.name)
-  );
+  // Fallback: product option named "Couleur" / "Color"
+  const colorOption = node.options?.find((o) => /cou?le?ur|colou?r/i.test(o.name));
   if (colorOption?.values?.length) return colorOption.values;
+  // Last resort: log what options/metafields are available for diagnosis
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[colors] no color found for", node.handle,
+      "options:", node.options?.map((o) => o.name));
+  }
   return [];
 }
 

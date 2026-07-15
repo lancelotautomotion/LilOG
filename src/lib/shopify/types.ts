@@ -16,7 +16,10 @@ export interface ShopifyProductNode {
   tags: string[];
   availableForSale: boolean;
   options?: { name: string; values: string[] }[];
-  colorMeta?: { value: string; type: string } | null;
+  colorMeta?: { value: string } | null;
+  colorMeta2?: { value: string } | null;
+  colorMeta3?: { value: string } | null;
+  colorMeta4?: { value: string } | null;
   featuredImage: ShopifyImage | null;
   images: { edges: { node: ShopifyImage }[] };
   priceRange: { minVariantPrice: ShopifyMoney };

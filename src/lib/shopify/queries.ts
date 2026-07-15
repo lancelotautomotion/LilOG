@@ -150,10 +150,10 @@ export const COLLECTION_BY_HANDLE_QUERY = /* GraphQL */ `
               name
               values
             }
-            colorMeta: metafield(namespace: "shopify", key: "color-pattern") {
-              value
-              type
-            }
+            colorMeta: metafield(namespace: "shopify", key: "color-pattern") { value }
+            colorMeta2: metafield(namespace: "custom", key: "couleur") { value }
+            colorMeta3: metafield(namespace: "shopify", key: "colors") { value }
+            colorMeta4: metafield(namespace: "descriptors", key: "color") { value }
             variants(first: 1) {
               edges {
                 node {
