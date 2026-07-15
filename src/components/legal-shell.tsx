@@ -55,42 +55,56 @@ export function LegalShell({ eyebrow, title, subtitle, date, sections }: LegalSh
       <Drawer open={menu} onClose={() => setMenu(false)} />
       <main className="legal-page">
 
-        <div className="static-hero static-hero--light static-hero--bg legal-hero" style={{ backgroundImage: "url('/leo.jpeg')" }}>
-          <div className="static-hero-text">
+        {/* ── Win95 hero window ── */}
+        <div className="legal-win95-hero">
+          <div className="w95-bar">
+            <span className="w95-title">{eyebrow} — {title}</span>
+            <div className="w95-dots"><span /><span /><span /></div>
+          </div>
+          <div className="legal-win95-hero-body">
             <p className="static-eyebrow">{eyebrow}</p>
-            <h1 className="static-title">{title}<br /><em style={{ fontSize: "0.55em", fontStyle: "normal", opacity: 0.6 }}>{subtitle}</em></h1>
-            <p className="legal-date" style={{ marginTop: "16px" }}>Version en vigueur : {date}</p>
+            <h1 className="static-title">{title}</h1>
+            {subtitle && <p className="legal-win95-subtitle">{subtitle}</p>}
+            <p className="legal-date">Version en vigueur : {date}</p>
           </div>
         </div>
 
-        <div className="legal-body">
-          <aside className="legal-sidebar">
-            <p className="legal-sidebar-label">Sommaire</p>
-            <nav>
-              {sections.map(({ id, num, title: t }) => (
-                <button
-                  key={id}
-                  className={`legal-nav-item${active === id ? " legal-nav-item--active" : ""}`}
-                  onClick={() => scrollTo(id)}
-                >
-                  <span className="legal-nav-num">{num}.</span>
-                  <span>{t}</span>
-                </button>
+        {/* ── Win95 content window ── */}
+        <div className="legal-win95-main">
+          <div className="w95-bar">
+            <span className="w95-title">Contenu</span>
+            <div className="w95-dots"><span /><span /><span /></div>
+          </div>
+          <div className="legal-body">
+            <aside className="legal-sidebar">
+              <p className="legal-sidebar-label">Sommaire</p>
+              <nav>
+                {sections.map(({ id, num, title: t }) => (
+                  <button
+                    key={id}
+                    className={`legal-nav-item${active === id ? " legal-nav-item--active" : ""}`}
+                    onClick={() => scrollTo(id)}
+                  >
+                    <span className="legal-nav-num">{num}.</span>
+                    <span>{t}</span>
+                  </button>
+                ))}
+              </nav>
+            </aside>
+
+            <div className="legal-content">
+              {sections.map(({ id, num, title: t, content }) => (
+                <section key={id} id={id} className="legal-section">
+                  <h2 className="legal-section-title">
+                    <span className="legal-section-num">{num}.</span> {t}
+                  </h2>
+                  <div className="legal-section-body">{content}</div>
+                </section>
               ))}
-            </nav>
-          </aside>
-
-          <div className="legal-content">
-            {sections.map(({ id, num, title: t, content }) => (
-              <section key={id} id={id} className="legal-section">
-                <h2 className="legal-section-title">
-                  <span className="legal-section-num">{num}.</span> {t}
-                </h2>
-                <div className="legal-section-body">{content}</div>
-              </section>
-            ))}
+            </div>
           </div>
         </div>
+
       </main>
       <Footer />
     </>
