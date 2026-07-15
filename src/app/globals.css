@@ -2699,7 +2699,7 @@ html, body {
   letter-spacing: 0.08em;
   flex-shrink: 0;
 }
-.drops-grid { padding: 14px; }
+.drops-grid { padding: 0 14px 14px; }
 /* Editorial inner body */
 .editorial { background: #c0c0c0 !important; padding: 0 !important; }
 .editorial .section-head { display: flex !important; }
