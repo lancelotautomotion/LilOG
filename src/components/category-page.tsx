@@ -326,32 +326,28 @@ export function CategoryPage({
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
       <main className="category-page">
-        <div className="category-header-row">
-          <h1 className="category-title">{label}</h1>
-          <CategoryVibe catKey={catKey} />
-        </div>
-
-        <div className="category-filter-bar">
-          <button
-            className={"filter-trigger" + (activeFilterCount > 0 ? " active" : "")}
-            onClick={() => setFilterOpen(true)}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-              <path d="M3 6h18M7 12h10M11 18h2" />
-            </svg>
-            Filtrer
-            {activeFilterCount > 0 && <span className="filter-badge">{activeFilterCount}</span>}
-          </button>
-        </div>
-
         <div className="category-layout">
-          {/* Sidebar desktop */}
+          {/* Sidebar column: title + filters */}
           <div className="filter-sidebar">
+            <h1 className="category-title">{label}</h1>
             <FilterPanel {...filterProps} />
           </div>
 
-          {/* Grid */}
+          {/* Grid column: vibe card + filter trigger + products */}
           <div className="category-grid-wrap">
+            <div className="category-grid-top">
+              <CategoryVibe catKey={catKey} />
+              <button
+                className={"filter-trigger" + (activeFilterCount > 0 ? " active" : "")}
+                onClick={() => setFilterOpen(true)}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                  <path d="M3 6h18M7 12h10M11 18h2" />
+                </svg>
+                Filtrer
+                {activeFilterCount > 0 && <span className="filter-badge">{activeFilterCount}</span>}
+              </button>
+            </div>
             {filtered.length === 0 ? (
               <p className="category-empty">{t.category.empty}</p>
             ) : (
