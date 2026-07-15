@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useLanguage } from "@/lib/i18n-context";
 import logoWhite from "../../public/logo-white.png";
-import crisImg from "../../public/cris.png";
 
 const LEGAL_HREFS: Record<string, string> = {
   "CGV": "/cgv",
@@ -52,7 +51,6 @@ export function Footer() {
     <footer className="footer">
       <div className="footer-brand">
         <Image className="footer-logo" src={logoWhite} alt="Lil'OG" />
-        <Image className="footer-cris" src={crisImg} alt="" aria-hidden />
       </div>
       <div className="footer-cols">
         <div className="footer-news">
