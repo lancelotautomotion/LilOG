@@ -1360,49 +1360,43 @@ a { color: inherit; text-decoration: none; }
    OUTFIT COMPUTER — Clueless cart
    ============================================================ */
 
-/* Root container — handles mode switching */
-.oc-root { position: relative; min-height: 100dvh; background: #111; overflow: hidden; }
-
-/* ── Clueless view ── */
-.oc-clueless {
-  display: flex;
-  align-items: stretch;
+/* ── Outfit machine root ── */
+.oc-root {
+  position: relative;
   min-height: 100dvh;
-  padding-top: clamp(64px, 9vw, 90px);
-  transition: opacity 0.4s, transform 0.4s;
-}
-.oc-classic-mode .oc-clueless {
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  transform: scale(0.96);
-}
-
-/* Leopard side panels */
-.oc-panel {
-  flex: 1;
   background-image: url('/leo.jpeg');
   background-size: cover;
   background-position: center;
-  position: relative;
-  min-width: 80px;
+  overflow: hidden;
 }
-.oc-panel::after {
+.oc-root::before {
   content: '';
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.15);
+  background: rgba(0,0,0,0.18);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Full-page layout */
+.oc-page {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(80px, 10vw, 110px) 16px clamp(40px, 6vw, 80px);
+  gap: 24px;
 }
 
 /* Center machine */
 .oc-center {
-  flex: 0 0 auto;
-  width: min(440px, 90vw);
+  width: min(440px, 92vw);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px 0 40px;
 }
 
 /* Windows 95 outer shell */
@@ -1581,59 +1575,180 @@ a { color: inherit; text-decoration: none; }
 }
 .oc-nav-remove .oc-btn-face { color: #800000; }
 
-/* ── Classic view ── */
-.oc-classic {
-  position: absolute;
-  inset: 0;
-  background: var(--paper);
+/* ── Summary panel (Win95 window below machine) ── */
+.oc-summary {
+  width: min(440px, 92vw);
+  max-height: 0;
+  overflow: hidden;
   opacity: 0;
-  pointer-events: none;
-  transform: translateY(16px);
-  transition: opacity 0.4s, transform 0.4s;
-  overflow-y: auto;
+  transform: translateY(-8px);
+  transition: max-height 0.45s ease, opacity 0.35s ease, transform 0.35s ease;
 }
-.oc-classic-mode .oc-classic {
+.oc-summary-open {
+  max-height: 600px;
   opacity: 1;
-  pointer-events: auto;
-  position: relative;
   transform: none;
 }
-.oc-classic-inner {
-  padding: clamp(90px, 11vw, 130px) clamp(20px, 5vw, 80px) clamp(60px, 8vw, 100px);
+.oc-summary-win { width: 100%; }
+.oc-summary-close {
+  background: #c0c0c0;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--mono);
+  font-size: 0.65rem;
 }
-.oc-classic-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: clamp(28px, 4vw, 48px);
-  flex-wrap: wrap;
+.oc-summary-body {
+  padding: 10px 10px 14px;
+  max-height: 420px;
+  overflow-y: auto;
 }
-.oc-classic-title {
-  font-family: var(--serif);
-  font-weight: 500;
-  font-size: clamp(2rem, 4.4vw, 3.4rem);
-  line-height: 1;
+.oc-summary-empty {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: #555;
+  text-align: center;
+  padding: 16px 0;
   margin: 0;
 }
-.oc-back-btn {
+.oc-summary-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.oc-summary-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px;
+  background: #d8d8d8;
+  border-top: 1.5px solid #fff;
+  border-left: 1.5px solid #fff;
+  border-right: 1.5px solid #888;
+  border-bottom: 1.5px solid #888;
+}
+.oc-summary-line-active {
+  background: #000080;
+  border-color: #000080;
+}
+.oc-summary-line-active .oc-summary-name,
+.oc-summary-line-active .oc-summary-price,
+.oc-summary-line-active .oc-summary-variant { color: #fff; }
+.oc-summary-thumb {
+  width: 48px;
+  height: 60px;
+  flex-shrink: 0;
+  background: #bbb;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: block;
+}
+.oc-summary-thumb img, .oc-summary-thumb span {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+.oc-summary-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.oc-summary-name {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.oc-summary-variant {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: #555;
+}
+.oc-summary-price {
   font-family: var(--mono);
   font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #d4006e;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  white-space: nowrap;
-  transition: opacity 0.2s;
+  font-weight: 700;
+  color: #000080;
 }
-.oc-back-btn:hover { opacity: 0.7; }
+.oc-summary-remove {
+  background: #c0c0c0;
+  border-top: 1.5px solid #fff;
+  border-left: 1.5px solid #fff;
+  border-right: 1.5px solid #444;
+  border-bottom: 1.5px solid #444;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: #800000;
+  cursor: pointer;
+  padding: 4px 6px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.oc-summary-remove:disabled { opacity: 0.4; cursor: not-allowed; }
+.oc-summary-remove:active:not(:disabled) {
+  border-top: 1.5px solid #444;
+  border-left: 1.5px solid #444;
+  border-right: 1.5px solid #fff;
+  border-bottom: 1.5px solid #fff;
+}
+.oc-summary-footer {
+  border-top: 1px solid #999;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.oc-summary-total {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #000;
+}
+.oc-summary-note {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: #666;
+  margin: 0;
+}
+.oc-checkout-btn {
+  display: block;
+  text-align: center;
+  background: #000080;
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-top: 2px solid #6060c0;
+  border-left: 2px solid #6060c0;
+  border-right: 2px solid #00003a;
+  border-bottom: 2px solid #00003a;
+  margin-top: 4px;
+  transition: filter 0.15s;
+}
+.oc-checkout-btn:hover { filter: brightness(1.15); }
 
 @media (max-width: 640px) {
-  .oc-panel { min-width: 36px; }
-  .oc-center { width: min(340px, 88vw); padding: 16px 0 28px; }
+  .oc-center { width: min(340px, 92vw); }
+  .oc-summary { width: min(340px, 92vw); }
   .oc-btn-face { padding: 7px 10px; min-width: 38px; }
   .oc-btn-face-wide { padding: 7px 12px; }
 }

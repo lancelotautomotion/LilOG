@@ -14,7 +14,7 @@ export function CartPage() {
   const { cart, pending, removeItem } = useCart();
   const [menu, setMenu] = useState(false);
   const [current, setCurrent] = useState(0);
-  const [mode, setMode] = useState<"clueless" | "classic">("clueless");
+  const [showSummary, setShowSummary] = useState(false);
 
   const lines = cart?.lines ?? [];
   const total = lines.length;
@@ -33,14 +33,10 @@ export function CartPage() {
       <Nav onMenu={() => setMenu(true)} forceSolid />
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
-      <main className={`oc-root${mode === "classic" ? " oc-classic-mode" : ""}`}>
+      <main className="oc-root">
+        <div className="oc-page">
 
-        {/* ── CLUELESS VIEW ── */}
-        <div className="oc-clueless">
-          {/* Left leopard panel */}
-          <div className="oc-panel oc-panel-left" />
-
-          {/* Center */}
+          {/* ── Win95 machine ── */}
           <div className="oc-center">
             <div className="oc-win95-outer">
               <div className="oc-win95-titlebar">
@@ -97,15 +93,18 @@ export function CartPage() {
                 </button>
 
                 <button
-                  className="oc-nav-btn oc-nav-checkout"
-                  onClick={() => setMode("classic")}
-                  aria-label="Voir panier"
+                  className="oc-nav-btn"
+                  onClick={() => setShowSummary((v) => !v)}
+                  aria-label="Voir tout le panier"
                 >
                   <span className="oc-btn-face oc-btn-face-wide">
-                    <svg viewBox="0 0 20 20" width="16" height="16" fill="none">
-                      <path d="M3 5h14M5 5V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1M6 9v6M10 9v6M14 9v6M4 5l1 12h10L16 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                    <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
+                      <rect x="2" y="2" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.6"/>
+                      <rect x="11" y="2" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.6"/>
+                      <rect x="2" y="11" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.6"/>
+                      <rect x="11" y="11" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="1.6"/>
                     </svg>
-                    PANIER
+                    TOUT
                   </span>
                 </button>
 
@@ -121,68 +120,61 @@ export function CartPage() {
             </div>
           </div>
 
-          {/* Right leopard panel */}
-          <div className="oc-panel oc-panel-right" />
-        </div>
-
-        {/* ── CLASSIC VIEW ── */}
-        <div className="oc-classic">
-          <div className="oc-classic-inner">
-            <div className="oc-classic-header">
-              <h1 className="oc-classic-title">Mon panier</h1>
-              <button className="oc-back-btn" onClick={() => setMode("clueless")}>
-                ← Retour au dressing
-              </button>
-            </div>
-
-            {lines.length === 0 ? (
-              <div className="cart-empty">
-                <p>{t.cart.empty}</p>
-                <Link className="link-arrow" href="/">{t.cart.emptyCta} →</Link>
+          {/* ── Summary panel ── */}
+          <div className={`oc-summary${showSummary ? " oc-summary-open" : ""}`}>
+            <div className="oc-win95-outer oc-summary-win">
+              <div className="oc-win95-titlebar">
+                <span className="oc-win95-title">MON PANIER — {total} article{total !== 1 ? "s" : ""}</span>
+                <button className="oc-summary-close" onClick={() => setShowSummary(false)} aria-label="Fermer">
+                  <span className="oc-btn-face" style={{ padding: "2px 6px", minWidth: "auto" }}>✕</span>
+                </button>
               </div>
-            ) : (
-              <div className="cart-layout">
-                <ul className="cart-lines">
-                  {lines.map((line) => (
-                    <li key={line.id}>
-                      <div className="cart-line">
-                        <Link href={`/products/${line.handle}`} className="cart-line-img">
-                          <SmartImg src={line.image} alt={line.title} />
-                        </Link>
-                        <div className="cart-line-body">
-                          <div className="cart-line-info">
-                            <Link href={`/products/${line.handle}`} className="cart-line-name">{line.title}</Link>
-                            {line.variantTitle && <div className="cart-line-variant">{line.variantTitle}</div>}
-                            <div className="cart-line-unit">£{line.price} {t.cart.each}</div>
+
+              <div className="oc-summary-body">
+                {total === 0 ? (
+                  <p className="oc-summary-empty">Panier vide.</p>
+                ) : (
+                  <>
+                    <ul className="oc-summary-list">
+                      {lines.map((line, i) => (
+                        <li key={line.id} className={`oc-summary-line${i === current ? " oc-summary-line-active" : ""}`}>
+                          <button className="oc-summary-thumb" onClick={() => { setCurrent(i); setShowSummary(false); }}>
+                            <SmartImg src={line.image} alt={line.title} />
+                          </button>
+                          <div className="oc-summary-info">
+                            <span className="oc-summary-name">{line.title}</span>
+                            {line.variantTitle && <span className="oc-summary-variant">{line.variantTitle}</span>}
+                            <span className="oc-summary-price">£{(line.price * line.quantity).toFixed(2)}{line.quantity > 1 && ` ×${line.quantity}`}</span>
                           </div>
-                          <div className="cart-line-actions">
-                            <div className="cart-line-price">£{(line.price * line.quantity).toFixed(2)}</div>
-                            {line.quantity > 1 && <div className="cart-qty-static">×{line.quantity}</div>}
-                            <button className="cart-line-remove" disabled={pending} onClick={() => removeItem(line.id)}>
-                              {t.cart.remove}
-                            </button>
-                          </div>
-                        </div>
+                          <button
+                            className="oc-summary-remove"
+                            onClick={() => handleRemove(line.id)}
+                            disabled={pending}
+                            aria-label="Retirer"
+                          >✕</button>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="oc-summary-footer">
+                      <div className="oc-summary-total">
+                        <span>TOTAL</span>
+                        <span>£{cart?.subtotal.toFixed(2)}</span>
                       </div>
-                    </li>
-                  ))}
-                </ul>
-
-                <aside className="cart-summary">
-                  <div className="cart-summary-row">
-                    <span>{t.cart.subtotal}</span>
-                    <span>£{cart?.subtotal.toFixed(2)}</span>
-                  </div>
-                  <p className="cart-summary-note">{t.cart.subtotalNote}</p>
-                  {cart?.checkoutUrl && (
-                    <a className="cart-checkout" href={cart.checkoutUrl}>{t.cart.checkout}</a>
-                  )}
-                </aside>
+                      <p className="oc-summary-note">{t.cart.subtotalNote}</p>
+                      {cart?.checkoutUrl && (
+                        <a className="oc-checkout-btn" href={cart.checkoutUrl}>
+                          {t.cart.checkout} →
+                        </a>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
-            )}
+            </div>
           </div>
-        </div>
 
+        </div>
       </main>
       <Footer />
     </>
