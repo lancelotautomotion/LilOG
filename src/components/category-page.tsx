@@ -10,38 +10,61 @@ import type { Product } from "@/lib/shopify/types";
 
 type Sort = "default" | "price-asc" | "price-desc";
 
-// CSS swatch per Shopify color label (case-insensitive key)
+// Normalize: lowercase + strip accents
+function norm(s: string) {
+  return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
+// CSS swatch — keys are already normalized (no accents, lowercase)
 const COLOR_SWATCH: Record<string, string> = {
-  noir:        "#111",
-  blanc:       "#f5f5f5",
-  beige:       "#d4b896",
-  crème:       "#f3ece6",
-  marron:      "#7b4f2e",
-  rouge:       "#c0392b",
-  rose:        "#f7a3c8",
-  fuchsia:     "#d4006e",
-  violet:      "#6c3d8f",
-  bleu:        "#2c5f9e",
-  marine:      "#1a2e5a",
-  vert:        "#2d7a4f",
-  kaki:        "#6b6b3a",
-  jaune:       "#f2c94c",
-  orange:      "#e07b2a" ,
-  corail:      "#e8604c",
-  gris:        "#888",
-  argent:      "#c0c0c0",
-  or:          "#c9a84c",
-  léopard:     "linear-gradient(135deg,#c8a060 25%,#3d2000 25%,#3d2000 50%,#c8a060 50%,#c8a060 75%,#3d2000 75%)",
-  multicolore: "conic-gradient(#c0392b,#f2c94c,#2d7a4f,#2c5f9e,#c0392b)",
-  multicolor:  "conic-gradient(#c0392b,#f2c94c,#2d7a4f,#2c5f9e,#c0392b)",
-  floral:      "conic-gradient(#f7a3c8,#2d7a4f,#f2c94c,#f7a3c8)",
-  géométriques:"conic-gradient(#2c5f9e,#888,#111,#2c5f9e)",
+  noir:          "#111",
+  black:         "#111",
+  blanc:         "#f5f5f5",
+  white:         "#f5f5f5",
+  beige:         "#d4b896",
+  creme:         "#f3ece6",
+  marron:        "#7b4f2e",
+  brown:         "#7b4f2e",
+  rouge:         "#c0392b",
+  red:           "#c0392b",
+  rose:          "#f7a3c8",
+  pink:          "#f7a3c8",
+  fuchsia:       "#d4006e",
+  violet:        "#6c3d8f",
+  purple:        "#6c3d8f",
+  bleu:          "#2c5f9e",
+  blue:          "#2c5f9e",
+  marine:        "#1a2e5a",
+  navy:          "#1a2e5a",
+  turquoise:     "#00b5b8",
+  vert:          "#2d7a4f",
+  green:         "#2d7a4f",
+  kaki:          "#6b6b3a",
+  khaki:         "#6b6b3a",
+  jaune:         "#f2c94c",
+  yellow:        "#f2c94c",
+  orange:        "#e07b2a",
+  corail:        "#e8604c",
+  coral:         "#e8604c",
+  gris:          "#888",
+  grey:          "#888",
+  gray:          "#888",
+  argent:        "#c0c0c0",
+  silver:        "#c0c0c0",
+  or:            "#c9a84c",
+  gold:          "#c9a84c",
+  leopard:       "linear-gradient(135deg,#c8a060 25%,#3d2000 25%,#3d2000 50%,#c8a060 50%,#c8a060 75%,#3d2000 75%)",
+  multicolore:   "conic-gradient(#c0392b,#f2c94c,#2d7a4f,#2c5f9e,#c0392b)",
+  multicolor:    "conic-gradient(#c0392b,#f2c94c,#2d7a4f,#2c5f9e,#c0392b)",
+  multicouleur:  "conic-gradient(#c0392b,#f2c94c,#2d7a4f,#2c5f9e,#c0392b)",
+  floral:        "conic-gradient(#f7a3c8,#2d7a4f,#f2c94c,#f7a3c8)",
+  geometriques:  "conic-gradient(#2c5f9e,#888,#111,#2c5f9e)",
+  geometrique:   "conic-gradient(#2c5f9e,#888,#111,#2c5f9e)",
+  imprime:       "conic-gradient(#f7a3c8,#f2c94c,#2c5f9e,#f7a3c8)",
 };
 
 function swatchForColor(label: string): string {
-  return COLOR_SWATCH[label.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")]
-    ?? COLOR_SWATCH[label.toLowerCase()]
-    ?? "#ccc";
+  return COLOR_SWATCH[norm(label)] ?? "#bbb";
 }
 
 function extractColors(products: Product[]): { key: string; css: string }[] {
