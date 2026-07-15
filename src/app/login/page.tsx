@@ -2,13 +2,15 @@ import { AuthForm } from "@/components/auth-form";
 import Image from "next/image";
 import type { Metadata } from "next";
 import logoWhite from "../../../public/logo-white.png";
+import { PageShell } from "@/components/page-shell";
 
 export const metadata: Metadata = { title: "Connexion — Lil'OG" };
 
 export default async function LoginPage() {
 
   return (
-    <main className="auth-split">
+    <PageShell>
+    <main className="auth-split" style={{ paddingTop: "64px" }}>
       {/* Left — form */}
       <div className="auth-left">
         <a className="auth-back" href="/">← Retour</a>
@@ -29,5 +31,6 @@ export default async function LoginPage() {
         />
       </div>
     </main>
+    </PageShell>
   );
 }

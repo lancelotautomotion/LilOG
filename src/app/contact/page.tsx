@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import type { Metadata } from "next";
+import { PageShell } from "@/components/page-shell";
 
 export default function ContactPage() {
   const [name, setName] = useState("");
@@ -20,7 +20,8 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="contact-split">
+    <PageShell>
+    <main className="contact-split" style={{ paddingTop: "64px" }}>
       {/* Left — form */}
       <div className="contact-left">
         <a className="auth-back" href="/">← Retour</a>
@@ -100,5 +101,6 @@ export default function ContactPage() {
         </div>
       </div>
     </main>
+    </PageShell>
   );
 }
