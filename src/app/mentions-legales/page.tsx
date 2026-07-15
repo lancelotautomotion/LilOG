@@ -9,6 +9,7 @@ const sections: LegalSection[] = [
         <p><strong>Lil'OG</strong> — Entreprise individuelle<br />
         Représentante légale : Louna Lili Guitton<br />
         Adresse : 26 rue Soubise, 93400 Saint-Ouen-Sur-Seine, France<br />
+        SIRET : <strong>98014870400011</strong><br />
         E-mail : <strong>lilog.shop@gmail.com</strong><br />
         Statut : Auto-entrepreneur / Micro-entreprise</p>
       </>
