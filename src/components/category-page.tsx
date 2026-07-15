@@ -72,9 +72,8 @@ function CategoryVibe({ catKey }: { catKey: string }) {
   const vibe = CAT_VIBES[catKey];
   if (!vibe) return null;
   return (
-    <div className="cat-vibe-strip">
-      <div className="cat-vibe-card">
-        <div className="cat-vibe-w95-bar">
+    <div className="cat-vibe-card">
+      <div className="cat-vibe-w95-bar">
           <span className="cat-vibe-w95-title">{vibe.tagline}</span>
           <div className="w95-dots"><span /><span /><span /></div>
         </div>
@@ -328,14 +327,12 @@ export function CategoryPage({
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
       <main className="category-page">
-        <div className="category-header">
+        <div className="category-header-row">
           <h1 className="category-title">{label}</h1>
+          <CategoryVibe catKey={catKey} />
         </div>
 
-        <CategoryVibe catKey={catKey} />
-
-        <div className="category-header" style={{ borderBottom: "none", paddingTop: 0, marginTop: 0 }}>
-          <div />
+        <div className="category-filter-bar">
           <button
             className={"filter-trigger" + (activeFilterCount > 0 ? " active" : "")}
             onClick={() => setFilterOpen(true)}
