@@ -40,7 +40,7 @@ const sections: LegalSection[] = [
     id: "donnees", num: "04", title: "Données personnelles",
     content: (
       <>
-        <p>Lil'OG collecte et traite des données personnelles dans le cadre de la gestion des commandes et de la relation client. Ces traitements sont détaillés dans la <strong>Politique de Confidentialité</strong> disponible sur le site.</p>
+        <p>Lil'OG collecte et traite des données personnelles dans le cadre de la gestion des commandes et de la relation client. Ces traitements sont détaillés dans la <a href="/confidentialite" style={{ color: "#d4006e", textDecoration: "underline" }}><strong>Politique de Confidentialité</strong></a> disponible sur le site.</p>
         <p>Conformément au Règlement (UE) 2016/679 (RGPD) et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, d'effacement et d'opposition à l'adresse : <strong>lilog.shop@gmail.com</strong>.</p>
       </>
     ),
@@ -49,7 +49,7 @@ const sections: LegalSection[] = [
     id: "cookies", num: "05", title: "Cookies",
     content: (
       <>
-        <p>Le site utilise des cookies nécessaires à son fonctionnement et, avec votre consentement, des cookies analytiques. La politique de gestion des cookies est détaillée dans notre <strong>Politique de Cookies</strong>.</p>
+        <p>Le site utilise des cookies nécessaires à son fonctionnement et, avec votre consentement, des cookies analytiques. La politique de gestion des cookies est détaillée dans notre <a href="/cookies" style={{ color: "#d4006e", textDecoration: "underline" }}><strong>Politique de Cookies</strong></a>.</p>
       </>
     ),
   },
