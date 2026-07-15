@@ -28,6 +28,7 @@ export default async function LoginPage() {
           src={logoWhite}
           alt="Lil'OG"
           className="auth-right-logo"
+          style={{ width: "min(420px, 85%)", height: "auto" }}
           priority
         />
       </div>
