@@ -55,11 +55,12 @@ export function LegalShell({ eyebrow, title, subtitle, date, sections }: LegalSh
       <Drawer open={menu} onClose={() => setMenu(false)} />
       <main className="legal-page">
 
-        <div className="legal-hero">
-          <p className="static-eyebrow">{eyebrow}</p>
-          <h1 className="legal-title">{title}</h1>
-          <p className="legal-subtitle">{subtitle}</p>
-          <p className="legal-date">Version en vigueur : {date}</p>
+        <div className="static-hero static-hero--light static-hero--bg legal-hero" style={{ backgroundImage: "url('/leo.jpeg')" }}>
+          <div className="static-hero-text">
+            <p className="static-eyebrow">{eyebrow}</p>
+            <h1 className="static-title">{title}<br /><em style={{ fontSize: "0.55em", fontStyle: "normal", opacity: 0.6 }}>{subtitle}</em></h1>
+            <p className="legal-date" style={{ marginTop: "16px" }}>Version en vigueur : {date}</p>
+          </div>
         </div>
 
         <div className="legal-body">
