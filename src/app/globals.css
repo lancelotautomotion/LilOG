@@ -3351,17 +3351,17 @@ html, body {
   margin-bottom: 10px !important;
 }
 .static-title {
-  font-family: var(--mono) !important;
-  font-size: clamp(1.3rem, 3.2vw, 2.4rem) !important;
-  text-transform: uppercase !important;
+  font-family: var(--serif) !important;
+  font-size: clamp(1.8rem, 4.5vw, 3.6rem) !important;
+  text-transform: none !important;
   color: #000 !important;
-  line-height: 1.4 !important;
+  line-height: 1.1 !important;
   font-weight: 700 !important;
 }
 /* Override inline margin-top: -0.5em that pulls the second line too close */
 .static-title em {
   color: #000080 !important;
-  font-style: normal !important;
+  font-style: italic !important;
   margin-top: 0 !important;
 }
 .static-title-line1 { display: block !important; }
