@@ -3486,7 +3486,24 @@ html, body {
 }
 .histoire-section p:last-child { padding-bottom: 16px !important; }
 .histoire-section strong { color: #000080 !important; }
-.histoire-lou { display: none !important; }
+.histoire-lou {
+  flex-shrink: 0 !important;
+  background: #c0c0c0 !important;
+  border-top: 3px solid #fff !important;
+  border-left: 3px solid #fff !important;
+  border-right: 3px solid #444 !important;
+  border-bottom: 3px solid #444 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: flex-end !important;
+}
+.histoire-lou img {
+  display: block !important;
+  width: clamp(180px, 22vw, 300px) !important;
+  height: auto !important;
+  mix-blend-mode: multiply !important;
+}
 .histoire-section--accent {
   background: #d4d0c8 !important;
   border-left: 3px solid #808080 !important;
