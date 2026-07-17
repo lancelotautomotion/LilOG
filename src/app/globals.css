@@ -3318,6 +3318,10 @@ html, body {
   box-shadow: 3px 3px 0 #000 !important;
   padding: 0 !important;
   overflow: hidden !important;
+  /* Column so ::before titlebar spans full width */
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 0 !important;
 }
 /* Replace translucent overlay with blue Win95 titlebar */
 .static-hero--bg::before {
@@ -3332,6 +3336,7 @@ html, body {
   padding: 4px 8px !important;
   pointer-events: none !important;
   display: block !important;
+  width: 100% !important;
   text-transform: uppercase !important;
 }
 .static-hero--bg > * { position: static !important; }
@@ -3350,12 +3355,14 @@ html, body {
   font-size: clamp(1.3rem, 3.2vw, 2.4rem) !important;
   text-transform: uppercase !important;
   color: #000 !important;
-  line-height: 1.15 !important;
+  line-height: 1.4 !important;
   font-weight: 700 !important;
 }
+/* Override inline margin-top: -0.5em that pulls the second line too close */
 .static-title em {
   color: #000080 !important;
   font-style: normal !important;
+  margin-top: 0 !important;
 }
 .static-title-line1 { display: block !important; }
 /* Hero image: hide in W95 (title is enough) */
