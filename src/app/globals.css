@@ -3292,3 +3292,478 @@ html, body {
   .legal-win95-main .legal-body { flex-direction: column; }
   .legal-win95-main .legal-sidebar { width: 100%; position: static; padding-right: 0; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   WIN95 — STATIC PAGES (histoire, durabilite, livraison, retours, faq, contact)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Page wrapper: column of floating Win95 windows */
+.static-page {
+  padding: clamp(80px, 10vw, 110px) clamp(16px, 5vw, 80px) 80px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: clamp(18px, 2.5vw, 30px) !important;
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+}
+
+/* ── Hero window ─────────────────────────────────────────────── */
+.static-hero {
+  background: #c0c0c0 !important;
+  background-image: none !important;
+  border-top: 3px solid #fff !important;
+  border-left: 3px solid #fff !important;
+  border-right: 3px solid #444 !important;
+  border-bottom: 3px solid #444 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+/* Replace translucent overlay with blue Win95 titlebar */
+.static-hero--bg::before {
+  content: "LIL\2019OG" !important;
+  position: static !important;
+  inset: auto !important;
+  background: linear-gradient(90deg, #000080, #1084d0) !important;
+  color: #fff !important;
+  font-family: var(--mono) !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.08em !important;
+  padding: 4px 8px !important;
+  pointer-events: none !important;
+  display: block !important;
+  text-transform: uppercase !important;
+}
+.static-hero--bg > * { position: static !important; }
+.static-hero-text {
+  padding: clamp(20px, 3.5vw, 44px) clamp(18px, 3.5vw, 44px) !important;
+}
+.static-eyebrow {
+  font-family: var(--mono) !important;
+  color: #d4006e !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.15em !important;
+  margin-bottom: 10px !important;
+}
+.static-title {
+  font-family: var(--mono) !important;
+  font-size: clamp(1.3rem, 3.2vw, 2.4rem) !important;
+  text-transform: uppercase !important;
+  color: #000 !important;
+  line-height: 1.15 !important;
+  font-weight: 700 !important;
+}
+.static-title em {
+  color: #000080 !important;
+  font-style: normal !important;
+}
+.static-title-line1 { display: block !important; }
+/* Hero image: hide in W95 (title is enough) */
+.static-hero-text img { display: none !important; }
+
+/* ── Content body ────────────────────────────────────────────── */
+.static-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: clamp(14px, 2vw, 22px) !important;
+}
+
+/* ── Section windows ─────────────────────────────────────────── */
+.static-section {
+  background: #c0c0c0 !important;
+  border-top: 3px solid #fff !important;
+  border-left: 3px solid #fff !important;
+  border-right: 3px solid #444 !important;
+  border-bottom: 3px solid #444 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+  padding: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+/* h2 → Win95 window titlebar */
+.static-section h2 {
+  background: linear-gradient(90deg, #000080, #1084d0) !important;
+  color: #fff !important;
+  font-family: var(--mono) !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.07em !important;
+  padding: 5px 10px !important;
+  margin: 0 !important;
+}
+/* Body text */
+.static-section p,
+.static-section li {
+  font-family: var(--mono) !important;
+  font-size: 0.78rem !important;
+  line-height: 1.85 !important;
+  color: #111 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.static-section > p,
+.static-section > div > p {
+  padding: 14px 16px 0 !important;
+}
+.static-section > p:last-child,
+.static-section > div > p:last-child { padding-bottom: 16px !important; }
+.static-section strong { color: #000080 !important; font-weight: 700 !important; }
+.static-section em { color: #d4006e !important; font-style: normal !important; }
+/* Accent variant: subtle inset border instead of pink border */
+.static-section--accent {
+  background: #d4d0c8 !important;
+  border-left: 3px solid #808080 !important;
+  border-top: 3px solid #808080 !important;
+  border-right: 3px solid #fff !important;
+  border-bottom: 3px solid #fff !important;
+  box-shadow: inset 1px 1px 0 #000 !important;
+}
+/* Static list (retours page ul) */
+.static-list {
+  list-style: none !important;
+  padding: 0 16px 14px !important;
+  margin: 0 !important;
+}
+.static-list li {
+  font-family: var(--mono) !important;
+  font-size: 0.78rem !important;
+  line-height: 1.85 !important;
+  color: #111 !important;
+  border-bottom: 1px solid #aaa !important;
+  padding: 6px 0 !important;
+}
+.static-list li:last-child { border-bottom: none !important; }
+
+/* ── Histoire-specific ───────────────────────────────────────── */
+.histoire-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: clamp(14px, 2vw, 22px) !important;
+}
+.histoire-split {
+  display: flex !important;
+  gap: clamp(14px, 2vw, 22px) !important;
+  align-items: stretch !important;
+}
+.histoire-section {
+  background: #c0c0c0 !important;
+  border-top: 3px solid #fff !important;
+  border-left: 3px solid #fff !important;
+  border-right: 3px solid #444 !important;
+  border-bottom: 3px solid #444 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+  padding: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+.histoire-section h2 {
+  background: linear-gradient(90deg, #000080, #1084d0) !important;
+  color: #fff !important;
+  font-family: var(--mono) !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.07em !important;
+  padding: 5px 10px !important;
+  margin: 0 !important;
+}
+.histoire-section p {
+  font-family: var(--mono) !important;
+  font-size: 0.78rem !important;
+  line-height: 1.85 !important;
+  color: #111 !important;
+  padding: 14px 16px 0 !important;
+  margin: 0 !important;
+}
+.histoire-section p:last-child { padding-bottom: 16px !important; }
+.histoire-section strong { color: #000080 !important; }
+.histoire-lou { display: none !important; }
+.histoire-section--accent {
+  background: #d4d0c8 !important;
+  border-left: 3px solid #808080 !important;
+  border-top: 3px solid #808080 !important;
+  border-right: 3px solid #fff !important;
+  border-bottom: 3px solid #fff !important;
+}
+/* Engagement section (durabilite) */
+.static-section--engagement { display: block !important; padding: 0 !important; }
+.engagement-text { padding: 0 !important; }
+.engagement-text ul.static-list { padding: 0 16px 14px !important; }
+.engagement-img { display: none !important; }
+
+/* ── FAQ ─────────────────────────────────────────────────────── */
+.faq-intro {
+  background: #c0c0c0 !important;
+  border-top: 3px solid #fff !important;
+  border-left: 3px solid #fff !important;
+  border-right: 3px solid #444 !important;
+  border-bottom: 3px solid #444 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+  padding: 8px 14px !important;
+}
+.faq-intro-sub {
+  font-family: var(--mono) !important;
+  font-size: 0.72rem !important;
+  color: #000080 !important;
+  margin: 0 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+}
+.faq-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.faq-item {
+  background: #c0c0c0 !important;
+  border-top: 3px solid #fff !important;
+  border-left: 3px solid #fff !important;
+  border-right: 3px solid #444 !important;
+  border-bottom: 3px solid #444 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+  border-bottom-color: #444 !important;
+  cursor: pointer !important;
+}
+.faq-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: linear-gradient(90deg, #000080, #1084d0) !important;
+  padding: 5px 10px !important;
+  gap: 8px !important;
+}
+.faq-question {
+  font-family: var(--mono) !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  flex: 1 !important;
+}
+.faq-icon {
+  font-family: var(--mono) !important;
+  font-size: 0.9rem !important;
+  color: #fff !important;
+  background: #c0c0c0 !important;
+  color: #000 !important;
+  width: 16px !important;
+  height: 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-top: 1.5px solid #fff !important;
+  border-left: 1.5px solid #fff !important;
+  border-right: 1.5px solid #444 !important;
+  border-bottom: 1.5px solid #444 !important;
+  font-size: 0.75rem !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+}
+.faq-answer {
+  overflow: hidden !important;
+  transition: max-height 0.3s ease !important;
+  border-top: 1px solid #888 !important;
+}
+.faq-answer p {
+  font-family: var(--mono) !important;
+  font-size: 0.75rem !important;
+  line-height: 1.85 !important;
+  color: #111 !important;
+  padding: 12px 14px !important;
+  margin: 0 !important;
+}
+.faq-contact {
+  background: #c0c0c0 !important;
+  border-top: 3px solid #fff !important;
+  border-left: 3px solid #fff !important;
+  border-right: 3px solid #444 !important;
+  border-bottom: 3px solid #444 !important;
+  box-shadow: 2px 2px 0 #000 !important;
+  padding: 10px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+.faq-contact p {
+  font-family: var(--mono) !important;
+  font-size: 0.72rem !important;
+  color: #333 !important;
+  margin: 0 !important;
+}
+.faq-contact a {
+  font-family: var(--mono) !important;
+  font-size: 0.72rem !important;
+  color: #000080 !important;
+  text-decoration: underline !important;
+}
+
+/* ── Contact page ────────────────────────────────────────────── */
+.contact-split {
+  grid-template-columns: 1fr 1fr !important;
+  min-height: auto !important;
+  gap: clamp(14px, 2vw, 22px) !important;
+  padding: 0 !important;
+  align-items: start !important;
+}
+/* Left panel: Win95 window */
+.contact-left {
+  background: #c0c0c0 !important;
+  border-top: 3px solid #fff !important;
+  border-left: 3px solid #fff !important;
+  border-right: 3px solid #444 !important;
+  border-bottom: 3px solid #444 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  padding: 0 !important;
+  flex-direction: column !important;
+  position: static !important;
+}
+/* Titlebar synthesised from .contact-eyebrow + heading area */
+.contact-left-inner {
+  padding: 14px 16px 20px !important;
+  justify-content: flex-start !important;
+  padding-top: 14px !important;
+  max-width: 100% !important;
+}
+.contact-eyebrow {
+  display: block !important;
+  background: linear-gradient(90deg, #000080, #1084d0) !important;
+  color: #fff !important;
+  font-family: var(--mono) !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.1em !important;
+  padding: 5px 10px !important;
+  margin: 0 0 0 -16px !important;
+  width: calc(100% + 32px) !important;
+}
+.contact-heading {
+  font-family: var(--mono) !important;
+  font-size: clamp(1rem, 2.2vw, 1.5rem) !important;
+  color: #000 !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  margin: 14px 0 10px !important;
+}
+.contact-heading em { color: #000080 !important; font-style: normal !important; }
+.contact-sub {
+  font-family: var(--mono) !important;
+  font-size: 0.72rem !important;
+  color: #333 !important;
+  line-height: 1.7 !important;
+  margin-bottom: 16px !important;
+}
+/* Form inputs: Win95 inset style */
+.contact-input {
+  background: #fff !important;
+  border-top: 2px solid #808080 !important;
+  border-left: 2px solid #808080 !important;
+  border-right: 2px solid #fff !important;
+  border-bottom: 2px solid #fff !important;
+  border-radius: 0 !important;
+  font-family: var(--mono) !important;
+  font-size: 0.75rem !important;
+  color: #000 !important;
+  padding: 6px 8px !important;
+}
+.contact-input::placeholder { color: #888 !important; font-family: var(--mono) !important; }
+.contact-input:focus { outline: 1px dotted #000 !important; outline-offset: -2px !important; box-shadow: none !important; }
+/* Submit button */
+.contact-submit {
+  background: #c0c0c0 !important;
+  border-top: 2px solid #fff !important;
+  border-left: 2px solid #fff !important;
+  border-right: 2px solid #444 !important;
+  border-bottom: 2px solid #444 !important;
+  border-radius: 0 !important;
+  font-family: var(--mono) !important;
+  font-size: 0.72rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  color: #000 !important;
+  padding: 6px 20px !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+.contact-submit:hover { background: #d8d8d8 !important; }
+.contact-submit:active {
+  border-top: 2px solid #444 !important;
+  border-left: 2px solid #444 !important;
+  border-right: 2px solid #fff !important;
+  border-bottom: 2px solid #fff !important;
+}
+/* Socials */
+.contact-socials {
+  margin-top: 18px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid #888 !important;
+}
+.contact-social-links a {
+  font-family: var(--mono) !important;
+  font-size: 0.72rem !important;
+  color: #000080 !important;
+  text-decoration: underline !important;
+}
+/* Thanks state */
+.contact-thanks {
+  font-family: var(--mono) !important;
+  font-size: 0.78rem !important;
+  color: #000080 !important;
+}
+.contact-thanks-icon { color: #d4006e !important; }
+/* Right panel: Win95 window with leo wallpaper */
+.contact-right {
+  background: #c0c0c0 !important;
+  border-top: 3px solid #fff !important;
+  border-left: 3px solid #fff !important;
+  border-right: 3px solid #444 !important;
+  border-bottom: 3px solid #444 !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 260px !important;
+}
+.contact-right::before {
+  content: "" !important;
+  background: linear-gradient(90deg, #000080, #1084d0) !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important;
+  height: 22px !important;
+}
+.contact-right { position: relative !important; overflow: hidden !important; }
+.contact-right-inner { position: relative !important; z-index: 1 !important; padding: 32px 24px !important; }
+.contact-right-quote {
+  font-family: var(--mono) !important;
+  font-size: clamp(0.85rem, 2vw, 1.15rem) !important;
+  color: #000 !important;
+  text-align: center !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+}
+.contact-right-quote em { color: #000080 !important; font-style: normal !important; display: inline !important; }
+
+/* auth-back link in contact */
+.contact-left .auth-back {
+  font-family: var(--mono) !important;
+  font-size: 0.65rem !important;
+  color: #000080 !important;
+  padding: 6px 10px !important;
+  display: inline-block !important;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .static-page { padding: 72px 14px 48px !important; gap: 12px !important; }
+  .histoire-split { flex-direction: column !important; }
+  .contact-split { grid-template-columns: 1fr !important; }
+  .contact-right { display: none !important; }
+  .static-section--left,
+  .static-section--right { max-width: 100% !important; }
+}
