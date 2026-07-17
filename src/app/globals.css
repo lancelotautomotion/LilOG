@@ -3489,19 +3489,24 @@ html, body {
 .histoire-lou {
   flex-shrink: 0 !important;
   width: clamp(220px, 38%, 400px) !important;
-  background: transparent !important;
+  background: #fff !important;
   border: none !important;
   box-shadow: none !important;
   overflow: hidden !important;
   align-self: stretch !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 .histoire-lou img {
   display: block !important;
-  width: 100% !important;
-  height: 100% !important;
+  /* Scale up slightly so white PNG edges overflow the hidden container */
+  width: 115% !important;
+  height: 115% !important;
   object-fit: cover !important;
-  object-position: center top !important;
+  object-position: center center !important;
   mix-blend-mode: normal !important;
+  flex-shrink: 0 !important;
 }
 .histoire-section--accent {
   background: #d4d0c8 !important;
