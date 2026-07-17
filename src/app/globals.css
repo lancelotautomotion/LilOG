@@ -3488,24 +3488,20 @@ html, body {
 .histoire-section strong { color: #000080 !important; }
 .histoire-lou {
   flex-shrink: 0 !important;
-  flex: 1 !important;
+  width: clamp(220px, 38%, 400px) !important;
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  /* Gray bg so mix-blend-mode:multiply turns white areas gray, not transparent */
-  background: #c0c0c0 !important;
   overflow: hidden !important;
-  display: flex !important;
   align-self: stretch !important;
-  align-items: center !important;
-  justify-content: center !important;
 }
 .histoire-lou img {
   display: block !important;
   width: 100% !important;
   height: 100% !important;
-  object-fit: contain !important;
-  object-position: center !important;
-  mix-blend-mode: multiply !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+  mix-blend-mode: normal !important;
 }
 .histoire-section--accent {
   background: #d4d0c8 !important;
