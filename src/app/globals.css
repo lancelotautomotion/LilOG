@@ -3493,8 +3493,8 @@ html, body {
   background: transparent !important;
   overflow: hidden !important;
   display: flex !important;
-  align-items: stretch !important;
   align-self: stretch !important;
+  align-items: stretch !important;
 }
 .histoire-lou img {
   display: block !important;
@@ -3503,7 +3503,7 @@ html, body {
   max-width: none !important;
   object-fit: cover !important;
   object-position: top center !important;
-  mix-blend-mode: multiply !important;
+  mix-blend-mode: normal !important;
 }
 .histoire-section--accent {
   background: #d4d0c8 !important;
