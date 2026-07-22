@@ -14,30 +14,33 @@ import type { Product, ProductDetail as ProductDetailType } from "@/lib/shopify/
 
 const INTERNAL_TAGS = new Set(["new", "one-of-one", "1-of-1"]);
 
-const ACCORDION_SECTIONS = [
-  { re: /nos conseils de style/i,          label: "Nos conseils de style" },
-  { re: /info(?:s)?\s+mannequin/i,         label: "Info Mannequin & Fit" },
-  { re: /à propos de notre sélection/i,    label: "À propos de notre sélection" },
+const DESC_SECTIONS: { re: RegExp; label: string; accordion: boolean }[] = [
+  { re: /les détails de la pépite/i,       label: "Les détails de la pépite", accordion: false },
+  { re: /nos conseils de style/i,          label: "Nos conseils de style",     accordion: true  },
+  { re: /info(?:s)?\s+mannequin/i,         label: "Info Mannequin & Fit",      accordion: true  },
+  { re: /à propos de notre sélection/i,    label: "À propos de notre sélection", accordion: true },
 ];
 
-function parseDescription(html: string): { above: string; accordions: { label: string; content: string }[] } {
-  // Split on <p> tag openings to get individual paragraph segments
+function parseDescription(html: string): {
+  sections: { label: string | null; content: string; accordion: boolean }[];
+} {
   const segments = html.split(/(?=<p[\s>])/i);
-  const sections: { label: string | null; chunks: string[] }[] = [{ label: null, chunks: [] }];
+  const raw: { label: string | null; accordion: boolean; chunks: string[] }[] = [
+    { label: null, accordion: false, chunks: [] },
+  ];
 
   for (const seg of segments) {
     const text = seg.replace(/<[^>]+>/g, "");
-    const match = ACCORDION_SECTIONS.find((s) => s.re.test(text));
+    const match = DESC_SECTIONS.find((s) => s.re.test(text));
     if (match) {
-      sections.push({ label: match.label, chunks: [seg] });
+      raw.push({ label: match.label, accordion: match.accordion, chunks: [seg] });
     } else {
-      sections[sections.length - 1].chunks.push(seg);
+      raw[raw.length - 1].chunks.push(seg);
     }
   }
 
   return {
-    above: sections[0].chunks.join(""),
-    accordions: sections.slice(1).map((s) => ({ label: s.label!, content: s.chunks.join("") })),
+    sections: raw.map((s) => ({ label: s.label, content: s.chunks.join(""), accordion: s.accordion })),
   };
 }
 
@@ -123,10 +126,14 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
             </button>
 
             {product.descriptionHtml && (() => {
-              const { above, accordions } = parseDescription(product.descriptionHtml);
+              const { sections } = parseDescription(product.descriptionHtml);
+              const visible = sections.filter((s) => !s.accordion);
+              const accordions = sections.filter((s) => s.accordion);
               return (
                 <>
-                  {above && <div className="pdp-desc" dangerouslySetInnerHTML={{ __html: above }} />}
+                  {visible.map((s, i) => s.content && (
+                    <div key={i} className="pdp-desc" dangerouslySetInnerHTML={{ __html: s.content }} />
+                  ))}
                   {accordions.length > 0 && (
                     <div className="pdp-accordion pdp-desc-accordion">
                       {accordions.map(({ label, content }) => (
