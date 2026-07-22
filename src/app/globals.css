@@ -2976,18 +2976,26 @@ html, body {
 }
 .pdp-add.added { background: #006000 !important; border-top-color: #40a040 !important; border-left-color: #40a040 !important; }
 .pdp-add:disabled:not(.added) { background: #888 !important; border-color: #aaa #666 #666 #aaa !important; }
+.pdp-accordion { border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; box-shadow: 1px 1px 0 #000 !important; margin-top: clamp(18px,2.4vw,28px) !important; }
+.pdp-acc-item { border: none !important; border-bottom: 1px solid #888 !important; }
+.pdp-acc-item:last-child { border-bottom: none !important; }
 .pdp-acc-item summary {
   font-family: var(--mono) !important;
   text-transform: uppercase !important;
   font-size: 0.65rem !important;
-  letter-spacing: 0.1em !important;
-  background: #c0c0c0;
-  border-top: 1px solid #888;
-  padding: 10px 12px !important;
-  color: #000;
+  letter-spacing: 0.12em !important;
+  background: #c0c0c0 !important;
+  border: none !important;
+  padding: 11px 14px !important;
+  color: #000 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
 }
-.pdp-acc-item[open] summary { background: #000080; color: #fff; }
-.pdp-acc-body { background: #d8d8d8; padding: 12px; font-family: var(--mono) !important; font-size: 0.7rem !important; border: 1px solid #888; }
+.pdp-acc-item summary:hover { background: #d4d0c8 !important; }
+.pdp-acc-item[open] > summary { background: #000080 !important; color: #fff !important; }
+.pdp-acc-item[open] > summary .chev { filter: invert(1) !important; }
+.pdp-acc-body { background: #d8d8d8 !important; padding: 14px !important; font-family: var(--mono) !important; font-size: 0.7rem !important; border: none !important; border-top: 1px solid #888 !important; }
 .pdp-tag { font-family: var(--mono) !important; font-size: 0.68rem !important; border-radius: 0 !important; background: #c0c0c0 !important; color: #000 !important; border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; padding: 5px 12px !important; letter-spacing: 0.06em !important; text-transform: uppercase !important; }
 .pdp-tag--etat, .pdp-tag--taille { font-weight: 700 !important; }
 .pdp-desc { font-family: var(--mono) !important; font-size: 0.72rem !important; line-height: 1.7 !important; color: #222 !important; }

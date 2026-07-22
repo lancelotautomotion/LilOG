@@ -134,30 +134,25 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   {visible.map((s, i) => s.content && (
                     <div key={i} className="pdp-desc" dangerouslySetInnerHTML={{ __html: s.content }} />
                   ))}
-                  {accordions.length > 0 && (
-                    <div className="pdp-accordion pdp-desc-accordion">
-                      {accordions.map(({ label, content }) => (
-                        <details key={label} className="pdp-acc-item">
-                          <summary>{label} <Icon.chevD className="chev" /></summary>
-                          <div className="pdp-acc-body pdp-desc" dangerouslySetInnerHTML={{ __html: content }} />
-                        </details>
-                      ))}
-                    </div>
-                  )}
+                  <div className="pdp-accordion">
+                    {accordions.map(({ label, content }) => (
+                      <details key={label} className="pdp-acc-item">
+                        <summary>{label} <Icon.chevD className="chev" /></summary>
+                        <div className="pdp-acc-body pdp-desc" dangerouslySetInnerHTML={{ __html: content }} />
+                      </details>
+                    ))}
+                    <details className="pdp-acc-item">
+                      <summary>{t.pdp.detailsH} <Icon.chevD className="chev" /></summary>
+                      <div className="pdp-acc-body">{t.pdp.detailsBody}</div>
+                    </details>
+                    <details className="pdp-acc-item">
+                      <summary>{t.pdp.shippingH} <Icon.chevD className="chev" /></summary>
+                      <div className="pdp-acc-body">{t.pdp.shippingBody}</div>
+                    </details>
+                  </div>
                 </>
               );
             })()}
-
-            <div className="pdp-accordion">
-              <details className="pdp-acc-item">
-                <summary>{t.pdp.detailsH} <Icon.chevD className="chev" /></summary>
-                <div className="pdp-acc-body">{t.pdp.detailsBody}</div>
-              </details>
-              <details className="pdp-acc-item">
-                <summary>{t.pdp.shippingH} <Icon.chevD className="chev" /></summary>
-                <div className="pdp-acc-body">{t.pdp.shippingBody}</div>
-              </details>
-            </div>
           </div>
         </div>
         </div>{/* .pdp-win */}
