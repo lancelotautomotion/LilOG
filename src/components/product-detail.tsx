@@ -14,6 +14,33 @@ import type { Product, ProductDetail as ProductDetailType } from "@/lib/shopify/
 
 const INTERNAL_TAGS = new Set(["new", "one-of-one", "1-of-1"]);
 
+const ACCORDION_SECTIONS = [
+  { re: /nos conseils de style/i,          label: "Nos conseils de style" },
+  { re: /info(?:s)?\s+mannequin/i,         label: "Info Mannequin & Fit" },
+  { re: /à propos de notre sélection/i,    label: "À propos de notre sélection" },
+];
+
+function parseDescription(html: string): { above: string; accordions: { label: string; content: string }[] } {
+  // Split on <p> tag openings to get individual paragraph segments
+  const segments = html.split(/(?=<p[\s>])/i);
+  const sections: { label: string | null; chunks: string[] }[] = [{ label: null, chunks: [] }];
+
+  for (const seg of segments) {
+    const text = seg.replace(/<[^>]+>/g, "");
+    const match = ACCORDION_SECTIONS.find((s) => s.re.test(text));
+    if (match) {
+      sections.push({ label: match.label, chunks: [seg] });
+    } else {
+      sections[sections.length - 1].chunks.push(seg);
+    }
+  }
+
+  return {
+    above: sections[0].chunks.join(""),
+    accordions: sections.slice(1).map((s) => ({ label: s.label!, content: s.chunks.join("") })),
+  };
+}
+
 export function ProductDetail({ product, related }: { product: ProductDetailType; related: Product[] }) {
   const { t } = useLanguage();
   const { addItem } = useCart();
@@ -95,9 +122,24 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
               </span>
             </button>
 
-            {product.descriptionHtml && (
-              <div className="pdp-desc" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
-            )}
+            {product.descriptionHtml && (() => {
+              const { above, accordions } = parseDescription(product.descriptionHtml);
+              return (
+                <>
+                  {above && <div className="pdp-desc" dangerouslySetInnerHTML={{ __html: above }} />}
+                  {accordions.length > 0 && (
+                    <div className="pdp-accordion pdp-desc-accordion">
+                      {accordions.map(({ label, content }) => (
+                        <details key={label} className="pdp-acc-item">
+                          <summary>{label} <Icon.chevD className="chev" /></summary>
+                          <div className="pdp-acc-body pdp-desc" dangerouslySetInnerHTML={{ __html: content }} />
+                        </details>
+                      ))}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
 
             <div className="pdp-accordion">
               <details className="pdp-acc-item">
