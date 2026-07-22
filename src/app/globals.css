@@ -1052,6 +1052,7 @@ a { color: inherit; text-decoration: none; }
 .pdp-frame {
   position: relative;
   aspect-ratio: 3 / 4;
+  max-height: 72vh;
   overflow: hidden;
   background: var(--cream-2);
 }

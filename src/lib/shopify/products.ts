@@ -133,7 +133,14 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
       }))
       .filter((v) => v.title !== "Default Title"),
     size: (() => {
-      const sizeOption = node.options?.find((o) => /taille|size/i.test(o.name));
+      if (process.env.NODE_ENV !== "production") {
+        console.log("[size] options for", node.handle, JSON.stringify(node.options));
+      }
+      // Match any size-like option name; skip color and generic "Title"
+      const sizeOption = node.options?.find((o) =>
+        /taille|size|pointure|dimension/i.test(o.name) ||
+        (!/cou?le?ur|colou?r|title/i.test(o.name) && (o.optionValues?.length ?? o.values?.length ?? 0) > 0)
+      );
       if (sizeOption?.optionValues?.length) return sizeOption.optionValues.map((v) => v.name).join(", ");
       if (sizeOption?.values?.length) return sizeOption.values.join(", ");
       return null;
