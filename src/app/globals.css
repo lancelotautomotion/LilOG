@@ -2534,13 +2534,13 @@ html {
 }
 
 /* ── Win95 cursors ── */
-/* Arrow: stepped pixel-art triangle, black outline + white fill */
+/* Arrow: pixel_arrow.cur (24×36, hotspot 0 0) */
 * {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='black' d='M0,0 L0,24 L24,24 L22,24 L22,22 L20,22 L20,20 L18,20 L18,18 L16,18 L16,16 L14,16 L14,14 L12,14 L12,12 L10,12 L10,10 L8,10 L8,8 L6,8 L6,6 L4,6 L4,4 L2,4 L2,2 L0,2 Z'/%3E%3Cpath fill='white' d='M2,4 L2,24 L22,24 L20,24 L20,22 L18,22 L18,20 L16,20 L16,18 L14,18 L14,16 L12,16 L12,14 L10,14 L10,12 L8,12 L8,10 L6,10 L6,8 L4,8 L4,6 L2,6 Z'/%3E%3C/svg%3E") 0 0, default !important;
+  cursor: url('/pixel_arrow.cur') 0 0, url('/pixel_arrow.png') 0 0, default !important;
 }
-/* Hand pointer: index finger up, 3 curled fingers, thumb, palm + sparkles */
+/* Hand pointer: pixel_hand.cur (28×42, hotspot 5 6) */
 a, button, [role="button"], label[for], select, input[type="checkbox"], input[type="radio"], .filter-swatch, .filter-trigger, .filter-close, .drawer-link, .drawer-parent, .nav-icon-btn, .menu-btn, .lang-switch {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='28'%3E%3Crect x='3' y='0' width='3' height='1' fill='black'/%3E%3Crect x='8' y='0' width='1' height='3' fill='black'/%3E%3Crect x='12' y='0' width='3' height='1' fill='black'/%3E%3Crect x='6' y='2' width='6' height='18' fill='black'/%3E%3Crect x='8' y='3' width='2' height='16' fill='white'/%3E%3Crect x='11' y='5' width='5' height='15' fill='black'/%3E%3Crect x='12' y='6' width='3' height='13' fill='white'/%3E%3Crect x='15' y='7' width='5' height='13' fill='black'/%3E%3Crect x='16' y='8' width='3' height='11' fill='white'/%3E%3Crect x='19' y='9' width='4' height='11' fill='black'/%3E%3Crect x='20' y='10' width='2' height='9' fill='white'/%3E%3Crect x='1' y='13' width='6' height='6' fill='black'/%3E%3Crect x='2' y='14' width='4' height='4' fill='white'/%3E%3Crect x='1' y='18' width='22' height='9' fill='black'/%3E%3Crect x='2' y='19' width='20' height='7' fill='white'/%3E%3C/svg%3E") 8 3, pointer !important;
+  cursor: url('/pixel_hand.cur') 5 6, url('/pixel_hand.png') 5 6, pointer !important;
 }
 html, body {
   background-color: transparent;
