@@ -3867,3 +3867,391 @@ html, body {
   .static-section--left,
   .static-section--right { max-width: 100% !important; }
 }
+
+/* ============================================================
+   Contact page — Y2K / Windows 98 redesign
+   ============================================================ */
+
+.cy2k-page {
+  padding: 76px 20px 40px;
+  background-image: url('/leo.jpeg');
+  background-repeat: repeat;
+  background-size: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 100dvh;
+}
+
+/* Cursive title */
+.cy2k-title {
+  font-family: var(--font-script, cursive);
+  font-size: clamp(3rem, 6.5vw, 5.5rem);
+  color: #fff;
+  text-shadow: 2px 3px 8px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  line-height: 1;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.cy2k-title-star {
+  font-size: 0.42em;
+  vertical-align: super;
+  margin-left: 4px;
+  font-family: var(--font-sans), sans-serif;
+}
+
+/* Top row: title left, hello gorgeous right */
+.cy2k-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cy2k-hello-win {
+  flex: 1;
+  max-width: 520px;
+}
+
+/* Three-column main row */
+.cy2k-main-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ── Win95 window shell ── */
+.cy2k-win {
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  background: #c0c0c0;
+  box-shadow: 2px 2px 0 #000, inset 1px 1px 0 #e8e8e8;
+}
+
+/* Title bar */
+.cy2k-titlebar {
+  background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 4px 3px 6px;
+  gap: 4px;
+  user-select: none;
+}
+
+.cy2k-titlebar-text {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.65rem;
+  color: #fff;
+  letter-spacing: 0.06em;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Minimize / Maximize / Close squares */
+.cy2k-dots {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.cy2k-dots span {
+  width: 14px;
+  height: 12px;
+  background: #c0c0c0;
+  border-top: 1.5px solid #fff;
+  border-left: 1.5px solid #fff;
+  border-right: 1.5px solid #444;
+  border-bottom: 1.5px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.48rem;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.cy2k-dot-close::after { content: "✕"; }
+
+/* Window body */
+.cy2k-body {
+  padding: 12px 14px;
+}
+
+/* ── Window 1: hello gorgeous ── */
+.cy2k-hello-text {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  color: #000;
+  line-height: 1.7;
+  margin: 0 0 12px;
+}
+
+.cy2k-nav-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cy2k-nav-btn {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.67rem;
+  color: #c1155a;
+  text-decoration: none;
+  background: #c0c0c0;
+  border-top: 1.5px solid #fff;
+  border-left: 1.5px solid #fff;
+  border-right: 1.5px solid #808080;
+  border-bottom: 1.5px solid #808080;
+  padding: 3px 10px;
+  display: inline-block;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.cy2k-nav-btn:hover { background: #d4d4d4; }
+
+.cy2k-nav-btn:active {
+  border-top: 1.5px solid #808080;
+  border-left: 1.5px solid #808080;
+  border-right: 1.5px solid #fff;
+  border-bottom: 1.5px solid #fff;
+}
+
+/* ── Window 2: get in touch ── */
+.cy2k-info-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cy2k-info-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.cy2k-info-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  min-width: 26px;
+  text-align: center;
+  margin-top: 2px;
+}
+
+.cy2k-info-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.cy2k-info-val {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  color: #222;
+  line-height: 1.55;
+}
+
+.cy2k-info-meta {
+  color: #555;
+  font-size: 0.65rem;
+}
+
+/* ── Window 3: contact form ── */
+.cy2k-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cy2k-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cy2k-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cy2k-input {
+  background: #fff;
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  border-radius: 0;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  color: #000;
+  padding: 5px 8px;
+  outline: none;
+  width: 100%;
+}
+
+.cy2k-input:focus {
+  outline: 1px dotted #000;
+  outline-offset: -3px;
+}
+
+.cy2k-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23000'/%3E%3C/svg%3E");
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 24px;
+  cursor: pointer;
+}
+
+.cy2k-textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.cy2k-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.cy2k-submit {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #000;
+  background: #e040a0;
+  border-top: 2px solid #f88ec8;
+  border-left: 2px solid #f88ec8;
+  border-right: 2px solid #a01060;
+  border-bottom: 2px solid #a01060;
+  padding: 6px 24px;
+  cursor: pointer;
+}
+
+.cy2k-submit:hover { background: #e84daa; }
+
+.cy2k-submit:active {
+  border-top: 2px solid #a01060;
+  border-left: 2px solid #a01060;
+  border-right: 2px solid #f88ec8;
+  border-bottom: 2px solid #f88ec8;
+}
+
+.cy2k-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.cy2k-thanks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.cy2k-thanks-icon { font-size: 2rem; color: #d4006e; }
+
+.cy2k-thanks p {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+  color: #000080;
+  margin: 0;
+}
+
+/* ── Window 4: xoxo photo ── */
+.cy2k-xoxo-win {
+  display: flex;
+  flex-direction: column;
+}
+
+.cy2k-xoxo-img-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 280px;
+  margin: 6px;
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  overflow: hidden;
+}
+
+/* ── Window 5: quick info ── */
+.cy2k-quick-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.cy2k-quick-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.cy2k-quick-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #d4006e;
+  min-width: 30px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.cy2k-quick-icon--lg { font-size: 1.8rem; }
+
+.cy2k-quick-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.63rem;
+  font-weight: 700;
+  color: #000080;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.cy2k-quick-item p {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.67rem;
+  color: #333;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.cy2k-quick-link { color: #000080; text-decoration: underline; }
+.cy2k-quick-link:hover { color: #d4006e; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .cy2k-top-row { flex-direction: column; align-items: flex-start; }
+  .cy2k-hello-win { max-width: 100%; width: 100%; }
+  .cy2k-main-row { grid-template-columns: 1fr; }
+  .cy2k-quick-body { grid-template-columns: 1fr; gap: 16px; }
+}
+
+@media (max-width: 600px) {
+  .cy2k-page { padding: 72px 12px 32px; gap: 12px; }
+  .cy2k-title { font-size: 2.8rem; }
+}

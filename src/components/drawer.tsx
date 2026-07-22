@@ -93,6 +93,9 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               )}
             </div>
           ))}
+          <div className="drawer-item">
+            <a className="drawer-link" href="/contact" onClick={onClose}>Contact</a>
+          </div>
         </nav>
       </aside>
     </>
