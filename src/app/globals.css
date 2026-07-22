@@ -3883,420 +3883,177 @@ html, body {
 }
 
 /* ============================================================
-   Contact page — Y2K Windows XP v3
-   Palette : XP blue #0038C8 · Windows gray #D4D4D4 · Pink #ff5ba8
+   Contact page
    ============================================================ */
 
-/* Page wrapper — fond via ::before pour pouvoir blur sans toucher le contenu */
-.cy2k-page {
-  padding: 76px clamp(24px, 5.5vw, 80px) 40px;
-  position: relative;
-  isolation: isolate;
+.contact-layout {
+  max-width: 1280px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 40px;
-  min-height: 100dvh;
-  cursor: url('/cursor-default.cur'), default;
+  gap: 20px;
 }
 
-/* Fond léopard flou, fixe (effet papier-peint) */
-.cy2k-page::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image:
-    linear-gradient(rgba(255, 182, 212, 0.12), rgba(255, 182, 212, 0.12)),
-    url('/leo.jpeg');
-  background-repeat: repeat;
-  background-size: auto, 750px;
-  filter: blur(0.8px) saturate(0.8) brightness(1.1);
-  pointer-events: none;
-}
-
-/* ── Titre principal ── */
-.cy2k-title {
-  font-family: var(--font-script, cursive);
-  font-size: clamp(5rem, 10vw, 9rem);
-  color: #fff;
-  -webkit-text-stroke: 2px #000;
-  text-stroke: 2px #000;
-  paint-order: stroke fill;
-  text-shadow: 3px 5px 0 rgba(0, 0, 0, 0.28);
-  margin: 0;
-  line-height: 1;
-  display: inline-block;
-  flex-shrink: 0;
-}
-
-.cy2k-title-star {
-  font-size: 0.35em;
-  vertical-align: super;
-  margin-left: 6px;
-  font-family: var(--font-sans), sans-serif;
-  -webkit-text-stroke: 1px #000;
-}
-
-/* ── Ligne haute : titre + hello gorgeous ── */
-.cy2k-top-row {
+.contact-header-row {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
+  align-items: flex-end;
   gap: 24px;
 }
 
-.cy2k-hello-win {
+.contact-header-card {
+  max-width: 520px;
   flex: 1;
-  max-width: 490px;
 }
 
-/* ── Grille 3 colonnes ── */
-.cy2k-main-row {
+.contact-panels {
   display: grid;
-  grid-template-columns: 1fr 3fr 1.3fr;
-  gap: 14px;
+  grid-template-columns: 1fr 2fr;
+  gap: 16px;
   align-items: start;
 }
 
-/* ── Fenêtre XP — coque ── */
-.cy2k-win {
-  border: 1px solid #000;
-  background: #D4D4D4;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.32);
-}
-
-/* Barre de titre dégradé XP */
-.cy2k-titlebar {
-  background: linear-gradient(180deg, #4d8aff 0%, #1254d4 28%, #0038C8 70%, #2462d8 100%);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4px 5px 4px 8px;
-  height: 28px;
-  user-select: none;
-}
-
-.cy2k-titlebar-text {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.68rem;
-  color: #fff;
-  letter-spacing: 0.04em;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 700;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-}
-
-/* Boutons de fenêtre */
-.cy2k-dots {
-  display: flex;
-  gap: 2px;
-  align-items: center;
-}
-
-.cy2k-dots span {
-  width: 16px;
-  height: 14px;
-  background: #D4D4D4;
-  border-top: 1.5px solid #fff;
-  border-left: 1.5px solid #fff;
-  border-right: 1.5px solid #555;
-  border-bottom: 1.5px solid #555;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.48rem;
-  color: #000;
-  flex-shrink: 0;
-  cursor: url('/cursor-pointer.cur'), pointer;
-}
-
-.cy2k-dot-close::after { content: "✕"; font-size: 0.52rem; }
-
-/* Corps de fenêtre */
-.cy2k-body { padding: 16px 18px; }
-
-/* ── Fenêtre 1 : hello gorgeous ── */
-.cy2k-hello-text {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.73rem;
-  color: #000;
-  line-height: 1.8;
-  margin: 0 0 14px;
-}
-
-.cy2k-nav-btns {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
-}
-
-.cy2k-nav-btn {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.67rem;
-  font-weight: 700;
-  color: #0038C8;
-  text-decoration: none;
-  background: #D4D4D4;
-  border-top: 1.5px solid #fff;
-  border-left: 1.5px solid #fff;
-  border-right: 1.5px solid #555;
-  border-bottom: 1.5px solid #555;
-  padding: 3px 12px;
-  display: inline-block;
-  cursor: url('/cursor-pointer.cur'), pointer;
-  transition: background 0.1s, color 0.1s;
-}
-
-.cy2k-nav-btn:hover { background: #eaeaea; color: #ff5ba8; }
-
-.cy2k-nav-btn:active {
-  border-top: 1.5px solid #555;
-  border-left: 1.5px solid #555;
-  border-right: 1.5px solid #fff;
-  border-bottom: 1.5px solid #fff;
-}
-
-/* ── Fenêtre 2 : get in touch ── */
-.cy2k-info-list {
+.contact-info-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
-.cy2k-info-item {
+.contact-info-item {
   display: flex;
   gap: 10px;
   align-items: flex-start;
 }
 
-.cy2k-info-icon {
-  font-size: 1.45rem;
-  line-height: 1;
-  min-width: 28px;
+.contact-info-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  width: 22px;
   text-align: center;
-  margin-top: 1px;
 }
 
-/* Icônes texte colorées individuellement */
-.cy2k-info-icon--mail  { color: #ff5ba8; }
-.cy2k-info-icon--phone { color: #0038C8; }
-.cy2k-info-icon--chat  { color: #7b3fc4; }
-.cy2k-info-icon--pin   { color: #ff5ba8; }
-
-.cy2k-info-label {
+.contact-info-label {
   font-family: var(--font-mono), monospace;
-  font-size: 0.6rem;
+  font-size: 0.58rem;
+  color: #000080;
   font-weight: 700;
-  color: #0038C8;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   margin-bottom: 2px;
 }
 
-.cy2k-info-val {
+.contact-info-val {
   font-family: var(--font-mono), monospace;
-  font-size: 0.7rem;
-  color: #222;
-  line-height: 1.55;
+  font-size: 0.68rem;
+  color: #111;
+  line-height: 1.5;
 }
 
-.cy2k-info-meta { color: #555; font-size: 0.65rem; }
+.contact-info-meta {
+  font-size: 0.62rem;
+  color: #555;
+}
 
-/* ── Fenêtre 3 : formulaire ── */
-.cy2k-form {
+.contact-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.cy2k-field {
+.contact-field {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.cy2k-label {
+.contact-label {
   font-family: var(--font-mono), monospace;
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  color: #0038C8;
-  letter-spacing: 0.08em;
+  color: #000080;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.cy2k-input {
-  background: #efefef;
-  border-top: 1.5px solid #808080;
-  border-left: 1.5px solid #808080;
-  border-right: 1.5px solid #e4e4e4;
-  border-bottom: 1.5px solid #e4e4e4;
-  border-radius: 0;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.76rem;
-  color: #000;
-  padding: 7px 10px;
-  outline: none;
+.contact-select {
+  appearance: none;
+  background: #d8d8d8 !important;
+  border-top: 2px solid #444 !important;
+  border-left: 2px solid #444 !important;
+  border-right: 2px solid #fff !important;
+  border-bottom: 2px solid #fff !important;
+  border-radius: 0 !important;
+  font-family: var(--mono) !important;
+  color: #000 !important;
+  padding: 6px 8px;
   width: 100%;
 }
 
-.cy2k-input:focus {
-  outline: 1px dotted #0038C8;
-  outline-offset: -2px;
-  background: #fff;
-}
+.contact-textarea { resize: vertical; min-height: 120px; }
 
-.cy2k-input::selection {
-  background: #0038C8;
-  color: #fff;
-}
-
-.cy2k-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23333'/%3E%3C/svg%3E");
-  background-color: #efefef;
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 28px;
-  cursor: url('/cursor-pointer.cur'), pointer;
-}
-
-.cy2k-textarea {
-  resize: vertical;
-  min-height: 140px;
-}
-
-.cy2k-form-footer {
+.contact-form-footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
-/* Bouton ENVOYER — dégradé rose XP */
-.cy2k-submit {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.73rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #fff;
-  background: linear-gradient(180deg, #ff8fd4 0%, #ff5ba8 45%, #e03d90 100%);
-  border-top: 1.5px solid #ffadd8;
-  border-left: 1.5px solid #ffadd8;
-  border-right: 1.5px solid #b02070;
-  border-bottom: 1.5px solid #b02070;
-  padding: 7px 28px;
-  cursor: url('/cursor-pointer.cur'), pointer;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  transition: filter 0.15s;
-}
-
-.cy2k-submit:hover  { filter: brightness(1.1); }
-
-.cy2k-submit:active {
-  border-top: 1.5px solid #b02070;
-  border-left: 1.5px solid #b02070;
-  border-right: 1.5px solid #ffadd8;
-  border-bottom: 1.5px solid #ffadd8;
-  filter: brightness(0.95);
-}
-
-.cy2k-submit:disabled { opacity: 0.65; cursor: not-allowed; }
-
-/* État "envoyé" */
-.cy2k-thanks {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  padding: 36px 16px;
+.contact-thanks {
   text-align: center;
-}
-
-.cy2k-thanks-icon { font-size: 2.2rem; color: #ff5ba8; }
-
-.cy2k-thanks p {
-  font-family: var(--font-mono), monospace;
+  padding: 32px 16px;
+  font-family: var(--mono);
+  color: #000080;
   font-size: 0.82rem;
-  color: #0038C8;
-  margin: 0;
 }
 
-/* ── Fenêtre 4 : xoxo photo ── */
-.cy2k-xoxo-win { display: flex; flex-direction: column; }
-
-.cy2k-xoxo-img-wrap {
-  position: relative;
-  flex: 1;
-  min-height: 310px;
-  margin: 6px;
-  border-top: 1.5px solid #808080;
-  border-left: 1.5px solid #808080;
-  border-right: 1.5px solid #e0e0e0;
-  border-bottom: 1.5px solid #e0e0e0;
-  overflow: hidden;
-}
-
-/* ── Fenêtre 5 : quick info ── */
-.cy2k-quick-body {
+.contact-quick-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
 }
 
-.cy2k-quick-item {
+.contact-quick-item {
   display: flex;
   gap: 12px;
   align-items: flex-start;
+  padding: 12px 16px;
+  border-right: 1px solid #888;
 }
 
-.cy2k-quick-icon {
-  font-size: 2rem;
-  line-height: 1;
-  color: #ff5ba8;
-  min-width: 34px;
-  text-align: center;
+.contact-quick-item:last-child { border-right: none; }
+
+.contact-quick-icon {
+  font-size: 1.4rem;
   flex-shrink: 0;
 }
 
-.cy2k-quick-icon--lg { font-size: 2.2rem; }
-
-.cy2k-quick-label {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.63rem;
+.contact-quick-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: #000080;
   font-weight: 700;
-  color: #0038C8;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
-.cy2k-quick-item p {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.68rem;
-  color: #333;
-  line-height: 1.65;
+.contact-quick-text {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: #111;
+  line-height: 1.55;
   margin: 0;
 }
 
-.cy2k-quick-link { color: #0038C8; text-decoration: underline; }
-.cy2k-quick-link:hover { color: #ff5ba8; }
+.contact-quick-link { color: #d4006e; text-decoration: none; }
+.contact-quick-link:hover { text-decoration: underline; }
 
-/* ── Responsive ── */
-@media (max-width: 900px) {
-  .cy2k-page { gap: 24px; }
-  .cy2k-top-row { flex-direction: column; align-items: flex-start; }
-  .cy2k-hello-win { max-width: 100%; width: 100%; }
-  .cy2k-main-row { grid-template-columns: 1fr; }
-  .cy2k-quick-body { grid-template-columns: 1fr; gap: 16px; }
-}
-
-@media (max-width: 600px) {
-  .cy2k-page { padding: 72px 12px 32px; }
-  .cy2k-title { font-size: 4rem; -webkit-text-stroke: 1.5px #000; }
+@media (max-width: 768px) {
+  .contact-header-row { flex-direction: column; align-items: flex-start; }
+  .contact-header-card { max-width: none; width: 100%; }
+  .contact-panels { grid-template-columns: 1fr; }
+  .contact-quick-grid { grid-template-columns: 1fr; }
+  .contact-quick-item { border-right: none; border-bottom: 1px solid #888; }
+  .contact-quick-item:last-child { border-bottom: none; }
 }
