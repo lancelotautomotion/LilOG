@@ -2545,7 +2545,7 @@ html {
 a, button, [role="button"], label[for], select, input[type="checkbox"], input[type="radio"],
 .filter-swatch, .filter-trigger, .filter-close,
 .drawer-link, .drawer-parent, .nav-icon-btn, .menu-btn, .lang-switch {
-  cursor: url('/cursor-pointer.cur') 4 0, pointer !important;
+  cursor: url('/cursor-pointer.cur') 0 0, pointer !important;
 }
 html, body {
   background-color: transparent;
