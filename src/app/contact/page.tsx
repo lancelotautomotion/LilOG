@@ -73,14 +73,14 @@ export default function ContactPage() {
             <div className="cy2k-body">
               <ul className="cy2k-info-list">
                 <li className="cy2k-info-item">
-                  <span className="cy2k-info-icon" aria-hidden="true">✉</span>
+                  <span className="cy2k-info-icon cy2k-info-icon--mail" aria-hidden="true">✉</span>
                   <div>
                     <div className="cy2k-info-label">EMAIL</div>
                     <div className="cy2k-info-val">hellolilG@gmail.com</div>
                   </div>
                 </li>
                 <li className="cy2k-info-item">
-                  <span className="cy2k-info-icon" aria-hidden="true">☎</span>
+                  <span className="cy2k-info-icon cy2k-info-icon--phone" aria-hidden="true">☎</span>
                   <div>
                     <div className="cy2k-info-label">TÉLÉPHONE</div>
                     <div className="cy2k-info-val">
@@ -90,7 +90,7 @@ export default function ContactPage() {
                   </div>
                 </li>
                 <li className="cy2k-info-item">
-                  <span className="cy2k-info-icon" aria-hidden="true">💻</span>
+                  <span className="cy2k-info-icon cy2k-info-icon--chat" aria-hidden="true">✦</span>
                   <div>
                     <div className="cy2k-info-label">CHAT</div>
                     <div className="cy2k-info-val">
@@ -99,7 +99,7 @@ export default function ContactPage() {
                   </div>
                 </li>
                 <li className="cy2k-info-item">
-                  <span className="cy2k-info-icon" aria-hidden="true">📍</span>
+                  <span className="cy2k-info-icon cy2k-info-icon--pin" aria-hidden="true">◆</span>
                   <div>
                     <div className="cy2k-info-label">ADRESSE</div>
                     <div className="cy2k-info-val">
@@ -189,7 +189,7 @@ export default function ContactPage() {
             <Win95Bar title="xoxo" />
             <div className="cy2k-xoxo-img-wrap">
               <Image
-                src="/vintage-camera.jpeg"
+                src="/louna.jpeg"
                 alt="Y2K vibes"
                 fill
                 style={{ objectFit: "cover" }}
