@@ -2533,14 +2533,19 @@ html {
   background: url('/leo.jpeg') center / cover fixed;
 }
 
-/* ── Win95 cursors ── */
-/* Arrow: pixel_arrow.cur (24×36, hotspot 0 0) */
+/* ── Win95 cursors ──
+   Fichiers à placer dans /public/ :
+     cursor-default.cur  → curseur flèche  (hotspot 0 0)
+     cursor-pointer.cur  → curseur main    (hotspot ~4 0)
+   Source recommandée : https://www.cursor.cc
+─────────────────────────────────────────── */
 * {
-  cursor: url('/pixel_arrow.cur') 0 0, url('/pixel_arrow.png') 0 0, default !important;
+  cursor: url('/cursor-default.cur') 0 0, default !important;
 }
-/* Hand pointer: pixel_hand.cur (28×42, hotspot 5 6) */
-a, button, [role="button"], label[for], select, input[type="checkbox"], input[type="radio"], .filter-swatch, .filter-trigger, .filter-close, .drawer-link, .drawer-parent, .nav-icon-btn, .menu-btn, .lang-switch {
-  cursor: url('/pixel_hand.cur') 5 6, url('/pixel_hand.png') 5 6, pointer !important;
+a, button, [role="button"], label[for], select, input[type="checkbox"], input[type="radio"],
+.filter-swatch, .filter-trigger, .filter-close,
+.drawer-link, .drawer-parent, .nav-icon-btn, .menu-btn, .lang-switch {
+  cursor: url('/cursor-pointer.cur') 4 0, pointer !important;
 }
 html, body {
   background-color: transparent;
