@@ -33,7 +33,7 @@ function parseDescription(html: string): {
     const text = seg.replace(/<[^>]+>/g, "");
     const match = DESC_SECTIONS.find((s) => s.re.test(text));
     if (match) {
-      raw.push({ label: match.label, accordion: match.accordion, chunks: [seg] });
+      raw.push({ label: match.label, accordion: match.accordion, chunks: match.accordion ? [] : [seg] });
     } else {
       raw[raw.length - 1].chunks.push(seg);
     }
