@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/lib/i18n-context";
 import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
@@ -259,6 +260,8 @@ export function CategoryPage({
   sub?: string;
 }) {
   const { t } = useLanguage();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [menu, setMenu] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const label = t.cat[catKey] ?? catKey;
@@ -296,7 +299,6 @@ export function CategoryPage({
     activeColors.size +
     activeTypes.size;
 
-  const [page, setPage] = useState(0);
   const PER_PAGE = 20;
 
   const filtered = useMemo(() => {
@@ -314,11 +316,32 @@ export function CategoryPage({
     return list;
   }, [products, sub, sort, priceMin, priceMax, activeColors, activeTypes]);
 
-  // Reset to page 0 whenever filters change
-  useEffect(() => { setPage(0); }, [filtered]);
+  // When filters change, reset to page 1 (remove ?page param)
+  const filterKey = `${sort}|${priceMin}|${priceMax}|${[...activeColors].sort()}|${[...activeTypes].sort()}`;
+  const prevFilterKey = useState(filterKey);
+  useEffect(() => {
+    if (prevFilterKey[0] !== filterKey) {
+      prevFilterKey[1](filterKey);
+      const params = new URLSearchParams(window.location.search);
+      params.delete("page");
+      const qs = params.toString();
+      router.replace(window.location.pathname + (qs ? "?" + qs : ""), { scroll: false });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterKey]);
+
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const safePage = Math.min(page, Math.max(0, totalPages - 1));
+  const pageFromUrl = Math.max(0, (parseInt(searchParams.get("page") ?? "1", 10) - 1));
+  const safePage = Math.min(pageFromUrl, Math.max(0, totalPages - 1));
   const pageProducts = filtered.slice(safePage * PER_PAGE, (safePage + 1) * PER_PAGE);
+
+  const setPage = useCallback((p: number) => {
+    const params = new URLSearchParams(window.location.search);
+    if (p === 0) params.delete("page");
+    else params.set("page", String(p + 1));
+    const qs = params.toString();
+    router.push(window.location.pathname + (qs ? "?" + qs : ""), { scroll: false });
+  }, [router]);
 
   const filterProps = {
     products,

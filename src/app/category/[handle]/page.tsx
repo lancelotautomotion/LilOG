@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { CategoryPage } from "@/components/category-page";
 import { getCollectionProducts } from "@/lib/shopify/products";
@@ -31,5 +32,9 @@ export default async function Page({
   const collection = await getCollectionProducts(handle).catch(() => null);
   if (!collection) notFound();
 
-  return <CategoryPage catKey={known.catKey} products={collection.products} sub={sub} />;
+  return (
+    <Suspense>
+      <CategoryPage catKey={known.catKey} products={collection.products} sub={sub} />
+    </Suspense>
+  );
 }
