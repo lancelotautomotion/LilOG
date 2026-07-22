@@ -67,9 +67,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
 
             <div className="pdp-tags">
               <span className="pdp-tag pdp-tag--etat">État : {product.etat ?? "Non renseigné"}</span>
-              {product.variants.length > 0 && variant && (
-                <span className="pdp-tag pdp-tag--taille">Taille : {variant.title}</span>
-              )}
+              <span className="pdp-tag pdp-tag--taille">
+                Taille : {variant?.title ?? "Unique"}
+              </span>
             </div>
 
             {hasVariants && (
