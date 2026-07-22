@@ -3881,7 +3881,7 @@ html, body {
    ============================================================ */
 
 .cy2k-page {
-  padding: 76px 20px 40px;
+  padding: 76px clamp(24px, 5.5vw, 80px) 40px;
   background-image: url('/leo.jpeg');
   background-repeat: repeat;
   background-size: 380px;
@@ -3920,14 +3920,14 @@ html, body {
 
 .cy2k-hello-win {
   flex: 1;
-  max-width: 520px;
+  max-width: 490px;
 }
 
 /* Three-column main row */
 .cy2k-main-row {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: 16px;
+  grid-template-columns: 1fr 3fr 1.3fr;
+  gap: 14px;
   align-items: start;
 }
 
