@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { SmartImg } from "@/components/smart-img";
 import { Icon } from "@/components/icons";
 
-// How far from the viewport top the gallery pins while scrolling — mirrors
-// the nav's clamp(96px, 11vw, 130px) height so it never sits under it.
+// How far from the viewport top the gallery pins while scrolling.
+// Reads the actual nav height so it stays correct regardless of theme.
 function topOffset() {
-  return Math.min(130, Math.max(96, window.innerWidth * 0.11));
+  const nav = document.querySelector(".nav") as HTMLElement | null;
+  return nav ? nav.offsetHeight + 8 : Math.min(130, Math.max(96, window.innerWidth * 0.11));
 }
 
 export function ProductGallery({ images, name }: { images: string[]; name: string }) {
