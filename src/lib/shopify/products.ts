@@ -132,5 +132,12 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
         availableForSale: e.node.availableForSale,
       }))
       .filter((v) => v.title !== "Default Title"),
+    size: (() => {
+      const sizeOption = node.options?.find((o) => /taille|size/i.test(o.name));
+      if (sizeOption?.optionValues?.length) {
+        return sizeOption.optionValues.map((v) => v.name).join(", ");
+      }
+      return null;
+    })(),
   };
 }

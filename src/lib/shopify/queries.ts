@@ -91,6 +91,12 @@ export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
           }
         }
       }
+      options {
+        name
+        optionValues {
+          name
+        }
+      }
       variants(first: 10) {
         edges {
           node {

@@ -38,6 +38,7 @@ export interface CollectionByHandleResponse {
 export interface ShopifyProductDetailNode extends ShopifyProductNode {
   descriptionHtml: string;
   etat: { value: string } | null;
+  options: { name: string; optionValues: { name: string }[] }[];
   collections: { edges: { node: { handle: string } }[] };
   images: { edges: { node: ShopifyImage }[] };
   variants: {
@@ -83,6 +84,7 @@ export interface ProductDetail {
   // still what a cart line needs — kept here as the add-to-cart fallback.
   defaultVariantId: string | null;
   variants: ProductVariant[];
+  size: string | null;
 }
 
 // Flat shape consumed by <ProductCard> — mirrors the design prototype's data.jsx shape.
