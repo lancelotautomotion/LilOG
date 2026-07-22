@@ -2976,7 +2976,7 @@ html, body {
 }
 .pdp-add.added { background: #006000 !important; border-top-color: #40a040 !important; border-left-color: #40a040 !important; }
 .pdp-add:disabled:not(.added) { background: #888 !important; border-color: #aaa #666 #666 #aaa !important; }
-.pdp-accordion { border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; box-shadow: 1px 1px 0 #000 !important; margin-top: clamp(18px,2.4vw,28px) !important; }
+.pdp-accordion { border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; box-shadow: 1px 1px 0 #000 !important; margin-top: clamp(40px,5vw,60px) !important; }
 .pdp-acc-item { border: none !important; border-bottom: 1px solid #888 !important; }
 .pdp-acc-item:last-child { border-bottom: none !important; }
 .pdp-acc-item summary {
@@ -3005,6 +3005,7 @@ html, body {
 .pdp-tag { font-family: var(--mono) !important; font-size: 0.68rem !important; border-radius: 0 !important; background: #c0c0c0 !important; color: #000 !important; border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; padding: 5px 12px !important; letter-spacing: 0.06em !important; text-transform: uppercase !important; }
 .pdp-tag--etat, .pdp-tag--taille { font-weight: 700 !important; }
 .pdp-desc { font-family: var(--mono) !important; font-size: 0.72rem !important; line-height: 1.7 !important; color: #222 !important; text-align: center !important; margin-left: auto !important; margin-right: auto !important; }
+.pdp-desc:not(.pdp-acc-body) { background: #fff !important; padding: 18px 22px !important; border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; box-shadow: 1px 1px 0 #000 !important; }
 
 /* ── Footer → Win95 bar ── */
 .footer {
