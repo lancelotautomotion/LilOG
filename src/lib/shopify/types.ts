@@ -15,7 +15,7 @@ export interface ShopifyProductNode {
   productType: string;
   tags: string[];
   availableForSale: boolean;
-  options?: { name: string; values: string[] }[];
+  options?: { name: string; values?: string[]; optionValues?: { name: string }[] }[];
   colorMeta?: { value: string } | null;
   colorMeta2?: { value: string } | null;
   colorMeta3?: { value: string } | null;
@@ -38,7 +38,7 @@ export interface CollectionByHandleResponse {
 export interface ShopifyProductDetailNode extends ShopifyProductNode {
   descriptionHtml: string;
   etat: { value: string } | null;
-  options: { name: string; optionValues: { name: string }[] }[];
+  options: { name: string; values?: string[]; optionValues?: { name: string }[] }[];
   collections: { edges: { node: { handle: string } }[] };
   images: { edges: { node: ShopifyImage }[] };
   variants: {

@@ -134,9 +134,8 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
       .filter((v) => v.title !== "Default Title"),
     size: (() => {
       const sizeOption = node.options?.find((o) => /taille|size/i.test(o.name));
-      if (sizeOption?.optionValues?.length) {
-        return sizeOption.optionValues.map((v) => v.name).join(", ");
-      }
+      if (sizeOption?.optionValues?.length) return sizeOption.optionValues.map((v) => v.name).join(", ");
+      if (sizeOption?.values?.length) return sizeOption.values.join(", ");
       return null;
     })(),
   };
