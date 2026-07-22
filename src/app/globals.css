@@ -2994,7 +2994,10 @@ html, body {
 }
 .pdp-acc-item summary:hover { background: #d4d0c8 !important; }
 .pdp-acc-item[open] > summary { background: #000080 !important; color: #fff !important; }
-.pdp-acc-item[open] > summary .chev { filter: invert(1) !important; color: #fff !important; stroke: #fff !important; fill: #fff !important; }
+.pdp-acc-item[open] > summary .chev,
+.pdp-acc-item[open] > summary .chev path,
+.pdp-acc-item[open] > summary svg,
+.pdp-acc-item[open] > summary svg path { color: #fff !important; stroke: #fff !important; }
 .pdp-acc-body { background: #fff !important; padding: 14px !important; font-family: var(--mono) !important; font-size: 0.7rem !important; border: none !important; border-top: 1px solid #888 !important; max-width: none !important; width: 100% !important; box-sizing: border-box !important; color: #222 !important; }
 .pdp-acc-body .pdp-desc,
 .pdp-acc-body.pdp-desc { background: #fff !important; max-width: none !important; margin: 0 !important; width: 100% !important; box-sizing: border-box !important; color: #222 !important; }
