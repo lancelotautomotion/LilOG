@@ -140,16 +140,16 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   <div className="pdp-accordion">
                     {accordions.map(({ label, content }) => (
                       <details key={label} className="pdp-acc-item">
-                        <summary>{label} <Icon.chevD className="chev" /></summary>
+                        <summary><span /><span>{label}</span><Icon.chevD className="chev" /></summary>
                         <div className="pdp-acc-body pdp-desc" dangerouslySetInnerHTML={{ __html: content }} />
                       </details>
                     ))}
                     <details className="pdp-acc-item">
-                      <summary>{t.pdp.detailsH} <Icon.chevD className="chev" /></summary>
+                      <summary><span /><span>{t.pdp.detailsH}</span><Icon.chevD className="chev" /></summary>
                       <div className="pdp-acc-body">{t.pdp.detailsBody}</div>
                     </details>
                     <details className="pdp-acc-item">
-                      <summary>{t.pdp.shippingH} <Icon.chevD className="chev" /></summary>
+                      <summary><span /><span>{t.pdp.shippingH}</span><Icon.chevD className="chev" /></summary>
                       <div className="pdp-acc-body">{t.pdp.shippingBody}</div>
                     </details>
                   </div>
