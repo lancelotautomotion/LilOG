@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useLanguage } from "@/lib/i18n-context";
 import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
@@ -296,6 +296,9 @@ export function CategoryPage({
     activeColors.size +
     activeTypes.size;
 
+  const [page, setPage] = useState(0);
+  const PER_PAGE = 20;
+
   const filtered = useMemo(() => {
     let list = sub
       ? products.filter((p) => p.productType.toLowerCase() === sub.toLowerCase())
@@ -310,6 +313,12 @@ export function CategoryPage({
 
     return list;
   }, [products, sub, sort, priceMin, priceMax, activeColors, activeTypes]);
+
+  // Reset to page 0 whenever filters change
+  useEffect(() => { setPage(0); }, [filtered]);
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const safePage = Math.min(page, Math.max(0, totalPages - 1));
+  const pageProducts = filtered.slice(safePage * PER_PAGE, (safePage + 1) * PER_PAGE);
 
   const filterProps = {
     products,
@@ -356,11 +365,34 @@ export function CategoryPage({
             {filtered.length === 0 ? (
               <p className="category-empty">{t.category.empty}</p>
             ) : (
-              <div className="drops-grid">
-                {filtered.map((p, idx) => (
-                  <ProductCard key={p.id} product={p} idx={idx} />
-                ))}
-              </div>
+              <>
+                <div className="drops-grid">
+                  {pageProducts.map((p, idx) => (
+                    <ProductCard key={p.id} product={p} idx={idx} />
+                  ))}
+                </div>
+                {totalPages > 1 && (
+                  <div className="pagination">
+                    <button
+                      className="pagination-btn"
+                      disabled={safePage === 0}
+                      onClick={() => { setPage(safePage - 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    >
+                      ← Précédent
+                    </button>
+                    <span className="pagination-info">
+                      {safePage + 1} / {totalPages}
+                    </span>
+                    <button
+                      className="pagination-btn"
+                      disabled={safePage >= totalPages - 1}
+                      onClick={() => { setPage(safePage + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    >
+                      Suivant →
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
