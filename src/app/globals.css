@@ -2995,7 +2995,7 @@ html, body {
 .pdp-acc-item summary:hover { background: #d4d0c8 !important; }
 .pdp-acc-item[open] > summary { background: #000080 !important; color: #fff !important; }
 .pdp-acc-item[open] > summary .chev { filter: invert(1) !important; }
-.pdp-acc-body { background: #fff !important; padding: 14px !important; font-family: var(--mono) !important; font-size: 0.7rem !important; border: none !important; border-top: 1px solid #888 !important; }
+.pdp-acc-body { background: #fff !important; padding: 14px !important; font-family: var(--mono) !important; font-size: 0.7rem !important; border: none !important; border-top: 1px solid #888 !important; max-width: none !important; width: 100% !important; box-sizing: border-box !important; }
 .pdp-acc-body .pdp-desc,
 .pdp-acc-body.pdp-desc { background: transparent !important; max-width: none !important; margin: 0 !important; width: 100% !important; box-sizing: border-box !important; }
 .pdp-tag { font-family: var(--mono) !important; font-size: 0.68rem !important; border-radius: 0 !important; background: #c0c0c0 !important; color: #000 !important; border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; padding: 5px 12px !important; letter-spacing: 0.06em !important; text-transform: uppercase !important; }
