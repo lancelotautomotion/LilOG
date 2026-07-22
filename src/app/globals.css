@@ -3004,7 +3004,7 @@ html, body {
 .pdp-acc-body.pdp-desc { background: #fff !important; max-width: none !important; margin: 0 !important; width: 100% !important; box-sizing: border-box !important; color: #222 !important; }
 .pdp-tag { font-family: var(--mono) !important; font-size: 0.68rem !important; border-radius: 0 !important; background: #c0c0c0 !important; color: #000 !important; border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; padding: 5px 12px !important; letter-spacing: 0.06em !important; text-transform: uppercase !important; }
 .pdp-tag--etat, .pdp-tag--taille { font-weight: 700 !important; }
-.pdp-desc { font-family: var(--mono) !important; font-size: 0.72rem !important; line-height: 1.7 !important; color: #222 !important; }
+.pdp-desc { font-family: var(--mono) !important; font-size: 0.72rem !important; line-height: 1.7 !important; color: #222 !important; text-align: center !important; }
 
 /* ── Footer → Win95 bar ── */
 .footer {
