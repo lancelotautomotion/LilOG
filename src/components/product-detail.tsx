@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n-context";
 import { useCart } from "@/lib/cart-context";
 import { Nav } from "@/components/nav";
@@ -17,6 +17,7 @@ const INTERNAL_TAGS = new Set(["new", "one-of-one", "1-of-1"]);
 export function ProductDetail({ product, related }: { product: ProductDetailType; related: Product[] }) {
   const { t } = useLanguage();
   const { addItem } = useCart();
+  const router = useRouter();
   const [menu, setMenu] = useState(false);
   const [added, setAdded] = useState(false);
 
@@ -42,9 +43,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
       <Nav onMenu={() => setMenu(true)} forceSolid />
       <Drawer open={menu} onClose={() => setMenu(false)} />
       <main className="pdp">
-        <Link className="pdp-back" href="/">
+        <button className="pdp-back" onClick={() => router.back()}>
           <Icon.arrowL /> {t.pdp.back}
-        </Link>
+        </button>
 
         <div className="pdp-win">
           <div className="w95-bar">
