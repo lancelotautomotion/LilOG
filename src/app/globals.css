@@ -2976,11 +2976,10 @@ html, body {
 }
 .pdp-add.added { background: #006000 !important; border-top-color: #40a040 !important; border-left-color: #40a040 !important; }
 .pdp-add:disabled:not(.added) { background: #888 !important; border-color: #aaa #666 #666 #aaa !important; }
-/* pdp-body: single width authority — font-size matches pdp-desc so 52ch is identical */
-/* +48px accounts for pdp-desc's padding (22px×2) + border (2px×2) so outer edges align */
-.pdp-body { font-family: var(--mono) !important; font-size: 0.72rem !important; max-width: calc(52ch + 48px) !important; width: 100% !important; }
-.pdp-add-row { display: flex !important; gap: 0 !important; width: 100% !important; max-width: none !important; box-sizing: border-box !important; border-top: 2.5px solid #6060c0 !important; border-left: 2.5px solid #6060c0 !important; border-right: 2.5px solid #00003a !important; border-bottom: 2.5px solid #00003a !important; box-shadow: 1px 1px 0 #000 !important; margin-bottom: clamp(14px,2vw,22px) !important; }
-.pdp-add-row .pdp-add { width: auto !important; flex: 1 !important; border: none !important; border-right: 1px solid #3030a0 !important; box-shadow: none !important; }
+/* pdp-body: grid container — single column forces all children to identical width */
+.pdp-body { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; font-family: var(--mono) !important; font-size: 0.72rem !important; max-width: calc(52ch + 48px) !important; width: 100% !important; }
+.pdp-add-row { display: flex !important; gap: 0 !important; width: 100% !important; min-width: 0 !important; max-width: 100% !important; box-sizing: border-box !important; border-top: 2.5px solid #6060c0 !important; border-left: 2.5px solid #6060c0 !important; border-right: 2.5px solid #00003a !important; border-bottom: 2.5px solid #00003a !important; box-shadow: 1px 1px 0 #000 !important; margin-bottom: clamp(14px,2vw,22px) !important; }
+.pdp-add-row .pdp-add { width: auto !important; flex: 1 !important; min-width: 0 !important; border: none !important; border-right: 1px solid #3030a0 !important; box-shadow: none !important; }
 .pdp-like { flex-shrink: 0 !important; width: 54px !important; display: flex !important; align-items: center !important; justify-content: center !important; background: #000080 !important; border: none !important; border-radius: 0 !important; cursor: pointer !important; color: #fff !important; transition: color 0.2s, background 0.2s !important; }
 .pdp-like.on { color: #e0006e !important; background: #00006a !important; }
 .pdp-accordion { border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; box-shadow: 1px 1px 0 #000 !important; margin-top: clamp(40px,5vw,60px) !important; }
