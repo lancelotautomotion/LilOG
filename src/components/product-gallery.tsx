@@ -12,9 +12,9 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   return (
     <>
       <div className="pdp-gallery">
-        <div className="pdp-grid2x2">
+        <div className="pdp-grid2x2" style={{ background: "#fff" }}>
           {slots.map((src, i) => (
-            <button key={i} className="pdp-grid-cell" onClick={() => setLightbox(i)} aria-label={`Voir photo ${i + 1}`}>
+            <button key={i} className="pdp-grid-cell" style={{ background: "#fff" }} onClick={() => setLightbox(i)} aria-label={`Voir photo ${i + 1}`}>
               <SmartImg src={src} alt={`${name} — vue ${i + 1}`} tone={i} />
             </button>
           ))}
