@@ -1671,6 +1671,35 @@ a { color: inherit; text-decoration: none; }
   object-fit: cover !important;
   display: block !important;
 }
+/* Scan beam overlay — sweeps top→bottom over the photo during 'filling' phase */
+.oc-scan-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+.oc-scan-overlay::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 48px;
+  top: -48px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(100, 180, 255, 0.12) 40%,
+    rgba(160, 220, 255, 0.35) 75%,
+    rgba(200, 240, 255, 0.65) 100%
+  );
+  animation: ocScanBeam 360ms linear forwards;
+}
+@keyframes ocScanBeam {
+  from { top: -48px; }
+  to   { top: 100%;  }
+}
+
 .oc-item-label {
   display: flex;
   justify-content: space-between;

@@ -92,6 +92,10 @@ export function CartPage() {
                       <Link href={`/products/${item.handle}`} className="oc-img-wrap">
                         <SmartImg src={item.image} alt={item.title} />
                       </Link>
+                      {/* Scan beam — monté uniquement pendant la phase filling, en sync avec la barre */}
+                      {scanPhase === 'filling' && (
+                        <div key={current} className="oc-scan-overlay" aria-hidden="true" />
+                      )}
                     </div>
                     <div className="oc-item-label">
                       <span className="oc-item-name">{item.title}</span>
