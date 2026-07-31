@@ -1723,31 +1723,44 @@ a { color: inherit; text-decoration: none; }
   user-select: none;
 }
 
-/* Barre — inset Win95 classique + couleurs Y2K */
+/* Barre Win95 — blocs segmentés authentiques */
 .oc-scan-bar-track {
   width: 88%;
-  height: 11px;
-  /* Win95 sunken inset border */
+  height: 14px;
+  /* Win95 sunken inset */
   border-top: 2px solid #444;
   border-left: 2px solid #444;
   border-right: 2px solid #dfdfdf;
   border-bottom: 2px solid #dfdfdf;
-  background: #000;
+  background: #c0c0c0;   /* gris = segments non chargés */
   position: relative;
   overflow: hidden;
 }
 .oc-scan-bar-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #1084d0 0%, #000080 100%);
+  /* Blocs bleus 10px / interstices gris 2px — look Win98 pur */
+  background: repeating-linear-gradient(
+    90deg,
+    #000080 0px,
+    #000080 10px,
+    transparent 10px,
+    transparent 12px
+  );
 }
 .oc-scan-bar-fill.oc-bar-active {
   width: 100%;
   transition: width 360ms linear;
 }
-/* Le glow est clipé dans la track : effet "écran lumineux" dans le cadre Win95 */
+/* Plein : blocs deviennent bleu vif */
 .oc-scan-bar-fill.oc-bar-glow {
-  box-shadow: 0 0 8px rgba(16, 132, 208, 0.8);
+  background: repeating-linear-gradient(
+    90deg,
+    #1084d0 0px,
+    #1084d0 10px,
+    transparent 10px,
+    transparent 12px
+  );
 }
 
 /* Zone de texte sous la barre — hauteur fixe = pas de saut de layout */
@@ -1772,6 +1785,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 1.55rem;
   color: #000;
   font-style: normal;
+  text-transform: uppercase;
   letter-spacing: 0.04em;
   line-height: 1;
   opacity: 0;
