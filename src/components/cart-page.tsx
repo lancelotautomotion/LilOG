@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
@@ -11,14 +11,23 @@ import { Footer } from "@/components/footer";
 import { SmartImg } from "@/components/smart-img";
 
 const STYLE_PHRASES = [
-  { text: "As if!", level: 7 },
-  { text: "Totally buggin'.", level: 5 },
-  { text: "Major Betty vibe.", level: 9 },
-  { text: "That's so fetch.", level: 6 },
-  { text: "Loves it.", level: 10 },
-  { text: "So hot right now.", level: 8 },
-  { text: "100% Mall ready.", level: 9 },
+  "As if!",
+  "Totally buggin'.",
+  "Iconic!",
+  "That's so fetch.",
+  "Loves it.",
+  "So hot right now.",
+  "100% Mall ready.",
 ] as const;
+
+// Deterministic per-product: same handle always yields the same phrase
+function phraseForItem(handle: string): string {
+  let h = 0;
+  for (let i = 0; i < handle.length; i++) {
+    h = (h * 31 + handle.charCodeAt(i)) >>> 0;
+  }
+  return STYLE_PHRASES[h % STYLE_PHRASES.length];
+}
 
 export function CartPage() {
   const { t } = useLanguage();
@@ -27,13 +36,15 @@ export function CartPage() {
   const firstName = session?.user?.name?.split(" ")[0] ?? null;
   const [menu, setMenu] = useState(false);
   const [current, setCurrent] = useState(0);
+  const [scanPhase, setScanPhase] = useState<'scan' | 'filling' | 'verified' | 'phrase'>('scan');
 
-  // Pick a new random phrase whenever the displayed item changes
-  const styleMeter = useMemo(() => {
-    const pick = STYLE_PHRASES[Math.floor(Math.random() * STYLE_PHRASES.length)];
-    const filled = Math.round((pick.level / 10) * 8);
-    const bar = `[${"█".repeat(filled)}${"░".repeat(8 - filled)}]`;
-    return { ...pick, bar };
+  // Drive the scan animation sequence whenever the displayed item changes
+  useEffect(() => {
+    setScanPhase('scan');
+    const t1 = setTimeout(() => setScanPhase('filling'),  20);   // bar starts filling
+    const t2 = setTimeout(() => setScanPhase('verified'), 420);  // bar full → verified flash
+    const t3 = setTimeout(() => setScanPhase('phrase'),   610);  // phrase appears
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [current]);
 
   const lines = cart?.lines ?? [];
@@ -87,11 +98,23 @@ export function CartPage() {
                       <span className="oc-item-price">€{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
 
-                    {/* ── Style Meter ── */}
+                    {/* ── Style Scanner ── */}
                     <div className="oc-style-meter">
-                      <span className="oc-style-meter-header">♥ STYLE METER ♥</span>
-                      <span className="oc-style-meter-bar">{styleMeter.bar}</span>
-                      <span className="oc-style-meter-quote">&ldquo;{styleMeter.text}&rdquo;</span>
+                      <span className="oc-scan-header">♥ STYLE SCAN ♥</span>
+                      <div className={`oc-scan-bar-track${scanPhase === 'verified' || scanPhase === 'phrase' ? ' oc-bar-glow' : ''}`}>
+                        <div className={`oc-scan-bar-fill${scanPhase !== 'scan' ? ' oc-bar-active' : ''}${scanPhase === 'verified' || scanPhase === 'phrase' ? ' oc-bar-glow' : ''}`} />
+                      </div>
+                      <div className="oc-scan-result">
+                        {(scanPhase === 'scan' || scanPhase === 'filling') && (
+                          <span className="oc-scan-cursor">_</span>
+                        )}
+                        {scanPhase === 'verified' && (
+                          <span className="oc-scan-verified">✓ STYLE VERIFIED</span>
+                        )}
+                        {scanPhase === 'phrase' && (
+                          <span key={item.handle} className="oc-scan-phrase">&ldquo;{phraseForItem(item.handle)}&rdquo;</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
