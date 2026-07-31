@@ -12,12 +12,12 @@ import { SmartImg } from "@/components/smart-img";
 
 const STYLE_PHRASES = [
   "As if!",
-  "Totally buggin'.",
+  "Totally buggin'",
   "Iconic!",
-  "That's so fetch.",
-  "Loves it.",
-  "So hot right now.",
-  "100% Mall ready.",
+  "That's so fetch",
+  "Loves it",
+  "So hot right now",
+  "100% Mall ready",
 ] as const;
 
 // Deterministic per-product: same handle always yields the same phrase
@@ -107,7 +107,7 @@ export function CartPage() {
                           <span className="oc-scan-cursor">_</span>
                         )}
                         {scanPhase === 'phrase' && (
-                          <span key={item.handle} className="oc-scan-phrase">&ldquo;{phraseForItem(item.handle)}&rdquo;</span>
+                          <span key={item.handle} className="oc-scan-phrase">{phraseForItem(item.handle)}</span>
                         )}
                       </div>
                     </div>

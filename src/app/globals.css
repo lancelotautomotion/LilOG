@@ -1652,7 +1652,7 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   flex-direction: column;
 }
-.oc-screen-item { display: flex; flex-direction: column; flex: 1; }
+.oc-screen-item { display: flex; flex-direction: column; flex: 1; background: #c0c0c0; }
 .oc-screen-bg {
   flex: 1;
   background: #7090d0;
@@ -1709,7 +1709,6 @@ a { color: inherit; text-decoration: none; }
   /* Win95 grey — continuité avec .oc-item-label */
   background: #c0c0c0;
   border-top: 1px solid #888;
-  flex: 1;           /* remplit l'espace bleu résiduel dans l'écran */
   text-align: center;
 }
 
@@ -1739,7 +1738,7 @@ a { color: inherit; text-decoration: none; }
 .oc-scan-bar-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #39ff8c 0%, #00e5ff 65%, #ff69b4 100%);
+  background: linear-gradient(90deg, #1084d0 0%, #000080 100%);
 }
 .oc-scan-bar-fill.oc-bar-active {
   width: 100%;
@@ -1747,7 +1746,7 @@ a { color: inherit; text-decoration: none; }
 }
 /* Le glow est clipé dans la track : effet "écran lumineux" dans le cadre Win95 */
 .oc-scan-bar-fill.oc-bar-glow {
-  box-shadow: 0 0 8px #39ff8c, 0 0 3px #00e5ff;
+  box-shadow: 0 0 8px rgba(16, 132, 208, 0.8);
 }
 
 /* Zone de texte sous la barre — hauteur fixe = pas de saut de layout */
