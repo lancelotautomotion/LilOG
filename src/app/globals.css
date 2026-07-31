@@ -395,6 +395,31 @@ a { color: inherit; text-decoration: none; }
 .drawer-parent { width: 100%; }
 .drawer-link { width: 100%; }
 
+/* Category label: link that navigates to "tout voir" */
+.drawer-parent-link {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+  text-decoration: none;
+  flex: 1;
+  transition: color 0.2s;
+}
+.drawer-parent-link:hover { color: #d4006e; }
+
+/* Chevron-only toggle button */
+.drawer-parent-toggle {
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #d4006e;
+  flex-shrink: 0;
+}
+
 /* Fuchsia caret */
 .drawer-parent .caret {
   width: 18px; height: 18px;
