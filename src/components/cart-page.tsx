@@ -260,18 +260,18 @@ export function CartPage() {
             <div className="ch-heart">
               <svg viewBox="0 0 200 188" className="ch-heart-svg" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <radialGradient id="chHG" cx="37%" cy="27%" r="68%">
-                    <stop offset="0%" stopColor="#ffbae0"/>
-                    <stop offset="38%" stopColor="#f0288a"/>
-                    <stop offset="100%" stopColor="#b01462"/>
-                  </radialGradient>
-                  <radialGradient id="chShine" cx="32%" cy="20%" r="44%">
-                    <stop offset="0%" stopColor="rgba(255,255,255,0.6)"/>
-                    <stop offset="100%" stopColor="rgba(255,255,255,0)"/>
-                  </radialGradient>
+                  <linearGradient id="chHG" x1="0%" y1="0%" x2="45%" y2="100%">
+                    <stop offset="0%" stopColor="#FF5CB5"/>
+                    <stop offset="100%" stopColor="#E5007A"/>
+                  </linearGradient>
                 </defs>
-                <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z" fill="url(#chHG)"/>
-                <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z" fill="url(#chShine)"/>
+                {/* Flat Y2K heart — vivid pink + bold stroke */}
+                <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z"
+                      fill="url(#chHG)" stroke="#B8006A" strokeWidth="5" strokeLinejoin="round"/>
+                {/* Classic Y2K gloss ellipse — top left */}
+                <ellipse cx="72" cy="50" rx="28" ry="17" fill="rgba(255,255,255,0.55)" transform="rotate(-38 72 50)"/>
+                {/* Secondary shimmer */}
+                <ellipse cx="132" cy="34" rx="12" ry="7" fill="rgba(255,255,255,0.28)" transform="rotate(12 132 34)"/>
               </svg>
               <p className="ch-heart-msg">{heartMsg}</p>
             </div>
