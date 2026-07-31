@@ -395,6 +395,31 @@ a { color: inherit; text-decoration: none; }
 .drawer-parent { width: 100%; }
 .drawer-link { width: 100%; }
 
+/* Category label: link that navigates to "tout voir" */
+.drawer-parent-link {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+  text-decoration: none;
+  flex: 1;
+  transition: color 0.2s;
+}
+.drawer-parent-link:hover { color: #d4006e; }
+
+/* Chevron-only toggle button */
+.drawer-parent-toggle {
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #d4006e;
+  flex-shrink: 0;
+}
+
 /* Fuchsia caret */
 .drawer-parent .caret {
   width: 18px; height: 18px;
@@ -1052,12 +1077,13 @@ a { color: inherit; text-decoration: none; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3px;
+  background: #fff;
 }
 .pdp-grid-cell {
   position: relative;
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  background: var(--cream-2);
+  background: #fff;
   border: none;
   padding: 0;
   cursor: zoom-in;
@@ -1553,7 +1579,7 @@ a { color: inherit; text-decoration: none; }
   min-height: 100dvh;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   padding: clamp(80px, 10vw, 110px) clamp(16px, 4vw, 60px) clamp(40px, 6vw, 80px);
   gap: clamp(16px, 3vw, 40px);
@@ -1564,7 +1590,11 @@ a { color: inherit; text-decoration: none; }
 .oc-center {
   width: min(420px, 92vw);
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
+.oc-center > .oc-win95-outer { flex: 1; display: flex; flex-direction: column; }
+.oc-center > .oc-win95-outer .oc-win95-screen { flex: 1; }
 
 /* Windows 95 outer shell */
 .oc-win95-outer {
@@ -1668,6 +1698,42 @@ a { color: inherit; text-decoration: none; }
   color: #000080;
   flex-shrink: 0;
 }
+/* Style Meter */
+.oc-style-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 14px 12px;
+  background: #00083a;
+  border-top: 2px solid #1084d0;
+  border-bottom: 2px solid #1084d0;
+  text-align: center;
+}
+.oc-style-meter-header {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  color: #ff9bd2;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  user-select: none;
+}
+.oc-style-meter-bar {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: #39ff8c;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+.oc-style-meter-quote {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: #fff;
+  font-style: italic;
+  letter-spacing: 0.03em;
+}
+
 .oc-counter {
   font-family: var(--mono);
   font-size: 0.62rem;
@@ -1855,10 +1921,11 @@ a { color: inherit; text-decoration: none; }
 }
 .oc-summary-footer {
   border-top: 1px solid #999;
-  padding-top: 10px;
+  padding: 10px 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  flex-shrink: 0;
 }
 .oc-summary-total {
   display: flex;
@@ -2976,11 +3043,12 @@ html, body {
 }
 .pdp-add.added { background: #006000 !important; border-top-color: #40a040 !important; border-left-color: #40a040 !important; }
 .pdp-add:disabled:not(.added) { background: #888 !important; border-color: #aaa #666 #666 #aaa !important; }
-.pdp-add-row { display: flex !important; gap: 6px !important; max-width: 52ch !important; width: 100% !important; }
-.pdp-add-row .pdp-add { width: auto !important; }
-.pdp-add-row .pdp-add { flex: 1 !important; }
-.pdp-like { flex-shrink: 0 !important; width: 54px !important; display: flex !important; align-items: center !important; justify-content: center !important; background: #c0c0c0 !important; border-top: 2.5px solid #fff !important; border-left: 2.5px solid #fff !important; border-right: 2.5px solid #444 !important; border-bottom: 2.5px solid #444 !important; border-radius: 0 !important; cursor: pointer !important; color: #000080 !important; transition: color 0.2s !important; }
-.pdp-like.on { color: #e0006e !important; background: #d4d0c8 !important; }
+/* pdp-body: grid container — single column forces all children to identical width */
+.pdp-body { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; font-family: var(--mono) !important; font-size: 0.72rem !important; max-width: calc(52ch + 48px) !important; width: 100% !important; }
+.pdp-add-row { display: flex !important; gap: 0 !important; width: 100% !important; min-width: 0 !important; max-width: 100% !important; box-sizing: border-box !important; border-top: 2.5px solid #6060c0 !important; border-left: 2.5px solid #6060c0 !important; border-right: 2.5px solid #00003a !important; border-bottom: 2.5px solid #00003a !important; box-shadow: 1px 1px 0 #000 !important; margin-bottom: clamp(14px,2vw,22px) !important; }
+.pdp-add-row .pdp-add { width: auto !important; flex: 1 !important; min-width: 0 !important; border: none !important; border-right: 1px solid #3030a0 !important; box-shadow: none !important; }
+.pdp-like { flex-shrink: 0 !important; width: 54px !important; display: flex !important; align-items: center !important; justify-content: center !important; background: #000080 !important; border: none !important; border-radius: 0 !important; cursor: pointer !important; color: #fff !important; transition: color 0.2s, background 0.2s !important; }
+.pdp-like.on { color: #e0006e !important; background: #00006a !important; }
 .pdp-accordion { border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; box-shadow: 1px 1px 0 #000 !important; margin-top: clamp(40px,5vw,60px) !important; }
 .pdp-acc-item { border: none !important; border-bottom: 1px solid #888 !important; }
 .pdp-acc-item:last-child { border-bottom: none !important; }
@@ -3009,7 +3077,7 @@ html, body {
 .pdp-acc-body.pdp-desc { background: #fff !important; max-width: none !important; margin: 0 !important; width: 100% !important; box-sizing: border-box !important; color: #222 !important; }
 .pdp-tag { font-family: var(--mono) !important; font-size: 0.68rem !important; border-radius: 0 !important; background: #c0c0c0 !important; color: #000 !important; border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; padding: 5px 12px !important; letter-spacing: 0.06em !important; text-transform: uppercase !important; }
 .pdp-tag--etat, .pdp-tag--taille { font-weight: 700 !important; }
-.pdp-desc { font-family: var(--mono) !important; font-size: 0.72rem !important; line-height: 1.7 !important; color: #222 !important; text-align: left !important; margin-left: 0 !important; margin-right: 0 !important; max-width: 52ch !important; }
+.pdp-desc { font-family: var(--mono) !important; font-size: 0.72rem !important; line-height: 1.7 !important; color: #222 !important; text-align: left !important; margin-left: 0 !important; margin-right: 0 !important; max-width: none !important; width: 100% !important; box-sizing: border-box !important; display: block !important; }
 .pdp-desc:not(.pdp-acc-body) { background: #fff !important; padding: 18px 22px !important; border-top: 2px solid #fff !important; border-left: 2px solid #fff !important; border-right: 2px solid #444 !important; border-bottom: 2px solid #444 !important; box-shadow: 1px 1px 0 #000 !important; }
 
 /* ── Footer → Win95 bar ── */

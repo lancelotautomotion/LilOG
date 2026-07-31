@@ -123,47 +123,49 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
               </div>
             )}
 
-            <div className="pdp-add-row">
-              <button className={"pdp-add" + (added ? " added" : "")} onClick={add} disabled={sold || !variantId}>
-                <span style={{ position: "relative", zIndex: 1 }}>
-                  {sold ? t.pdp.soldOut : added ? t.pdp.added : t.pdp.addToCart}
-                </span>
-              </button>
-              <button className={"pdp-like" + (liked ? " on" : "")} onClick={() => setLiked((l) => !l)} aria-label="Ajouter aux favoris">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </svg>
-              </button>
-            </div>
+            <div className="pdp-body">
+              <div className="pdp-add-row">
+                <button className={"pdp-add" + (added ? " added" : "")} onClick={add} disabled={sold || !variantId}>
+                  <span style={{ position: "relative", zIndex: 1 }}>
+                    {sold ? t.pdp.soldOut : added ? t.pdp.added : t.pdp.addToCart}
+                  </span>
+                </button>
+                <button className={"pdp-like" + (liked ? " on" : "")} onClick={() => setLiked((l) => !l)} aria-label="Ajouter aux favoris">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>
+                </button>
+              </div>
 
-            {product.descriptionHtml && (() => {
-              const { sections } = parseDescription(product.descriptionHtml);
-              const visible = sections.filter((s) => !s.accordion);
-              const accordions = sections.filter((s) => s.accordion);
-              return (
-                <>
-                  {visible.map((s, i) => s.content && (
-                    <div key={i} className="pdp-desc" dangerouslySetInnerHTML={{ __html: s.content }} />
-                  ))}
-                  <div className="pdp-accordion">
-                    {accordions.map(({ label, content }) => (
-                      <details key={label} className="pdp-acc-item">
-                        <summary><span /><span>{label}</span><Icon.chevD className="chev" /></summary>
-                        <div className="pdp-acc-body pdp-desc" dangerouslySetInnerHTML={{ __html: content }} />
-                      </details>
+              {product.descriptionHtml && (() => {
+                const { sections } = parseDescription(product.descriptionHtml);
+                const visible = sections.filter((s) => !s.accordion);
+                const accordions = sections.filter((s) => s.accordion);
+                return (
+                  <>
+                    {visible.map((s, i) => s.content && (
+                      <div key={i} className="pdp-desc" dangerouslySetInnerHTML={{ __html: s.content }} />
                     ))}
-                    <details className="pdp-acc-item">
-                      <summary><span /><span>{t.pdp.detailsH}</span><Icon.chevD className="chev" /></summary>
-                      <div className="pdp-acc-body">{t.pdp.detailsBody}</div>
-                    </details>
-                    <details className="pdp-acc-item">
-                      <summary><span /><span>{t.pdp.shippingH}</span><Icon.chevD className="chev" /></summary>
-                      <div className="pdp-acc-body">{t.pdp.shippingBody}</div>
-                    </details>
-                  </div>
-                </>
-              );
-            })()}
+                    <div className="pdp-accordion">
+                      {accordions.map(({ label, content }) => (
+                        <details key={label} className="pdp-acc-item">
+                          <summary><span /><span>{label}</span><Icon.chevD className="chev" /></summary>
+                          <div className="pdp-acc-body pdp-desc" dangerouslySetInnerHTML={{ __html: content }} />
+                        </details>
+                      ))}
+                      <details className="pdp-acc-item">
+                        <summary><span /><span>{t.pdp.detailsH}</span><Icon.chevD className="chev" /></summary>
+                        <div className="pdp-acc-body">{t.pdp.detailsBody}</div>
+                      </details>
+                      <details className="pdp-acc-item">
+                        <summary><span /><span>{t.pdp.shippingH}</span><Icon.chevD className="chev" /></summary>
+                        <div className="pdp-acc-body">{t.pdp.shippingBody}</div>
+                      </details>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
           </div>
         </div>
         </div>{/* .pdp-win */}

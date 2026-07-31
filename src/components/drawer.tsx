@@ -52,14 +52,17 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
             <div className={"drawer-item" + (l.sub && expanded === i ? " open" : "")} key={l.key}>
               {l.sub ? (
                 <>
-                  <button
-                    className="drawer-parent"
-                    aria-expanded={expanded === i}
-                    onClick={() => { setExpanded(expanded === i ? null : i); setExpandedSub(null); }}
-                  >
-                    {t.cat[l.key]}
-                    <Icon.chevD className="caret" />
-                  </button>
+                  <div className="drawer-parent">
+                    <a href={l.href} onClick={onClose} className="drawer-parent-link">{t.cat[l.key]}</a>
+                    <button
+                      className="drawer-parent-toggle"
+                      aria-expanded={expanded === i}
+                      onClick={() => { setExpanded(expanded === i ? null : i); setExpandedSub(null); }}
+                      aria-label="Ouvrir le sous-menu"
+                    >
+                      <Icon.chevD className="caret" />
+                    </button>
+                  </div>
                   <div className="drawer-sub">
                     <div className="drawer-sub-inner">
                       {l.sub.map((s) =>
