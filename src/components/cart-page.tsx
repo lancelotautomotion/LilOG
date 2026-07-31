@@ -121,43 +121,43 @@ export function CartPage() {
                 {total === 0 ? (
                   <p className="oc-summary-empty">Panier vide.</p>
                 ) : (
-                  <>
-                    <ul className="oc-summary-list">
-                      {lines.map((line, i) => (
-                        <li key={line.id} className={`oc-summary-line${i === current ? " oc-summary-line-active" : ""}`}>
-                          <button className="oc-summary-thumb" onClick={() => setCurrent(i)}>
-                            <SmartImg src={line.image} alt={line.title} />
-                          </button>
-                          <div className="oc-summary-info">
-                            <span className="oc-summary-name">{line.title}</span>
-                            {line.variantTitle && <span className="oc-summary-variant">{line.variantTitle}</span>}
-                            <span className="oc-summary-price">€{(line.price * line.quantity).toFixed(2)}{line.quantity > 1 && ` ×${line.quantity}`}</span>
-                          </div>
-                          <button
-                            className="oc-summary-remove"
-                            onClick={() => handleRemove(line.id)}
-                            disabled={pending}
-                            aria-label="Retirer"
-                          >✕</button>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="oc-summary-footer">
-                      <div className="oc-summary-total">
-                        <span>TOTAL</span>
-                        <span>€{cart?.subtotal.toFixed(2)}</span>
-                      </div>
-                      <p className="oc-summary-note">{t.cart.subtotalNote}</p>
-                      {cart?.checkoutUrl && (
-                        <a className="oc-checkout-btn" href={cart.checkoutUrl}>
-                          {t.cart.checkout} →
-                        </a>
-                      )}
-                    </div>
-                  </>
+                  <ul className="oc-summary-list">
+                    {lines.map((line, i) => (
+                      <li key={line.id} className={`oc-summary-line${i === current ? " oc-summary-line-active" : ""}`}>
+                        <button className="oc-summary-thumb" onClick={() => setCurrent(i)}>
+                          <SmartImg src={line.image} alt={line.title} />
+                        </button>
+                        <div className="oc-summary-info">
+                          <span className="oc-summary-name">{line.title}</span>
+                          {line.variantTitle && <span className="oc-summary-variant">{line.variantTitle}</span>}
+                          <span className="oc-summary-price">€{(line.price * line.quantity).toFixed(2)}{line.quantity > 1 && ` ×${line.quantity}`}</span>
+                        </div>
+                        <button
+                          className="oc-summary-remove"
+                          onClick={() => handleRemove(line.id)}
+                          disabled={pending}
+                          aria-label="Retirer"
+                        >✕</button>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
+
+              {total > 0 && (
+                <div className="oc-summary-footer">
+                  <div className="oc-summary-total">
+                    <span>TOTAL</span>
+                    <span>€{cart?.subtotal.toFixed(2)}</span>
+                  </div>
+                  <p className="oc-summary-note">{t.cart.subtotalNote}</p>
+                  {cart?.checkoutUrl && (
+                    <a className="oc-checkout-btn" href={cart.checkoutUrl}>
+                      {t.cart.checkout} →
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
