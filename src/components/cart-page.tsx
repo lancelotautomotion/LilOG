@@ -172,10 +172,10 @@ export function CartPage() {
                 ) : (
                   <ul className="oc-summary-list">
                     {lines.map((line, i) => (
-                      <li key={line.id} className={`oc-summary-line${i === current ? " oc-summary-line-active" : ""}`}>
-                        <button className="oc-summary-thumb" onClick={() => setCurrent(i)}>
+                      <li key={line.id} className={`oc-summary-line${i === current ? " oc-summary-line-active" : ""}`} onClick={() => setCurrent(i)}>
+                        <div className="oc-summary-thumb">
                           <SmartImg src={line.image} alt={line.title} />
-                        </button>
+                        </div>
                         <div className="oc-summary-info">
                           <span className="oc-summary-name">{line.title}</span>
                           {line.variantTitle && <span className="oc-summary-variant">{line.variantTitle}</span>}
@@ -183,7 +183,7 @@ export function CartPage() {
                         </div>
                         <button
                           className="oc-summary-remove"
-                          onClick={() => handleRemove(line.id)}
+                          onClick={(e) => { e.stopPropagation(); handleRemove(line.id); }}
                           disabled={pending}
                           aria-label="Retirer"
                         >✕</button>

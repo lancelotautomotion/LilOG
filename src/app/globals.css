@@ -1949,6 +1949,7 @@ a { color: inherit; text-decoration: none; }
   border-left: 1.5px solid #fff;
   border-right: 1.5px solid #888;
   border-bottom: 1.5px solid #888;
+  cursor: pointer;
 }
 .oc-summary-line-active {
   background: #000080;
