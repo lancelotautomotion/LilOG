@@ -36,15 +36,13 @@ export function CartPage() {
   const firstName = session?.user?.name?.split(" ")[0] ?? null;
   const [menu, setMenu] = useState(false);
   const [current, setCurrent] = useState(0);
-  const [scanPhase, setScanPhase] = useState<'scan' | 'filling' | 'verified' | 'phrase'>('scan');
+  const [scanPhase, setScanPhase] = useState<'scan' | 'filling' | 'phrase'>('scan');
 
-  // Drive the scan animation sequence whenever the displayed item changes
   useEffect(() => {
     setScanPhase('scan');
-    const t1 = setTimeout(() => setScanPhase('filling'),  20);   // bar starts filling
-    const t2 = setTimeout(() => setScanPhase('verified'), 420);  // bar full → verified flash
-    const t3 = setTimeout(() => setScanPhase('phrase'),   610);  // phrase appears
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    const t1 = setTimeout(() => setScanPhase('filling'), 20);   // bar starts filling
+    const t2 = setTimeout(() => setScanPhase('phrase'),  400);  // bar full → phrase
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [current]);
 
   const lines = cart?.lines ?? [];
@@ -101,15 +99,12 @@ export function CartPage() {
                     {/* ── Style Scanner ── */}
                     <div className="oc-style-meter">
                       <span className="oc-scan-header">♥ STYLE SCAN ♥</span>
-                      <div className={`oc-scan-bar-track${scanPhase === 'verified' || scanPhase === 'phrase' ? ' oc-bar-glow' : ''}`}>
-                        <div className={`oc-scan-bar-fill${scanPhase !== 'scan' ? ' oc-bar-active' : ''}${scanPhase === 'verified' || scanPhase === 'phrase' ? ' oc-bar-glow' : ''}`} />
+                      <div className="oc-scan-bar-track">
+                        <div className={`oc-scan-bar-fill${scanPhase !== 'scan' ? ' oc-bar-active' : ''}${scanPhase === 'phrase' ? ' oc-bar-glow' : ''}`} />
                       </div>
                       <div className="oc-scan-result">
                         {(scanPhase === 'scan' || scanPhase === 'filling') && (
                           <span className="oc-scan-cursor">_</span>
-                        )}
-                        {scanPhase === 'verified' && (
-                          <span className="oc-scan-verified">✓ STYLE VERIFIED</span>
                         )}
                         {scanPhase === 'phrase' && (
                           <span key={item.handle} className="oc-scan-phrase">&ldquo;{phraseForItem(item.handle)}&rdquo;</span>

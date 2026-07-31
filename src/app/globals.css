@@ -1698,16 +1698,18 @@ a { color: inherit; text-decoration: none; }
   color: #000080;
   flex-shrink: 0;
 }
-/* ── Style Scanner ── */
+/* ── Style Scanner (Win95) ── */
 .oc-style-meter {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 10px 16px 12px;
-  background: #00083a;
-  border-top: 2px solid #1084d0;
+  gap: 8px;
+  padding: 14px 16px;
+  /* Win95 grey — continuité avec .oc-item-label */
+  background: #c0c0c0;
+  border-top: 1px solid #888;
+  flex: 1;           /* remplit l'espace bleu résiduel dans l'écran */
   text-align: center;
 }
 
@@ -1715,120 +1717,80 @@ a { color: inherit; text-decoration: none; }
 .oc-scan-header {
   font-family: var(--mono);
   font-size: 0.52rem;
-  color: #ff9bd2;
+  color: #c0006e;    /* rose Y2K lisible sur gris Win95 */
   letter-spacing: 0.22em;
   text-transform: uppercase;
   user-select: none;
 }
 
-/* Progress bar track */
+/* Barre — inset Win95 classique + couleurs Y2K */
 .oc-scan-bar-track {
-  width: 84%;
-  height: 9px;
-  background: #000c24;
-  border: 1.5px solid rgba(57, 255, 140, 0.3);
+  width: 88%;
+  height: 11px;
+  /* Win95 sunken inset border */
+  border-top: 2px solid #444;
+  border-left: 2px solid #444;
+  border-right: 2px solid #dfdfdf;
+  border-bottom: 2px solid #dfdfdf;
+  background: #000;
   position: relative;
   overflow: hidden;
 }
-/* Segment grid overlay */
-.oc-scan-bar-track::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0px,
-    transparent 5px,
-    rgba(0, 8, 58, 0.55) 5px,
-    rgba(0, 8, 58, 0.55) 6px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-/* Bar glow: track pulses and scales at 100% */
-.oc-scan-bar-track.oc-bar-glow {
-  border-color: rgba(57, 255, 140, 0.7);
-  animation: trackPulse 280ms ease-out forwards;
-}
-
-/* Progress bar fill */
 .oc-scan-bar-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #39ff8c 0%, #00e5ff 75%, #ff9bd2 100%);
+  background: linear-gradient(90deg, #39ff8c 0%, #00e5ff 65%, #ff69b4 100%);
 }
 .oc-scan-bar-fill.oc-bar-active {
   width: 100%;
-  transition: width 380ms linear;
+  transition: width 360ms linear;
 }
+/* Le glow est clipé dans la track : effet "écran lumineux" dans le cadre Win95 */
 .oc-scan-bar-fill.oc-bar-glow {
-  box-shadow: 0 0 10px #39ff8c, 0 0 4px #00e5ff;
+  box-shadow: 0 0 8px #39ff8c, 0 0 3px #00e5ff;
 }
 
-/* Result text slot — fixed height prevents layout jump */
+/* Zone de texte sous la barre — hauteur fixe = pas de saut de layout */
 .oc-scan-result {
-  min-height: 1.05rem;
+  min-height: 1.1rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Blinking cursor while scanning */
+/* Curseur clignotant pendant le scan */
 .oc-scan-cursor {
   font-family: var(--mono);
   font-size: 0.7rem;
-  color: #39ff8c;
+  color: #000080;
   animation: ocCursorBlink 500ms step-end infinite;
 }
 
-/* "✓ STYLE VERIFIED" */
-.oc-scan-verified {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  color: #39ff8c;
-  letter-spacing: 0.12em;
-  text-shadow: 0 0 8px rgba(57, 255, 140, 0.75);
-  animation: ocVerifiedIn 150ms ease-out forwards;
-}
-
-/* Final phrase */
+/* Phrase finale */
 .oc-scan-phrase {
   font-family: var(--mono);
   font-size: 0.72rem;
-  color: #fff;
+  color: #000080;
   font-style: italic;
   letter-spacing: 0.03em;
   opacity: 0;
   animation:
-    ocPhraseIn  200ms ease-out         forwards,
-    ocPhraseBlink 300ms linear 220ms 1 forwards;
+    ocPhraseIn    200ms ease-out        forwards,
+    ocPhraseBlink 300ms linear 220ms 1  forwards;
 }
 
-/* Keyframes */
-@keyframes trackPulse {
-  0%   { transform: scaleY(1); }
-  40%  { transform: scaleY(1.05); }
-  100% { transform: scaleY(1); }
-}
 @keyframes ocCursorBlink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
 }
-@keyframes ocVerifiedIn {
-  from { opacity: 0; transform: scale(0.9); letter-spacing: 0.04em; }
-  to   { opacity: 1; transform: scale(1);   letter-spacing: 0.12em; }
-}
 @keyframes ocPhraseIn {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(3px); }
   to   { opacity: 1; transform: translateY(0);   }
 }
 @keyframes ocPhraseBlink {
-  0%   { opacity: 1; }
-  15%  { opacity: 0; }
-  30%  { opacity: 1; }
-  45%  { opacity: 0; }
-  60%  { opacity: 1; }
-  100% { opacity: 1; }
+  0%,  30% { opacity: 1; }
+  15%, 45% { opacity: 0; }
+  60%, 100%{ opacity: 1; }
 }
 
 .oc-counter {
