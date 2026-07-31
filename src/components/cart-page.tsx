@@ -51,18 +51,21 @@ export function CartPage() {
   const [current, setCurrent] = useState(0);
   const [scanPhase, setScanPhase] = useState<'scan' | 'filling' | 'phrase'>('scan');
   const [phrase, setPhrase] = useState(() => randomPhrase());
-  const [showMsn, setShowMsn] = useState(false);
-  const [msnMsg, setMsnMsg] = useState('');
-  const msnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [showHeart, setShowHeart] = useState(false);
+  const [heartMsg, setHeartMsg] = useState('');
+  const heartTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleCheckout = () => {
-    if (msnTimer.current) clearTimeout(msnTimer.current);
-    setMsnMsg(MSN_MESSAGES[Math.floor(Math.random() * MSN_MESSAGES.length)]);
-    setShowMsn(true);
-    msnTimer.current = setTimeout(() => setShowMsn(false), 1400);
+  const handleCheckout = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const url = cart?.checkoutUrl;
+    if (!url) return;
+    if (heartTimer.current) clearTimeout(heartTimer.current);
+    setHeartMsg(MSN_MESSAGES[Math.floor(Math.random() * MSN_MESSAGES.length)]);
+    setShowHeart(true);
+    heartTimer.current = setTimeout(() => { window.location.href = url; }, 2000);
   };
 
-  useEffect(() => () => { if (msnTimer.current) clearTimeout(msnTimer.current); }, []);
+  useEffect(() => () => { if (heartTimer.current) clearTimeout(heartTimer.current); }, []);
 
   useEffect(() => {
     setPhrase(randomPhrase());   // nouvelle phrase à chaque changement d'article
@@ -239,16 +242,51 @@ export function CartPage() {
       </main>
       <Footer />
 
-      {showMsn && (
-        <div className="msn-widget" role="status" aria-live="polite">
-          <span className="msn-heart" aria-hidden="true">♥</span>
-          <div className="msn-text">
-            <div className="msn-title">{msnMsg}</div>
-            <div className="msn-subtitle">Your outfit is officially iconic.</div>
+      {showHeart && (
+        <div className="ch-overlay" aria-live="polite">
+          <div className="ch-scene">
+            {/* Left wing */}
+            <svg className="ch-wing ch-wing-l" viewBox="0 0 155 125" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M148,58 Q108,4 5,14 Q54,37 148,53 Z" fill="white"/>
+              <path d="M148,58 Q106,11 8,21 Q52,43 148,61 Z" fill="rgba(255,255,255,0.7)"/>
+              <path d="M147,64 Q103,23 12,33 Q49,51 147,67 Z" fill="#f3f3f9"/>
+              <path d="M145,70 Q98,37 18,47 Q47,59 145,73 Z" fill="#ededf5"/>
+              <path d="M142,77 Q94,52 26,61 Q46,69 142,79 Z" fill="#e8e8f2"/>
+              <path d="M138,83 Q88,66 35,73 Q44,79 138,86 Z" fill="#e3e3ef"/>
+              <path d="M132,89 Q82,78 44,84 Q46,89 132,92 Z" fill="#dddded"/>
+            </svg>
+
+            {/* Heart + text */}
+            <div className="ch-heart">
+              <svg viewBox="0 0 200 188" className="ch-heart-svg" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="chHG" cx="37%" cy="27%" r="68%">
+                    <stop offset="0%" stopColor="#ffbae0"/>
+                    <stop offset="38%" stopColor="#f0288a"/>
+                    <stop offset="100%" stopColor="#b01462"/>
+                  </radialGradient>
+                  <radialGradient id="chShine" cx="32%" cy="20%" r="44%">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.6)"/>
+                    <stop offset="100%" stopColor="rgba(255,255,255,0)"/>
+                  </radialGradient>
+                </defs>
+                <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z" fill="url(#chHG)"/>
+                <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z" fill="url(#chShine)"/>
+              </svg>
+              <p className="ch-heart-msg">{heartMsg}</p>
+            </div>
+
+            {/* Right wing */}
+            <svg className="ch-wing ch-wing-r" viewBox="0 0 155 125" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M7,58 Q47,4 150,14 Q101,37 7,53 Z" fill="white"/>
+              <path d="M7,58 Q49,11 147,21 Q103,43 7,61 Z" fill="rgba(255,255,255,0.7)"/>
+              <path d="M8,64 Q52,23 143,33 Q106,51 8,67 Z" fill="#f3f3f9"/>
+              <path d="M10,70 Q57,37 137,47 Q108,59 10,73 Z" fill="#ededf5"/>
+              <path d="M13,77 Q61,52 129,61 Q109,69 13,79 Z" fill="#e8e8f2"/>
+              <path d="M17,83 Q67,66 120,73 Q111,79 17,86 Z" fill="#e3e3ef"/>
+              <path d="M23,89 Q73,78 111,84 Q109,89 23,92 Z" fill="#dddded"/>
+            </svg>
           </div>
-          <span className="msn-sparkle" aria-hidden="true">✦</span>
-          <span className="msn-sparkle" aria-hidden="true">✦</span>
-          <span className="msn-sparkle" aria-hidden="true">✦</span>
         </div>
       )}
     </>

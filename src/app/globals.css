@@ -2067,127 +2067,99 @@ a { color: inherit; text-decoration: none; }
 }
 .oc-checkout-btn:hover { filter: brightness(1.15); }
 
-/* ── MSN Messenger checkout notification ── */
-.msn-widget {
+/* ── Checkout flying heart ── */
+.ch-overlay {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 244px;
+  inset: 0;
   z-index: 9999;
   pointer-events: none;
-
-  background: linear-gradient(155deg, #ffe8f3 0%, #ffbed9 100%);
-  border: 2px solid #fff;
-  border-radius: 10px;
-  box-shadow:
-    2px 2px 0 #c8609a,
-    0 6px 18px rgba(180, 60, 120, 0.22);
-  padding: 12px 14px 12px 12px;
-  overflow: hidden;
-
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-
-  animation:
-    msnIn  250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
-    msnOut 200ms ease-in 1050ms forwards;
+  align-items: center;
+  justify-content: center;
 }
 
-/* XP-style glossy top highlight */
-.msn-widget::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 48%;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
-  border-radius: 8px 8px 0 0;
-  pointer-events: none;
+.ch-scene {
+  display: flex;
+  align-items: center;
+  animation: chFly 2000ms cubic-bezier(0.22, 0.9, 0.36, 1) forwards;
 }
 
-.msn-heart {
-  font-size: 2rem;
-  line-height: 1;
-  color: #d63080;
-  flex-shrink: 0;
-  margin-top: 2px;
-  animation: msnHeartbeat 750ms ease-in-out infinite;
-  text-shadow: 0 0 10px rgba(210, 50, 120, 0.45);
-}
-
-.msn-text {
-  flex: 1;
-  min-width: 0;
+/* Heart container */
+.ch-heart {
   position: relative;
+  width: 200px;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.ch-heart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 10px 28px rgba(160, 20, 90, 0.5));
+}
+
+.ch-heart-msg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -42%);
+  width: 118px;
+  text-align: center;
+  font-family: var(--font-script), cursive;
+  font-size: 1.25rem;
+  line-height: 1.28;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(80, 0, 40, 0.5);
+  user-select: none;
+}
+
+/* Wings */
+.ch-wing {
+  width: 138px;
+  height: auto;
+  flex-shrink: 0;
   z-index: 1;
 }
 
-.msn-title {
-  font-family: var(--font-script), cursive;
-  font-size: 1.25rem;
-  color: #7a0045;
-  line-height: 1.15;
+.ch-wing-l {
+  transform-origin: 100% 52%;
+  margin-right: -20px;
+  animation: chWingL 320ms steps(3, end) infinite;
 }
 
-.msn-subtitle {
-  font-family: var(--font-sans), sans-serif;
-  font-size: 0.62rem;
-  color: #a0306a;
-  margin-top: 3px;
-  font-style: italic;
-  line-height: 1.35;
+.ch-wing-r {
+  transform-origin: 0% 52%;
+  margin-left: -20px;
+  animation: chWingR 320ms steps(3, end) infinite;
 }
 
-/* 3 sparkles — absolute, staggered */
-.msn-sparkle {
-  position: absolute;
-  font-size: 0.7rem;
-  color: #d63080;
-  opacity: 0;
-  pointer-events: none;
-  animation: msnSparkle 700ms ease-in-out infinite;
-}
-.msn-sparkle:nth-child(3) { top: 7px;  right: 14px; animation-delay:   0ms; }
-.msn-sparkle:nth-child(4) { bottom: 9px; right: 22px; animation-delay: 230ms; }
-.msn-sparkle:nth-child(5) { top: 50%;  right: 9px;  animation-delay: 460ms; }
-
-@keyframes msnIn {
-  from { transform: translateX(120%); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
-}
-@keyframes msnOut {
-  from { transform: translateY(0);    opacity: 1; }
-  to   { transform: translateY(12px); opacity: 0; }
-}
-@keyframes msnHeartbeat {
-  0%, 100% { transform: scale(1);    }
-  25%       { transform: scale(1.2); }
-  40%       { transform: scale(0.95);}
-  60%       { transform: scale(1.12);}
-}
-@keyframes msnSparkle {
-  0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg);   }
-  50%       { opacity: 1; transform: scale(1)   rotate(25deg);  }
+/* Fly from below to center, hover, then drift up and vanish */
+@keyframes chFly {
+  0%   { transform: translateY(52vh) scale(0.38); opacity: 0; }
+  10%  { opacity: 1; }
+  32%  { transform: translateY(0) scale(1); }
+  68%  { transform: translateY(0) scale(1); opacity: 1; }
+  82%  { transform: translateY(-7vh) scale(0.96); opacity: 0.75; }
+  100% { transform: translateY(-13vh) scale(0.88); opacity: 0; }
 }
 
-/* Mobile: centré, glisse du bas */
+/* Jerky wing flaps — steps() gives the sacadé effect */
+@keyframes chWingR {
+  0%   { transform: rotateZ(-10deg); }
+  33%  { transform: rotateZ(20deg);  }
+  66%  { transform: rotateZ(6deg);   }
+}
+@keyframes chWingL {
+  0%   { transform: rotateZ(10deg);  }
+  33%  { transform: rotateZ(-20deg); }
+  66%  { transform: rotateZ(-6deg);  }
+}
+
 @media (max-width: 640px) {
-  .msn-widget {
-    right: auto;
-    left: 50%;
-    bottom: 90px;
-    animation:
-      msnInMobile  250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
-      msnOutMobile 200ms ease-in 1050ms forwards;
-  }
-}
-@keyframes msnInMobile {
-  from { transform: translate(-50%, 20px); opacity: 0; }
-  to   { transform: translate(-50%, 0);    opacity: 1; }
-}
-@keyframes msnOutMobile {
-  from { transform: translate(-50%, 0);    opacity: 1; }
-  to   { transform: translate(-50%, 12px); opacity: 0; }
+  .ch-wing  { width: 96px; }
+  .ch-heart { width: 155px; }
+  .ch-heart-msg { font-size: 1rem; width: 92px; }
 }
 
 @media (max-width: 900px) {
