@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
@@ -10,6 +10,16 @@ import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { SmartImg } from "@/components/smart-img";
 
+const STYLE_PHRASES = [
+  { text: "As if!", level: 7 },
+  { text: "Totally buggin'.", level: 5 },
+  { text: "Major Betty vibe.", level: 9 },
+  { text: "That's so fetch.", level: 6 },
+  { text: "Loves it.", level: 10 },
+  { text: "So hot right now.", level: 8 },
+  { text: "100% Mall ready.", level: 9 },
+] as const;
+
 export function CartPage() {
   const { t } = useLanguage();
   const { data: session } = useSession();
@@ -17,6 +27,14 @@ export function CartPage() {
   const firstName = session?.user?.name?.split(" ")[0] ?? null;
   const [menu, setMenu] = useState(false);
   const [current, setCurrent] = useState(0);
+
+  // Pick a new random phrase whenever the displayed item changes
+  const styleMeter = useMemo(() => {
+    const pick = STYLE_PHRASES[Math.floor(Math.random() * STYLE_PHRASES.length)];
+    const filled = Math.round((pick.level / 10) * 8);
+    const bar = `[${"█".repeat(filled)}${"░".repeat(8 - filled)}]`;
+    return { ...pick, bar };
+  }, [current]);
 
   const lines = cart?.lines ?? [];
   const total = lines.length;
@@ -67,6 +85,13 @@ export function CartPage() {
                     <div className="oc-item-label">
                       <span className="oc-item-name">{item.title}</span>
                       <span className="oc-item-price">€{(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+
+                    {/* ── Style Meter ── */}
+                    <div className="oc-style-meter">
+                      <span className="oc-style-meter-header">♥ STYLE METER ♥</span>
+                      <span className="oc-style-meter-bar">{styleMeter.bar}</span>
+                      <span className="oc-style-meter-quote">&ldquo;{styleMeter.text}&rdquo;</span>
                     </div>
                   </div>
                 )}

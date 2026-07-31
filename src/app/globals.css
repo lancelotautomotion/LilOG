@@ -1698,6 +1698,42 @@ a { color: inherit; text-decoration: none; }
   color: #000080;
   flex-shrink: 0;
 }
+/* Style Meter */
+.oc-style-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 14px 12px;
+  background: #00083a;
+  border-top: 2px solid #1084d0;
+  border-bottom: 2px solid #1084d0;
+  text-align: center;
+}
+.oc-style-meter-header {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  color: #ff9bd2;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  user-select: none;
+}
+.oc-style-meter-bar {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: #39ff8c;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+.oc-style-meter-quote {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: #fff;
+  font-style: italic;
+  letter-spacing: 0.03em;
+}
+
 .oc-counter {
   font-family: var(--mono);
   font-size: 0.62rem;
