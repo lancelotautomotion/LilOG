@@ -260,18 +260,44 @@ export function CartPage() {
             <div className="ch-heart">
               <svg viewBox="0 0 200 188" className="ch-heart-svg" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <linearGradient id="chHG" x1="0%" y1="0%" x2="45%" y2="100%">
-                    <stop offset="0%" stopColor="#FF5CB5"/>
-                    <stop offset="100%" stopColor="#E5007A"/>
-                  </linearGradient>
+                  <clipPath id="hc">
+                    <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z"/>
+                  </clipPath>
+                  {/* Shadow zone: large 6×6 pixels in 8×8 grid */}
+                  <pattern id="pxS" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <rect x="1" y="1" width="6" height="6" fill="#C2006A"/>
+                  </pattern>
+                  {/* Mid zone: 4×4 pixels */}
+                  <pattern id="pxM" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <rect x="2" y="2" width="4" height="4" fill="#E8107E"/>
+                  </pattern>
+                  {/* Light zone: 2×2 pixels */}
+                  <pattern id="pxL" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <rect x="3" y="3" width="2" height="2" fill="#FF78BE"/>
+                  </pattern>
                 </defs>
-                {/* Flat Y2K heart — vivid pink + bold stroke */}
+
+                {/* White base */}
+                <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z" fill="white"/>
+
+                {/* Shadow: dense large pixels cover full heart */}
+                <rect x="0" y="0" width="200" height="188" fill="url(#pxS)" clipPath="url(#hc)"/>
+
+                {/* Mid: white reset then medium pixels */}
+                <ellipse cx="95" cy="78" rx="83" ry="73" fill="white" clipPath="url(#hc)"/>
+                <ellipse cx="95" cy="78" rx="83" ry="73" fill="url(#pxM)" clipPath="url(#hc)"/>
+
+                {/* Light: white reset then fine pixels */}
+                <ellipse cx="89" cy="56" rx="65" ry="53" fill="white" clipPath="url(#hc)"/>
+                <ellipse cx="89" cy="56" rx="65" ry="53" fill="url(#pxL)" clipPath="url(#hc)"/>
+
+                {/* White highlight — no pixels */}
+                <ellipse cx="68" cy="47" rx="25" ry="15" fill="white" clipPath="url(#hc)" transform="rotate(-38 68 47)"/>
+                <ellipse cx="130" cy="36" rx="11" ry="7" fill="rgba(255,255,255,0.65)" clipPath="url(#hc)" transform="rotate(12 130 36)"/>
+
+                {/* Outline */}
                 <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z"
-                      fill="url(#chHG)" stroke="#B8006A" strokeWidth="5" strokeLinejoin="round"/>
-                {/* Classic Y2K gloss ellipse — top left */}
-                <ellipse cx="72" cy="50" rx="28" ry="17" fill="rgba(255,255,255,0.55)" transform="rotate(-38 72 50)"/>
-                {/* Secondary shimmer */}
-                <ellipse cx="132" cy="34" rx="12" ry="7" fill="rgba(255,255,255,0.28)" transform="rotate(12 132 34)"/>
+                      fill="none" stroke="#9A0052" strokeWidth="5" strokeLinejoin="round"/>
               </svg>
               <p className="ch-heart-msg">{heartMsg}</p>
             </div>
