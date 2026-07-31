@@ -18,6 +18,11 @@ const STYLE_PHRASES = [
   "Loves it",
   "So hot right now",
   "100% Mall ready",
+  "Girl, period !",
+  "That's amazing",
+  "O.M.G slay",
+  "I.C.O.N.I.C",
+  "Yes mama",
 ] as const;
 
 // Deterministic per-product: same handle always yields the same phrase
