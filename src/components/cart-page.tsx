@@ -98,7 +98,7 @@ export function CartPage() {
 
                     {/* ── Style Scanner ── */}
                     <div className="oc-style-meter">
-                      <span className="oc-scan-header">♥ STYLE SCAN ♥</span>
+                      <span className="oc-scan-header">STYLE SCAN</span>
                       <div className="oc-scan-bar-track">
                         <div className={`oc-scan-bar-fill${scanPhase !== 'scan' ? ' oc-bar-active' : ''}${scanPhase === 'phrase' ? ' oc-bar-glow' : ''}`} />
                       </div>
