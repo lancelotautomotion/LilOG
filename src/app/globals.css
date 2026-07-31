@@ -1579,7 +1579,7 @@ a { color: inherit; text-decoration: none; }
   min-height: 100dvh;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   padding: clamp(80px, 10vw, 110px) clamp(16px, 4vw, 60px) clamp(40px, 6vw, 80px);
   gap: clamp(16px, 3vw, 40px);
@@ -1590,7 +1590,11 @@ a { color: inherit; text-decoration: none; }
 .oc-center {
   width: min(420px, 92vw);
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
+.oc-center > .oc-win95-outer { flex: 1; display: flex; flex-direction: column; }
+.oc-center > .oc-win95-outer .oc-win95-screen { flex: 1; }
 
 /* Windows 95 outer shell */
 .oc-win95-outer {
