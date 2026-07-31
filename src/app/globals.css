@@ -2067,6 +2067,129 @@ a { color: inherit; text-decoration: none; }
 }
 .oc-checkout-btn:hover { filter: brightness(1.15); }
 
+/* ── MSN Messenger checkout notification ── */
+.msn-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 244px;
+  z-index: 9999;
+  pointer-events: none;
+
+  background: linear-gradient(155deg, #ffe8f3 0%, #ffbed9 100%);
+  border: 2px solid #fff;
+  border-radius: 10px;
+  box-shadow:
+    2px 2px 0 #c8609a,
+    0 6px 18px rgba(180, 60, 120, 0.22);
+  padding: 12px 14px 12px 12px;
+  overflow: hidden;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  animation:
+    msnIn  250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    msnOut 200ms ease-in 1050ms forwards;
+}
+
+/* XP-style glossy top highlight */
+.msn-widget::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 48%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+  border-radius: 8px 8px 0 0;
+  pointer-events: none;
+}
+
+.msn-heart {
+  font-size: 2rem;
+  line-height: 1;
+  color: #d63080;
+  flex-shrink: 0;
+  margin-top: 2px;
+  animation: msnHeartbeat 750ms ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(210, 50, 120, 0.45);
+}
+
+.msn-text {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.msn-title {
+  font-family: var(--font-script), cursive;
+  font-size: 1.25rem;
+  color: #7a0045;
+  line-height: 1.15;
+}
+
+.msn-subtitle {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.62rem;
+  color: #a0306a;
+  margin-top: 3px;
+  font-style: italic;
+  line-height: 1.35;
+}
+
+/* 3 sparkles — absolute, staggered */
+.msn-sparkle {
+  position: absolute;
+  font-size: 0.7rem;
+  color: #d63080;
+  opacity: 0;
+  pointer-events: none;
+  animation: msnSparkle 700ms ease-in-out infinite;
+}
+.msn-sparkle:nth-child(3) { top: 7px;  right: 14px; animation-delay:   0ms; }
+.msn-sparkle:nth-child(4) { bottom: 9px; right: 22px; animation-delay: 230ms; }
+.msn-sparkle:nth-child(5) { top: 50%;  right: 9px;  animation-delay: 460ms; }
+
+@keyframes msnIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes msnOut {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(12px); opacity: 0; }
+}
+@keyframes msnHeartbeat {
+  0%, 100% { transform: scale(1);    }
+  25%       { transform: scale(1.2); }
+  40%       { transform: scale(0.95);}
+  60%       { transform: scale(1.12);}
+}
+@keyframes msnSparkle {
+  0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg);   }
+  50%       { opacity: 1; transform: scale(1)   rotate(25deg);  }
+}
+
+/* Mobile: centré, glisse du bas */
+@media (max-width: 640px) {
+  .msn-widget {
+    right: auto;
+    left: 50%;
+    bottom: 90px;
+    animation:
+      msnInMobile  250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+      msnOutMobile 200ms ease-in 1050ms forwards;
+  }
+}
+@keyframes msnInMobile {
+  from { transform: translate(-50%, 20px); opacity: 0; }
+  to   { transform: translate(-50%, 0);    opacity: 1; }
+}
+@keyframes msnOutMobile {
+  from { transform: translate(-50%, 0);    opacity: 1; }
+  to   { transform: translate(-50%, 12px); opacity: 0; }
+}
+
 @media (max-width: 900px) {
   .oc-page { flex-direction: column; align-items: center; }
   .oc-center { width: min(420px, 92vw); }

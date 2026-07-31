@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
@@ -9,6 +9,19 @@ import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { SmartImg } from "@/components/smart-img";
+
+const MSN_MESSAGES = [
+  "♥ Thanks Queen!",
+  "♥ Slay.",
+  "♥ Main Character Energy.",
+  "♥ Serving.",
+  "♥ Outfit secured.",
+  "♥ You're gonna break hearts.",
+  "♥ Closet upgraded.",
+  "♥ Fashion mission complete.",
+  "♥ See you at the mall!",
+  "♥ You're so fetch.",
+] as const;
 
 const STYLE_PHRASES = [
   "As if!",
@@ -38,6 +51,18 @@ export function CartPage() {
   const [current, setCurrent] = useState(0);
   const [scanPhase, setScanPhase] = useState<'scan' | 'filling' | 'phrase'>('scan');
   const [phrase, setPhrase] = useState(() => randomPhrase());
+  const [showMsn, setShowMsn] = useState(false);
+  const [msnMsg, setMsnMsg] = useState('');
+  const msnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleCheckout = () => {
+    if (msnTimer.current) clearTimeout(msnTimer.current);
+    setMsnMsg(MSN_MESSAGES[Math.floor(Math.random() * MSN_MESSAGES.length)]);
+    setShowMsn(true);
+    msnTimer.current = setTimeout(() => setShowMsn(false), 1400);
+  };
+
+  useEffect(() => () => { if (msnTimer.current) clearTimeout(msnTimer.current); }, []);
 
   useEffect(() => {
     setPhrase(randomPhrase());   // nouvelle phrase à chaque changement d'article
@@ -201,7 +226,7 @@ export function CartPage() {
                   </div>
                   <p className="oc-summary-note">{t.cart.subtotalNote}</p>
                   {cart?.checkoutUrl && (
-                    <a className="oc-checkout-btn" href={cart.checkoutUrl}>
+                    <a className="oc-checkout-btn" href={cart.checkoutUrl} onClick={handleCheckout}>
                       {t.cart.checkout} →
                     </a>
                   )}
@@ -213,6 +238,19 @@ export function CartPage() {
         </div>
       </main>
       <Footer />
+
+      {showMsn && (
+        <div className="msn-widget" role="status" aria-live="polite">
+          <span className="msn-heart" aria-hidden="true">♥</span>
+          <div className="msn-text">
+            <div className="msn-title">{msnMsg}</div>
+            <div className="msn-subtitle">Your outfit is officially iconic.</div>
+          </div>
+          <span className="msn-sparkle" aria-hidden="true">✦</span>
+          <span className="msn-sparkle" aria-hidden="true">✦</span>
+          <span className="msn-sparkle" aria-hidden="true">✦</span>
+        </div>
+      )}
     </>
   );
 }
