@@ -25,13 +25,8 @@ const STYLE_PHRASES = [
   "Yes mama",
 ] as const;
 
-// Deterministic per-product: same handle always yields the same phrase
-function phraseForItem(handle: string): string {
-  let h = 0;
-  for (let i = 0; i < handle.length; i++) {
-    h = (h * 31 + handle.charCodeAt(i)) >>> 0;
-  }
-  return STYLE_PHRASES[h % STYLE_PHRASES.length];
+function randomPhrase(): string {
+  return STYLE_PHRASES[Math.floor(Math.random() * STYLE_PHRASES.length)];
 }
 
 export function CartPage() {
@@ -42,11 +37,13 @@ export function CartPage() {
   const [menu, setMenu] = useState(false);
   const [current, setCurrent] = useState(0);
   const [scanPhase, setScanPhase] = useState<'scan' | 'filling' | 'phrase'>('scan');
+  const [phrase, setPhrase] = useState(() => randomPhrase());
 
   useEffect(() => {
+    setPhrase(randomPhrase());   // nouvelle phrase à chaque changement d'article
     setScanPhase('scan');
-    const t1 = setTimeout(() => setScanPhase('filling'), 20);   // bar starts filling
-    const t2 = setTimeout(() => setScanPhase('phrase'),  400);  // bar full → phrase
+    const t1 = setTimeout(() => setScanPhase('filling'), 20);
+    const t2 = setTimeout(() => setScanPhase('phrase'),  400);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [current]);
 
@@ -112,7 +109,7 @@ export function CartPage() {
                           <span className="oc-scan-cursor">_</span>
                         )}
                         {scanPhase === 'phrase' && (
-                          <span key={item.handle} className="oc-scan-phrase">{phraseForItem(item.handle)}</span>
+                          <span key={current} className="oc-scan-phrase">{phrase}</span>
                         )}
                       </div>
                     </div>
