@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Grenze_Gotisch, Montserrat, Space_Mono, Great_Vibes } from "next/font/google";
+import { Grenze_Gotisch, Montserrat, Space_Mono, Great_Vibes, VT323 } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
@@ -30,6 +30,12 @@ const mono = Space_Mono({
   weight: ["400", "700"],
 });
 
+const lcd = VT323({
+  variable: "--font-lcd",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 export const metadata: Metadata = {
   title: "Lil'OG — Pre-loved Y2K",
   description: "Vintage Y2K de seconde main, une pièce à la fois — Londres.",
@@ -39,7 +45,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const initialCart = await getCartAction().catch(() => null);
 
   return (
-    <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable} ${script.variable}`}>
+    <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable} ${script.variable} ${lcd.variable}`}>
       <body className="grain">
         <SessionProvider>
           <LanguageProvider>

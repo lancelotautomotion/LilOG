@@ -1654,7 +1654,7 @@ a { color: inherit; text-decoration: none; }
 }
 .oc-screen-item { display: flex; flex-direction: column; flex: 1; background: #c0c0c0; }
 .oc-screen-bg {
-  flex: 1;
+  flex: 0 0 auto;   /* taille fixée par aspect-ratio, ne concurrence pas le meter */
   background: #7090d0;
   display: flex;
   align-items: center;
@@ -1709,6 +1709,7 @@ a { color: inherit; text-decoration: none; }
   /* Win95 grey — continuité avec .oc-item-label */
   background: #c0c0c0;
   border-top: 1px solid #888;
+  flex: 1;          /* prend tout l'espace restant après la photo + label */
   text-align: center;
 }
 
@@ -1765,13 +1766,14 @@ a { color: inherit; text-decoration: none; }
   animation: ocCursorBlink 500ms step-end infinite;
 }
 
-/* Phrase finale */
+/* Phrase finale — police LCD (VT323) */
 .oc-scan-phrase {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  color: #000080;
-  font-style: italic;
-  letter-spacing: 0.03em;
+  font-family: var(--font-lcd), monospace;
+  font-size: 1.55rem;
+  color: #000;
+  font-style: normal;
+  letter-spacing: 0.04em;
+  line-height: 1;
   opacity: 0;
   animation:
     ocPhraseIn    200ms ease-out        forwards,
