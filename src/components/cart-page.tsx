@@ -246,15 +246,15 @@ export function CartPage() {
         <div className="ch-overlay" aria-live="polite">
           <div className="ch-scene">
             {/* Left wing — pixel butterfly */}
-            <svg className="ch-wing ch-wing-l" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <svg className="ch-wing ch-wing-l" viewBox="0 0 150 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path
-                d="M130,80 C100,50 62,2 12,18 C4,34 14,64 64,80 L70,84 C56,96 38,108 30,140 C36,152 72,154 104,136 C118,126 124,108 130,80Z"
-                fill="rgba(235,185,215,0.13)"
-                stroke="#CC88B8"
-                strokeWidth="7"
+                d="M142,80 C142,52 122,14 80,5 C54,-1 24,14 16,36 C12,54 22,70 44,78 C56,82 72,80 78,84 C68,96 48,110 42,138 C38,150 54,158 76,154 C94,150 108,136 112,118 C116,100 110,90 100,86 C114,83 130,81 142,80 Z"
+                fill="white"
+                stroke="#CC90BC"
+                strokeWidth="8"
                 strokeLinejoin="miter"
                 strokeLinecap="square"
-                strokeDasharray="7 2"
+                strokeDasharray="8 2"
               />
             </svg>
 
@@ -284,16 +284,16 @@ export function CartPage() {
               <p className="ch-heart-msg">{heartMsg}</p>
             </div>
 
-            {/* Right wing — pixel butterfly (mirror) */}
-            <svg className="ch-wing ch-wing-r" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            {/* Right wing — pixel butterfly (mirror of left) */}
+            <svg className="ch-wing ch-wing-r" viewBox="0 0 150 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path
-                d="M10,80 C40,50 78,2 128,18 C136,34 126,64 76,80 L70,84 C84,96 102,108 110,140 C104,152 68,154 36,136 C22,126 16,108 10,80Z"
-                fill="rgba(235,185,215,0.13)"
-                stroke="#CC88B8"
-                strokeWidth="7"
+                d="M8,80 C8,52 28,14 70,5 C96,-1 126,14 134,36 C138,54 128,70 106,78 C94,82 78,80 72,84 C82,96 102,110 108,138 C112,150 96,158 74,154 C56,150 42,136 38,118 C34,100 40,90 50,86 C36,83 20,81 8,80 Z"
+                fill="white"
+                stroke="#CC90BC"
+                strokeWidth="8"
                 strokeLinejoin="miter"
                 strokeLinecap="square"
-                strokeDasharray="7 2"
+                strokeDasharray="8 2"
               />
             </svg>
           </div>
