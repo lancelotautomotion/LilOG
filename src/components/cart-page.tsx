@@ -245,72 +245,56 @@ export function CartPage() {
       {showHeart && (
         <div className="ch-overlay" aria-live="polite">
           <div className="ch-scene">
-            {/* Left wing */}
-            <svg className="ch-wing ch-wing-l" viewBox="0 0 155 125" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M148,58 Q108,4 5,14 Q54,37 148,53 Z" fill="white"/>
-              <path d="M148,58 Q106,11 8,21 Q52,43 148,61 Z" fill="rgba(255,255,255,0.7)"/>
-              <path d="M147,64 Q103,23 12,33 Q49,51 147,67 Z" fill="#f3f3f9"/>
-              <path d="M145,70 Q98,37 18,47 Q47,59 145,73 Z" fill="#ededf5"/>
-              <path d="M142,77 Q94,52 26,61 Q46,69 142,79 Z" fill="#e8e8f2"/>
-              <path d="M138,83 Q88,66 35,73 Q44,79 138,86 Z" fill="#e3e3ef"/>
-              <path d="M132,89 Q82,78 44,84 Q46,89 132,92 Z" fill="#dddded"/>
+            {/* Left wing — pixel butterfly */}
+            <svg className="ch-wing ch-wing-l" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path
+                d="M130,80 C100,50 62,2 12,18 C4,34 14,64 64,80 L70,84 C56,96 38,108 30,140 C36,152 72,154 104,136 C118,126 124,108 130,80Z"
+                fill="rgba(235,185,215,0.13)"
+                stroke="#CC88B8"
+                strokeWidth="7"
+                strokeLinejoin="miter"
+                strokeLinecap="square"
+                strokeDasharray="7 2"
+              />
             </svg>
 
-            {/* Heart + text */}
+            {/* Heart — glossy Y2K */}
             <div className="ch-heart">
               <svg viewBox="0 0 200 188" className="ch-heart-svg" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <clipPath id="hc">
-                    <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z"/>
-                  </clipPath>
-                  {/* Shadow zone: large 6×6 pixels in 8×8 grid */}
-                  <pattern id="pxS" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                    <rect x="1" y="1" width="6" height="6" fill="#C2006A"/>
-                  </pattern>
-                  {/* Mid zone: 4×4 pixels */}
-                  <pattern id="pxM" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                    <rect x="2" y="2" width="4" height="4" fill="#E8107E"/>
-                  </pattern>
-                  {/* Light zone: 2×2 pixels */}
-                  <pattern id="pxL" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                    <rect x="3" y="3" width="2" height="2" fill="#FF78BE"/>
-                  </pattern>
+                  <radialGradient id="chHG" cx="52%" cy="42%" r="57%">
+                    <stop offset="0%"   stopColor="#FFB8D8"/>
+                    <stop offset="48%"  stopColor="#F040A0"/>
+                    <stop offset="100%" stopColor="#C41870"/>
+                  </radialGradient>
+                  <radialGradient id="chGlow" cx="36%" cy="36%" r="52%">
+                    <stop offset="0%"   stopColor="rgba(255,210,235,0.45)"/>
+                    <stop offset="100%" stopColor="rgba(255,100,175,0)"/>
+                  </radialGradient>
                 </defs>
-
-                {/* White base */}
-                <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z" fill="white"/>
-
-                {/* Shadow: dense large pixels cover full heart */}
-                <rect x="0" y="0" width="200" height="188" fill="url(#pxS)" clipPath="url(#hc)"/>
-
-                {/* Mid: white reset then medium pixels */}
-                <ellipse cx="95" cy="78" rx="83" ry="73" fill="white" clipPath="url(#hc)"/>
-                <ellipse cx="95" cy="78" rx="83" ry="73" fill="url(#pxM)" clipPath="url(#hc)"/>
-
-                {/* Light: white reset then fine pixels */}
-                <ellipse cx="89" cy="56" rx="65" ry="53" fill="white" clipPath="url(#hc)"/>
-                <ellipse cx="89" cy="56" rx="65" ry="53" fill="url(#pxL)" clipPath="url(#hc)"/>
-
-                {/* White highlight — no pixels */}
-                <ellipse cx="68" cy="47" rx="25" ry="15" fill="white" clipPath="url(#hc)" transform="rotate(-38 68 47)"/>
-                <ellipse cx="130" cy="36" rx="11" ry="7" fill="rgba(255,255,255,0.65)" clipPath="url(#hc)" transform="rotate(12 130 36)"/>
-
-                {/* Outline */}
                 <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z"
-                      fill="none" stroke="#9A0052" strokeWidth="5" strokeLinejoin="round"/>
+                      fill="url(#chHG)" stroke="#A8166A" strokeWidth="4" strokeLinejoin="round"/>
+                <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z"
+                      fill="url(#chGlow)"/>
+                {/* Main Y2K gloss bubble — upper right */}
+                <ellipse cx="134" cy="52" rx="30" ry="26" fill="rgba(255,255,255,0.88)" transform="rotate(-12 134 52)"/>
+                {/* Secondary shimmer dot */}
+                <ellipse cx="150" cy="76" rx="11" ry="9"  fill="rgba(255,255,255,0.55)" transform="rotate(-8 150 76)"/>
               </svg>
               <p className="ch-heart-msg">{heartMsg}</p>
             </div>
 
-            {/* Right wing */}
-            <svg className="ch-wing ch-wing-r" viewBox="0 0 155 125" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M7,58 Q47,4 150,14 Q101,37 7,53 Z" fill="white"/>
-              <path d="M7,58 Q49,11 147,21 Q103,43 7,61 Z" fill="rgba(255,255,255,0.7)"/>
-              <path d="M8,64 Q52,23 143,33 Q106,51 8,67 Z" fill="#f3f3f9"/>
-              <path d="M10,70 Q57,37 137,47 Q108,59 10,73 Z" fill="#ededf5"/>
-              <path d="M13,77 Q61,52 129,61 Q109,69 13,79 Z" fill="#e8e8f2"/>
-              <path d="M17,83 Q67,66 120,73 Q111,79 17,86 Z" fill="#e3e3ef"/>
-              <path d="M23,89 Q73,78 111,84 Q109,89 23,92 Z" fill="#dddded"/>
+            {/* Right wing — pixel butterfly (mirror) */}
+            <svg className="ch-wing ch-wing-r" viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path
+                d="M10,80 C40,50 78,2 128,18 C136,34 126,64 76,80 L70,84 C84,96 102,108 110,140 C104,152 68,154 36,136 C22,126 16,108 10,80Z"
+                fill="rgba(235,185,215,0.13)"
+                stroke="#CC88B8"
+                strokeWidth="7"
+                strokeLinejoin="miter"
+                strokeLinecap="square"
+                strokeDasharray="7 2"
+              />
             </svg>
           </div>
         </div>
