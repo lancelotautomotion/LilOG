@@ -11,7 +11,7 @@ async function createShopifyOrder(session: Stripe.Checkout.Session) {
 
   const lineItems = fullSession.line_items?.data ?? [];
   const customer = session.customer_details;
-  const shipping = session.shipping_details;
+  const shipping = session.collected_information?.shipping_details ?? null;
 
   const nameParts = (shipping?.name ?? customer?.name ?? "").split(" ");
   const firstName = nameParts[0] ?? "";
