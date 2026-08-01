@@ -245,17 +245,42 @@ export function CartPage() {
       {showHeart && (
         <div className="ch-overlay" aria-live="polite">
           <div className="ch-scene">
-            {/* Left wing — pixel butterfly */}
-            <svg className="ch-wing ch-wing-l" viewBox="0 0 150 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path
-                d="M142,80 C142,52 122,14 80,5 C54,-1 24,14 16,36 C12,54 22,70 44,78 C56,82 72,80 78,84 C68,96 48,110 42,138 C38,150 54,158 76,154 C94,150 108,136 112,118 C116,100 110,90 100,86 C114,83 130,81 142,80 Z"
-                fill="white"
-                stroke="#CC90BC"
-                strokeWidth="8"
-                strokeLinejoin="miter"
-                strokeLinecap="square"
-                strokeDasharray="8 2"
-              />
+            {/* Left wing — marshmallow Y2K */}
+            <svg className="ch-wing ch-wing-l" viewBox="0 0 290 248" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <radialGradient id="wLG" cx="255" cy="55" r="200" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor="#ffffff"/>
+                  <stop offset="40%"  stopColor="#f0eff5"/>
+                  <stop offset="76%"  stopColor="#e1dfe9"/>
+                  <stop offset="100%" stopColor="#c8c5d3"/>
+                </radialGradient>
+                <radialGradient id="wLHi" cx="250" cy="45" r="105" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor="rgba(255,255,255,0.9)"/>
+                  <stop offset="100%" stopColor="rgba(255,255,255,0)"/>
+                </radialGradient>
+                <radialGradient id="wLSh" cx="85" cy="198" r="118" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor="rgba(142,138,165,0.52)"/>
+                  <stop offset="100%" stopColor="rgba(142,138,165,0)"/>
+                </radialGradient>
+                <filter id="wLDrop" x="-18%" y="-18%" width="140%" height="140%">
+                  <feDropShadow dx="-2" dy="6" stdDeviation="9" floodColor="rgba(88,85,118,0.34)"/>
+                </filter>
+                <clipPath id="wLClip">
+                  <path d="M 268,105 C 284,80 284,44 234,20 C 196,3 120,6 72,44 C 40,66 42,102 62,118 C 70,124 85,118 95,126 C 90,152 85,178 104,200 C 125,218 158,226 192,222 C 222,218 244,202 250,192 C 260,180 262,162 262,148 C 262,128 266,113 268,105 Z"/>
+                  <ellipse cx="52"  cy="52"  rx="48" ry="36" transform="rotate(15 52 52)"/>
+                  <ellipse cx="26"  cy="120" rx="46" ry="36"/>
+                  <ellipse cx="52"  cy="192" rx="48" ry="34" transform="rotate(-8 52 192)"/>
+                  <ellipse cx="230" cy="182" rx="56" ry="50"/>
+                </clipPath>
+              </defs>
+              <g filter="url(#wLDrop)">
+                <g clipPath="url(#wLClip)">
+                  <rect x="-5" y="-5" width="300" height="258" fill="url(#wLG)"/>
+                  <ellipse cx="214" cy="68"  rx="108" ry="70" transform="rotate(20 214 68)"  fill="url(#wLHi)"/>
+                  <ellipse cx="85"  cy="200" rx="95"  ry="60" transform="rotate(-15 85 200)" fill="url(#wLSh)"/>
+                  <path d="M 230,147 C 206,147 195,165 195,182 C 195,200 210,217 230,217 C 250,217 265,202 265,182 C 265,162 252,148 232,148 C 214,150 202,164 202,182 C 202,198 214,212 230,212 C 246,212 258,200 258,182 C 258,166 248,154 234,153" stroke="rgba(135,132,158,0.38)" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                </g>
+              </g>
             </svg>
 
             {/* Heart — glossy Y2K */}
@@ -284,17 +309,42 @@ export function CartPage() {
               <p className="ch-heart-msg">{heartMsg}</p>
             </div>
 
-            {/* Right wing — pixel butterfly (mirror of left) */}
-            <svg className="ch-wing ch-wing-r" viewBox="0 0 150 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path
-                d="M8,80 C8,52 28,14 70,5 C96,-1 126,14 134,36 C138,54 128,70 106,78 C94,82 78,80 72,84 C82,96 102,110 108,138 C112,150 96,158 74,154 C56,150 42,136 38,118 C34,100 40,90 50,86 C36,83 20,81 8,80 Z"
-                fill="white"
-                stroke="#CC90BC"
-                strokeWidth="8"
-                strokeLinejoin="miter"
-                strokeLinecap="square"
-                strokeDasharray="8 2"
-              />
+            {/* Right wing — marshmallow Y2K */}
+            <svg className="ch-wing ch-wing-r" viewBox="0 0 290 248" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <radialGradient id="wRG" cx="35" cy="55" r="200" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor="#ffffff"/>
+                  <stop offset="40%"  stopColor="#f0eff5"/>
+                  <stop offset="76%"  stopColor="#e1dfe9"/>
+                  <stop offset="100%" stopColor="#c8c5d3"/>
+                </radialGradient>
+                <radialGradient id="wRHi" cx="40" cy="45" r="105" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor="rgba(255,255,255,0.9)"/>
+                  <stop offset="100%" stopColor="rgba(255,255,255,0)"/>
+                </radialGradient>
+                <radialGradient id="wRSh" cx="205" cy="198" r="118" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor="rgba(142,138,165,0.52)"/>
+                  <stop offset="100%" stopColor="rgba(142,138,165,0)"/>
+                </radialGradient>
+                <filter id="wRDrop" x="-18%" y="-18%" width="140%" height="140%">
+                  <feDropShadow dx="2" dy="6" stdDeviation="9" floodColor="rgba(88,85,118,0.34)"/>
+                </filter>
+                <clipPath id="wRClip">
+                  <path d="M 22,105 C 6,80 6,44 56,20 C 94,3 170,6 218,44 C 250,66 248,102 228,118 C 220,124 205,118 195,126 C 200,152 205,178 186,200 C 165,218 132,226 98,222 C 68,218 46,202 40,192 C 30,180 28,162 28,148 C 28,128 24,113 22,105 Z"/>
+                  <ellipse cx="238" cy="52"  rx="48" ry="36" transform="rotate(-15 238 52)"/>
+                  <ellipse cx="264" cy="120" rx="46" ry="36"/>
+                  <ellipse cx="238" cy="192" rx="48" ry="34" transform="rotate(8 238 192)"/>
+                  <ellipse cx="60"  cy="182" rx="56" ry="50"/>
+                </clipPath>
+              </defs>
+              <g filter="url(#wRDrop)">
+                <g clipPath="url(#wRClip)">
+                  <rect x="-5" y="-5" width="300" height="258" fill="url(#wRG)"/>
+                  <ellipse cx="76"  cy="68"  rx="108" ry="70" transform="rotate(-20 76 68)"  fill="url(#wRHi)"/>
+                  <ellipse cx="205" cy="200" rx="95"  ry="60" transform="rotate(15 205 200)"  fill="url(#wRSh)"/>
+                  <path d="M 60,147 C 84,147 95,165 95,182 C 95,200 80,217 60,217 C 40,217 25,202 25,182 C 25,162 38,148 58,148 C 76,150 88,164 88,182 C 88,198 76,212 60,212 C 44,212 32,200 32,182 C 32,166 42,154 56,153" stroke="rgba(135,132,158,0.38)" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                </g>
+              </g>
             </svg>
           </div>
         </div>
