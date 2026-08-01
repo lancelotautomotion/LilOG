@@ -33,6 +33,10 @@ export async function POST(request: Request) {
         },
       },
     })),
+    shipping_address_collection: {
+      allowed_countries: ["FR", "BE", "CH", "LU", "MC", "RE", "MQ", "GP", "GF"],
+    },
+    phone_number_collection: { enabled: true },
     success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/cart`,
   });
