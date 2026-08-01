@@ -55,14 +55,24 @@ export function CartPage() {
   const [heartMsg, setHeartMsg] = useState('');
   const heartTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleCheckout = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleCheckout = async (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
     e.preventDefault();
-    const url = cart?.checkoutUrl;
-    if (!url) return;
+    const lines = cart?.lines;
+    if (!lines?.length) return;
     if (heartTimer.current) clearTimeout(heartTimer.current);
     setHeartMsg(MSN_MESSAGES[Math.floor(Math.random() * MSN_MESSAGES.length)]);
     setShowHeart(true);
-    heartTimer.current = setTimeout(() => { window.location.href = url; }, 2000);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lines }),
+      });
+      const { url } = await res.json();
+      heartTimer.current = setTimeout(() => { window.location.href = url; }, 2000);
+    } catch {
+      setShowHeart(false);
+    }
   };
 
   useEffect(() => () => { if (heartTimer.current) clearTimeout(heartTimer.current); }, []);
@@ -228,10 +238,10 @@ export function CartPage() {
                     <span>€{cart?.subtotal.toFixed(2)}</span>
                   </div>
                   <p className="oc-summary-note">{t.cart.subtotalNote}</p>
-                  {cart?.checkoutUrl && (
-                    <a className="oc-checkout-btn" href={cart.checkoutUrl} onClick={handleCheckout}>
+                  {(cart?.lines?.length ?? 0) > 0 && (
+                    <button className="oc-checkout-btn" onClick={handleCheckout} disabled={pending}>
                       {t.cart.checkout} →
-                    </a>
+                    </button>
                   )}
                 </div>
               )}
