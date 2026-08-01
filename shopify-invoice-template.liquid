@@ -1,0 +1,761 @@
+{% comment %}
+  ================================================================
+  Lil'OG — Shopify Packing Slip / Order Printer Template
+  Style : W95 Edition · DA Lil'OG Y2K editorial vintage
+  ================================================================
+  AVANT DE COLLER DANS SHOPIFY :
+  → Remplace l'URL du logo (cherche "LOGO_URL" dans ce fichier)
+    par l'URL réelle de ton logo uploadé dans :
+    Shopify Admin > Contenu > Fichiers
+    Format attendu :
+    https://cdn.shopify.com/s/files/1/XXXX/XXXX/files/logo-black.png
+  ================================================================
+{% endcomment %}
+
+<style type="text/css">
+  /* ============================================================
+     FONTS — Google Fonts (chargées via @import, OK pour Order Printer)
+     Grenze Gotisch : titres éditoriaux
+     Montserrat     : corps de texte
+     Space Mono     : labels / métadonnées
+     VT323          : retro LCD / W95 accents
+     ============================================================ */
+  @import url('https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700&family=Montserrat:wght@400;500;600&family=Space+Mono:wght@400;700&family=VT323&display=swap');
+
+  /* ============================================================
+     TOKENS DE MARQUE — palette Lil'OG
+     ============================================================ */
+  :root {
+    --choco:      #322f37;   /* charcoal — texte principal */
+    --choco-soft: #6e6975;   /* gris doux — méta */
+    --pink:       #f7a3e3;   /* bubblegum pink — accent */
+    --butter:     #f2d488;   /* or doux — highlight */
+    --cream:      #f3ece6;   /* fond page */
+    --paper:      #faf6f1;   /* fond document */
+    --fuchsia:    #e0006e;   /* fuchsia vif — accentuation */
+
+    /* Win95 */
+    --w95-grey:   #c0c0c0;
+    --w95-dark:   #444444;
+    --w95-inset:  #d0d0d0;
+    --w95-blue-a: #000080;
+    --w95-blue-b: #1084d0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Montserrat', 'Noto Sans', Arial, sans-serif;
+    font-size: 14px;
+    background: var(--cream);
+    color: var(--choco);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============================================================
+     WRAPPER — fenêtre Win95 principale
+     ============================================================ */
+  .wrapper {
+    width: 820px;
+    max-width: 100%;
+    margin: 24px auto;
+    /* Bevel Win95 : blanc haut/gauche, sombre bas/droite */
+    border-top:    3px solid #ffffff;
+    border-left:   3px solid #ffffff;
+    border-right:  3px solid var(--w95-dark);
+    border-bottom: 3px solid var(--w95-dark);
+    background: var(--w95-grey);
+    box-shadow: 3px 3px 0 #000000;
+  }
+
+  /* ============================================================
+     BARRE DE TITRE WIN95
+     ============================================================ */
+  .win95-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(90deg, var(--w95-blue-a) 0%, var(--w95-blue-b) 100%);
+    padding: 5px 8px;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .win95-title-text {
+    font-family: 'VT323', monospace;
+    font-size: 1.05rem;
+    color: #ffffff;
+    letter-spacing: 0.08em;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .win95-title-text .title-shop {
+    color: var(--butter);
+  }
+
+  /* Boutons miniaturisés Win95 */
+  .win95-buttons {
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+  .win95-btn {
+    width: 16px;
+    height: 14px;
+    display: inline-block;
+    background: var(--w95-grey);
+    border-top:    1.5px solid #ffffff;
+    border-left:   1.5px solid #ffffff;
+    border-right:  1.5px solid var(--w95-dark);
+    border-bottom: 1.5px solid var(--w95-dark);
+  }
+
+  /* ============================================================
+     CORPS DU DOCUMENT — zone blanche "papier" avec inset Win95
+     ============================================================ */
+  .doc-body {
+    margin: 7px;
+    /* Inset Win95 : sombre haut/gauche, blanc bas/droite */
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background: var(--paper);
+    padding: 32px 36px 28px;
+  }
+
+  /* ============================================================
+     EN-TÊTE — Logo + Références commande
+     ============================================================ */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 22px;
+    border-bottom: 2px solid var(--choco);
+  }
+
+  /* Bloc logo / nom boutique */
+  .shop-title .brand-logo {
+    height: 54px;
+    width: auto;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .shop-title .shop-name-text {
+    font-family: 'Grenze Gotisch', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--choco);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+
+  /* Bloc référence / date commande */
+  .order-title {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .order-title .order-ref {
+    font-family: 'VT323', monospace;
+    font-size: 1.2rem;
+    color: var(--w95-blue-a);
+    letter-spacing: 0.1em;
+    line-height: 1.35;
+    display: block;
+  }
+  .order-title .order-po {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--choco-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    display: block;
+    margin-top: 3px;
+  }
+  .order-title .order-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--choco-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    display: block;
+    margin-top: 3px;
+  }
+
+  /* ============================================================
+     SECTION ADRESSES — deux panneaux Win95 côte à côte
+     ============================================================ */
+  .customer-addresses {
+    display: flex;
+    gap: 8px;
+    margin: 22px 0;
+  }
+
+  /* Panneau adresse individuel (sunken Win95) */
+  .address-block {
+    flex: 1;
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background: var(--w95-inset);
+    padding: 13px 15px;
+  }
+
+  .address-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--w95-blue-a);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #999999;
+    display: block;
+  }
+
+  .address-detail {
+    font-size: 0.83rem;
+    line-height: 1.7;
+    color: var(--choco);
+  }
+
+  /* ============================================================
+     SÉPARATEURS
+     ============================================================ */
+  .divider {
+    height: 0;
+    border: none;
+    border-top: 2px solid var(--choco);
+    border-bottom: 1px solid #888888;
+    margin: 4px 0 18px;
+  }
+  .divider-subtle {
+    height: 0;
+    border: none;
+    border-top: 1px solid #cccccc;
+    border-bottom: 1px solid #ffffff;
+    margin: 0;
+  }
+
+  /* ============================================================
+     EN-TÊTE DU TABLEAU ARTICLES — barre bleue Win95
+     ============================================================ */
+  .table-header {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, var(--w95-blue-a) 0%, var(--w95-blue-b) 100%);
+    padding: 6px 12px;
+    margin-bottom: 2px;
+  }
+  .th-col {
+    font-family: 'VT323', monospace;
+    font-size: 0.95rem;
+    color: #ffffff;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .th-articles { flex: 7; }
+  .th-qty      { flex: 2; text-align: right; }
+
+  /* ============================================================
+     LIGNES ARTICLES
+     ============================================================ */
+  .order-container {
+    margin-bottom: 14px;
+  }
+
+  /* Ligne produit */
+  .flex-line-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e0d8d0;
+    page-break-inside: avoid;
+    background: var(--paper);
+  }
+  /* Alternance légère de fond */
+  .flex-line-item:nth-child(even) {
+    background: #f4ede6;
+  }
+
+  /* Image produit */
+  .flex-line-item-img {
+    margin-right: 14px;
+    flex-shrink: 0;
+  }
+  /* Cadre Win95 pour l'image */
+  .aspect-ratio {
+    position: relative;
+    display: block;
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background: var(--w95-inset);
+    overflow: hidden;
+  }
+  .aspect-ratio__content {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* Description produit */
+  .flex-line-item-description {
+    flex: 7;
+    min-width: 0;
+  }
+  .flex-line-item-description p {
+    margin: 0;
+    line-height: 1.5;
+  }
+  /* Première span = titre produit */
+  .line-item-description-line {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--choco-soft);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .line-item-title {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--choco);
+    letter-spacing: 0;
+    text-transform: none;
+    margin-bottom: 3px;
+  }
+
+  /* Quantité */
+  .flex-line-item-quantity {
+    flex: 2;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .flex-line-item-quantity p {
+    font-family: 'VT323', monospace;
+    font-size: 1.05rem;
+    color: var(--w95-blue-a);
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
+
+  /* ============================================================
+     ALERTE — articles manquants (envoi partiel)
+     ============================================================ */
+  .missing-line-items-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--choco);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+    padding: 10px 14px;
+    margin: 8px 0;
+    background: #f5e8c0;
+    border-left: 4px solid var(--butter);
+    /* Win95 raised */
+    border-top:    2px solid #ffffff;
+    border-right:  2px solid var(--w95-dark);
+    border-bottom: 2px solid var(--w95-dark);
+  }
+
+  /* ============================================================
+     PANNEAU NOTES / INSTRUCTIONS
+     ============================================================ */
+  .notes {
+    margin: 18px 0;
+    padding: 13px 16px;
+    /* Sunken Win95 */
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background: #ece4db;
+  }
+  .notes-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--w95-blue-a);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .notes-details {
+    font-size: 0.84rem;
+    line-height: 1.65;
+    color: var(--choco);
+  }
+
+  /* ============================================================
+     PIED DE PAGE
+     ============================================================ */
+  .footer {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 2px solid var(--choco);
+    text-align: center;
+  }
+  .footer-thank-you {
+    font-family: 'Grenze Gotisch', serif;
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--choco);
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+  }
+  .footer-details {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--choco-soft);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.9;
+  }
+  .footer-details strong {
+    font-weight: 700;
+    color: var(--choco);
+  }
+  .footer-tagline {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: 'VT323', monospace;
+    font-size: 0.92rem;
+    color: var(--fuchsia);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* Petite bande de couleur décorative en bas du footer */
+  .footer-stripe {
+    margin-top: 18px;
+    height: 6px;
+    background: linear-gradient(
+      90deg,
+      var(--choco) 0%,
+      var(--choco) 25%,
+      var(--pink)   25%,
+      var(--pink)   50%,
+      var(--butter) 50%,
+      var(--butter) 75%,
+      var(--fuchsia) 75%,
+      var(--fuchsia) 100%
+    );
+  }
+
+  /* ============================================================
+     IMPRESSION — @media print
+     ============================================================ */
+  @media print {
+    body { background: #ffffff; }
+    .wrapper {
+      width: 100%;
+      margin: 0;
+      border: none;
+      box-shadow: none;
+    }
+    .win95-titlebar {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .table-header {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .footer-stripe {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .flex-line-item { page-break-inside: avoid; }
+    .notes { page-break-inside: avoid; }
+  }
+
+  /* ============================================================
+     RESPONSIVE — écrans < 600px
+     ============================================================ */
+  @media (max-width: 600px) {
+    .wrapper { margin: 0; }
+    .doc-body { padding: 20px 16px; }
+    .header { flex-direction: column; gap: 14px; }
+    .order-title { text-align: left; }
+    .customer-addresses { flex-direction: column; }
+  }
+</style>
+
+{% comment %}
+  ================================================================
+  HTML — Structure du document
+  Toutes les variables Liquid {{ ... }} et boucles {% ... %}
+  originales sont conservées intactes.
+  ================================================================
+{% endcomment %}
+
+<div class="wrapper">
+
+  <!-- ═══════════════════════════════════════════════
+       BARRE DE TITRE WIN95
+       ═══════════════════════════════════════════════ -->
+  <div class="win95-titlebar">
+    <span class="win95-title-text">
+      <span class="title-shop">{{ shop.name }}</span>&nbsp;·&nbsp;Commande {{ order.name }}
+    </span>
+    <div class="win95-buttons">
+      <span class="win95-btn"></span>
+      <span class="win95-btn"></span>
+      <span class="win95-btn"></span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       CORPS DU DOCUMENT
+       ═══════════════════════════════════════════════ -->
+  <div class="doc-body">
+
+    <!-- ───────────────────────────────────────────
+         EN-TÊTE : Logo + Référence commande
+         ─────────────────────────────────────────── -->
+    <div class="header">
+
+      <!-- Logo et nom boutique -->
+      <div class="shop-title">
+        {% comment %}
+          LOGO : Uploader logo-black.png dans Shopify Admin > Contenu > Fichiers,
+          puis remplacer l'URL ci-dessous par l'URL CDN Shopify obtenue.
+          Exemple : https://cdn.shopify.com/s/files/1/XXXX/XXXX/files/logo-black.png
+        {% endcomment %}
+        <img
+          class="brand-logo"
+          src="https://raw.githubusercontent.com/lancelotautomotion/lilog/main/public/logo-black.png"
+          alt="{{ shop.name }}"
+          style="height:54px; width:auto; display:block; margin-bottom:8px;"
+        >
+        <p class="shop-name-text">{{ shop.name }}</p>
+      </div>
+
+      <!-- Référence et date commande -->
+      <div class="order-title">
+        <span class="order-ref">Commande {{ order.name }}</span>
+        {% if order.po_number != blank %}
+          <span class="order-po">Bon de commande nº {{ order.po_number }}</span>
+        {% endif %}
+        <span class="order-date">{{ order.created_at | date: format: "date" }}</span>
+      </div>
+
+    </div>
+    <!-- /header -->
+
+    <!-- ───────────────────────────────────────────
+         ADRESSES — livraison & facturation
+         ─────────────────────────────────────────── -->
+    <div class="customer-addresses">
+
+      <!-- Adresse de livraison -->
+      <div class="address-block shipping-address">
+        <span class="address-label">
+          {% if delivery_method.instructions != blank %}
+            ✦ Livraison à
+          {% else %}
+            ✦ Expédier à
+          {% endif %}
+        </span>
+        <div class="address-detail">
+          {% if shipping_address != blank %}
+            {{ shipping_address.name }}
+            {% if shipping_address.company != blank %}
+              <br>{{ shipping_address.company }}
+            {% endif %}
+            <br>{{ shipping_address.address1 }}
+            {% if shipping_address.address2 != blank %}
+              <br>{{ shipping_address.address2 }}
+            {% endif %}
+            {% if shipping_address.city_province_zip != blank %}
+              <br>{{ shipping_address.city_province_zip }}
+            {% endif %}
+            <br>{{ shipping_address.country }}
+            {% if shipping_address.phone != blank %}
+              <br>{{ shipping_address.phone }}
+            {% endif %}
+          {% else %}
+            Aucune adresse de livraison
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Adresse de facturation -->
+      <div class="address-block billing-address">
+        <span class="address-label">✦ Facturer à</span>
+        <div class="address-detail">
+          {% if billing_address != blank %}
+            {{ billing_address.name }}
+            {% if billing_address.company != blank %}
+              <br>{{ billing_address.company }}
+            {% endif %}
+            <br>{{ billing_address.address1 }}
+            {% if billing_address.address2 != blank %}
+              <br>{{ billing_address.address2 }}
+            {% endif %}
+            {% if billing_address.city_province_zip != blank %}
+              <br>{{ billing_address.city_province_zip }}
+            {% endif %}
+            <br>{{ billing_address.country }}
+          {% else %}
+            Aucune adresse de facturation
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+    <!-- /customer-addresses -->
+
+    <!-- ───────────────────────────────────────────
+         SÉPARATEUR
+         ─────────────────────────────────────────── -->
+    <hr class="divider">
+
+    <!-- ───────────────────────────────────────────
+         TABLEAU DES ARTICLES
+         ─────────────────────────────────────────── -->
+    <div class="order-container">
+
+      <!-- En-tête colonnes -->
+      <div class="table-header">
+        <span class="th-col th-articles">Articles</span>
+        <span class="th-col th-qty">Quantité</span>
+      </div>
+
+      {% comment %}
+        Taille des images articles (en pixels).
+        Modifier desired_image_size pour ajuster l'affichage.
+        Le calcul suivant adapte la résolution à une impression de qualité.
+      {% endcomment %}
+      {% assign desired_image_size = 58 %}
+      {% assign resolution_adjusted_size = desired_image_size | times: 300 | divided_by: 72 | ceil %}
+      {% capture effective_image_dimensions %}{{ resolution_adjusted_size }}x{{ resolution_adjusted_size }}{% endcapture %}
+
+      {% for line_item in line_items_in_shipment %}
+        <div class="flex-line-item">
+
+          <!-- Image produit -->
+          <div class="flex-line-item-img">
+            {% if line_item.image != blank %}
+              <div class="aspect-ratio" style="width: {{ desired_image_size }}px; height: {{ desired_image_size }}px;">
+                {{ line_item.image | img_url: effective_image_dimensions | img_tag: '', 'aspect-ratio__content' }}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Description produit -->
+          <div class="flex-line-item-description">
+            <p>
+              <span class="line-item-title">
+                {{ line_item.title }}
+              </span>
+              {% if line_item.variant_title != blank %}
+                <span class="line-item-description-line">
+                  {{ line_item.variant_title }}
+                </span>
+              {% endif %}
+              {% if line_item.sku != blank %}
+                <span class="line-item-description-line">
+                  SKU : {{ line_item.sku }}
+                </span>
+              {% endif %}
+              {% for group in line_item.groups %}
+                {% if group.deliverable? %}
+                  <span class="line-item-description-line">
+                    Pour : {{ group.title }}
+                  </span>
+                {% else %}
+                  <span class="line-item-description-line">
+                    Fait partie de : {{ group.title }}
+                  </span>
+                {% endif %}
+              {% endfor %}
+            </p>
+          </div>
+
+          <!-- Quantité expédiée / totale -->
+          <div class="flex-line-item-quantity">
+            <p class="text-align-right">
+              {{ line_item.shipping_quantity }} / {{ line_item.quantity }}
+            </p>
+          </div>
+
+        </div>
+      {% endfor %}
+
+    </div>
+    <!-- /order-container -->
+
+    <!-- ───────────────────────────────────────────
+         AVERTISSEMENT — envoi partiel (si applicable)
+         ─────────────────────────────────────────── -->
+    {% unless includes_all_line_items_in_order %}
+      <hr class="divider-subtle">
+      <p class="missing-line-items-text">
+        ⚠ D'autres articles de votre commande ne sont pas inclus dans cet envoi.
+      </p>
+    {% endunless %}
+
+    <!-- ───────────────────────────────────────────
+         SÉPARATEUR
+         ─────────────────────────────────────────── -->
+    <hr class="divider">
+
+    <!-- ───────────────────────────────────────────
+         NOTES SUR LA COMMANDE (si présentes)
+         ─────────────────────────────────────────── -->
+    {% if order.note != blank %}
+      <div class="notes">
+        <span class="notes-label">✦ Notes</span>
+        <p class="notes-details">{{ order.note }}</p>
+      </div>
+    {% endif %}
+
+    <!-- ───────────────────────────────────────────
+         INSTRUCTIONS DE LIVRAISON (si présentes)
+         ─────────────────────────────────────────── -->
+    {% if delivery_method.instructions != blank %}
+      <div class="notes">
+        <span class="notes-label">✦ Instructions de livraison</span>
+        <p class="notes-details">{{ delivery_method.instructions }}</p>
+      </div>
+    {% endif %}
+
+    <!-- ───────────────────────────────────────────
+         PIED DE PAGE — Lil'OG
+         ─────────────────────────────────────────── -->
+    <div class="footer">
+      <p class="footer-thank-you">Merci de votre achat !</p>
+      <p class="footer-details">
+        <strong>{{ shop.name }}</strong><br>
+        {{ shop_address.summary }}<br>
+        {{ shop.email }}<br>
+        {{ shop.domain }}
+      </p>
+      <span class="footer-tagline">✦ Pre-loved Y2K · London ✦</span>
+      <div class="footer-stripe"></div>
+    </div>
+
+  </div>
+  <!-- /doc-body -->
+
+</div>
+<!-- /wrapper -->
