@@ -55,24 +55,13 @@ export function CartPage() {
   const [heartMsg, setHeartMsg] = useState('');
   const heartTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleCheckout = async (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
+  const handleCheckout = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
     e.preventDefault();
-    const lines = cart?.lines;
-    if (!lines?.length) return;
+    if (!cart?.checkoutUrl) return;
     if (heartTimer.current) clearTimeout(heartTimer.current);
     setHeartMsg(MSN_MESSAGES[Math.floor(Math.random() * MSN_MESSAGES.length)]);
     setShowHeart(true);
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lines }),
-      });
-      const { url } = await res.json();
-      heartTimer.current = setTimeout(() => { window.location.href = url; }, 2000);
-    } catch {
-      setShowHeart(false);
-    }
+    heartTimer.current = setTimeout(() => { window.location.href = cart.checkoutUrl; }, 2000);
   };
 
   useEffect(() => () => { if (heartTimer.current) clearTimeout(heartTimer.current); }, []);
