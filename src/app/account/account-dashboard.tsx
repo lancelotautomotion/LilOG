@@ -114,18 +114,26 @@ export function AccountDashboard({
               </div>
               <div className="account-panel-body" style={{ padding: "8px", flex: 1 }}>
                 {!shopifyToken ? (
-                  <p className="account-orders-empty">
-                    Connexion via Google détectée.<br />
-                    L&apos;historique des commandes est disponible<br />
-                    avec un compte Lil&apos;OG.
-                  </p>
-                ) : orders.length === 0 ? (
-                  <p className="account-orders-empty">
-                    Aucune commande pour le moment.<br />
-                    <a href="/" style={{ color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.68rem" }}>
-                      Découvrir la boutique →
+                  <div className="account-orders-empty">
+                    <p style={{ marginBottom: "16px" }}>
+                      Connexion via Google détectée.<br />
+                      L&apos;historique des commandes est disponible<br />
+                      avec un compte Lil&apos;OG.
+                    </p>
+                    <a href="/#drops" className="account-btn primary">
+                      Voir le dernier drop →
                     </a>
-                  </p>
+                  </div>
+                ) : orders.length === 0 ? (
+                  <div className="account-orders-empty">
+                    <p style={{ marginBottom: "16px" }}>
+                      Aucune commande pour le moment.<br />
+                      Découvre nos dernières pièces.
+                    </p>
+                    <a href="/#drops" className="account-btn primary">
+                      Voir le dernier drop →
+                    </a>
+                  </div>
                 ) : (
                   <table className="acct-order-table">
                     <thead>
