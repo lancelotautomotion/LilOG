@@ -203,13 +203,20 @@ export function AccountDashboard({
               </div>
             </div>
 
-            {/* Mes adresses (Shopify uniquement) */}
-            {shopifyToken && (
-              <div className="account-panel">
-                <div className="account-panel-bar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span className="account-panel-title">📍 Mes adresses</span>
-                  <button className="acct-addr-header-btn" onClick={openNew}>+ Ajouter</button>
+            {/* Mes adresses */}
+            <div className="account-panel">
+              <div className="account-panel-bar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span className="account-panel-title">📍 Mes adresses</span>
+                {shopifyToken && <button className="acct-addr-header-btn" onClick={openNew}>+ Ajouter</button>}
+              </div>
+              {!shopifyToken ? (
+                <div className="acct-addr-upsell">
+                  <p className="acct-addr-upsell-text">
+                    Crée un compte Lil&apos;OG pour enregistrer tes adresses de livraison et accélérer tes prochaines commandes.
+                  </p>
+                  <a href="/login" className="account-btn primary">Créer un compte →</a>
                 </div>
+              ) : (
                 <div className="acct-addr-list">
                   {addresses.length === 0 ? (
                     <p className="acct-addr-empty">Aucune adresse enregistrée.</p>
@@ -237,8 +244,8 @@ export function AccountDashboard({
                     ))
                   )}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Hey babe */}
             <div className="acct-hey-babe">
