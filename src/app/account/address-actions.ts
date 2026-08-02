@@ -9,7 +9,7 @@ import {
   type AddressInput,
 } from "@/lib/shopify/customers";
 
-function getToken(session: Awaited<ReturnType<typeof auth>>): string | null {
+function getToken(session: unknown): string | null {
   return (session as { shopifyToken?: string | null })?.shopifyToken ?? null;
 }
 
