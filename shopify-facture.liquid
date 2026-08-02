@@ -1,0 +1,648 @@
+{% comment %}
+  ================================================================
+  Lil'OG — Shopify Invoice (Facture) Template
+  Style : W95 Edition · DA Lil'OG Y2K editorial vintage
+  ================================================================
+  AVANT DE COLLER DANS SHOPIFY :
+  → Remplace l'URL du logo par l'URL CDN Shopify obtenue dans :
+    Shopify Admin > Contenu > Fichiers
+    Exemple :
+    https://cdn.shopify.com/s/files/1/XXXX/XXXX/files/logo-black.png
+  ================================================================
+{% endcomment %}
+
+<style type="text/css">
+  @import url('https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700&family=Montserrat:wght@400;500;600&family=Space+Mono:wght@400;700&family=VT323&display=swap');
+
+  :root {
+    --choco:      #322f37;
+    --choco-soft: #6e6975;
+    --butter:     #f2d488;
+    --cream:      #f3ece6;
+    --paper:      #faf6f1;
+    --fuchsia:    #e0006e;
+    --w95-grey:   #c0c0c0;
+    --w95-dark:   #444444;
+    --w95-inset:  #d0d0d0;
+    --w95-blue-a: #000080;
+    --w95-blue-b: #1084d0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Montserrat', 'Noto Sans', Arial, sans-serif;
+    font-size: 14px;
+    background: var(--cream);
+    color: var(--choco);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Win95 wrapper ── */
+  .wrapper {
+    width: 820px; max-width: 100%;
+    margin: 24px auto;
+    border-top:    3px solid #ffffff;
+    border-left:   3px solid #ffffff;
+    border-right:  3px solid var(--w95-dark);
+    border-bottom: 3px solid var(--w95-dark);
+    background: var(--w95-grey);
+    box-shadow: 3px 3px 0 #000000;
+  }
+
+  /* ── Barre de titre Win95 ── */
+  .win95-titlebar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(90deg, var(--w95-blue-a) 0%, var(--w95-blue-b) 100%);
+    padding: 5px 8px; gap: 8px; flex-shrink: 0;
+  }
+  .win95-title-text {
+    font-family: 'VT323', monospace; font-size: 1.05rem; color: #ffffff;
+    letter-spacing: 0.08em; flex: 1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .win95-title-text .title-shop { color: var(--butter); }
+  .win95-buttons { display: flex; gap: 3px; flex-shrink: 0; }
+  .win95-btn {
+    width: 16px; height: 14px; display: inline-block;
+    background: var(--w95-grey);
+    border-top:    1.5px solid #ffffff;
+    border-left:   1.5px solid #ffffff;
+    border-right:  1.5px solid var(--w95-dark);
+    border-bottom: 1.5px solid var(--w95-dark);
+  }
+
+  /* ── Corps du document ── */
+  .doc-body {
+    margin: 7px;
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background: var(--paper);
+    padding: 32px 36px 28px;
+  }
+
+  /* ── En-tête : Logo + Facture title ── */
+  .header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 20px; padding-bottom: 22px; border-bottom: 2px solid var(--choco);
+  }
+  .shop-title .brand-logo { height: 54px; width: auto; display: block; }
+  .order-title { text-align: right; flex-shrink: 0; }
+  .invoice-type {
+    font-family: 'Grenze Gotisch', Georgia, serif;
+    font-size: 1.7rem; font-weight: 700; color: var(--w95-blue-a);
+    letter-spacing: 0.04em; line-height: 1; margin-bottom: 6px; display: block;
+  }
+  .order-ref {
+    font-family: 'VT323', monospace; font-size: 1.15rem;
+    color: var(--choco); letter-spacing: 0.1em; line-height: 1.35; display: block;
+  }
+  .order-meta {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem;
+    color: var(--choco-soft); text-transform: uppercase;
+    letter-spacing: 0.12em; display: block; margin-top: 3px;
+  }
+
+  /* ── Blocs adresses ── */
+  .address-columns { display: flex; gap: 8px; margin: 22px 0; }
+  .address-block {
+    flex: 1;
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background: var(--w95-inset); padding: 13px 15px;
+  }
+  .address-label {
+    font-family: 'Space Mono', monospace; font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.22em; color: var(--w95-blue-a);
+    margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #999999;
+    display: block;
+  }
+  .address-detail { font-size: 0.83rem; line-height: 1.7; color: var(--choco); }
+  .address-detail p { margin: 0; } /* neutralise les <p> de format_address */
+  .address-detail strong { font-weight: 600; }
+
+  /* ── Séparateur ── */
+  .divider {
+    height: 0; border: none;
+    border-top: 2px solid var(--choco); border-bottom: 1px solid #888888;
+    margin: 4px 0 18px;
+  }
+
+  /* ── Label de section ── */
+  .section-label {
+    font-family: 'VT323', monospace; font-size: 1rem; color: #ffffff;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    background: linear-gradient(90deg, var(--w95-blue-a) 0%, var(--w95-blue-b) 100%);
+    padding: 5px 12px; display: block;
+  }
+
+  /* ── Tableau de commande ── */
+  .invoice-table-wrapper {
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    margin-bottom: 22px; overflow-x: auto;
+  }
+  .invoice-table { width: 100%; border-collapse: collapse; }
+
+  .invoice-table thead tr {
+    background: linear-gradient(90deg, var(--w95-blue-a) 0%, var(--w95-blue-b) 100%);
+  }
+  .invoice-table thead th {
+    font-family: 'VT323', monospace; font-size: 0.95rem; color: #ffffff;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 6px 12px; text-align: left; font-weight: 400; border: none;
+  }
+  .invoice-table thead th.col-right { text-align: right; }
+
+  /* Lignes articles */
+  .invoice-table tbody tr.item-row { background: var(--paper); }
+  .invoice-table tbody tr.item-row:nth-child(even) { background: #f4ede6; }
+  .invoice-table tbody tr.item-row td { border-bottom: 1px solid #e0d8d0; }
+  .invoice-table tbody td {
+    padding: 9px 12px; font-size: 0.83rem; color: var(--choco); vertical-align: top;
+  }
+  .col-qty {
+    font-family: 'VT323', monospace; font-size: 1rem;
+    color: var(--w95-blue-a); letter-spacing: 0.06em;
+    width: 8%; white-space: nowrap;
+  }
+  .col-price {
+    text-align: right; white-space: nowrap; width: 20%;
+    font-family: 'Space Mono', monospace; font-size: 0.75rem;
+    font-variant-numeric: tabular-nums; color: var(--choco);
+  }
+  .line-item-name {
+    font-family: 'Montserrat', sans-serif; font-weight: 600;
+    font-size: 0.88rem; display: block; margin-bottom: 2px;
+  }
+  .discount-line {
+    font-family: 'Space Mono', monospace; font-size: 0.6rem;
+    color: var(--choco-soft); display: block; margin-top: 3px;
+  }
+  .price-original {
+    text-decoration: line-through; color: var(--choco-soft);
+    font-size: 0.65rem; display: block; margin-bottom: 1px;
+  }
+
+  /* Lignes récapitulatif (sous-total, taxe, expédition) */
+  .invoice-table tbody tr.summary-row { background: #f0ebe4; }
+  .invoice-table tbody tr.summary-row td {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--choco-soft); padding: 7px 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  .invoice-table tbody tr.summary-row td.col-price { color: var(--choco); }
+
+  /* Ligne Total */
+  .invoice-table tbody tr.total-row { background: var(--w95-blue-a); }
+  .invoice-table tbody tr.total-row td {
+    font-family: 'VT323', monospace; font-size: 1.15rem; font-weight: 400;
+    color: #ffffff; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 8px 12px; border-bottom: none;
+  }
+  .invoice-table tbody tr.total-row td.col-price { color: var(--butter); }
+
+  /* Lignes payé / remboursé */
+  .invoice-table tbody tr.paid-row { background: #e6efe6; }
+  .invoice-table tbody tr.paid-row td {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: #2a5e2a; padding: 7px 12px; border-bottom: 1px solid #cce0cc;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Ligne Solde impayé */
+  .invoice-table tbody tr.balance-row { background: #5c0000; }
+  .invoice-table tbody tr.balance-row td {
+    font-family: 'VT323', monospace; font-size: 1.05rem;
+    color: #ffffff; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 7px 12px; border-bottom: none;
+  }
+  .invoice-table tbody tr.balance-row td.col-price { color: #ff9999; }
+
+  /* ── Tableau des transactions ── */
+  .txn-table-wrapper {
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    margin-bottom: 22px; overflow-x: auto;
+  }
+  .txn-table { width: 100%; border-collapse: collapse; }
+  .txn-table thead tr {
+    background: linear-gradient(90deg, var(--w95-blue-a) 0%, var(--w95-blue-b) 100%);
+  }
+  .txn-table thead th {
+    font-family: 'VT323', monospace; font-size: 0.85rem; color: #ffffff;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 5px 12px; font-weight: 400; text-align: left; border: none;
+  }
+  .txn-table tbody tr { background: var(--paper); }
+  .txn-table tbody tr:nth-child(even) { background: #f4ede6; }
+  .txn-table tbody td {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--choco); padding: 8px 12px;
+    border-bottom: 1px solid #e0d8d0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Notes ── */
+  .notes {
+    margin: 18px 0; padding: 13px 16px;
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background: #ece4db;
+  }
+  .notes-label {
+    font-family: 'Space Mono', monospace; font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.22em;
+    color: var(--w95-blue-a); margin-bottom: 8px; display: block;
+  }
+  .notes-details { font-size: 0.84rem; line-height: 1.65; color: var(--choco); }
+
+  /* ── Note de contact ── */
+  .contact-note {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem;
+    color: var(--choco-soft); text-transform: uppercase;
+    letter-spacing: 0.1em; margin: 18px 0 0; line-height: 1.7;
+  }
+  .contact-note strong { color: var(--w95-blue-a); font-weight: 700; }
+
+  /* ── Terminal footer ── */
+  .footer { margin-top: 28px; }
+  .terminal-window {
+    border-top:    3px solid #ffffff;
+    border-left:   3px solid #ffffff;
+    border-right:  3px solid var(--w95-dark);
+    border-bottom: 3px solid var(--w95-dark);
+    background: var(--w95-grey); box-shadow: 2px 2px 0 #000;
+  }
+  .terminal-titlebar {
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(90deg, var(--w95-blue-a) 0%, var(--w95-blue-b) 100%);
+    padding: 4px 8px; gap: 8px;
+  }
+  .terminal-titlebar-text {
+    font-family: 'VT323', monospace; font-size: 0.88rem;
+    color: #ffffff; letter-spacing: 0.1em; flex: 1;
+  }
+  .terminal-badge {
+    font-family: 'VT323', monospace; font-size: 0.75rem; color: var(--butter);
+    letter-spacing: 0.12em; background: rgba(0,0,0,0.35);
+    padding: 1px 8px; border: 1px solid rgba(255,255,255,0.25);
+  }
+  .terminal-screen {
+    margin: 6px;
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background: #0d0009; padding: 22px 28px 20px;
+    position: relative; overflow: hidden; text-align: center;
+  }
+  .terminal-screen::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px
+    );
+    pointer-events: none; z-index: 1;
+  }
+  .terminal-screen::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none; z-index: 1;
+  }
+  .terminal-content { position: relative; z-index: 2; }
+  .terminal-noise {
+    font-family: 'VT323', monospace; font-size: 0.72rem;
+    color: #660033; letter-spacing: 0.06em; display: block; opacity: 0.6; margin-bottom: 8px;
+  }
+  .terminal-status {
+    font-family: 'VT323', monospace; font-size: 0.82rem;
+    color: #aaaaaa; letter-spacing: 0.2em; text-transform: uppercase;
+    display: block; margin-bottom: 4px; opacity: 0.85;
+  }
+  .terminal-rule {
+    font-family: 'VT323', monospace; font-size: 0.72rem;
+    color: #444444; display: block; letter-spacing: 0.04em; margin: 6px 0; opacity: 0.8;
+  }
+  .terminal-main {
+    font-family: 'VT323', monospace; font-size: 2.2rem;
+    color: #ff0080; letter-spacing: 0.1em; text-transform: uppercase;
+    line-height: 1.1; display: block; margin: 10px 0 8px;
+    text-shadow: 0 0 8px rgba(255,0,128,0.75), 0 0 22px rgba(255,0,128,0.35);
+  }
+  .terminal-info {
+    font-family: 'VT323', monospace; font-size: 0.9rem;
+    color: #999999; letter-spacing: 0.12em; text-transform: uppercase;
+    line-height: 2; display: block; margin: 10px 0 6px;
+  }
+  .terminal-tagline {
+    display: inline-block; margin-top: 10px;
+    font-family: 'VT323', monospace; font-size: 1rem;
+    color: #c0c0c0; letter-spacing: 0.24em; text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(192,192,192,0.4);
+  }
+  .terminal-cursor {
+    display: inline-block; width: 9px; height: 15px;
+    background: #ff0080; margin-left: 3px; vertical-align: middle;
+    box-shadow: 0 0 6px rgba(255,0,128,0.9);
+    animation: cur-blink 1s step-end infinite;
+  }
+  @keyframes cur-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  @media print {
+    body { background: #ffffff; }
+    .wrapper { width: 100%; margin: 0; border: none; box-shadow: none; }
+    .win95-titlebar,
+    .invoice-table thead tr,
+    .txn-table thead tr,
+    .terminal-titlebar,
+    .terminal-screen { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .invoice-table tbody tr.total-row,
+    .invoice-table tbody tr.balance-row { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .invoice-table-wrapper { page-break-inside: avoid; }
+    .terminal-window { page-break-inside: avoid; }
+    .terminal-cursor { animation: none; }
+  }
+
+  @media (max-width: 600px) {
+    .wrapper { margin: 0; }
+    .doc-body { padding: 20px 16px; }
+    .header { flex-direction: column; gap: 14px; }
+    .order-title { text-align: left; }
+    .address-columns { flex-direction: column; }
+  }
+</style>
+
+<div class="wrapper">
+
+  <!-- ══ BARRE DE TITRE ══ -->
+  <div class="win95-titlebar">
+    <span class="win95-title-text">
+      <span class="title-shop">{{ shop.name }}</span>&nbsp;·&nbsp;Facture {{ order.order_name }}
+    </span>
+    <div class="win95-buttons">
+      <span class="win95-btn"></span>
+      <span class="win95-btn"></span>
+      <span class="win95-btn"></span>
+    </div>
+  </div>
+
+  <div class="doc-body">
+
+    <!-- ── En-tête : Logo + Facture ── -->
+    <div class="header">
+      <div class="shop-title">
+        {% comment %}
+          LOGO : Uploader logo-black.png dans Shopify Admin > Contenu > Fichiers,
+          puis remplacer l'URL ci-dessous par l'URL CDN Shopify obtenue.
+          Exemple : https://cdn.shopify.com/s/files/1/XXXX/XXXX/files/logo-black.png
+        {% endcomment %}
+        <img
+          class="brand-logo"
+          src="https://raw.githubusercontent.com/lancelotautomotion/lilog/main/public/logo-black.png"
+          alt="{{ shop.name }}"
+          style="height:54px; width:auto; display:block;"
+        >
+      </div>
+      <div class="order-title">
+        <span class="invoice-type">Facture</span>
+        <span class="order-ref">{{ order.order_name }}</span>
+        {% if order.po_number %}
+          <span class="order-meta">BC nº {{ order.po_number }}</span>
+        {% endif %}
+        <span class="order-meta">{{ order.created_at | date: "%B %e, %Y" }}</span>
+      </div>
+    </div>
+
+    <!-- ── Adresses : De / Facturer à / Expédier à ── -->
+    <div class="address-columns">
+
+      <div class="address-block">
+        <span class="address-label">✦ De</span>
+        <div class="address-detail">
+          <strong>{{ shop.name }}</strong>
+          {{ shop_address | format_address }}
+          {% if shop.phone %}{{ shop.phone }}{% endif %}
+        </div>
+      </div>
+
+      {% if billing_address %}
+      <div class="address-block">
+        <span class="address-label">✦ Facturer à</span>
+        <div class="address-detail">
+          {{ billing_address | format_address }}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if shipping_address %}
+      <div class="address-block">
+        <span class="address-label">✦ Expédier à</span>
+        <div class="address-detail">
+          {{ shipping_address | format_address }}
+          {% if shipping_address.phone %}{{ shipping_address.phone }}{% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <hr class="divider">
+
+    <!-- ── Détails de la commande ── -->
+    <span class="section-label">✦ Détails de la commande</span>
+    <div class="invoice-table-wrapper">
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th class="col-qty">Qté</th>
+            <th>Article</th>
+            <th class="col-right">Prix</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {% for line_item in order.line_items %}
+          <tr class="item-row">
+            <td class="col-qty">{{ line_item.quantity }}</td>
+            <td>
+              <span class="line-item-name">{{ line_item.title }}</span>
+              {% if line_item.line_level_discount_allocations.size > 0 %}
+                {% for discount_allocation in line_item.line_level_discount_allocations %}
+                  <span class="discount-line">
+                    {{ discount_allocation.discount_application.title }} (−{{ discount_allocation.amount | money }})
+                  </span>
+                {% endfor %}
+              {% endif %}
+            </td>
+            <td class="col-price">
+              {% if line_item.original_price != line_item.final_price %}
+                <span class="price-original">{{ line_item.original_price | money }}</span>
+              {% endif %}
+              {{ line_item.final_price | money }}
+            </td>
+          </tr>
+          {% endfor %}
+
+          <!-- Sous-total -->
+          <tr class="summary-row">
+            <td colspan="2" style="text-align:right;">Sous-total</td>
+            <td class="col-price">{{ order.line_items_subtotal_price | money }}</td>
+          </tr>
+
+          <!-- Remises globales -->
+          {% assign shipping_discount_total = order.shipping_price | minus: order.shipping_price %}
+          {% for discount_application in order.discount_applications %}
+            {% if discount_application.target_type == 'shipping_line' %}
+              {% assign shipping_discount_total = shipping_discount_total | plus: discount_application.total_allocated_amount %}
+            {% endif %}
+            {% if discount_application.target_selection == 'all' and discount_application.target_type != 'shipping_line' %}
+            <tr class="summary-row">
+              <td colspan="2" style="text-align:right;">
+                {% if discount_application.title %}{{ discount_application.title }}{% endif %}
+              </td>
+              <td class="col-price">−{{ discount_application.total_allocated_amount | money }}</td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+
+          <!-- Taxe -->
+          <tr class="summary-row">
+            <td colspan="2" style="text-align:right;">Taxe</td>
+            <td class="col-price">{{ order.tax_price | money }}</td>
+          </tr>
+
+          <!-- Expédition -->
+          {% if order.shipping_address %}
+            {% assign discounted_shipping_price = order.shipping_price | minus: shipping_discount_total %}
+            {% assign discounted_shipping_price_abs = discounted_shipping_price | abs %}
+            <tr class="summary-row">
+              <td colspan="2" style="text-align:right;">Expédition</td>
+              <td class="col-price">
+                {% if discounted_shipping_price_abs < 1 %}GRATUIT{% else %}{{ discounted_shipping_price | money }}{% endif %}
+              </td>
+            </tr>
+          {% endif %}
+
+          <!-- Total -->
+          <tr class="total-row">
+            <td colspan="2" style="text-align:right;">Total</td>
+            <td class="col-price">{{ order.total_price | money }}</td>
+          </tr>
+
+          <!-- Total payé -->
+          {% if order.net_payment != order.total_net_amount %}
+          <tr class="paid-row">
+            <td colspan="2" style="text-align:right;">Total payé</td>
+            <td class="col-price">{{ order.net_payment | money }}</td>
+          </tr>
+          {% endif %}
+
+          <!-- Total remboursé -->
+          {% if order.total_refunded_amount > 0 %}
+          <tr class="paid-row">
+            <td colspan="2" style="text-align:right;">Total remboursé</td>
+            <td class="col-price">−{{ order.total_refunded_amount | money }}</td>
+          </tr>
+          {% endif %}
+
+          <!-- Solde impayé -->
+          {% if order.net_payment != order.total_net_amount %}
+          <tr class="balance-row">
+            <td colspan="2" style="text-align:right;">Solde impayé</td>
+            <td class="col-price">{{ order.total_net_amount | minus: order.net_payment | money }}</td>
+          </tr>
+          {% endif %}
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Transactions (si plusieurs) ── -->
+    {% if transactions.size > 1 %}
+    <span class="section-label">✦ Détails des transactions</span>
+    <div class="txn-table-wrapper">
+      <table class="txn-table">
+        <thead>
+          <tr>
+            <th>Moyen de paiement</th>
+            <th>Montant</th>
+            <th>Type</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for transaction in transactions %}
+          <tr>
+            <td>{{ transaction.gateway_display_name }}</td>
+            <td>{{ transaction.amount | money }}</td>
+            <td>{{ transaction.kind }}</td>
+            <td>{{ transaction.status }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    <!-- ── Note commande ── -->
+    {% if order.note %}
+    <div class="notes">
+      <span class="notes-label">✦ Note</span>
+      <p class="notes-details">{{ order.note }}</p>
+    </div>
+    {% endif %}
+
+    <!-- ── Contact ── -->
+    <p class="contact-note">
+      Questions ? Écris-nous à <strong>lilog.shop@gmail.com</strong>
+    </p>
+
+    <!-- ── Terminal footer ── -->
+    <div class="footer">
+      <div class="terminal-window">
+
+        <div class="terminal-titlebar">
+          <span class="terminal-titlebar-text">LIL'OG TERMINAL v1.0 — lilog.shop</span>
+          <span class="terminal-badge">✓ APPROUVÉE</span>
+          <div class="win95-buttons" style="margin-left:6px;">
+            <span class="win95-btn"></span>
+            <span class="win95-btn"></span>
+          </div>
+        </div>
+
+        <div class="terminal-screen">
+          <div class="terminal-content">
+            <span class="terminal-noise">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</span>
+            <span class="terminal-status">▶ TRANSACTION APPROUVÉE ✓</span>
+            <span class="terminal-rule">────────────────────────────────────────</span>
+            <span class="terminal-main">Merci pour ton achat, le verdict est tombé : t'es une icône.</span>
+            <span class="terminal-rule">────────────────────────────────────────</span>
+            <span class="terminal-info">
+              {{ shop.name }}<br>
+              lilog.shop@gmail.com<br>
+              lilog.shop
+            </span>
+            <span class="terminal-noise">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</span>
+            <span class="terminal-tagline">✦ PRE-LOVED Y2K — PARIS ✦<span class="terminal-cursor"></span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
