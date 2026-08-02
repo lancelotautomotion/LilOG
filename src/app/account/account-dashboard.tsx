@@ -116,9 +116,8 @@ export function AccountDashboard({
                 {!shopifyToken ? (
                   <div className="account-orders-empty">
                     <p style={{ marginBottom: "16px" }}>
-                      Connexion via Google détectée.<br />
-                      L&apos;historique des commandes est disponible<br />
-                      avec un compte Lil&apos;OG.
+                      Aucune commande pour le moment.<br />
+                      Le prochain coup de cœur t&apos;attend.
                     </p>
                     <a href="/#drops" className="account-btn primary">
                       Voir le dernier drop →
