@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Grenze_Gotisch, Montserrat, Space_Mono, Great_Vibes, VT323 } from "next/font/google";
+import { IBM_Plex_Mono, Montserrat, Space_Mono, Great_Vibes, VT323 } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
 import { getCartAction } from "@/lib/actions/cart-actions";
 import "./globals.css";
 
-const serif = Grenze_Gotisch({
+const serif = IBM_Plex_Mono({
   variable: "--font-serif",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],

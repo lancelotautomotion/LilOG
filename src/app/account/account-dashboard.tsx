@@ -60,15 +60,15 @@ export function AccountDashboard({
 
         {/* Toolbar */}
         <div className="acct-toolbar">
-          <a href="/" className="account-toolbar-btn">🛍 Boutique</a>
-          <a href="/account/orders" className="account-toolbar-btn">📦 Commandes</a>
-          {shopifyToken && <a href="/account/edit" className="account-toolbar-btn">✏️ Modifier le profil</a>}
+          <a href="/" className="account-toolbar-btn">Boutique</a>
+          <a href="/account/orders" className="account-toolbar-btn">Commandes</a>
+          {shopifyToken && <a href="/account/edit" className="account-toolbar-btn">Modifier le profil</a>}
           <div className="account-toolbar-sep" />
           <button
             className="account-toolbar-btn danger"
             onClick={() => signOut({ callbackUrl: "/" })}
           >
-            🚪 Déconnexion
+            Déconnexion
           </button>
         </div>
 

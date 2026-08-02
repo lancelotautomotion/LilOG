@@ -131,7 +131,7 @@ export function AuthForm() {
 
       {/* Status bar */}
       <div className="auth-win95-statusbar">
-        <div className="auth-win95-status-cell">🔒 Connexion sécurisée</div>
+        <div className="auth-win95-status-cell">Connexion sécurisée</div>
         <div className="auth-win95-status-cell">Lil&apos;OG © 2025</div>
       </div>
     </div>
