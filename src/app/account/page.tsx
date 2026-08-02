@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { shopifyGetCustomerWithOrders } from "@/lib/shopify/customers";
-import { AccountDashboard } from "./account-dashboard";
+import { AccountShell } from "./account-shell";
 
 export const metadata: Metadata = { title: "Mon compte — Lil'OG" };
 
@@ -25,7 +25,7 @@ export default async function AccountPage() {
     : displayName;
 
   return (
-    <AccountDashboard
+    <AccountShell
       customer={customer}
       orders={orders}
       email={email}
