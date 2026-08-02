@@ -30,8 +30,9 @@
   --ldl-muted: #6B7280;
   --ldl-radius: 12px;
   --ldl-titlebar: linear-gradient(90deg, #1E4DFF, #7A6CFF);
-  --ldl-shadow: 0 2px 12px rgba(30, 77, 255, 0.08);
-  --ldl-shadow-md: 0 4px 24px rgba(30, 77, 255, 0.12);
+  --ldl-shadow: 0 2px 8px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --ldl-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.11), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --ldl-shadow-window: 0 8px 32px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.07);
   --ldl-btn: linear-gradient(135deg, #1E4DFF 0%, #7A6CFF 100%);
   --ldl-transition: 180ms ease;
 
@@ -699,7 +700,8 @@ a { color: inherit; text-decoration: none; }
   grid-template-columns: repeat(4, 1fr);
   gap: clamp(14px, 1.8vw, 26px);
 }
-.card { position: relative; min-width: 0; }
+.card { position: relative; min-width: 0; box-shadow: var(--ldl-shadow); border-radius: 4px; overflow: hidden; transition: box-shadow var(--ldl-transition), transform var(--ldl-transition); }
+.card:hover { box-shadow: var(--ldl-shadow-md); transform: translateY(-2px); }
 .card-media {
   display: block;
   position: relative;
@@ -2238,7 +2240,7 @@ a { color: inherit; text-decoration: none; }
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
   border-radius: var(--ldl-radius);
-  box-shadow: var(--ldl-shadow-md);
+  box-shadow: var(--ldl-shadow-window);
   overflow: hidden;
 }
 
@@ -2484,7 +2486,7 @@ a { color: inherit; text-decoration: none; }
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
   border-radius: var(--ldl-radius);
-  box-shadow: var(--ldl-shadow-md);
+  box-shadow: var(--ldl-shadow-window);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -2850,7 +2852,7 @@ a { color: inherit; text-decoration: none; }
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
   border-radius: var(--ldl-radius);
-  box-shadow: var(--ldl-shadow-md);
+  box-shadow: var(--ldl-shadow-window);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -3560,7 +3562,7 @@ html, body {
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
   border-radius: var(--ldl-radius);
-  box-shadow: var(--ldl-shadow);
+  box-shadow: var(--ldl-shadow-window);
 }
 .w95-bar {
   display: flex;
