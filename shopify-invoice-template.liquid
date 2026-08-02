@@ -143,16 +143,6 @@
     height: 54px;
     width: auto;
     display: block;
-    margin-bottom: 8px;
-  }
-  .shop-title .shop-name-text {
-    font-family: 'Grenze Gotisch', serif;
-    font-size: 1.55rem;
-    font-weight: 700;
-    color: var(--choco);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    line-height: 1;
   }
 
   /* Bloc référence / date commande */
@@ -405,59 +395,167 @@
   }
 
   /* ============================================================
-     PIED DE PAGE
+     PIED DE PAGE — Terminal de paiement W95
      ============================================================ */
   .footer {
-    margin-top: 24px;
-    padding-top: 18px;
-    border-top: 2px solid var(--choco);
-    text-align: center;
-  }
-  .footer-thank-you {
-    font-family: 'Grenze Gotisch', serif;
-    font-size: 1.35rem;
-    font-weight: 500;
-    color: var(--choco);
-    letter-spacing: 0.04em;
-    margin-bottom: 12px;
-  }
-  .footer-details {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--choco-soft);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    line-height: 1.9;
-  }
-  .footer-details strong {
-    font-weight: 700;
-    color: var(--choco);
-  }
-  .footer-tagline {
-    display: inline-block;
-    margin-top: 14px;
-    font-family: 'VT323', monospace;
-    font-size: 0.92rem;
-    color: var(--fuchsia);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    margin-top: 28px;
   }
 
-  /* Petite bande de couleur décorative en bas du footer */
-  .footer-stripe {
-    margin-top: 18px;
-    height: 6px;
-    background: linear-gradient(
-      90deg,
-      var(--choco) 0%,
-      var(--choco) 25%,
-      var(--pink)   25%,
-      var(--pink)   50%,
-      var(--butter) 50%,
-      var(--butter) 75%,
-      var(--fuchsia) 75%,
-      var(--fuchsia) 100%
+  /* Fenêtre Win95 du terminal */
+  .terminal-window {
+    border-top:    3px solid #ffffff;
+    border-left:   3px solid #ffffff;
+    border-right:  3px solid var(--w95-dark);
+    border-bottom: 3px solid var(--w95-dark);
+    background: var(--w95-grey);
+    box-shadow: 2px 2px 0 #000;
+  }
+
+  /* Barre de titre */
+  .terminal-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(90deg, var(--w95-blue-a) 0%, var(--w95-blue-b) 100%);
+    padding: 4px 8px;
+    gap: 8px;
+  }
+  .terminal-titlebar-text {
+    font-family: 'VT323', monospace;
+    font-size: 0.88rem;
+    color: #ffffff;
+    letter-spacing: 0.1em;
+    flex: 1;
+  }
+  .terminal-badge {
+    font-family: 'VT323', monospace;
+    font-size: 0.75rem;
+    color: var(--butter);
+    letter-spacing: 0.12em;
+    background: rgba(0,0,0,0.35);
+    padding: 1px 8px;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+
+  /* Écran CRT */
+  .terminal-screen {
+    margin: 6px;
+    border-top:    2px solid var(--w95-dark);
+    border-left:   2px solid var(--w95-dark);
+    border-right:  2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    background: #050d05;
+    padding: 22px 28px 20px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  /* Lignes de balayage CRT */
+  .terminal-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.18) 2px,
+      rgba(0,0,0,0.18) 4px
     );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Vignette CRT */
+  .terminal-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .terminal-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .terminal-noise {
+    font-family: 'VT323', monospace;
+    font-size: 0.72rem;
+    color: #006600;
+    letter-spacing: 0.06em;
+    display: block;
+    opacity: 0.55;
+    margin-bottom: 8px;
+  }
+  .terminal-status {
+    font-family: 'VT323', monospace;
+    font-size: 0.82rem;
+    color: #00cc00;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+    opacity: 0.8;
+  }
+  .terminal-rule {
+    font-family: 'VT323', monospace;
+    font-size: 0.72rem;
+    color: #005500;
+    display: block;
+    letter-spacing: 0.04em;
+    margin: 6px 0;
+    opacity: 0.7;
+  }
+  .terminal-main {
+    font-family: 'VT323', monospace;
+    font-size: 2.2rem;
+    color: #00ff41;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    display: block;
+    margin: 10px 0 8px;
+    text-shadow:
+      0 0 8px rgba(0,255,65,0.7),
+      0 0 18px rgba(0,255,65,0.3);
+  }
+  .terminal-info {
+    font-family: 'VT323', monospace;
+    font-size: 0.9rem;
+    color: #00bb30;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 2;
+    display: block;
+    margin: 10px 0 6px;
+  }
+  .terminal-tagline {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    color: var(--butter);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(242,212,136,0.55);
+  }
+  .terminal-cursor {
+    display: inline-block;
+    width: 9px;
+    height: 15px;
+    background: #00ff41;
+    margin-left: 3px;
+    vertical-align: middle;
+    box-shadow: 0 0 6px rgba(0,255,65,0.8);
+    animation: cur-blink 1s step-end infinite;
+  }
+  @keyframes cur-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
   }
 
   /* ============================================================
@@ -471,20 +569,17 @@
       border: none;
       box-shadow: none;
     }
-    .win95-titlebar {
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-    .table-header {
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
-    .footer-stripe {
+    .win95-titlebar,
+    .table-header,
+    .terminal-titlebar,
+    .terminal-screen {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
     .flex-line-item { page-break-inside: avoid; }
     .notes { page-break-inside: avoid; }
+    .terminal-window { page-break-inside: avoid; }
+    .terminal-cursor { animation: none; }
   }
 
   /* ============================================================
@@ -544,9 +639,8 @@
           class="brand-logo"
           src="https://raw.githubusercontent.com/lancelotautomotion/lilog/main/public/logo-black.png"
           alt="{{ shop.name }}"
-          style="height:54px; width:auto; display:block; margin-bottom:8px;"
+          style="height:54px; width:auto; display:block;"
         >
-        <p class="shop-name-text">{{ shop.name }}</p>
       </div>
 
       <!-- Référence et date commande -->
@@ -740,18 +834,42 @@
     {% endif %}
 
     <!-- ───────────────────────────────────────────
-         PIED DE PAGE — Lil'OG
+         PIED DE PAGE — Terminal de paiement W95
          ─────────────────────────────────────────── -->
     <div class="footer">
-      <p class="footer-thank-you">Merci de votre achat !</p>
-      <p class="footer-details">
-        <strong>{{ shop.name }}</strong><br>
-        {{ shop_address.summary }}<br>
-        {{ shop.email }}<br>
-        {{ shop.domain }}
-      </p>
-      <span class="footer-tagline">✦ Pre-loved Y2K · London ✦</span>
-      <div class="footer-stripe"></div>
+      <div class="terminal-window">
+
+        <!-- Barre de titre Win95 -->
+        <div class="terminal-titlebar">
+          <span class="terminal-titlebar-text">LIL'OG TERMINAL v1.0 — {{ shop.domain }}</span>
+          <span class="terminal-badge">✓ APPROUVÉE</span>
+          <div class="win95-buttons" style="margin-left:6px;">
+            <span class="win95-btn"></span>
+            <span class="win95-btn"></span>
+          </div>
+        </div>
+
+        <!-- Écran CRT -->
+        <div class="terminal-screen">
+          <div class="terminal-content">
+            <span class="terminal-noise">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</span>
+            <span class="terminal-status">▶ TRANSACTION APPROUVÉE ✓</span>
+            <span class="terminal-rule">────────────────────────────────────────</span>
+
+            <span class="terminal-main">MERCI DE VOTRE<br>ACHAT !</span>
+
+            <span class="terminal-rule">────────────────────────────────────────</span>
+            <span class="terminal-info">
+              {{ shop.name }}<br>
+              lilog.shop@gmail.com<br>
+              {{ shop.domain }}
+            </span>
+            <span class="terminal-noise">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</span>
+            <span class="terminal-tagline">✦ PRE-LOVED Y2K — PARIS ✦<span class="terminal-cursor"></span></span>
+          </div>
+        </div>
+
+      </div>
     </div>
 
   </div>
