@@ -5,11 +5,13 @@ import Link from "next/link";
 import { SmartImg } from "@/components/smart-img";
 import { Icon } from "@/components/icons";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/hooks/use-wishlist";
 import type { Product } from "@/lib/shopify/types";
 
 export function ProductCard({ product, idx }: { product: Product; idx: number }) {
   const { addItem } = useCart();
-  const [fav, setFav] = useState(false);
+  const { has, toggle } = useWishlist();
+  const fav = has(product.handle);
   const [added, setAdded] = useState(false);
   const sold = product.tag === "SOLD" || !product.variantId;
 
@@ -23,7 +25,7 @@ export function ProductCard({ product, idx }: { product: Product; idx: number })
 
   const toggleFav = (e: React.MouseEvent) => {
     e.preventDefault();
-    setFav(!fav);
+    toggle({ handle: product.handle, title: product.name, price: product.price, image: product.imageA });
   };
 
   return (
