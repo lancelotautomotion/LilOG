@@ -3151,6 +3151,411 @@ a { color: inherit; text-decoration: none; }
   .acct-window { border-radius: 0; border-left: none; border-right: none; box-shadow: none; min-height: 100dvh; }
 }
 
+/* ============================================================
+   MSN MESSENGER PROFILE — colonne gauche
+   ============================================================ */
+
+/* Panel override — même container Win95 que account-panel */
+.msn-profile-panel {
+  border-top: 3px solid #fff;
+  border-left: 3px solid #fff;
+  border-right: 3px solid #666;
+  border-bottom: 3px solid #666;
+  box-shadow: 2px 2px 0 #000, var(--ldl-shadow);
+}
+
+.msn-panel-bar-icon {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* Corps principal */
+.msn-profile-body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #ECE9D8;
+}
+
+/* ── Avatar ── */
+.msn-avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.msn-avatar-frame {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  /* cadre biseauté Win95 */
+  border-top: 2px solid #666;
+  border-left: 2px solid #666;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  box-shadow: inset 1px 1px 0 #999;
+  background: #c0c0c0;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+.msn-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.msn-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #000080, #1084d0);
+}
+
+/* Petit rond online */
+.msn-avatar-online-dot {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 12px;
+  height: 12px;
+  background: #00c000;
+  border: 2px solid #ECE9D8;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.msn-change-pic-btn {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  color: #000080;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  letter-spacing: 0.04em;
+  padding: 0;
+  transition: color 0.2s;
+}
+.msn-change-pic-btn:hover { color: #d4006e; }
+
+/* ── Identité + statut ── */
+.msn-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 8px;
+  background: #fff;
+  border-top: 2px solid #666;
+  border-left: 2px solid #666;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+
+.msn-display-name {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #000080;
+  letter-spacing: 0.04em;
+}
+
+.msn-status-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.msn-status-emoji { font-size: 0.85rem; flex-shrink: 0; }
+
+.msn-status-text {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: #555;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.03em;
+  font-style: italic;
+  transition: color 0.2s;
+}
+.msn-status-text:hover { color: #d4006e; }
+.msn-status-edit-icon { font-style: normal; font-size: 0.65rem; opacity: 0.6; }
+
+.msn-status-input {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: #333;
+  background: #fff;
+  border: 1px solid #999;
+  padding: 2px 6px;
+  outline: none;
+  width: 100%;
+  font-style: italic;
+  letter-spacing: 0.03em;
+}
+.msn-status-input:focus { border-color: #000080; }
+
+/* Presets rapides */
+.msn-status-presets {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.msn-status-preset {
+  font-size: 0.85rem;
+  background: #c0c0c0;
+  border-top: 1.5px solid #fff;
+  border-left: 1.5px solid #fff;
+  border-right: 1.5px solid #444;
+  border-bottom: 1.5px solid #444;
+  cursor: pointer;
+  padding: 2px 5px;
+  line-height: 1;
+  transition: filter 0.15s;
+}
+.msn-status-preset:hover { filter: brightness(0.92); }
+.msn-status-preset:active {
+  border-top: 1.5px solid #444;
+  border-left: 1.5px solid #444;
+  border-right: 1.5px solid #fff;
+  border-bottom: 1.5px solid #fff;
+}
+.msn-status-preset.active {
+  border-top: 1.5px solid #444;
+  border-left: 1.5px solid #444;
+  border-right: 1.5px solid #fff;
+  border-bottom: 1.5px solid #fff;
+  background: #b0b0b0;
+}
+
+/* ── Séparateur ── */
+.msn-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #999, transparent);
+}
+
+/* ── Champs info ── */
+.msn-fields { display: flex; flex-direction: column; gap: 8px; }
+
+.msn-edit-btn { margin-top: 2px; }
+
+/* ── Note personnelle MSN (Hey babe intégré) ── */
+.msn-personal-note {
+  background: #fff;
+  border-top: 2px solid #666;
+  border-left: 2px solid #666;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.msn-note-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.msn-note-icon { font-size: 0.95rem; }
+.msn-note-title {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ldl-accent);
+}
+.msn-note-text {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* ── Modal sélecteur d'avatar ── */
+.msn-modal-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.msn-modal {
+  width: min(400px, 92vw);
+  background: #c0c0c0;
+  border-top: 3px solid #fff;
+  border-left: 3px solid #fff;
+  border-right: 3px solid #444;
+  border-bottom: 3px solid #444;
+  box-shadow: 4px 4px 0 #000;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Barre titre modale */
+.msn-modal-bar {
+  background: linear-gradient(90deg, #000080, #1084d0);
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.msn-modal-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: #fff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  flex: 1;
+}
+.msn-modal-chrome {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.msn-modal-chrome span {
+  width: 14px; height: 12px;
+  background: #c0c0c0;
+  border-top: 1.5px solid #fff;
+  border-left: 1.5px solid #fff;
+  border-right: 1.5px solid #444;
+  border-bottom: 1.5px solid #444;
+  display: block;
+}
+.msn-modal-close {
+  background: #c0c0c0;
+  border-top: 1.5px solid #fff;
+  border-left: 1.5px solid #fff;
+  border-right: 1.5px solid #444;
+  border-bottom: 1.5px solid #444;
+  color: #000;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  width: 16px; height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.msn-modal-close:active {
+  border-top: 1.5px solid #444;
+  border-left: 1.5px solid #444;
+  border-right: 1.5px solid #fff;
+  border-bottom: 1.5px solid #fff;
+}
+
+/* Corps de la modale */
+.msn-modal-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #ECE9D8;
+}
+.msn-modal-hint {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: #333;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+/* Grille d'avatars */
+.msn-avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.msn-avatar-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #444;
+  border-bottom: 2px solid #444;
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+.msn-avatar-option:hover { filter: brightness(0.95); }
+.msn-avatar-option:active {
+  border-top: 2px solid #444;
+  border-left: 2px solid #444;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+.msn-avatar-option.selected {
+  border-top: 2px solid #444;
+  border-left: 2px solid #444;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  background: #b0d0ff;
+}
+
+.msn-avatar-option-img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  display: block;
+  image-rendering: auto;
+}
+
+.msn-avatar-option-name {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  text-align: center;
+  color: #222;
+  line-height: 1.25;
+  letter-spacing: 0.03em;
+}
+
+.msn-clear-avatar {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #c00;
+  background: #c0c0c0;
+  border-top: 1.5px solid #fff;
+  border-left: 1.5px solid #fff;
+  border-right: 1.5px solid #444;
+  border-bottom: 1.5px solid #444;
+  padding: 5px 14px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+.msn-clear-avatar:hover { filter: brightness(0.92); }
+
 /* ── Address list (P1) ──────────────────────────────────────────────────── */
 .acct-addr-list { padding: 8px; display: flex; flex-direction: column; gap: 6px; }
 .acct-addr-item {

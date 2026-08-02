@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { ShopifyCustomer, ShopifyOrder, ShopifyAddress, AddressInput } from "@/lib/shopify/customers";
 import { actionCreateAddress, actionUpdateAddress, actionDeleteAddress, actionSetDefaultAddress } from "./address-actions";
+import { MsnProfile } from "./msn-profile";
 
 function fmt(amount: string, currency: string) {
   return new Intl.NumberFormat("fr-FR", { style: "currency", currency }).format(Number(amount));
@@ -168,40 +169,13 @@ export function AccountDashboard({
           {/* ── Left column ───────────────────────────────────── */}
           <div className="acct-col">
 
-            {/* Mon profil */}
-            <div className="account-panel">
-              <div className="account-panel-bar">
-                <span className="account-panel-title">👤 Mon profil</span>
-              </div>
-              <div className="account-panel-body">
-                <div className="acct-avatar">{firstName.charAt(0).toUpperCase()}</div>
-                <div className="account-field">
-                  <span className="account-field-label">Nom complet</span>
-                  <div className="account-field-value">{fullName}</div>
-                </div>
-                <div className="account-field">
-                  <span className="account-field-label">Email</span>
-                  <div className="account-field-value">{email}</div>
-                </div>
-                {customer?.phone && (
-                  <div className="account-field">
-                    <span className="account-field-label">Téléphone</span>
-                    <div className="account-field-value">{customer.phone}</div>
-                  </div>
-                )}
-                {!shopifyToken && (
-                  <div className="account-field">
-                    <span className="account-field-label">Compte</span>
-                    <div className="account-field-value" style={{ color: "#555" }}>Google OAuth</div>
-                  </div>
-                )}
-                {shopifyToken && (
-                  <a href="/account/edit" className="account-btn primary" style={{ marginTop: "4px" }}>
-                    ✏️ Modifier le profil
-                  </a>
-                )}
-              </div>
-            </div>
+            {/* MSN Profile */}
+            <MsnProfile
+              firstName={firstName}
+              fullName={fullName}
+              email={email}
+              shopifyToken={shopifyToken}
+            />
 
             {/* Mes adresses */}
             <div className="account-panel">
@@ -247,17 +221,6 @@ export function AccountDashboard({
               )}
             </div>
 
-            {/* Hey babe */}
-            <div className="acct-hey-babe">
-              <div className="acct-hey-babe-icon">💗</div>
-              <div className="acct-hey-babe-body">
-                <div className="acct-hey-babe-title">Hey babe !</div>
-                <p className="acct-hey-babe-text">
-                  Ajoute des pièces à ta wishlist avec le ♥ sur les fiches produit.
-                  Garde tes infos à jour pour une expérience 100% smooth. ✦
-                </p>
-              </div>
-            </div>
 
           </div>
 
