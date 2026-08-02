@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useLayoutEffect, useCallback } from "react";
 
 export interface WishlistItem {
   handle: string;
@@ -27,7 +27,7 @@ export function useWishlist() {
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [ready, setReady] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setItems(read());
     setReady(true);
   }, []);

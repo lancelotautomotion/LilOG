@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { signOut } from "next-auth/react";
-import Image from "next/image";
 import { useWishlist } from "@/hooks/use-wishlist";
 import type { ShopifyCustomer, ShopifyOrder } from "@/lib/shopify/customers";
 
@@ -250,13 +249,11 @@ export function AccountDashboard({
                     {wishlist.map((item) => (
                       <div key={item.handle} className="acct-wishlist-card">
                         {item.image ? (
-                          <Image
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
                             src={item.image}
                             alt={item.title}
-                            width={160}
-                            height={213}
                             className="acct-wishlist-img"
-                            style={{ objectFit: "cover" }}
                           />
                         ) : (
                           <div className="acct-wishlist-img-placeholder">🧥</div>
