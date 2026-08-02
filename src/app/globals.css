@@ -3151,6 +3151,150 @@ a { color: inherit; text-decoration: none; }
   .acct-window { border-radius: 0; border-left: none; border-right: none; box-shadow: none; min-height: 100dvh; }
 }
 
+/* ── Address list (P1) ──────────────────────────────────────────────────── */
+.acct-addr-list { padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.acct-addr-item {
+  border: 1px solid var(--ldl-border);
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--ldl-surface);
+}
+.acct-addr-item.is-default {
+  border-color: var(--ldl-primary);
+  background: rgba(27, 72, 206, 0.03);
+}
+.acct-addr-default-tag {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ldl-primary);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.acct-addr-text {
+  font-family: var(--mono);
+  font-size: 0.60rem;
+  color: var(--ldl-text);
+  line-height: 1.7;
+}
+.acct-addr-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.acct-addr-action-btn {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ldl-primary);
+  padding: 2px 0;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.acct-addr-action-btn.danger { color: #c00; }
+.acct-addr-header-btn {
+  font-family: var(--mono);
+  font-size: 0.54rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 0;
+  color: rgba(255,255,255,0.9);
+  padding: 3px 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 120ms;
+}
+.acct-addr-header-btn:hover { background: rgba(255,255,255,0.22); }
+.acct-addr-empty {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--ldl-muted);
+  text-align: center;
+  padding: 16px;
+}
+
+/* ── Right column tab bar ───────────────────────────────────────────────── */
+.acct-right-tabbar {
+  display: flex;
+  border-bottom: 1px solid var(--ldl-border);
+  background: var(--ldl-surface);
+  flex-shrink: 0;
+}
+.acct-right-tab {
+  font-family: var(--mono);
+  font-size: 0.60rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--ldl-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color var(--ldl-transition), border-color var(--ldl-transition);
+}
+.acct-right-tab.active { color: var(--ldl-primary); border-bottom-color: var(--ldl-primary); font-weight: 600; }
+.acct-right-tab:hover:not(.active) { color: var(--ldl-text); }
+
+/* ── Address form (P2) ──────────────────────────────────────────────────── */
+.acct-addr-form {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+.acct-addr-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.acct-addr-form-group { display: flex; flex-direction: column; gap: 4px; }
+.acct-addr-form-label {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ldl-muted);
+}
+.acct-addr-form-input,
+.acct-addr-form-select {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--ldl-text);
+  background: var(--ldl-bg);
+  border: 1px solid var(--ldl-border);
+  border-radius: 0;
+  padding: 7px 10px;
+  outline: none;
+  width: 100%;
+  transition: border-color var(--ldl-transition);
+}
+.acct-addr-form-input:focus,
+.acct-addr-form-select:focus { border-color: var(--ldl-primary); }
+.acct-addr-form-actions { display: flex; gap: 8px; padding-top: 4px; }
+.acct-addr-form-error {
+  font-family: var(--mono);
+  font-size: 0.60rem;
+  color: #c00;
+  background: #fff0f0;
+  border: 1px solid rgba(204,0,0,0.2);
+  padding: 8px 12px;
+}
+
+@media (max-width: 600px) {
+  .acct-addr-form-grid { grid-template-columns: 1fr; }
+}
+
 /* ── Contact page ───────────────────────────────────────────────────────── */
 .contact-split { display: grid; grid-template-columns: 1fr 1fr; min-height: 100dvh; }
 .contact-left { background: var(--paper); display: flex; flex-direction: column; position: relative; padding: 32px clamp(32px, 6vw, 80px); }

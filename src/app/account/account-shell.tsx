@@ -5,7 +5,7 @@ import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { AccountDashboard } from "./account-dashboard";
-import type { ShopifyCustomer, ShopifyOrder } from "@/lib/shopify/customers";
+import type { ShopifyCustomer, ShopifyOrder, ShopifyAddress } from "@/lib/shopify/customers";
 
 export function AccountShell({
   customer,
@@ -14,6 +14,8 @@ export function AccountShell({
   firstName,
   fullName,
   shopifyToken,
+  initialAddresses,
+  initialDefaultAddressId,
 }: {
   customer: ShopifyCustomer | null;
   orders: ShopifyOrder[];
@@ -21,6 +23,8 @@ export function AccountShell({
   firstName: string;
   fullName: string;
   shopifyToken: string | null;
+  initialAddresses: ShopifyAddress[];
+  initialDefaultAddressId: string | null;
 }) {
   const [menu, setMenu] = useState(false);
 
@@ -35,6 +39,8 @@ export function AccountShell({
         firstName={firstName}
         fullName={fullName}
         shopifyToken={shopifyToken}
+        initialAddresses={initialAddresses}
+        initialDefaultAddressId={initialDefaultAddressId}
       />
       <Footer />
     </>
