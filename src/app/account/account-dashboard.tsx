@@ -1,6 +1,5 @@
 "use client";
 
-import { signOut } from "next-auth/react";
 import type { ShopifyCustomer, ShopifyOrder } from "@/lib/shopify/customers";
 
 function fmt(amount: string, currency: string) {
@@ -40,31 +39,6 @@ export function AccountDashboard({
   return (
     <main className="acct-desktop">
       <div className="acct-window">
-
-        {/* Title bar */}
-        <div className="account-win95-bar">
-          <span className="account-win95-title">♛ Lil&apos;OG — Espace Cliente — {firstName}</span>
-          <div className="account-win95-chrome">
-            <span>_</span>
-            <span>□</span>
-            <a href="/" title="Retour à la boutique">×</a>
-          </div>
-        </div>
-
-        {/* Toolbar */}
-        <div className="acct-toolbar">
-          <a href="/" className="account-toolbar-btn">Boutique</a>
-          <a href="/account/orders" className="account-toolbar-btn">Commandes</a>
-          <a href="/wishlist" className="account-toolbar-btn">♥ Wishlist</a>
-          {shopifyToken && <a href="/account/edit" className="account-toolbar-btn">Modifier le profil</a>}
-          <div className="account-toolbar-sep" />
-          <button
-            className="account-toolbar-btn danger"
-            onClick={() => signOut({ callbackUrl: "/" })}
-          >
-            Déconnexion
-          </button>
-        </div>
 
         {/* Body */}
         <div className="acct-body">
