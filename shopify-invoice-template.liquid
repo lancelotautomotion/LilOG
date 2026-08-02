@@ -437,125 +437,92 @@
     border: 1px solid rgba(255,255,255,0.25);
   }
 
-  /* Écran CRT */
+  /* Écran léopard */
   .terminal-screen {
     margin: 6px;
     border-top:    2px solid var(--w95-dark);
     border-left:   2px solid var(--w95-dark);
     border-right:  2px solid #ffffff;
     border-bottom: 2px solid #ffffff;
-    background: #0d0009;
-    padding: 22px 28px 20px;
+    padding: 28px 32px 24px;
     position: relative;
     overflow: hidden;
     text-align: center;
+
+    /* Fond léopard CSS pur — taches sombres + halo brun sur base caramel */
+    background-color: #c4934a;
+    background-image:
+      radial-gradient(ellipse 10px 7px  at 20px 15px, #1c0b02 50%, transparent 65%),
+      radial-gradient(ellipse 19px 13px at 20px 15px, #7b3d10 50%, transparent 68%),
+      radial-gradient(ellipse  7px 10px at 48px  8px, #1c0b02 50%, transparent 65%),
+      radial-gradient(ellipse 13px 18px at 48px  8px, #7b3d10 50%, transparent 68%),
+      radial-gradient(ellipse  9px  6px at 68px 20px, #1c0b02 50%, transparent 65%),
+      radial-gradient(ellipse 16px 11px at 68px 20px, #7b3d10 50%, transparent 68%),
+      radial-gradient(ellipse  8px 11px at  7px 40px, #1c0b02 50%, transparent 65%),
+      radial-gradient(ellipse 14px 19px at  7px 40px, #7b3d10 50%, transparent 68%),
+      radial-gradient(ellipse 10px  7px at 33px 44px, #1c0b02 50%, transparent 65%),
+      radial-gradient(ellipse 18px 13px at 33px 44px, #7b3d10 50%, transparent 68%),
+      radial-gradient(ellipse  7px  9px at 57px 36px, #1c0b02 50%, transparent 65%),
+      radial-gradient(ellipse 13px 16px at 57px 36px, #7b3d10 50%, transparent 68%),
+      radial-gradient(ellipse  8px  6px at 79px 50px, #1c0b02 50%, transparent 65%),
+      radial-gradient(ellipse 15px 11px at 79px 50px, #7b3d10 50%, transparent 68%);
+    background-size: 84px 57px;
   }
 
-  /* Lignes de balayage CRT */
+  /* Overlay sombre pour lisibilité du texte */
   .terminal-screen::before {
     content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.18) 2px,
-      rgba(0,0,0,0.18) 4px
-    );
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.28);
     pointer-events: none;
-    z-index: 1;
   }
 
-  /* Vignette CRT */
-  .terminal-screen::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .terminal-content {
+  .leopard-content {
     position: relative;
     z-index: 2;
   }
 
-  .terminal-noise {
-    font-family: 'VT323', monospace;
-    font-size: 0.72rem;
-    color: #660033;
-    letter-spacing: 0.06em;
-    display: block;
-    opacity: 0.6;
-    margin-bottom: 8px;
+  .leopard-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.35);
+    margin: 14px 0;
   }
-  .terminal-status {
-    font-family: 'VT323', monospace;
-    font-size: 0.82rem;
-    color: #aaaaaa;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 4px;
-    opacity: 0.85;
-  }
-  .terminal-rule {
-    font-family: 'VT323', monospace;
-    font-size: 0.72rem;
-    color: #444444;
-    display: block;
-    letter-spacing: 0.04em;
-    margin: 6px 0;
-    opacity: 0.8;
-  }
-  .terminal-main {
-    font-family: 'VT323', monospace;
-    font-size: 2.2rem;
-    color: #ff0080;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    line-height: 1.1;
-    display: block;
-    margin: 10px 0 8px;
+
+  .leopard-main {
+    font-family: 'Grenze Gotisch', Georgia, serif;
+    font-size: 1.75rem;
+    font-weight: 500;
+    font-style: italic;
+    color: #ffffff;
+    line-height: 1.25;
+    margin: 0;
     text-shadow:
-      0 0 8px rgba(255,0,128,0.75),
-      0 0 22px rgba(255,0,128,0.35);
+      0 2px 6px rgba(0,0,0,0.85),
+      0 0 24px rgba(0,0,0,0.5);
   }
-  .terminal-info {
-    font-family: 'VT323', monospace;
-    font-size: 0.9rem;
-    color: #999999;
-    letter-spacing: 0.12em;
+
+  .leopard-info {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.82);
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     line-height: 2;
     display: block;
-    margin: 10px 0 6px;
+    margin: 16px 0 10px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.75);
   }
-  .terminal-tagline {
+
+  .leopard-tagline {
     display: inline-block;
-    margin-top: 10px;
     font-family: 'VT323', monospace;
     font-size: 1rem;
-    color: #c0c0c0;
-    letter-spacing: 0.24em;
+    color: var(--fuchsia);
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    text-shadow: 0 0 8px rgba(192,192,192,0.4);
-  }
-  .terminal-cursor {
-    display: inline-block;
-    width: 9px;
-    height: 15px;
-    background: #ff0080;
-    margin-left: 3px;
-    vertical-align: middle;
-    box-shadow: 0 0 6px rgba(255,0,128,0.9);
-    animation: cur-blink 1s step-end infinite;
-  }
-  @keyframes cur-blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
+    text-shadow:
+      0 0 10px rgba(224,0,110,0.75),
+      0 1px 4px rgba(0,0,0,0.7);
   }
 
   /* ============================================================
@@ -849,23 +816,14 @@
           </div>
         </div>
 
-        <!-- Écran CRT -->
+        <!-- Fond léopard -->
         <div class="terminal-screen">
-          <div class="terminal-content">
-            <span class="terminal-noise">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</span>
-            <span class="terminal-status">▶ TRANSACTION APPROUVÉE ✓</span>
-            <span class="terminal-rule">────────────────────────────────────────</span>
-
-            <span class="terminal-main">MERCI,<br>T'ES READY<br>TO SLAY !</span>
-
-            <span class="terminal-rule">────────────────────────────────────────</span>
-            <span class="terminal-info">
-              {{ shop.name }}<br>
-              lilog.shop@gmail.com<br>
-              lilog.shop
-            </span>
-            <span class="terminal-noise">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</span>
-            <span class="terminal-tagline">✦ PRE-LOVED Y2K — PARIS ✦<span class="terminal-cursor"></span></span>
+          <div class="leopard-content">
+            <hr class="leopard-divider">
+            <p class="leopard-main">Merci pour ton achat, le verdict est tombé : t'es une icône.</p>
+            <hr class="leopard-divider">
+            <span class="leopard-info">{{ shop.name }}<br>lilog.shop@gmail.com<br>lilog.shop</span>
+            <span class="leopard-tagline">✦ PRE-LOVED Y2K — PARIS ✦</span>
           </div>
         </div>
 
