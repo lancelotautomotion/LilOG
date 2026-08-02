@@ -21,7 +21,111 @@ const CUSTOMER_LOGIN = /* GraphQL */ `
 const CUSTOMER_QUERY = /* GraphQL */ `
   query customer($token: String!) {
     customer(customerAccessToken: $token) {
-      id email firstName lastName
+      id email firstName lastName phone
+    }
+  }
+`;
+
+const CUSTOMER_WITH_ORDERS_QUERY = /* GraphQL */ `
+  query CustomerWithOrders($token: String!) {
+    customer(customerAccessToken: $token) {
+      id email firstName lastName phone
+      orders(first: 5, sortKey: PROCESSED_AT, reverse: true) {
+        edges {
+          node {
+            id
+            name
+            orderNumber
+            processedAt
+            fulfillmentStatus
+            financialStatus
+            currentTotalPrice { amount currencyCode }
+            lineItems(first: 3) {
+              edges {
+                node {
+                  title
+                  quantity
+                  variant { image { url altText } price { amount currencyCode } }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const CUSTOMER_ORDERS_QUERY = /* GraphQL */ `
+  query CustomerOrders($token: String!, $cursor: String) {
+    customer(customerAccessToken: $token) {
+      orders(first: 20, after: $cursor, sortKey: PROCESSED_AT, reverse: true) {
+        edges {
+          node {
+            id
+            name
+            orderNumber
+            processedAt
+            fulfillmentStatus
+            financialStatus
+            currentTotalPrice { amount currencyCode }
+            lineItems(first: 3) {
+              edges {
+                node {
+                  title
+                  quantity
+                  variant { image { url altText } }
+                }
+              }
+            }
+          }
+        }
+        pageInfo { hasNextPage endCursor }
+      }
+    }
+  }
+`;
+
+const CUSTOMER_ORDER_QUERY = /* GraphQL */ `
+  query CustomerOrder($token: String!, $id: ID!) {
+    customer(customerAccessToken: $token) {
+      order(id: $id) {
+        id
+        name
+        orderNumber
+        processedAt
+        fulfillmentStatus
+        financialStatus
+        currentTotalPrice { amount currencyCode }
+        subtotalPrice { amount currencyCode }
+        totalShippingPrice { amount currencyCode }
+        shippingAddress {
+          firstName lastName address1 address2 city province zip country
+        }
+        lineItems(first: 50) {
+          edges {
+            node {
+              title
+              quantity
+              variant {
+                title
+                price { amount currencyCode }
+                image { url altText }
+              }
+              originalTotalPrice { amount currencyCode }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const CUSTOMER_UPDATE = /* GraphQL */ `
+  mutation customerUpdate($token: String!, $customer: CustomerUpdateInput!) {
+    customerUpdate(customerAccessToken: $token, customer: $customer) {
+      customer { id email firstName lastName phone }
+      customerUserErrors { code field message }
     }
   }
 `;
@@ -31,6 +135,36 @@ export interface ShopifyCustomer {
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string;
+}
+
+export interface ShopifyLineItem {
+  title: string;
+  quantity: number;
+  variant: {
+    title?: string;
+    price?: { amount: string; currencyCode: string };
+    image?: { url: string; altText: string | null } | null;
+  } | null;
+  originalTotalPrice?: { amount: string; currencyCode: string };
+}
+
+export interface ShopifyOrder {
+  id: string;
+  name: string;
+  orderNumber: number;
+  processedAt: string;
+  fulfillmentStatus: string;
+  financialStatus: string;
+  currentTotalPrice: { amount: string; currencyCode: string };
+  subtotalPrice?: { amount: string; currencyCode: string };
+  totalShippingPrice?: { amount: string; currencyCode: string };
+  shippingAddress?: {
+    firstName: string; lastName: string;
+    address1: string; address2?: string;
+    city: string; province?: string; zip: string; country: string;
+  } | null;
+  lineItems: { edges: { node: ShopifyLineItem }[] };
 }
 
 export async function shopifyCustomerCreate(
@@ -76,4 +210,70 @@ export async function shopifyGetCustomer(token: string): Promise<ShopifyCustomer
     { token },
   ).catch(() => null);
   return data?.customer ?? null;
+}
+
+export async function shopifyGetCustomerWithOrders(token: string): Promise<{
+  customer: ShopifyCustomer | null;
+  orders: ShopifyOrder[];
+}> {
+  const data = await shopifyFetch<{
+    customer: (ShopifyCustomer & {
+      orders: { edges: { node: ShopifyOrder }[] };
+    }) | null;
+  }>(CUSTOMER_WITH_ORDERS_QUERY, { token }).catch(() => null);
+
+  if (!data?.customer) return { customer: null, orders: [] };
+  const { orders, ...customer } = data.customer;
+  return {
+    customer,
+    orders: orders.edges.map((e) => e.node),
+  };
+}
+
+export async function shopifyGetCustomerOrders(
+  token: string,
+  cursor?: string,
+): Promise<{ orders: ShopifyOrder[]; hasNextPage: boolean; endCursor: string | null }> {
+  const data = await shopifyFetch<{
+    customer: {
+      orders: {
+        edges: { node: ShopifyOrder }[];
+        pageInfo: { hasNextPage: boolean; endCursor: string | null };
+      };
+    } | null;
+  }>(CUSTOMER_ORDERS_QUERY, { token, cursor: cursor ?? null }).catch(() => null);
+
+  if (!data?.customer) return { orders: [], hasNextPage: false, endCursor: null };
+  return {
+    orders: data.customer.orders.edges.map((e) => e.node),
+    hasNextPage: data.customer.orders.pageInfo.hasNextPage,
+    endCursor: data.customer.orders.pageInfo.endCursor,
+  };
+}
+
+export async function shopifyGetCustomerOrder(
+  token: string,
+  orderId: string,
+): Promise<ShopifyOrder | null> {
+  const data = await shopifyFetch<{
+    customer: { order: ShopifyOrder | null } | null;
+  }>(CUSTOMER_ORDER_QUERY, { token, id: orderId }).catch(() => null);
+  return data?.customer?.order ?? null;
+}
+
+export async function shopifyUpdateCustomer(
+  token: string,
+  input: { firstName?: string; lastName?: string; email?: string; phone?: string; password?: string },
+): Promise<{ customer: ShopifyCustomer | null; error: string | null }> {
+  const data = await shopifyFetch<{
+    customerUpdate: {
+      customer: ShopifyCustomer | null;
+      customerUserErrors: { message: string }[];
+    };
+  }>(CUSTOMER_UPDATE, { token, customer: input }).catch(() => null);
+
+  if (!data) return { customer: null, error: "Erreur réseau" };
+  const errs = data.customerUpdate.customerUserErrors;
+  if (errs.length > 0) return { customer: null, error: errs[0].message };
+  return { customer: data.customerUpdate.customer, error: null };
 }
