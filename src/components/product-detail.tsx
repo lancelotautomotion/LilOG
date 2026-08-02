@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n-context";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/hooks/use-wishlist";
 import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
@@ -53,7 +54,8 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
   const router = useRouter();
   const [menu, setMenu] = useState(false);
   const [added, setAdded] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const { has, toggle } = useWishlist();
+  const liked = has(product.handle);
 
   const hasVariants = product.variants.length > 0;
   const [variant, setVariant] = useState(() => product.variants.find((v) => v.availableForSale) ?? product.variants[0]);
@@ -130,7 +132,11 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                     {sold ? t.pdp.soldOut : added ? t.pdp.added : t.pdp.addToCart}
                   </span>
                 </button>
-                <button className={"pdp-like" + (liked ? " on" : "")} onClick={() => setLiked((l) => !l)} aria-label="Ajouter aux favoris">
+                <button
+                  className={"pdp-like" + (liked ? " on" : "")}
+                  onClick={() => toggle({ handle: product.handle, title: product.name, price: product.price, image: product.images[0] })}
+                  aria-label="Ajouter aux favoris"
+                >
                   <svg viewBox="0 0 24 24" width="22" height="22" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                   </svg>
