@@ -2840,12 +2840,13 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: clamp(24px, 4vw, 52px) clamp(10px, 2vw, 32px) 48px;
+  padding: 16px;
 }
 
 .acct-window {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1400px;
+  min-height: calc(100dvh - 32px);
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
   border-radius: var(--ldl-radius);
@@ -3120,8 +3121,8 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 760px) {
   .acct-body { grid-template-columns: 1fr; }
-  .acct-desktop { padding: 8px 6px 36px; }
-  .acct-window { box-shadow: var(--ldl-shadow); }
+  .acct-desktop { padding: 0; }
+  .acct-window { border-radius: 0; border-left: none; border-right: none; box-shadow: none; min-height: 100dvh; }
 }
 
 /* ── Contact page ───────────────────────────────────────────────────────── */
