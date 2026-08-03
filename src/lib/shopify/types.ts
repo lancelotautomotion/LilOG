@@ -124,6 +124,7 @@ export interface ShopifyCartNode {
   id: string;
   checkoutUrl: string;
   totalQuantity: number;
+  buyerIdentity?: { email: string | null; customer: { id: string } | null };
   cost: { subtotalAmount: ShopifyMoney };
   lines: { edges: { node: ShopifyCartLineNode }[] };
 }
@@ -142,6 +143,9 @@ export interface CartLinesUpdateResponse {
 }
 export interface CartLinesRemoveResponse {
   cartLinesRemove: { cart: ShopifyCartNode | null; userErrors: { message: string }[] };
+}
+export interface CartBuyerIdentityUpdateResponse {
+  cartBuyerIdentityUpdate: { cart: ShopifyCartNode | null; userErrors: { message: string }[] };
 }
 
 export interface CartLine {

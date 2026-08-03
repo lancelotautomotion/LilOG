@@ -1,5 +1,6 @@
 import { shopifyFetch } from "./client";
 import {
+  CART_BUYER_IDENTITY_UPDATE_MUTATION,
   CART_CREATE_MUTATION,
   CART_LINES_ADD_MUTATION,
   CART_LINES_REMOVE_MUTATION,
@@ -8,6 +9,7 @@ import {
 } from "./queries";
 import type {
   Cart,
+  CartBuyerIdentityUpdateResponse,
   CartCreateResponse,
   CartLinesAddResponse,
   CartLinesRemoveResponse,
@@ -16,7 +18,7 @@ import type {
   ShopifyCartNode,
 } from "./types";
 
-function mapCart(node: ShopifyCartNode): Cart {
+export function mapCart(node: ShopifyCartNode): Cart {
   return {
     id: node.id,
     checkoutUrl: node.checkoutUrl,
@@ -37,19 +39,44 @@ function mapCart(node: ShopifyCartNode): Cart {
   };
 }
 
-export async function getCart(cartId: string): Promise<Cart | null> {
+export async function getCartNode(cartId: string): Promise<ShopifyCartNode | null> {
   const data = await shopifyFetch<CartResponse>(GET_CART_QUERY, { cartId }, 0);
-  return data.cart ? mapCart(data.cart) : null;
+  return data.cart;
 }
 
-export async function createCart(variantId: string, quantity = 1): Promise<Cart> {
+export async function getCart(cartId: string): Promise<Cart | null> {
+  const node = await getCartNode(cartId);
+  return node ? mapCart(node) : null;
+}
+
+export async function createCart(
+  variantId: string,
+  quantity = 1,
+  customerAccessToken?: string | null,
+): Promise<Cart> {
   const data = await shopifyFetch<CartCreateResponse>(
     CART_CREATE_MUTATION,
-    { lines: [{ merchandiseId: variantId, quantity }] },
+    {
+      lines: [{ merchandiseId: variantId, quantity }],
+      ...(customerAccessToken && { buyerIdentity: { customerAccessToken } }),
+    },
     0,
   );
   const { cart, userErrors } = data.cartCreate;
   if (!cart) throw new Error(userErrors[0]?.message ?? "Failed to create cart");
+  return mapCart(cart);
+}
+
+/* Associe le panier au client Shopify connecté — condition pour que la
+   commande finale apparaisse dans son historique de commandes. */
+export async function cartBuyerIdentityUpdate(cartId: string, customerAccessToken: string): Promise<Cart> {
+  const data = await shopifyFetch<CartBuyerIdentityUpdateResponse>(
+    CART_BUYER_IDENTITY_UPDATE_MUTATION,
+    { cartId, buyerIdentity: { customerAccessToken } },
+    0,
+  );
+  const { cart, userErrors } = data.cartBuyerIdentityUpdate;
+  if (!cart) throw new Error(userErrors[0]?.message ?? "Failed to link cart to customer");
   return mapCart(cart);
 }
 
