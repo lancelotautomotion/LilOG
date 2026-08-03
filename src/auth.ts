@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { shopifyCustomerLogin, shopifyGetCustomer } from "@/lib/shopify/customers";
+import { getOrCreateShopifyTokenForEmail } from "@/lib/shopify/shadow-account";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -35,13 +36,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, profile }) {
       if (user) {
         token.shopifyToken = (user as { shopifyToken?: string }).shopifyToken ?? null;
       }
-      // Google sign-in: no Shopify token (account is linked by email)
-      if (account?.provider === "google") {
-        token.shopifyToken = null;
+      // Google sign-in: relie (ou crée) un compte Shopify miroir pour que
+      // le panier et l'historique de commandes fonctionnent comme pour un
+      // compte email/mot de passe.
+      if (account?.provider === "google" && token.email) {
+        const g = profile as { given_name?: string; family_name?: string } | undefined;
+        const displayName = (token.name as string) ?? "";
+        token.shopifyToken = await getOrCreateShopifyTokenForEmail(
+          token.email,
+          g?.given_name || displayName.split(" ")[0] || "Cliente",
+          g?.family_name || displayName.split(" ").slice(1).join(" ") || "",
+        ).catch(() => null);
       }
       return token;
     },
