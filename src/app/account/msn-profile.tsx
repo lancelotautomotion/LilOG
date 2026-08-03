@@ -141,8 +141,8 @@ export function MsnProfile({
                 <Image
                   src={avatar}
                   alt="Photo de profil"
-                  width={112}
-                  height={112}
+                  width={144}
+                  height={172}
                   className="msn-avatar-img"
                   unoptimized
                 />
@@ -188,12 +188,6 @@ export function MsnProfile({
               <span className="account-field-label">Email</span>
               <div className="account-field-value">{email}</div>
             </div>
-            {!shopifyToken && (
-              <div className="account-field">
-                <span className="account-field-label">Compte</span>
-                <div className="account-field-value msn-field-muted">Google OAuth</div>
-              </div>
-            )}
           </div>
 
           {shopifyToken && (
