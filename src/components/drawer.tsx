@@ -5,6 +5,22 @@ import { useLanguage } from "@/lib/i18n-context";
 import { Icon } from "@/components/icons";
 import { CATEGORIES } from "@/lib/categories";
 
+// Wording Y2K / file-explorer — propre au menu latéral, ne remplace pas les
+// traductions partagées (t.cat) utilisées ailleurs (lookbook, pages catégorie).
+const DRAWER_LABELS: Record<string, string> = {
+  tops: "01. TOPS & BABY TEES",
+  outerwear: "02. OUTERWEAR / COATS",
+  dresses: "03. SLIP DRESSES & CO",
+  skirts: "04. MICRO & MINI SKIRTS",
+  shorts: "05. HOT PANTS & SHORTS",
+  trousers: "06. LOW-RISE & BOTTOMS",
+  swimwear: "07. SWIMWEAR / BIKINIS",
+  jeans: "08. DENIM & FLARES",
+  bags: "09. IT-BAGS & PURSES",
+  shoes: "10. CHUNKY KICKS & HEELS",
+  accessories: "11. BLING & ACCESSOIRES",
+};
+
 const LINKS = CATEGORIES.map((c) => ({
   key: c.catKey,
   href: `/category/${c.handle}`,
@@ -43,8 +59,9 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
         <div className="drawer-w95-bar">
           <span className="drawer-w95-title">{t.menu.title}</span>
           <div className="drawer-w95-dots">
-            <span /><span />
-            <button className="drawer-w95-close" onClick={onClose} aria-label={t.menu.close}>✕</button>
+            <span>_</span>
+            <span>□</span>
+            <button className="drawer-w95-close" onClick={onClose} aria-label={t.menu.close}>×</button>
           </div>
         </div>
         <nav className="drawer-nav">
@@ -53,7 +70,10 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               {l.sub ? (
                 <>
                   <div className="drawer-parent">
-                    <a href={l.href} onClick={onClose} className="drawer-parent-link">{t.cat[l.key]}</a>
+                    <a href={l.href} onClick={onClose} className="drawer-parent-link">
+                      <span className="drawer-folder-icon" aria-hidden="true">📁</span>
+                      {DRAWER_LABELS[l.key] ?? t.cat[l.key]}
+                    </a>
                     <button
                       className="drawer-parent-toggle"
                       aria-expanded={expanded === i}
@@ -91,7 +111,8 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
                 </>
               ) : (
                 <a className="drawer-link" href={l.href} onClick={onClose}>
-                  {t.cat[l.key]}
+                  <span className="drawer-folder-icon" aria-hidden="true">📁</span>
+                  {DRAWER_LABELS[l.key] ?? t.cat[l.key]}
                 </a>
               )}
             </div>
