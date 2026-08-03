@@ -127,8 +127,10 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               )}
             </div>
           ))}
-          <div className="drawer-item">
-            <a className="drawer-link" href="/contact" onClick={onClose}>Contact</a>
+          <div className="drawer-item drawer-item-contact">
+            <a className="drawer-link drawer-link-contact" href="/contact" onClick={onClose}>
+              <span aria-hidden="true">📞</span> Contact
+            </a>
           </div>
         </nav>
       </aside>
