@@ -302,136 +302,126 @@ a { color: inherit; text-decoration: none; }
 }
 .drawer-scrim.open { opacity: 1; pointer-events: auto; }
 
-/* ── Drawer panel: Win95 window ── */
+/* ── Drawer panel: fenêtre Win95 épurée, fond blanc pur ── */
 .drawer {
   position: fixed;
   top: 0; left: 0; bottom: 0;
   width: min(440px, 88vw);
-  background: #c0c0c0;
-  color: #000;
+  background: #fff;
+  color: var(--ldl-text);
   z-index: var(--z-drawer);
   transform: translateX(-102%);
   transition: transform 0.45s cubic-bezier(.76,0,.24,1);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  /* Win95 right-side bevel */
-  border-right: 3px solid #444;
-  box-shadow: 4px 0 0 #000;
+  border-right: 1px solid var(--ldl-border);
+  box-shadow: var(--ldl-shadow-window);
 }
 .drawer.open { transform: translateX(0); }
 
-/* Win95 title bar */
+/* Title bar — dégradé bleu marine → violet, titre en Grenze Gotisch */
 .drawer-w95-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #000080, #1084d0);
-  padding: 5px 8px;
-  gap: 8px;
+  background: linear-gradient(90deg, #061987 0%, #1D35D9 70%, #6852F6 100%);
+  padding: 10px 12px;
+  gap: 10px;
   flex-shrink: 0;
   position: sticky;
   top: 0;
   z-index: 2;
 }
 .drawer-w95-title {
-  font-family: var(--mono);
-  font-size: 0.72rem;
+  font-family: var(--gothic);
+  font-size: 1.15rem;
+  font-weight: 700;
   color: #fff;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   flex: 1;
 }
 .drawer-w95-dots {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 5px;
 }
-.drawer-w95-dots span {
-  width: 14px; height: 12px;
-  background: #c0c0c0;
-  border-top: 1.5px solid #fff;
-  border-left: 1.5px solid #fff;
-  border-right: 1.5px solid #444;
-  border-bottom: 1.5px solid #444;
-  display: block;
-}
+.drawer-w95-dots span,
 .drawer-w95-close {
-  background: #c0c0c0;
-  border-top: 1.5px solid #fff;
-  border-left: 1.5px solid #fff;
-  border-right: 1.5px solid #444;
-  border-bottom: 1.5px solid #444;
-  color: #000;
+  width: 26px; height: 18px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.92);
   font-family: var(--mono);
-  font-size: 0.65rem;
-  width: 16px; height: 14px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  padding: 0;
   line-height: 1;
+  padding: 0;
+  cursor: default;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 1px 2px rgba(0,0,0,0.18);
 }
-.drawer-w95-close:active {
-  border-top: 1.5px solid #444;
-  border-left: 1.5px solid #444;
-  border-right: 1.5px solid #fff;
-  border-bottom: 1.5px solid #fff;
-}
+.drawer-w95-close { cursor: pointer; transition: background 120ms; }
+.drawer-w95-close:hover { background: rgba(255,255,255,0.22); }
 
-/* Nav content */
+/* Nav content — liste type explorateur de fichiers */
 .drawer-nav {
-  padding: clamp(16px, 3vw, 28px) clamp(20px, 3vw, 36px);
+  padding: 6px 0 16px;
   display: flex;
   flex-direction: column;
   gap: 0;
   flex: 1;
+  background: #fff;
 }
 .drawer-item {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid #999;
 }
-.drawer-item:last-child { border-bottom: none; }
 
-/* Main nav links — keep the gothic serif font */
+/* Liens principaux — monospace, alignés à gauche, surlignage plein-largeur au survol */
 .drawer-link, .drawer-parent {
-  font-family: var(--serif);
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
-  font-weight: 500;
-  line-height: 1.1;
-  color: #000;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+  color: var(--ldl-text);
   background: none;
   border: none;
-  padding: 10px 0;
+  padding: 13px 22px;
   text-align: left;
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: color 0.2s, background 0.2s;
+  transition: background 0.15s, color 0.15s;
   cursor: pointer;
+  text-transform: uppercase;
 }
-.drawer-link:hover, .drawer-parent:hover {
-  color: #d4006e;
-  background: rgba(212,0,110,0.06);
-  padding-left: 10px;
+.drawer-link:hover,
+.drawer-parent:hover {
+  background: #1D35D9;
+  color: #fff;
 }
 .drawer-parent { width: 100%; }
 .drawer-link { width: 100%; }
 
-/* Category label: link that navigates to "tout voir" */
+.drawer-folder-icon { flex-shrink: 0; }
+
+/* Nom de catégorie : lien qui navigue vers "tout voir" */
 .drawer-parent-link {
-  font-family: var(--serif);
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
-  font-weight: 500;
-  line-height: 1.1;
+  font: inherit;
   color: inherit;
   text-decoration: none;
   flex: 1;
-  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.drawer-parent-link:hover { color: #d4006e; }
 
-/* Chevron-only toggle button */
+/* Bouton chevron (déplie/replie le sous-menu) */
 .drawer-parent-toggle {
   background: none;
   border: none;
@@ -439,22 +429,22 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
   display: flex;
   align-items: center;
-  color: #d4006e;
+  color: var(--ldl-muted);
   flex-shrink: 0;
 }
+.drawer-parent:hover .drawer-parent-toggle { color: #fff; }
 
-/* Fuchsia caret */
 .drawer-parent .caret {
-  width: 18px; height: 18px;
+  width: 16px; height: 16px;
   flex-shrink: 0;
-  color: #d4006e;
+  color: inherit;
   transition: transform 0.3s cubic-bezier(.76,0,.24,1);
   margin-left: auto;
 }
-.drawer-item.open .drawer-parent { color: #d4006e; }
+.drawer-item.open .drawer-parent:not(:hover) { color: var(--ldl-primary); }
 .drawer-item.open .caret { transform: rotate(180deg); }
 
-/* Submenu panel: Win95 sunken inset */
+/* Sous-menu — panneau plat, fond blanc/gris très clair, plus de bevel Win95 */
 .drawer-sub {
   overflow: hidden;
   max-height: 0;
@@ -464,51 +454,50 @@ a { color: inherit; text-decoration: none; }
 .drawer-sub-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2px 20px;
-  padding: 10px 10px 14px 12px;
-  background: #d8d8d8;
-  border-top: 2px solid #444;
-  border-left: 2px solid #444;
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-  margin: 0 0 8px;
+  gap: 2px 8px;
+  padding: 4px 22px 14px 48px;
+  background: var(--ldl-bg);
 }
 .drawer-sub-inner a {
   font-family: var(--mono);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.68rem;
-  color: #222;
-  padding: 5px 4px;
-  transition: color 0.2s, background 0.15s;
+  letter-spacing: 0.03em;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--ldl-muted);
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
   display: block;
 }
-.drawer-sub-inner a:hover { color: #d4006e; background: rgba(212,0,110,0.08); }
+.drawer-sub-inner a:hover { color: #fff; background: #1D35D9; }
 
-/* 3rd level sub-sub */
+/* 3ᵉ niveau (ex. Bijoux) */
 .drawer-subsub-toggle {
   display: flex; align-items: center; gap: 6px; width: 100%;
   background: none; border: none; cursor: pointer; text-align: left;
-  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em;
-  font-size: 0.68rem; color: #222; padding: 5px 4px;
-  transition: color 0.2s;
+  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700;
+  font-size: 0.66rem; color: var(--ldl-muted); padding: 6px 8px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
 }
-.drawer-subsub-toggle:hover { color: #d4006e; }
-.drawer-subsub-toggle .caret-sm { width: 9px; height: 9px; transition: transform 0.3s; color: #d4006e; }
+.drawer-subsub-toggle:hover { color: #fff; background: #1D35D9; }
+.drawer-subsub-toggle .caret-sm { width: 9px; height: 9px; transition: transform 0.3s; color: inherit; }
 .drawer-subsub-wrap.open .drawer-subsub-toggle .caret-sm { transform: rotate(180deg); }
 .drawer-subsub {
   overflow: hidden; max-height: 0;
   transition: max-height 0.35s cubic-bezier(.76,0,.24,1);
-  display: flex; flex-direction: column; padding-left: 12px;
+  display: flex; flex-direction: column; padding-left: 8px;
 }
 .drawer-subsub-wrap.open .drawer-subsub { max-height: 400px; }
 .drawer-subsub a {
-  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em;
-  font-size: 0.64rem; color: #444; padding: 4px 0;
-  transition: color 0.2s;
+  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700;
+  font-size: 0.62rem; color: var(--ldl-muted); padding: 5px 8px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
 }
-.drawer-subsub a:hover { color: #d4006e; }
-.drawer-subsub-all { color: #888 !important; }
+.drawer-subsub a:hover { color: #fff; background: #1D35D9; }
+.drawer-subsub-all { color: var(--ldl-muted) !important; }
 
 /* Footer links */
 .drawer-foot {
