@@ -2505,7 +2505,7 @@ a { color: inherit; text-decoration: none; }
 
 /* Title bar */
 .account-win95-bar {
-  background: var(--ldl-titlebar);
+  background: linear-gradient(90deg, #1B48CE 0%, #7147D4 100%);
   padding: 8px 14px;
   display: flex;
   align-items: center;
@@ -2614,18 +2614,19 @@ a { color: inherit; text-decoration: none; }
 .account-panel {
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
-  border-radius: 0;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: var(--ldl-shadow);
 }
 .account-panel-bar {
-  background: var(--ldl-titlebar);
+  background: linear-gradient(90deg, #1B48CE 0%, #7147D4 100%);
   padding: 7px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   flex-shrink: 0;
 }
 .account-panel-title {
@@ -2635,6 +2636,7 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-weight: 700;
+  flex: 1;
 }
 .account-panel-body {
   padding: 12px;
@@ -2711,12 +2713,13 @@ a { color: inherit; text-decoration: none; }
 .account-btn.danger { color: #c00; border-color: rgba(204,0,0,0.25); }
 .account-btn.danger:hover { background: #fff0f0; border-color: #c00; }
 .account-btn.primary {
-  background: var(--ldl-btn);
+  background: linear-gradient(135deg, #1B48CE 0%, #8B5CF6 100%);
   color: #fff;
   border-color: transparent;
+  gap: 7px;
 }
 .account-btn.primary:hover {
-  filter: brightness(1.08);
+  filter: brightness(1.1);
   transform: translateY(-1px);
   border-color: transparent;
 }
@@ -2871,22 +2874,55 @@ a { color: inherit; text-decoration: none; }
   min-height: calc(100dvh - 32px);
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
-  border-radius: var(--ldl-radius);
+  border-radius: 12px;
   box-shadow: var(--ldl-shadow-window);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
+/* Sub-panel chrome buttons */
+.acct-panel-chrome { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
+.acct-panel-chrome span,
+.acct-panel-chrome a {
+  width: 22px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--mono);
+  font-weight: 400;
+  cursor: default;
+  text-decoration: none;
+  line-height: 1;
+  user-select: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 1px 2px rgba(0,0,0,0.18);
+}
+.acct-panel-chrome a { cursor: pointer; }
+.acct-panel-chrome a:hover { background: rgba(255,255,255,0.22); }
+
 /* Toolbar row */
 .acct-toolbar {
   background: var(--ldl-surface);
   border-bottom: 1px solid var(--ldl-border);
-  padding: 6px 12px;
+  padding: 5px 10px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   flex-wrap: wrap;
+}
+.acct-toolbar .account-toolbar-btn {
+  border-radius: 5px;
+  padding: 5px 14px;
+}
+.acct-toolbar .account-toolbar-btn:hover {
+  background: var(--ldl-bg);
+  border-color: var(--ldl-border);
 }
 
 /* Tab bar */

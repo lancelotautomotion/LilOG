@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { signOut } from "next-auth/react";
-import { useWishlist } from "@/hooks/use-wishlist";
-import type { ShopifyCustomer, ShopifyOrder } from "@/lib/shopify/customers";
+import type { ShopifyCustomer, ShopifyOrder, ShopifyAddress, AddressInput } from "@/lib/shopify/customers";
+import { actionCreateAddress, actionUpdateAddress, actionDeleteAddress, actionSetDefaultAddress } from "./address-actions";
 
 function fmt(amount: string, currency: string) {
   return new Intl.NumberFormat("fr-FR", { style: "currency", currency }).format(Number(amount));
@@ -24,7 +24,37 @@ function statusInfo(s: string) {
   return STATUS_MAP[s.toUpperCase()] ?? { label: s, icon: "·", cls: "" };
 }
 
-type Tab = "dashboard" | "wishlist";
+const COUNTRIES = [
+  { label: "France",       value: "France" },
+  { label: "Belgique",     value: "Belgium" },
+  { label: "Suisse",       value: "Switzerland" },
+  { label: "Luxembourg",   value: "Luxembourg" },
+  { label: "Monaco",       value: "Monaco" },
+  { label: "Allemagne",    value: "Germany" },
+  { label: "Italie",       value: "Italy" },
+  { label: "Espagne",      value: "Spain" },
+  { label: "Portugal",     value: "Portugal" },
+  { label: "Pays-Bas",     value: "Netherlands" },
+  { label: "Royaume-Uni",  value: "United Kingdom" },
+  { label: "Canada",       value: "Canada" },
+  { label: "États-Unis",   value: "United States" },
+];
+
+const EMPTY_ADDR: AddressInput = {
+  firstName: "", lastName: "", address1: "", address2: "",
+  city: "", province: "", zip: "", country: "France", phone: "",
+};
+
+/* Decorative chrome buttons for sub-panels */
+function PanelChrome() {
+  return (
+    <div className="acct-panel-chrome">
+      <span>_</span>
+      <span>□</span>
+      <span>×</span>
+    </div>
+  );
+}
 
 export function AccountDashboard({
   customer,
@@ -33,6 +63,8 @@ export function AccountDashboard({
   firstName,
   fullName,
   shopifyToken,
+  initialAddresses,
+  initialDefaultAddressId,
 }: {
   customer: ShopifyCustomer | null;
   orders: ShopifyOrder[];
@@ -40,17 +72,96 @@ export function AccountDashboard({
   firstName: string;
   fullName: string;
   shopifyToken: string | null;
+  initialAddresses: ShopifyAddress[];
+  initialDefaultAddressId: string | null;
 }) {
-  const [tab, setTab] = useState<Tab>("dashboard");
-  const { items: wishlist, remove, ready } = useWishlist();
+  const [rightTab, setRightTab]           = useState<"orders" | "addresses">("orders");
+  const [addresses, setAddresses]         = useState<ShopifyAddress[]>(initialAddresses);
+  const [defaultAddrId, setDefaultAddrId] = useState<string | null>(initialDefaultAddressId);
+  const [editingId, setEditingId]         = useState<string | null>(null);
+  const [formData, setFormData]           = useState<AddressInput>(EMPTY_ADDR);
+  const [formError, setFormError]         = useState<string | null>(null);
+  const [saving, setSaving]               = useState(false);
+
+  function openNew() {
+    setFormData(EMPTY_ADDR); setEditingId(null); setFormError(null);
+    setRightTab("addresses");
+  }
+  function openEdit(addr: ShopifyAddress) {
+    setFormData({
+      firstName: addr.firstName, lastName: addr.lastName,
+      address1: addr.address1,   address2: addr.address2 ?? "",
+      city: addr.city,           province: addr.province ?? "",
+      zip: addr.zip,             country: addr.country,
+      phone: addr.phone ?? "",
+    });
+    setEditingId(addr.id); setFormError(null); setRightTab("addresses");
+  }
+  function cancelForm() { setRightTab("orders"); setEditingId(null); setFormError(null); }
+
+  async function handleSave() {
+    setSaving(true); setFormError(null);
+    const input: AddressInput = {
+      firstName: formData.firstName, lastName: formData.lastName,
+      address1: formData.address1,   city: formData.city,
+      zip: formData.zip,             country: formData.country,
+      ...(formData.address2 && { address2: formData.address2 }),
+      ...(formData.province  && { province: formData.province }),
+      ...(formData.phone     && { phone:    formData.phone    }),
+    };
+    try {
+      if (editingId) {
+        const res = await actionUpdateAddress(editingId, input);
+        if (res.error) { setFormError(res.error); return; }
+        if (res.address) setAddresses(prev => prev.map(a => a.id === editingId ? res.address! : a));
+      } else {
+        const res = await actionCreateAddress(input);
+        if (res.error) { setFormError(res.error); return; }
+        if (res.address) {
+          const isFirst = addresses.length === 0;
+          setAddresses(prev => [...prev, res.address!]);
+          if (isFirst) setDefaultAddrId(res.address.id);
+        }
+      }
+      setRightTab("orders");
+    } finally { setSaving(false); }
+  }
+
+  async function handleDelete(id: string) {
+    const res = await actionDeleteAddress(id);
+    if (!res.error) {
+      setAddresses(prev => {
+        const next = prev.filter(a => a.id !== id);
+        if (defaultAddrId === id) setDefaultAddrId(next[0]?.id ?? null);
+        return next;
+      });
+    }
+  }
+  async function handleSetDefault(id: string) {
+    const res = await actionSetDefaultAddress(id);
+    if (!res.error) setDefaultAddrId(id);
+  }
+
+  function fld(key: keyof AddressInput, label: string) {
+    return (
+      <div className="acct-addr-form-group">
+        <label className="acct-addr-form-label">{label}</label>
+        <input
+          className="acct-addr-form-input"
+          value={(formData[key] as string) ?? ""}
+          onChange={e => setFormData(prev => ({ ...prev, [key]: e.target.value }))}
+        />
+      </div>
+    );
+  }
 
   return (
     <main className="acct-desktop">
       <div className="acct-window">
 
-        {/* Title bar */}
+        {/* ── Title bar ─────────────────────────────────────── */}
         <div className="account-win95-bar">
-          <span className="account-win95-title">♛ Lil&apos;OG — Espace Cliente — {firstName}</span>
+          <span className="account-win95-title">♛ Lil&apos;OG — Espace Client</span>
           <div className="account-win95-chrome">
             <span>_</span>
             <span>□</span>
@@ -58,37 +169,19 @@ export function AccountDashboard({
           </div>
         </div>
 
-        {/* Toolbar */}
+        {/* ── Toolbar ───────────────────────────────────────── */}
         <div className="acct-toolbar">
           <a href="/" className="account-toolbar-btn">Boutique</a>
           <a href="/account/orders" className="account-toolbar-btn">Commandes</a>
+          <a href="/wishlist" className="account-toolbar-btn">♥ Wishlist</a>
           {shopifyToken && <a href="/account/edit" className="account-toolbar-btn">Modifier le profil</a>}
           <div className="account-toolbar-sep" />
-          <button
-            className="account-toolbar-btn danger"
-            onClick={() => signOut({ callbackUrl: "/" })}
-          >
+          <button className="account-toolbar-btn danger" onClick={() => signOut({ callbackUrl: "/" })}>
             Déconnexion
           </button>
         </div>
 
-        {/* Tab bar */}
-        <div className="acct-tabbar">
-          <button
-            className={"acct-tab" + (tab === "dashboard" ? " active" : "")}
-            onClick={() => setTab("dashboard")}
-          >
-            Dashboard
-          </button>
-          <button
-            className={"acct-tab" + (tab === "wishlist" ? " active" : "")}
-            onClick={() => setTab("wishlist")}
-          >
-            ♥ Wishlist{ready && wishlist.length > 0 && ` (${wishlist.length})`}
-          </button>
-        </div>
-
-        {/* Body */}
+        {/* ── Body ──────────────────────────────────────────── */}
         <div className="acct-body">
 
           {/* Left column */}
@@ -98,6 +191,7 @@ export function AccountDashboard({
             <div className="account-panel">
               <div className="account-panel-bar">
                 <span className="account-panel-title">👤 Mon profil</span>
+                <PanelChrome />
               </div>
               <div className="account-panel-body">
                 {/* Avatar */}
@@ -127,13 +221,58 @@ export function AccountDashboard({
                 )}
                 {shopifyToken && (
                   <a href="/account/edit" className="account-btn primary" style={{ marginTop: "4px" }}>
-                    ✏️ Modifier le profil
+                    <span>✦</span> Modifier le profil
                   </a>
                 )}
               </div>
             </div>
 
-            {/* HEY BABE! */}
+            {/* Mes adresses */}
+            <div className="account-panel">
+              <div className="account-panel-bar">
+                <span className="account-panel-title">📍 Mes adresses</span>
+                {shopifyToken && (
+                  <button className="acct-addr-header-btn" onClick={openNew}>+ Ajouter</button>
+                )}
+                <PanelChrome />
+              </div>
+              {!shopifyToken ? (
+                <div className="acct-addr-upsell">
+                  <p className="acct-addr-upsell-text">
+                    Crée un compte Lil&apos;OG pour enregistrer tes adresses de livraison et accélérer tes prochaines commandes.
+                  </p>
+                  <a href="/login" className="account-btn primary"><span>✦</span> Créer un compte</a>
+                </div>
+              ) : (
+                <div className="acct-addr-list">
+                  {addresses.length === 0 ? (
+                    <p className="acct-addr-empty">Aucune adresse enregistrée.</p>
+                  ) : (
+                    addresses.map(addr => (
+                      <div key={addr.id} className={"acct-addr-item" + (addr.id === defaultAddrId ? " is-default" : "")}>
+                        <div>
+                          {addr.id === defaultAddrId && <div className="acct-addr-default-tag">✦ Par défaut</div>}
+                          <div className="acct-addr-text">
+                            {addr.firstName} {addr.lastName}<br />
+                            {addr.address1}{addr.address2 ? `, ${addr.address2}` : ""}<br />
+                            {addr.zip} {addr.city}, {addr.country}
+                          </div>
+                        </div>
+                        <div className="acct-addr-actions">
+                          <button className="acct-addr-action-btn" onClick={() => openEdit(addr)}>Modifier</button>
+                          {addr.id !== defaultAddrId && (
+                            <button className="acct-addr-action-btn" onClick={() => handleSetDefault(addr.id)}>Par défaut</button>
+                          )}
+                          <button className="acct-addr-action-btn danger" onClick={() => handleDelete(addr.id)}>Supprimer</button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Hey babe */}
             <div className="acct-hey-babe">
               <div className="acct-hey-babe-icon">💗</div>
               <div className="acct-hey-babe-body">
@@ -150,151 +289,129 @@ export function AccountDashboard({
           {/* Right column */}
           <div className="acct-col">
 
-            {tab === "dashboard" && (
-              <div className="account-panel" style={{ flex: 1 }}>
+            {shopifyToken ? (
+              <>
+                {/* Tab bar */}
+                <div className="acct-right-tabbar">
+                  <button
+                    className={"acct-right-tab" + (rightTab === "orders" ? " active" : "")}
+                    onClick={() => setRightTab("orders")}
+                  >
+                    📦 Commandes
+                  </button>
+                  <button
+                    className={"acct-right-tab" + (rightTab === "addresses" ? " active" : "")}
+                    onClick={() => rightTab === "addresses" ? undefined : openNew()}
+                  >
+                    📍 Adresses
+                  </button>
+                </div>
+
+                {/* Orders */}
+                {rightTab === "orders" && (
+                  <>
+                    <div className="account-panel-bar">
+                      <span className="account-panel-title">📦 Dernières commandes</span>
+                      {orders.length > 0 && (
+                        <a href="/account/orders" style={{ fontFamily: "var(--mono)", fontSize: "0.54rem", color: "#fff", opacity: 0.8, textDecoration: "underline", flexShrink: 0 }}>
+                          Voir tout
+                        </a>
+                      )}
+                      <PanelChrome />
+                    </div>
+                    <div className="account-panel-body" style={{ padding: "8px", flex: 1 }}>
+                      {orders.length === 0 ? (
+                        <div className="account-orders-empty">
+                          <p style={{ marginBottom: "16px" }}>Aucune commande pour le moment.<br />Découvre nos dernières pièces.</p>
+                          <a href="/#drops" className="account-btn primary"><span>✦</span> Voir le dernier drop</a>
+                        </div>
+                      ) : (
+                        <>
+                          <table className="acct-order-table">
+                            <thead>
+                              <tr><th>N° Commande</th><th>Date</th><th>Statut</th><th>Total</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                              {orders.map(order => {
+                                const st = statusInfo(order.fulfillmentStatus);
+                                return (
+                                  <tr key={order.id}>
+                                    <td><span style={{ fontFamily: "var(--mono)", fontWeight: 700, color: "#000080", fontSize: "0.66rem" }}>{order.name}</span></td>
+                                    <td style={{ color: "#555", fontSize: "0.62rem" }}>{fmtDate(order.processedAt)}</td>
+                                    <td><span className={`acct-badge acct-badge-${st.cls}`}>{st.icon} {st.label}</span></td>
+                                    <td style={{ fontWeight: 700, color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.68rem" }}>{fmt(order.currentTotalPrice.amount, order.currentTotalPrice.currencyCode)}</td>
+                                    <td><a href={`/account/orders/${encodeURIComponent(order.id)}`} className="acct-see-btn">Voir →</a></td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                          <div style={{ paddingTop: "10px", display: "flex", justifyContent: "center" }}>
+                            <a href="/account/orders" className="account-btn primary"><span>✦</span> Voir toutes mes commandes</a>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {/* Addresses form */}
+                {rightTab === "addresses" && (
+                  <>
+                    <div className="account-panel-bar">
+                      <span className="account-panel-title">📍 {editingId ? "Modifier l'adresse" : "Nouvelle adresse"}</span>
+                      <PanelChrome />
+                    </div>
+                    <div className="acct-addr-form">
+                      <div className="acct-addr-form-grid">{fld("firstName", "Prénom")}{fld("lastName", "Nom")}</div>
+                      {fld("address1", "Adresse")}
+                      {fld("address2", "Complément (optionnel)")}
+                      <div className="acct-addr-form-grid">{fld("city", "Ville")}{fld("zip", "Code postal")}</div>
+                      <div className="acct-addr-form-grid">
+                        <div className="acct-addr-form-group">
+                          <label className="acct-addr-form-label">Pays</label>
+                          <select className="acct-addr-form-select" value={formData.country} onChange={e => setFormData(prev => ({ ...prev, country: e.target.value }))}>
+                            {COUNTRIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                          </select>
+                        </div>
+                        {fld("phone", "Téléphone (optionnel)")}
+                      </div>
+                      {formError && <div className="acct-addr-form-error">{formError}</div>}
+                      <div className="acct-addr-form-actions">
+                        <button className="account-btn primary" onClick={handleSave} disabled={saving}>
+                          <span>✦</span> {saving ? "Enregistrement…" : editingId ? "Mettre à jour" : "Enregistrer"}
+                        </button>
+                        <button className="account-btn" onClick={cancelForm}>Annuler</button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              /* Google OAuth */
+              <>
                 <div className="account-panel-bar">
-                  <span className="account-panel-title">
-                    📦 Dernières commandes
-                  </span>
-                  {orders.length > 0 && (
-                    <a href="/account/orders" style={{ fontFamily: "var(--mono)", fontSize: "0.54rem", color: "#fff", opacity: 0.8, textDecoration: "underline" }}>
-                      Voir tout
-                    </a>
-                  )}
+                  <span className="account-panel-title">📦 Dernières commandes</span>
+                  <PanelChrome />
                 </div>
                 <div className="account-panel-body" style={{ padding: "8px", flex: 1 }}>
-                  {!shopifyToken ? (
-                    <p className="account-orders-empty">
-                      Connexion via Google détectée.<br />
-                      L&apos;historique des commandes est disponible<br />
-                      avec un compte Lil&apos;OG.
-                    </p>
-                  ) : orders.length === 0 ? (
-                    <p className="account-orders-empty">
-                      Aucune commande pour le moment.<br />
-                      <a href="/" style={{ color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.68rem" }}>
-                        Découvrir la boutique →
-                      </a>
-                    </p>
-                  ) : (
-                    <table className="acct-order-table">
-                      <thead>
-                        <tr>
-                          <th>N° Commande</th>
-                          <th>Date</th>
-                          <th>Statut</th>
-                          <th>Total</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orders.map((order) => {
-                          const st = statusInfo(order.fulfillmentStatus);
-                          return (
-                            <tr key={order.id}>
-                              <td>
-                                <span style={{ fontFamily: "var(--mono)", fontWeight: 700, color: "#000080", fontSize: "0.66rem" }}>
-                                  {order.name}
-                                </span>
-                              </td>
-                              <td style={{ color: "#555", fontSize: "0.62rem" }}>{fmtDate(order.processedAt)}</td>
-                              <td>
-                                <span className={`acct-badge acct-badge-${st.cls}`}>
-                                  {st.icon} {st.label}
-                                </span>
-                              </td>
-                              <td style={{ fontWeight: 700, color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.68rem" }}>
-                                {fmt(order.currentTotalPrice.amount, order.currentTotalPrice.currencyCode)}
-                              </td>
-                              <td>
-                                <a
-                                  href={`/account/orders/${encodeURIComponent(order.id)}`}
-                                  className="acct-see-btn"
-                                >
-                                  Voir →
-                                </a>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  )}
-                  {orders.length > 0 && (
-                    <div style={{ paddingTop: "10px", display: "flex", justifyContent: "center" }}>
-                      <a href="/account/orders" className="account-btn">
-                        📦 Voir toutes mes commandes →
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {tab === "wishlist" && (
-              <div className="account-panel" style={{ flex: 1 }}>
-                <div className="account-panel-bar">
-                  <span className="account-panel-title">♥ Ma wishlist</span>
-                </div>
-                {!ready || wishlist.length === 0 ? (
-                  <div className="account-orders-empty" style={{ padding: "40px 20px" }}>
-                    <div style={{ fontSize: "2rem", marginBottom: "10px" }}>💗</div>
-                    Aucune pièce dans ta wishlist.<br />
-                    <span style={{ color: "#d4006e" }}>
-                      Ajoute des pépites avec ♥ sur les fiches produit.
-                    </span>
+                  <div className="account-orders-empty">
+                    <p style={{ marginBottom: "16px" }}>Aucune commande pour le moment.<br />Le prochain coup de cœur t&apos;attend.</p>
+                    <a href="/#drops" className="account-btn primary"><span>✦</span> Voir le dernier drop</a>
                   </div>
-                ) : (
-                  <div className="acct-wishlist-grid">
-                    {wishlist.map((item) => (
-                      <div key={item.handle} className="acct-wishlist-card">
-                        {item.image ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={item.image}
-                            alt={item.title}
-                            className="acct-wishlist-img"
-                          />
-                        ) : (
-                          <div className="acct-wishlist-img-placeholder">🧥</div>
-                        )}
-                        <div className="acct-wishlist-info">
-                          <div className="acct-wishlist-name">{item.title}</div>
-                          <div className="acct-wishlist-price">{item.price} €</div>
-                          <div className="acct-wishlist-actions">
-                            <a
-                              href={`/products/${item.handle}`}
-                              className="acct-wishlist-view"
-                            >
-                              Voir →
-                            </a>
-                            <button
-                              className="acct-wishlist-remove"
-                              onClick={() => remove(item.handle)}
-                              title="Retirer de la wishlist"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+                </div>
+              </>
             )}
 
           </div>
         </div>
 
-        {/* Status bar */}
+        {/* ── Status bar ────────────────────────────────────── */}
         <div className="account-win95-statusbar">
-          <div className="account-status-cell">
-            <span className="account-status-pink">●</span> Connecté
-          </div>
+          <div className="account-status-cell"><span className="account-status-pink">●</span> Connecté</div>
           <div className="account-status-cell grow">{email}</div>
-          {ready && wishlist.length > 0 && (
-            <div className="account-status-cell">♥ {wishlist.length} wishlist</div>
+          {addresses.length > 0 && (
+            <div className="account-status-cell">📍 {addresses.length} adresse{addresses.length > 1 ? "s" : ""}</div>
           )}
           <div className="account-status-cell">♛ Lil&apos;OG © 2025</div>
         </div>
