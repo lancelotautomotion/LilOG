@@ -52,6 +52,25 @@ function stripEmoji(str: string): string {
   return str.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/u, "").trim();
 }
 
+// Ces pièces vintage sont uniques : la taille n'est pas toujours un vrai variant
+// Shopify ("Default Title" si le produit n'a qu'une option), donc on la déduit
+// aussi des options du produit — même heuristique utilisée sur la PDP et le panier.
+export function extractSizeValue(
+  options: ShopifyProductNode["options"] | undefined,
+  handle?: string,
+): string | null {
+  if (process.env.NODE_ENV !== "production" && handle) {
+    console.log("[size] options for", handle, JSON.stringify(options));
+  }
+  const sizeOption = options?.find((o) =>
+    /taille|size|pointure|dimension/i.test(o.name) ||
+    (!/cou?le?ur|colou?r|title/i.test(o.name) && (o.optionValues?.length ?? o.values?.length ?? 0) > 0)
+  );
+  if (sizeOption?.optionValues?.length) return sizeOption.optionValues.map((v) => v.name).join(", ");
+  if (sizeOption?.values?.length) return sizeOption.values.join(", ");
+  return null;
+}
+
 function mapProduct(node: ShopifyProductNode): Product {
   const price = Number(node.priceRange.minVariantPrice.amount);
   const compareAt = Number(node.compareAtPriceRange.minVariantPrice.amount);
@@ -132,18 +151,6 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
         availableForSale: e.node.availableForSale,
       }))
       .filter((v) => v.title !== "Default Title"),
-    size: (() => {
-      if (process.env.NODE_ENV !== "production") {
-        console.log("[size] options for", node.handle, JSON.stringify(node.options));
-      }
-      // Match any size-like option name; skip color and generic "Title"
-      const sizeOption = node.options?.find((o) =>
-        /taille|size|pointure|dimension/i.test(o.name) ||
-        (!/cou?le?ur|colou?r|title/i.test(o.name) && (o.optionValues?.length ?? o.values?.length ?? 0) > 0)
-      );
-      if (sizeOption?.optionValues?.length) return sizeOption.optionValues.map((v) => v.name).join(", ");
-      if (sizeOption?.values?.length) return sizeOption.values.join(", ");
-      return null;
-    })(),
+    size: extractSizeValue(node.options, node.handle),
   };
 }
