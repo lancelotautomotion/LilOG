@@ -192,24 +192,46 @@ export function MsnProfile({
             <div className="msn-modal-body">
               <p className="msn-modal-hint">Sélectionne ton icône MSN :</p>
               <div className="msn-avatar-grid">
-                {MSN_AVATARS.map(av => (
-                  <button
-                    key={av.name}
-                    className={"msn-avatar-option" + (avatar === av.src ? " selected" : "")}
-                    onClick={() => pickAvatar(av.src)}
-                    title={av.name}
-                  >
-                    <Image
-                      src={av.src}
-                      alt={av.name}
-                      width={80}
-                      height={80}
-                      className="msn-avatar-option-img"
-                      unoptimized
-                    />
-                    <span className="msn-avatar-option-name">{av.name}</span>
-                  </button>
-                ))}
+                {MSN_AVATARS.map(av => {
+                  const pathId = `arc-${av.name.replace(/\s+/g, "-")}`;
+                  const isSelected = avatar === av.src;
+                  return (
+                    <button
+                      key={av.name}
+                      className={"msn-avatar-option" + (isSelected ? " selected" : "")}
+                      onClick={() => pickAvatar(av.src)}
+                      title={av.name}
+                    >
+                      <div className="msn-avatar-circle">
+                        <Image
+                          src={av.src}
+                          alt={av.name}
+                          width={80}
+                          height={80}
+                          className="msn-avatar-option-img"
+                          unoptimized
+                        />
+                      </div>
+                      {/* Nom courbé le long de l'arc inférieur */}
+                      <svg
+                        viewBox="0 0 100 28"
+                        width="100"
+                        height="28"
+                        className="msn-curved-label"
+                        aria-hidden="true"
+                      >
+                        <defs>
+                          <path id={pathId} d="M 8,24 A 44,44 0 0 1 92,24" />
+                        </defs>
+                        <text fontSize="8.5" fill="currentColor" fontFamily="monospace" letterSpacing="0.5">
+                          <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
+                            {av.name}
+                          </textPath>
+                        </text>
+                      </svg>
+                    </button>
+                  );
+                })}
               </div>
 
               {avatar && (
