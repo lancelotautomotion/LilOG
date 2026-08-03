@@ -102,8 +102,10 @@ export function CartPage() {
                   {firstName ? `Dressing de ${firstName}` : "Dressing"}
                 </span>
                 {total > 0 && <span className="oc-counter">{current + 1}/{total}</span>}
-                <div className="oc-win95-dots">
-                  <span /><span /><span />
+                <div className="account-win95-chrome">
+                  <span>_</span>
+                  <span>□</span>
+                  <span>×</span>
                 </div>
               </div>
 
@@ -190,7 +192,11 @@ export function CartPage() {
             <div className="oc-win95-outer oc-summary-win">
               <div className="oc-win95-titlebar">
                 <span className="oc-win95-title">MON PANIER — {total} article{total !== 1 ? "s" : ""}</span>
-                <div className="oc-win95-dots"><span /><span /><span /></div>
+                <div className="account-win95-chrome">
+                  <span>_</span>
+                  <span>□</span>
+                  <span>×</span>
+                </div>
               </div>
 
               <div className="oc-summary-body">
