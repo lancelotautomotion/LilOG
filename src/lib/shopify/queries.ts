@@ -214,6 +214,10 @@ const CART_FRAGMENT = /* GraphQL */ `
               product {
                 title
                 handle
+                vendor
+                etat: metafield(namespace: "custom", key: "etat") {
+                  value
+                }
               }
             }
           }

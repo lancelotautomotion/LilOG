@@ -211,7 +211,11 @@ export function CartPage() {
                         </div>
                         <div className="oc-summary-info">
                           <span className="oc-summary-name">{line.title}</span>
-                          {line.variantTitle && <span className="oc-summary-variant">{line.variantTitle}</span>}
+                          <div className="oc-summary-meta">
+                            {line.variantTitle && <span className="oc-summary-meta-item">Taille : {line.variantTitle}</span>}
+                            {line.etat && <span className="oc-summary-meta-item">État : {line.etat}</span>}
+                            {line.vendor && <span className="oc-summary-meta-item">Marque : {line.vendor}</span>}
+                          </div>
                           <span className="oc-summary-price">€{(line.price * line.quantity).toFixed(2)}{line.quantity > 1 && ` ×${line.quantity}`}</span>
                         </div>
                         <button
