@@ -1,26 +1,57 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
 import Image from "next/image";
 
-const LS_KEY = "lilog_msn_avatar";
+const LS_AVATAR_KEY = "lilog_msn_avatar";
+const LS_STATUS_KEY = "lilog_msn_status";
+
+/* ── Persistance localStorage, lue via useSyncExternalStore ──
+   Le snapshot serveur vaut null : pas de mismatch d'hydratation, React
+   re-rend avec la valeur stockée une fois monté. */
+const listeners = new Set<() => void>();
+
+function subscribe(cb: () => void) {
+  listeners.add(cb);
+  window.addEventListener("storage", cb);   // synchro entre onglets
+  return () => {
+    listeners.delete(cb);
+    window.removeEventListener("storage", cb);
+  };
+}
+
+function readStored(key: string) {
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+
+function writeStored(key: string, value: string | null) {
+  try {
+    if (value === null) localStorage.removeItem(key);
+    else                localStorage.setItem(key, value);
+  } catch {/* navigation privée */}
+  listeners.forEach(cb => cb());
+}
+
+function useStored(key: string) {
+  return useSyncExternalStore(subscribe, () => readStored(key), () => null);
+}
 
 const MSN_AVATARS = [
-  { name: "Carrie Bradshaw", src: "/MSN/Carrie Bradshaw.png" },
-  { name: "Cher Horowitz",   src: "/MSN/Cher Horowitz.png"   },
-  { name: "Elle Woods",      src: "/MSN/Elle Woods.png"       },
-  { name: "Gabriella Montez",src: "/MSN/Gabriella Montez.png" },
-  { name: "Regina George",   src: "/MSN/Regina George.png"    },
-  { name: "Sharpay Evans",   src: "/MSN/Sharpay Evans.png"    },
+  { name: "Carrie Bradshaw",  src: "/MSN/Carrie Bradshaw.png"  },
+  { name: "Cher Horowitz",    src: "/MSN/Cher Horowitz.png"    },
+  { name: "Elle Woods",       src: "/MSN/Elle Woods.png"        },
+  { name: "Gabriella Montez", src: "/MSN/Gabriella Montez.png" },
+  { name: "Regina George",    src: "/MSN/Regina George.png"     },
+  { name: "Sharpay Evans",    src: "/MSN/Sharpay Evans.png"     },
 ];
 
 const MSN_STATUSES = [
-  { emoji: "🟢", label: "En ligne" },
-  { emoji: "🛍️", label: "Partie faire du shopping 🛍️" },
-  { emoji: "🎧", label: "Occupée — écoute Britney 🎧" },
-  { emoji: "📵", label: "Ne pas déranger" },
-  { emoji: "💤", label: "Absente" },
-  { emoji: "✨", label: "À plus tard ✨" },
+  { id: "online",   emoji: "🟢", label: "En ligne"        },
+  { id: "shopping", emoji: "🛍️", label: "Shopping"        },
+  { id: "britney",  emoji: "🎧", label: "Écoute Britney"  },
+  { id: "busy",     emoji: "📵", label: "Ne pas déranger" },
+  { id: "away",     emoji: "💤", label: "Absente"         },
+  { id: "later",    emoji: "✨", label: "À plus tard"     },
 ];
 
 export function MsnProfile({
@@ -34,54 +65,84 @@ export function MsnProfile({
   email: string;
   shopifyToken: string | null;
 }) {
-  const [avatar, setAvatar]             = useState<string | null>(null);
-  const [modalOpen, setModalOpen]       = useState(false);
-  const [status, setStatus]             = useState(MSN_STATUSES[0]);
-  const [customStatus, setCustomStatus] = useState("");
-  const [editingStatus, setEditingStatus] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  /* Index de l'avatar affiché dans le carrousel (préparé à l'ouverture) */
+  const [slide, setSlide] = useState(0);
 
-  /* Charge l'avatar depuis localStorage au premier rendu */
+  const avatar = useStored(LS_AVATAR_KEY);
+  const stored = useStored(LS_STATUS_KEY);
+  const statusId = MSN_STATUSES.some(s => s.id === stored)
+    ? (stored as string)
+    : MSN_STATUSES[0].id;
+
+  const goPrev = useCallback(
+    () => setSlide(i => (i - 1 + MSN_AVATARS.length) % MSN_AVATARS.length),
+    [],
+  );
+  const goNext = useCallback(
+    () => setSlide(i => (i + 1) % MSN_AVATARS.length),
+    [],
+  );
+
+  /* Ouvre la modale sur l'avatar courant */
+  function openModal() {
+    const current = MSN_AVATARS.findIndex(a => a.src === avatar);
+    setSlide(current >= 0 ? current : 0);
+    setModalOpen(true);
+  }
+
+  /* Flèches clavier + Échap, et blocage du scroll de fond */
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(LS_KEY);
-      if (saved) setAvatar(saved);
-    } catch {/* SSR / private browsing */}
-  }, []);
+    if (!modalOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape")     setModalOpen(false);
+      if (e.key === "ArrowLeft")  goPrev();
+      if (e.key === "ArrowRight") goNext();
+    }
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [modalOpen, goPrev, goNext]);
 
-  function pickAvatar(src: string) {
-    setAvatar(src);
-    try { localStorage.setItem(LS_KEY, src); } catch {/* ignore */}
+  function changeStatus(id: string) {
+    writeStored(LS_STATUS_KEY, id);
+  }
+
+  function saveAvatar() {
+    writeStored(LS_AVATAR_KEY, MSN_AVATARS[slide].src);
     setModalOpen(false);
   }
 
   function clearAvatar() {
-    setAvatar(null);
-    try { localStorage.removeItem(LS_KEY); } catch {/* ignore */}
+    writeStored(LS_AVATAR_KEY, null);
     setModalOpen(false);
   }
 
-  const displayStatus = customStatus || status.label;
+  const slideAvatar = MSN_AVATARS[slide];
 
   return (
     <>
-      {/* ── MSN Profile card ── */}
+      {/* ── Carte profil ── */}
       <div className="account-panel msn-profile-panel">
         <div className="account-panel-bar">
           <span className="account-panel-title">👤 Mon Profil</span>
-
         </div>
 
         <div className="msn-profile-body">
 
-          {/* Avatar + change button */}
+          {/* Avatar + lien de changement */}
           <div className="msn-avatar-wrap">
             <div className="msn-avatar-frame">
               {avatar ? (
                 <Image
                   src={avatar}
-                  alt="Display pic"
-                  width={96}
-                  height={96}
+                  alt="Photo de profil"
+                  width={112}
+                  height={112}
                   className="msn-avatar-img"
                   unoptimized
                 />
@@ -90,63 +151,34 @@ export function MsnProfile({
                   {firstName.charAt(0).toUpperCase()}
                 </div>
               )}
-              <div className="msn-avatar-online-dot" />
             </div>
-            <button
-              className="msn-change-pic-btn"
-              onClick={() => setModalOpen(true)}
-              title="Changer de display pic"
-            >
-              [ Changer de display pic ]
+            <button className="msn-change-pic-btn" onClick={openModal}>
+              [ Changer la photo ]
             </button>
           </div>
 
-          {/* Name + status */}
+          {/* Identité + statut */}
           <div className="msn-identity">
-            <div className="msn-display-name">{fullName}</div>
+            <h2 className="msn-display-name">{fullName}</h2>
 
-            <div className="msn-status-row">
-              <span className="msn-status-emoji">{status.emoji}</span>
-              {editingStatus ? (
-                <input
-                  className="msn-status-input"
-                  value={customStatus}
-                  placeholder="Tape ton statut perso…"
-                  autoFocus
-                  onChange={e => setCustomStatus(e.target.value)}
-                  onBlur={() => setEditingStatus(false)}
-                  onKeyDown={e => { if (e.key === "Enter") setEditingStatus(false); }}
-                  maxLength={60}
-                />
-              ) : (
-                <button
-                  className="msn-status-text"
-                  onClick={() => setEditingStatus(true)}
-                  title="Cliquer pour modifier"
-                >
-                  {displayStatus}
-                  <span className="msn-status-edit-icon">✏️</span>
-                </button>
-              )}
-            </div>
-
-            <div className="msn-status-presets">
-              {MSN_STATUSES.map(s => (
-                <button
-                  key={s.label}
-                  className={"msn-status-preset" + (status.label === s.label && !customStatus ? " active" : "")}
-                  onClick={() => { setStatus(s); setCustomStatus(""); setEditingStatus(false); }}
-                  title={s.label}
-                >
-                  {s.emoji}
-                </button>
-              ))}
+            <div className="msn-status-select-wrap">
+              <select
+                className="msn-status-select"
+                value={statusId}
+                onChange={e => changeStatus(e.target.value)}
+                aria-label="Statut MSN"
+              >
+                {MSN_STATUSES.map(s => (
+                  <option key={s.id} value={s.id}>
+                    {s.emoji}  {s.label}
+                  </option>
+                ))}
+              </select>
+              <span className="msn-status-caret" aria-hidden="true">▾</span>
             </div>
           </div>
 
-          <div className="msn-divider" />
-
-          {/* Info fields */}
+          {/* Champs d'information */}
           <div className="msn-fields">
             <div className="account-field">
               <span className="account-field-label">Nom complet</span>
@@ -159,7 +191,7 @@ export function MsnProfile({
             {!shopifyToken && (
               <div className="account-field">
                 <span className="account-field-label">Compte</span>
-                <div className="account-field-value" style={{ color: "#555" }}>Google OAuth</div>
+                <div className="account-field-value msn-field-muted">Google OAuth</div>
               </div>
             )}
           </div>
@@ -173,71 +205,75 @@ export function MsnProfile({
         </div>
       </div>
 
-      {/* ── Avatar picker modal ── */}
+      {/* ── Modale carrousel d'avatars ── */}
       {modalOpen && (
         <div className="msn-modal-scrim" onClick={() => setModalOpen(false)}>
-          <div className="msn-modal" onClick={e => e.stopPropagation()}>
-            <div className="msn-modal-bar">
-              <span className="msn-modal-title">🖼️ Choisir une display pic</span>
-              <div className="msn-modal-chrome">
-                <span /><span />
-                <button
-                  className="msn-modal-close"
-                  onClick={() => setModalOpen(false)}
-                  aria-label="Fermer"
-                >✕</button>
-              </div>
+          <div
+            className="msn-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Choisir un avatar"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="account-panel-bar msn-modal-bar">
+              <span className="account-panel-title">🖼️ Choisir un avatar</span>
+              <button
+                className="msn-modal-close"
+                onClick={() => setModalOpen(false)}
+                aria-label="Fermer"
+              >
+                ✕
+              </button>
             </div>
 
             <div className="msn-modal-body">
-              <p className="msn-modal-hint">Sélectionne ton icône MSN :</p>
-              <div className="msn-avatar-grid">
-                {MSN_AVATARS.map(av => {
-                  const pathId = `arc-${av.name.replace(/\s+/g, "-")}`;
-                  const isSelected = avatar === av.src;
-                  return (
-                    <button
-                      key={av.name}
-                      className={"msn-avatar-option" + (isSelected ? " selected" : "")}
-                      onClick={() => pickAvatar(av.src)}
-                      title={av.name}
-                    >
-                      <div className="msn-avatar-circle">
-                        <Image
-                          src={av.src}
-                          alt={av.name}
-                          width={80}
-                          height={80}
-                          className="msn-avatar-option-img"
-                          unoptimized
-                        />
-                      </div>
-                      {/* Nom courbé le long de l'arc inférieur */}
-                      <svg
-                        viewBox="0 0 110 46"
-                        width="110"
-                        height="46"
-                        className="msn-curved-label"
-                        aria-hidden="true"
-                      >
-                        <defs>
-                          {/*
-                            Arc sourire : centre au-dessus du chord (sweep=1, clockwise en SVG y-down)
-                            partant de (5,5) → descend → remonte vers (105,5)
-                            fond du sourire ≈ y=42 → visible dans le viewBox 110×46
-                          */}
-                          <path id={pathId} d="M 5,5 A 56,56 0 0 1 105,5" />
-                        </defs>
-                        <text fontSize="8" fill="currentColor" fontFamily="monospace">
-                          <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
-                            {av.name}
-                          </textPath>
-                        </text>
-                      </svg>
-                    </button>
-                  );
-                })}
+              <div className="msn-carousel">
+                <button
+                  className="msn-carousel-arrow"
+                  onClick={goPrev}
+                  aria-label="Avatar précédent"
+                >
+                  ◄
+                </button>
+
+                <div className="msn-carousel-stage">
+                  <Image
+                    key={slideAvatar.src}
+                    src={slideAvatar.src}
+                    alt={slideAvatar.name}
+                    width={168}
+                    height={168}
+                    className="msn-carousel-img"
+                    unoptimized
+                  />
+                </div>
+
+                <button
+                  className="msn-carousel-arrow"
+                  onClick={goNext}
+                  aria-label="Avatar suivant"
+                >
+                  ►
+                </button>
               </div>
+
+              <p className="msn-carousel-name">{slideAvatar.name}</p>
+
+              <div className="msn-carousel-dots">
+                {MSN_AVATARS.map((av, i) => (
+                  <button
+                    key={av.src}
+                    className={"msn-carousel-dot" + (i === slide ? " active" : "")}
+                    onClick={() => setSlide(i)}
+                    aria-label={av.name}
+                    aria-current={i === slide}
+                  />
+                ))}
+              </div>
+
+              <button className="msn-carousel-save" onClick={saveAvatar}>
+                [ Enregistrer cet avatar ]
+              </button>
 
               {avatar && (
                 <button className="msn-clear-avatar" onClick={clearAvatar}>
