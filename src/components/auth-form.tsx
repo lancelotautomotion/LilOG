@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { signIn } from "next-auth/react";
-import { shopifyCustomerCreate } from "@/lib/shopify/customers";
+import { actionSignup } from "@/lib/actions/auth-actions";
 
 type Mode = "login" | "register";
 
@@ -20,7 +20,7 @@ export function AuthForm() {
     setError(null);
     startTransition(async () => {
       if (mode === "register") {
-        const { error: createError } = await shopifyCustomerCreate(email, password, firstName, lastName);
+        const { error: createError } = await actionSignup(email, password, firstName, lastName);
         if (createError) { setError(createError); return; }
       }
       const res = await signIn("credentials", { email, password, redirect: false });
