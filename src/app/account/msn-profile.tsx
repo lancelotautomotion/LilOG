@@ -68,7 +68,7 @@ export function MsnProfile({
       <div className="account-panel msn-profile-panel">
         <div className="account-panel-bar">
           <span className="account-panel-title">👤 Mon Profil</span>
-          <span className="msn-panel-bar-icon">💬</span>
+
         </div>
 
         <div className="msn-profile-body">
