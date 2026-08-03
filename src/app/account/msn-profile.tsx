@@ -214,16 +214,21 @@ export function MsnProfile({
                       </div>
                       {/* Nom courbé le long de l'arc inférieur */}
                       <svg
-                        viewBox="0 0 100 28"
-                        width="100"
-                        height="28"
+                        viewBox="0 0 110 46"
+                        width="110"
+                        height="46"
                         className="msn-curved-label"
                         aria-hidden="true"
                       >
                         <defs>
-                          <path id={pathId} d="M 8,24 A 44,44 0 0 1 92,24" />
+                          {/*
+                            Arc sourire : centre au-dessus du chord (sweep=1, clockwise en SVG y-down)
+                            partant de (5,5) → descend → remonte vers (105,5)
+                            fond du sourire ≈ y=42 → visible dans le viewBox 110×46
+                          */}
+                          <path id={pathId} d="M 5,5 A 56,56 0 0 1 105,5" />
                         </defs>
-                        <text fontSize="8.5" fill="currentColor" fontFamily="monospace" letterSpacing="0.5">
+                        <text fontSize="8" fill="currentColor" fontFamily="monospace">
                           <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
                             {av.name}
                           </textPath>
