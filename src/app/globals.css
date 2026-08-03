@@ -3572,31 +3572,15 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
   color: var(--ldl-primary);
   padding: 2px 0;
-  text-decoration: underline;
   white-space: nowrap;
+  transition: color var(--ldl-transition);
 }
+.acct-addr-action-btn:hover { color: var(--ldl-text); }
 .acct-addr-action-btn.danger { color: #c00; }
-.acct-addr-header-btn {
-  font-family: var(--mono);
-  font-size: 0.54rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  background: rgba(255,255,255,0.13);
-  border: 1px solid rgba(255,255,255,0.55);
-  border-radius: 0;
-  color: rgba(255,255,255,0.9);
-  padding: 3px 10px;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 120ms;
-}
-.acct-addr-header-btn:hover { background: rgba(255,255,255,0.22); }
-.acct-addr-empty {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  color: var(--ldl-muted);
-  text-align: center;
-  padding: 16px;
+.acct-city-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 10px;
 }
 .acct-addr-upsell {
   padding: 16px;
@@ -3613,29 +3597,37 @@ a { color: inherit; text-decoration: none; }
   margin: 0;
 }
 
-/* ── Right column tab bar ───────────────────────────────────────────────── */
-.acct-right-tabbar {
-  display: flex;
-  border-bottom: 1px solid var(--ldl-border);
+/* ── Navigation colonne gauche : bascule le contenu de la fenêtre droite ── */
+.acct-nav-panel {
   background: var(--ldl-surface);
-  flex-shrink: 0;
+  border: 1px solid var(--ldl-border);
+  border-radius: 10px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: var(--ldl-shadow);
 }
-.acct-right-tab {
+.acct-nav-btn {
   font-family: var(--mono);
-  font-size: 0.60rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  padding: 10px 16px;
-  border: none;
-  background: none;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  text-align: left;
+  color: var(--ldl-text);
+  background: #fff;
+  border: 1px solid var(--ldl-border);
+  border-radius: 6px;
+  padding: 10px 14px;
   cursor: pointer;
-  color: var(--ldl-muted);
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: color var(--ldl-transition), border-color var(--ldl-transition);
+  transition: background var(--ldl-transition), border-color var(--ldl-transition), color var(--ldl-transition);
 }
-.acct-right-tab.active { color: var(--ldl-primary); border-bottom-color: var(--ldl-primary); font-weight: 600; }
-.acct-right-tab:hover:not(.active) { color: var(--ldl-text); }
+.acct-nav-btn:hover:not(.active) { border-color: var(--ldl-primary); color: var(--ldl-primary); }
+.acct-nav-btn.active {
+  background: var(--ldl-primary);
+  border-color: var(--ldl-primary);
+  color: #fff;
+  font-weight: 700;
+}
 
 /* ── Address form (P2) ──────────────────────────────────────────────────── */
 .acct-addr-form {
