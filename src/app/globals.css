@@ -5089,7 +5089,7 @@ html, body {
   background: #fafafa;
   border: 1px solid #e5e7eb;
   box-shadow: 0 4px 14px rgba(0,0,0,0.14);
-  padding: 8px 8px 30px;
+  padding: 8px 8px 42px;
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
 .burnbook-polaroid:hover {
@@ -5152,16 +5152,16 @@ html, body {
 }
 .burnbook-remove {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 4px;
+  right: 4px;
   z-index: 20;
-  width: 21px;
-  height: 21px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.68rem;
-  background: rgba(255,255,255,0.75);
+  font-size: 1.05rem;
+  background: rgba(255,255,255,0.8);
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 50%;
   cursor: pointer;
@@ -5170,29 +5170,25 @@ html, body {
 .burnbook-remove:hover { background: #fff; transform: scale(1.12); }
 .burnbook-note {
   position: absolute;
+  top: 4px;
+  left: 4px;
+  max-width: calc(100% - 44px);
   font-family: var(--font-hand), cursive;
   font-weight: 700;
-  font-size: 1.05rem;
-  line-height: 1;
+  font-size: 1rem;
+  line-height: 1.1;
   color: #e6007a;
   z-index: 15;
   pointer-events: none;
   white-space: nowrap;
-}
-.burnbook-doodle {
-  position: absolute;
-  font-family: var(--font-hand), cursive;
-  font-weight: 700;
-  color: #b026ff;
-  z-index: 14;
-  pointer-events: none;
-  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .burnbook-cart-btn {
   position: absolute;
   left: 8px;
   right: 8px;
-  bottom: 7px;
+  bottom: 9px;
   justify-content: center;
   text-align: center;
   font-size: 0.52rem !important;
