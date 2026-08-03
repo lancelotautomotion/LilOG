@@ -10,11 +10,12 @@ import { useWishlist } from "@/hooks/use-wishlist";
 const ROTATIONS = ["rotate-2", "-rotate-2", "rotate-1", "-rotate-3", "-rotate-1", "rotate-3"];
 const TAPE_ROT = ["-3deg", "2deg", "-1.5deg", "3deg", "1deg", "-2.5deg"];
 
-const NOTES = [
-  { text: "So fetch! →", rot: "-rotate-12" },
-  { text: "★ Luv it <3", rot: "rotate-6" },
-  { text: "Need !!! ♡", rot: "rotate-3" },
-  { text: "✦ Obsessed.", rot: "-rotate-6" },
+// 4 alternating scrapbook layouts: haut-gauche / bas-droite / côté droit / haut-droite (sous le bouton 💔)
+const LAYOUTS = [
+  { text: "So fetch!", notePos: "top-1 left-1 -rotate-12", doodle: "→", doodlePos: "top-[58%] right-2 rotate-12 text-lg" },
+  { text: "Luv it <3", notePos: "top-[58%] right-2 rotate-6", doodle: "★", doodlePos: "top-1 left-2 -rotate-6 text-sm" },
+  { text: "Need !!!", notePos: "top-[38%] right-1 -rotate-6", doodle: "♡", doodlePos: "top-1 left-2 rotate-8 text-sm" },
+  { text: "Obsessed.", notePos: "top-10 right-1 rotate-6", doodle: "✦", doodlePos: "top-[58%] left-2 -rotate-12 text-sm" },
 ];
 
 export function WishlistShell() {
@@ -53,14 +54,15 @@ export function WishlistShell() {
             ) : (
               <div className="burnbook-grid">
                 {items.map((item, i) => {
-                  const note = NOTES[i % NOTES.length];
+                  const layout = LAYOUTS[i % LAYOUTS.length];
                   return (
                     <div key={item.handle} className={`burnbook-polaroid ${ROTATIONS[i % ROTATIONS.length]}`}>
                       <div
                         className="burnbook-tape"
                         style={{ "--tape-rot": TAPE_ROT[i % TAPE_ROT.length] } as React.CSSProperties}
                       />
-                      <span className={`burnbook-note ${note.rot}`}>{note.text}</span>
+                      <span className={`burnbook-note ${layout.notePos}`}>{layout.text}</span>
+                      <span className={`burnbook-doodle ${layout.doodlePos}`}>{layout.doodle}</span>
                       <button
                         className="burnbook-remove"
                         onClick={() => remove(item.handle)}

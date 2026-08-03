@@ -5170,9 +5170,7 @@ html, body {
 .burnbook-remove:hover { background: #fff; transform: scale(1.12); }
 .burnbook-note {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  max-width: calc(100% - 44px);
+  max-width: 74%;
   font-family: var(--font-hand), cursive;
   font-weight: 700;
   font-size: 1rem;
@@ -5183,6 +5181,15 @@ html, body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.burnbook-doodle {
+  position: absolute;
+  font-family: var(--font-hand), cursive;
+  font-weight: 700;
+  color: #b026ff;
+  z-index: 14;
+  pointer-events: none;
+  line-height: 1;
 }
 .burnbook-cart-btn {
   position: absolute;
