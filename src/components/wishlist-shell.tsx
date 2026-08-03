@@ -8,12 +8,13 @@ import { Footer } from "@/components/footer";
 import { useWishlist } from "@/hooks/use-wishlist";
 
 const ROTATIONS = ["rotate-2", "-rotate-2", "rotate-1", "-rotate-3", "-rotate-1", "rotate-3"];
+const TAPE_ROT = ["-3deg", "2deg", "-1.5deg", "3deg", "1deg", "-2.5deg"];
 
 const NOTES = [
-  { text: "So fetch!", className: "-top-3 -left-4 -rotate-12" },
-  { text: "Luv it <3", className: "-bottom-4 -right-3 rotate-6" },
-  { text: "Need !!!", className: "-bottom-3 -left-4 rotate-3" },
-  { text: "Obsessed.", className: "-top-4 -right-4 rotate-12" },
+  { text: "So fetch!", pos: "-top-2 -left-2 -rotate-12 text-base", doodle: "→", doodlePos: "-bottom-2 -right-1 rotate-12 text-lg" },
+  { text: "Luv it <3", pos: "-bottom-3 -right-2 rotate-6 text-base", doodle: "★", doodlePos: "-top-2 -left-2 -rotate-6 text-sm" },
+  { text: "Need !!!", pos: "-bottom-2 -left-3 rotate-3 text-base", doodle: "♡", doodlePos: "top-1/3 -right-3 rotate-12 text-sm" },
+  { text: "Obsessed.", pos: "-bottom-3 -left-2 -rotate-6 text-base", doodle: "✦", doodlePos: "-bottom-2 -right-2 rotate-6 text-sm" },
 ];
 
 export function WishlistShell() {
@@ -55,8 +56,12 @@ export function WishlistShell() {
                   const note = NOTES[i % NOTES.length];
                   return (
                     <div key={item.handle} className={`burnbook-polaroid ${ROTATIONS[i % ROTATIONS.length]}`}>
-                      <div className="burnbook-tape" />
-                      <span className={`burnbook-note ${note.className}`}>{note.text}</span>
+                      <div
+                        className="burnbook-tape"
+                        style={{ "--tape-rot": TAPE_ROT[i % TAPE_ROT.length] } as React.CSSProperties}
+                      />
+                      <span className={`burnbook-note ${note.pos}`}>{note.text}</span>
+                      <span className={`burnbook-doodle ${note.doodlePos}`}>{note.doodle}</span>
                       <button
                         className="burnbook-remove"
                         onClick={() => remove(item.handle)}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Montserrat, Space_Mono, Great_Vibes, VT323, Grenze_Gotisch } from "next/font/google";
+import { IBM_Plex_Mono, Montserrat, Space_Mono, Great_Vibes, VT323, Grenze_Gotisch, Caveat } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
@@ -42,6 +42,12 @@ const gothic = Grenze_Gotisch({
   weight: ["500", "700"],
 });
 
+const hand = Caveat({
+  variable: "--font-hand",
+  subsets: ["latin"],
+  weight: ["500", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Lil'OG — Pre-loved Y2K",
   description: "Vintage Y2K de seconde main, une pièce à la fois — Londres.",
@@ -51,7 +57,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const initialCart = await getCartAction().catch(() => null);
 
   return (
-    <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable} ${script.variable} ${lcd.variable} ${gothic.variable}`}>
+    <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable} ${script.variable} ${lcd.variable} ${gothic.variable} ${hand.variable}`}>
       <body className="grain">
         <SessionProvider>
           <LanguageProvider>
