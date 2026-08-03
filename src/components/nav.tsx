@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/lib/i18n-context";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/hooks/use-wishlist";
 import { LangSwitch } from "@/components/lang-switch";
 import { Icon } from "@/components/icons";
 import logoWhite from "../../public/logo-white.png";
@@ -15,6 +16,7 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
   const { t } = useLanguage();
   const { count } = useCart();
   const { data: session } = useSession();
+  const { items: wishlist, ready: wishlistReady } = useWishlist();
   const [solid, setSolid] = useState(false);
 
   useEffect(() => {
@@ -45,6 +47,12 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
           </Link>
           <Link className="nav-icon-btn nav-login-icon" href={session ? "/account" : "/login"} aria-label={t.nav.login}>
             <Icon.user width={18} height={18} />
+          </Link>
+          <Link className="nav-icon-btn" href="/wishlist" aria-label="Wishlist">
+            <Icon.heartO width={18} height={18} />
+            {wishlistReady && wishlist.length > 0 && (
+              <span className="count">{wishlist.length}</span>
+            )}
           </Link>
           <Link className="nav-icon-btn" href="/cart" aria-label={t.nav.bag}>
             <Icon.bag width={18} height={18} />

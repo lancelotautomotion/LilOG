@@ -261,6 +261,169 @@ export async function shopifyGetCustomerOrder(
   return data?.customer?.order ?? null;
 }
 
+/* ── Addresses ─────────────────────────────────────────────────────────── */
+
+const CUSTOMER_ADDRESSES_QUERY = /* GraphQL */ `
+  query CustomerAddresses($token: String!) {
+    customer(customerAccessToken: $token) {
+      defaultAddress { id }
+      addresses(first: 20) {
+        edges {
+          node { id firstName lastName address1 address2 city province zip country phone }
+        }
+      }
+    }
+  }
+`;
+
+const ADDRESS_CREATE = /* GraphQL */ `
+  mutation customerAddressCreate($token: String!, $address: MailingAddressInput!) {
+    customerAddressCreate(customerAccessToken: $token, address: $address) {
+      customerAddress { id firstName lastName address1 address2 city province zip country phone }
+      customerUserErrors { code field message }
+    }
+  }
+`;
+
+const ADDRESS_UPDATE = /* GraphQL */ `
+  mutation customerAddressUpdate($token: String!, $id: ID!, $address: MailingAddressInput!) {
+    customerAddressUpdate(customerAccessToken: $token, id: $id, address: $address) {
+      customerAddress { id firstName lastName address1 address2 city province zip country phone }
+      customerUserErrors { code field message }
+    }
+  }
+`;
+
+const ADDRESS_DELETE = /* GraphQL */ `
+  mutation customerAddressDelete($token: String!, $id: ID!) {
+    customerAddressDelete(customerAccessToken: $token, id: $id) {
+      deletedCustomerAddressId
+      customerUserErrors { code field message }
+    }
+  }
+`;
+
+const ADDRESS_DEFAULT = /* GraphQL */ `
+  mutation customerDefaultAddressUpdate($token: String!, $addressId: ID!) {
+    customerDefaultAddressUpdate(customerAccessToken: $token, addressId: $addressId) {
+      customer { id }
+      customerUserErrors { code field message }
+    }
+  }
+`;
+
+export interface ShopifyAddress {
+  id: string;
+  firstName: string;
+  lastName: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  province?: string;
+  zip: string;
+  country: string;
+  phone?: string;
+}
+
+export interface AddressInput {
+  firstName: string;
+  lastName: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  province?: string;
+  zip: string;
+  country: string;
+  phone?: string;
+}
+
+export async function shopifyGetAddresses(token: string): Promise<{
+  addresses: ShopifyAddress[];
+  defaultAddressId: string | null;
+}> {
+  const data = await shopifyFetch<{
+    customer: {
+      defaultAddress: { id: string } | null;
+      addresses: { edges: { node: ShopifyAddress }[] };
+    } | null;
+  }>(CUSTOMER_ADDRESSES_QUERY, { token }).catch(() => null);
+
+  if (!data?.customer) return { addresses: [], defaultAddressId: null };
+  return {
+    addresses: data.customer.addresses.edges.map((e) => e.node),
+    defaultAddressId: data.customer.defaultAddress?.id ?? null,
+  };
+}
+
+export async function shopifyCreateAddress(
+  token: string,
+  address: AddressInput,
+): Promise<{ address: ShopifyAddress | null; error: string | null }> {
+  const data = await shopifyFetch<{
+    customerAddressCreate: {
+      customerAddress: ShopifyAddress | null;
+      customerUserErrors: { message: string }[];
+    };
+  }>(ADDRESS_CREATE, { token, address }).catch(() => null);
+
+  if (!data) return { address: null, error: "Erreur réseau" };
+  const errs = data.customerAddressCreate.customerUserErrors;
+  if (errs.length > 0) return { address: null, error: errs[0].message };
+  return { address: data.customerAddressCreate.customerAddress, error: null };
+}
+
+export async function shopifyUpdateAddress(
+  token: string,
+  id: string,
+  address: AddressInput,
+): Promise<{ address: ShopifyAddress | null; error: string | null }> {
+  const data = await shopifyFetch<{
+    customerAddressUpdate: {
+      customerAddress: ShopifyAddress | null;
+      customerUserErrors: { message: string }[];
+    };
+  }>(ADDRESS_UPDATE, { token, id, address }).catch(() => null);
+
+  if (!data) return { address: null, error: "Erreur réseau" };
+  const errs = data.customerAddressUpdate.customerUserErrors;
+  if (errs.length > 0) return { address: null, error: errs[0].message };
+  return { address: data.customerAddressUpdate.customerAddress, error: null };
+}
+
+export async function shopifyDeleteAddress(
+  token: string,
+  id: string,
+): Promise<{ error: string | null }> {
+  const data = await shopifyFetch<{
+    customerAddressDelete: {
+      deletedCustomerAddressId: string | null;
+      customerUserErrors: { message: string }[];
+    };
+  }>(ADDRESS_DELETE, { token, id }).catch(() => null);
+
+  if (!data) return { error: "Erreur réseau" };
+  const errs = data.customerAddressDelete.customerUserErrors;
+  if (errs.length > 0) return { error: errs[0].message };
+  return { error: null };
+}
+
+export async function shopifySetDefaultAddress(
+  token: string,
+  addressId: string,
+): Promise<{ error: string | null }> {
+  const data = await shopifyFetch<{
+    customerDefaultAddressUpdate: {
+      customer: { id: string } | null;
+      customerUserErrors: { message: string }[];
+    };
+  }>(ADDRESS_DEFAULT, { token, addressId }).catch(() => null);
+
+  if (!data) return { error: "Erreur réseau" };
+  const errs = data.customerDefaultAddressUpdate.customerUserErrors;
+  if (errs.length > 0) return { error: errs[0].message };
+  return { error: null };
+}
+
 export async function shopifyUpdateCustomer(
   token: string,
   input: { firstName?: string; lastName?: string; email?: string; phone?: string; password?: string },

@@ -1,8 +1,8 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { shopifyGetCustomerWithOrders } from "@/lib/shopify/customers";
-import { AccountDashboard } from "./account-dashboard";
+import { shopifyGetCustomerWithOrders, shopifyGetAddresses } from "@/lib/shopify/customers";
+import { AccountShell } from "./account-shell";
 
 export const metadata: Metadata = { title: "Mon compte — Lil'OG" };
 
@@ -16,22 +16,27 @@ export default async function AccountPage() {
   const firstName = displayName.split(" ")[0];
   const email = session.user?.email ?? "";
 
-  const { customer, orders } = shopifyToken
-    ? await shopifyGetCustomerWithOrders(shopifyToken)
-    : { customer: null, orders: [] };
+  const [{ customer, orders }, { addresses, defaultAddressId }] = shopifyToken
+    ? await Promise.all([
+        shopifyGetCustomerWithOrders(shopifyToken),
+        shopifyGetAddresses(shopifyToken),
+      ])
+    : [{ customer: null, orders: [] }, { addresses: [], defaultAddressId: null }];
 
   const fullName = customer
     ? [customer.firstName, customer.lastName].filter(Boolean).join(" ") || displayName
     : displayName;
 
   return (
-    <AccountDashboard
+    <AccountShell
       customer={customer}
       orders={orders}
       email={email}
       firstName={firstName}
       fullName={fullName}
       shopifyToken={shopifyToken}
+      initialAddresses={addresses}
+      initialDefaultAddressId={defaultAddressId}
     />
   );
 }
