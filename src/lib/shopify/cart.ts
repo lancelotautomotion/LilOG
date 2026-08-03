@@ -38,7 +38,7 @@ export function mapCart(node: ShopifyCartNode): Cart {
       available: e.node.merchandise.availableForSale,
       vendor: e.node.merchandise.product.vendor ?? "",
       etat: e.node.merchandise.product.etat?.value ?? null,
-      size: extractSizeValue(e.node.merchandise.product.options),
+      size: extractSizeValue(e.node.merchandise.product.sizeMeta, e.node.merchandise.product.options),
     })),
   };
 }

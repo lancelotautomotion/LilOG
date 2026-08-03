@@ -8,6 +8,15 @@ export interface ShopifyImage {
   altText: string | null;
 }
 
+// Champ méta pouvant être du texte brut OU une référence à un metaobject de
+// taxonomie Shopify (ex. le champ méta Catégorie "Taille").
+export interface RichMetafield {
+  value: string;
+  type?: string;
+  reference?: { field: { value: string } | null } | null;
+  references?: { nodes: { field: { value: string } | null }[] } | null;
+}
+
 export interface ShopifyProductNode {
   id: string;
   handle: string;
@@ -38,6 +47,7 @@ export interface CollectionByHandleResponse {
 export interface ShopifyProductDetailNode extends ShopifyProductNode {
   descriptionHtml: string;
   etat: { value: string } | null;
+  sizeMeta: RichMetafield | null;
   options: { name: string; values?: string[]; optionValues?: { name: string }[] }[];
   collections: { edges: { node: { handle: string } }[] };
   images: { edges: { node: ShopifyImage }[] };
@@ -121,6 +131,7 @@ export interface ShopifyCartLineNode {
       handle: string;
       vendor: string;
       etat: { value: string } | null;
+      sizeMeta: RichMetafield | null;
       options?: { name: string; optionValues?: { name: string }[] }[];
     };
   };
