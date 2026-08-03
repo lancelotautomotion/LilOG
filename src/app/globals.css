@@ -30,6 +30,8 @@
   --ldl-muted: #6B7280;
   --ldl-radius: 0px;
   --ldl-titlebar: #1B48CE;
+  /* Barres de titre /account : navy Win95 plus fidèle à gauche, glisse vers le violet existant */
+  --acct-titlebar: linear-gradient(90deg, #000080 0%, #1B48CE 55%, #7147D4 100%);
   --ldl-shadow: 0 2px 8px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
   --ldl-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.11), 0 2px 4px rgba(0, 0, 0, 0.06);
   --ldl-shadow-window: 4px 4px 0 rgba(0, 0, 0, 0.85);
@@ -43,6 +45,7 @@
   --serif: var(--font-serif), ui-monospace, monospace;    /* IBM Plex Mono — titles */
   --sans: var(--font-sans), system-ui, sans-serif;        /* Montserrat — body */
   --mono: var(--font-mono), ui-monospace, monospace;      /* Space Mono — labels */
+  --gothic: var(--font-gothic), var(--serif);             /* Grenze Gotisch — accents éditoriaux */
 
   --ui-track: 0.18em;
 
@@ -2505,7 +2508,7 @@ a { color: inherit; text-decoration: none; }
 
 /* Title bar */
 .account-win95-bar {
-  background: linear-gradient(90deg, #1B48CE 0%, #7147D4 100%);
+  background: var(--acct-titlebar);
   padding: 8px 14px;
   display: flex;
   align-items: center;
@@ -2515,10 +2518,10 @@ a { color: inherit; text-decoration: none; }
 }
 .account-win95-title {
   flex: 1;
-  font-family: var(--mono);
-  font-size: 0.68rem;
+  font-family: var(--gothic);
+  font-size: 0.92rem;
   color: #fff;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
@@ -2621,7 +2624,7 @@ a { color: inherit; text-decoration: none; }
   box-shadow: var(--ldl-shadow);
 }
 .account-panel-bar {
-  background: linear-gradient(90deg, #1B48CE 0%, #7147D4 100%);
+  background: var(--acct-titlebar);
   padding: 7px 12px;
   display: flex;
   align-items: center;
@@ -2630,11 +2633,11 @@ a { color: inherit; text-decoration: none; }
   flex-shrink: 0;
 }
 .account-panel-title {
-  font-family: var(--mono);
-  font-size: 0.62rem;
+  font-family: var(--gothic);
+  font-size: 0.86rem;
   color: #fff;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
   font-weight: 700;
   flex: 1;
 }
@@ -3275,13 +3278,13 @@ a { color: inherit; text-decoration: none; }
 }
 
 .msn-display-name {
-  font-family: var(--mono);
-  font-size: 1rem;
+  font-family: var(--gothic);
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--ldl-text);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   margin: 0;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 /* Badge déroulant minimaliste */
@@ -3610,14 +3613,15 @@ a { color: inherit; text-decoration: none; }
 }
 .acct-nav-btn {
   font-family: var(--mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.04em;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   text-align: left;
   color: var(--ldl-text);
   background: #fff;
   border: 1px solid var(--ldl-border);
   border-radius: 6px;
-  padding: 10px 14px;
+  padding: 16px 18px;
   cursor: pointer;
   transition: background var(--ldl-transition), border-color var(--ldl-transition), color var(--ldl-transition);
 }
