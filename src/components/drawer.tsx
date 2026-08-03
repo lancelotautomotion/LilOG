@@ -48,6 +48,11 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
           </div>
         </div>
         <nav className="drawer-nav">
+          <div className="drawer-item">
+            <a className="drawer-link drawer-link-closet" href="/dressing-machine" onClick={onClose}>
+              ✦ Dressing Machine
+            </a>
+          </div>
           {LINKS.map((l, i) => (
             <div className={"drawer-item" + (l.sub && expanded === i ? " open" : "")} key={l.key}>
               {l.sub ? (

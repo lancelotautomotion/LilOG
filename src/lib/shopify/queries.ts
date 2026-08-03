@@ -48,6 +48,71 @@ export const FEATURED_PRODUCTS_QUERY = /* GraphQL */ `
   }
 `;
 
+// Whole-catalogue sweep for the Virtual Closet: needs the collection handles
+// (to slot a piece into Hauts / Bas / module) and every variant's size.
+export const ALL_PRODUCTS_QUERY = /* GraphQL */ `
+  query AllProducts($first: Int!, $after: String) {
+    products(first: $first, after: $after, sortKey: CREATED_AT, reverse: true) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          id
+          handle
+          title
+          productType
+          tags
+          availableForSale
+          featuredImage {
+            url
+            altText
+          }
+          images(first: 2) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          collections(first: 10) {
+            edges {
+              node {
+                handle
+              }
+            }
+          }
+          variants(first: 30) {
+            edges {
+              node {
+                id
+                title
+                availableForSale
+                price {
+                  amount
+                  currencyCode
+                }
+                selectedOptions {
+                  name
+                  value
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
   query ProductByHandle($handle: String!) {
     product(handle: $handle) {

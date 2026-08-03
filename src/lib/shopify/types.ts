@@ -105,6 +105,65 @@ export interface Product {
   variantId: string | null;
 }
 
+// ---- Virtual Closet (/dressing-machine) ----
+
+export interface ShopifyClosetNode {
+  id: string;
+  handle: string;
+  title: string;
+  productType: string;
+  tags: string[];
+  availableForSale: boolean;
+  featuredImage: ShopifyImage | null;
+  images: { edges: { node: ShopifyImage }[] };
+  priceRange: { minVariantPrice: ShopifyMoney };
+  collections: { edges: { node: { handle: string } }[] };
+  variants: {
+    edges: {
+      node: {
+        id: string;
+        title: string;
+        availableForSale: boolean;
+        price: ShopifyMoney;
+        selectedOptions: { name: string; value: string }[];
+      };
+    }[];
+  };
+}
+
+export interface AllProductsResponse {
+  products: {
+    pageInfo: { hasNextPage: boolean; endCursor: string | null };
+    edges: { node: ShopifyClosetNode }[];
+  };
+}
+
+/** Where a catalogue piece hangs in the Virtual Closet. */
+export type ClosetSlot = "top" | "bottom" | "jewelry" | "bag" | "accessory" | "shoes";
+
+export interface ClosetVariant {
+  id: string;
+  title: string;
+  available: boolean;
+  price: number;
+  /** Canonical size, or null for one-size / unsized variants. */
+  size: string | null;
+}
+
+export interface ClosetItem {
+  id: string;
+  handle: string;
+  name: string;
+  slot: ClosetSlot;
+  productType: string;
+  price: number;
+  currency: string;
+  image: string;
+  /** Buyable sizes. Empty = one-size, matches whatever the shopper picked. */
+  sizes: string[];
+  variants: ClosetVariant[];
+}
+
 // ---- Cart (Storefront Cart API) ----
 
 export interface ShopifyCartLineNode {
