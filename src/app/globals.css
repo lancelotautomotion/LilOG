@@ -2994,6 +2994,10 @@ a { color: inherit; text-decoration: none; }
   padding: 16px;
   flex: 1;
   min-height: 0;
+  background-image: url('/leo.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 .acct-col { display: flex; flex-direction: column; gap: 12px; }
 
