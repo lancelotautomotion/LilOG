@@ -151,18 +151,6 @@ export function MsnProfile({
             </a>
           )}
 
-          {/* Hey babe — note personnelle MSN */}
-          <div className="msn-personal-note">
-            <div className="msn-note-header">
-              <span className="msn-note-icon">💗</span>
-              <span className="msn-note-title">Hey babe !</span>
-            </div>
-            <p className="msn-note-text">
-              Ajoute des pièces à ta wishlist avec le ♥ sur les fiches produit.
-              Garde tes infos à jour pour une expérience 100% smooth. ✦
-            </p>
-          </div>
-
         </div>
       </div>
 

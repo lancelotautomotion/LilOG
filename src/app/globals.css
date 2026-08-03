@@ -2927,7 +2927,7 @@ a { color: inherit; text-decoration: none; }
 /* Body grid */
 .acct-body {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 320px 1fr;
   gap: 16px;
   padding: 16px;
   flex: 1;
@@ -3171,10 +3171,10 @@ a { color: inherit; text-decoration: none; }
 
 /* Corps principal */
 .msn-profile-body {
-  padding: 12px 14px 14px;
+  padding: 18px 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   background: #ECE9D8;
 }
 
@@ -3188,24 +3188,23 @@ a { color: inherit; text-decoration: none; }
 
 .msn-avatar-frame {
   position: relative;
-  width: 72px;
-  height: 72px;
-  /* cadre biseauté Win95 */
-  border-top: 2px solid #666;
-  border-left: 2px solid #666;
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-  box-shadow: inset 1px 1px 0 #999;
-  background: #c0c0c0;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  /* anneau biseauté rétro */
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px #888, 2px 3px 8px rgba(0,0,0,0.25);
+  background: #fff;
   flex-shrink: 0;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .msn-avatar-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
+  background: #fff;
 }
 
 .msn-avatar-placeholder {
@@ -3215,7 +3214,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: center;
   font-family: var(--mono);
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: #fff;
   background: linear-gradient(135deg, #000080, #1084d0);
@@ -3224,10 +3223,10 @@ a { color: inherit; text-decoration: none; }
 /* Petit rond online */
 .msn-avatar-online-dot {
   position: absolute;
-  bottom: -3px;
-  right: -3px;
-  width: 12px;
-  height: 12px;
+  bottom: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
   background: #00c000;
   border: 2px solid #ECE9D8;
   border-radius: 50%;
@@ -3354,42 +3353,6 @@ a { color: inherit; text-decoration: none; }
 
 .msn-edit-btn { margin-top: 2px; }
 
-/* ── Note personnelle MSN (Hey babe intégré) ── */
-.msn-personal-note {
-  background: #fff;
-  border-top: 2px solid #666;
-  border-left: 2px solid #666;
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-  padding: 8px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.msn-note-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.msn-note-icon { font-size: 0.95rem; }
-.msn-note-title {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ldl-accent);
-}
-.msn-note-text {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  color: #555;
-  line-height: 1.6;
-  margin: 0;
-  letter-spacing: 0.02em;
-}
-
 /* ── Modal sélecteur d'avatar ── */
 .msn-modal-scrim {
   position: fixed;
@@ -3498,16 +3461,16 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  background: #c0c0c0;
+  background: #fff;
   border-top: 2px solid #fff;
   border-left: 2px solid #fff;
   border-right: 2px solid #444;
   border-bottom: 2px solid #444;
-  padding: 6px 4px;
+  padding: 8px 6px 6px;
   cursor: pointer;
   transition: filter 0.15s;
 }
-.msn-avatar-option:hover { filter: brightness(0.95); }
+.msn-avatar-option:hover { filter: brightness(0.96); background: #f0f4ff; }
 .msn-avatar-option:active {
   border-top: 2px solid #444;
   border-left: 2px solid #444;
@@ -3519,14 +3482,15 @@ a { color: inherit; text-decoration: none; }
   border-left: 2px solid #444;
   border-right: 2px solid #fff;
   border-bottom: 2px solid #fff;
-  background: #b0d0ff;
+  background: #ddeeff;
 }
 
 .msn-avatar-option-img {
-  width: 64px;
-  height: 64px;
-  object-fit: cover;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
   display: block;
+  background: #fff;
   image-rendering: auto;
 }
 
