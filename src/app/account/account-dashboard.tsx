@@ -180,7 +180,7 @@ export function AccountDashboard({
 
         {/* ── Title bar ─────────────────────────────────────── */}
         <div className="account-win95-bar">
-          <span className="account-win95-title">♛ Lil&apos;OG — Espace Client</span>
+          <span className="account-win95-title">Lil&apos;OG — Espace Client</span>
           <div className="account-win95-chrome">
             <span>_</span>
             <span>□</span>
@@ -428,7 +428,7 @@ export function AccountDashboard({
               📍 {addresses.length} adresse{addresses.length > 1 ? "s" : ""}
             </div>
           )}
-          <div className="account-status-cell">♛ Lil&apos;OG © 2025</div>
+          <div className="account-status-cell">Lil&apos;OG © 2026</div>
         </div>
 
       </div>
