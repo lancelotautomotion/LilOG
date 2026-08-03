@@ -6,6 +6,7 @@ import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { useWishlist } from "@/hooks/use-wishlist";
+import { useCart } from "@/lib/cart-context";
 
 const ROTATIONS = ["rotate-2", "-rotate-2", "rotate-1", "-rotate-3", "-rotate-1", "rotate-3"];
 const TAPE_ROT = ["-3deg", "2deg", "-1.5deg", "3deg", "1deg", "-2.5deg"];
@@ -21,6 +22,14 @@ const LAYOUTS = [
 export function WishlistShell() {
   const [menu, setMenu] = useState(false);
   const { items, ready, remove } = useWishlist();
+  const { addItem } = useCart();
+  const [added, setAdded] = useState<Record<string, boolean>>({});
+
+  const addToCart = async (handle: string, variantId: string) => {
+    setAdded((prev) => ({ ...prev, [handle]: true }));
+    await addItem(variantId, 1);
+    setTimeout(() => setAdded((prev) => ({ ...prev, [handle]: false })), 1400);
+  };
 
   return (
     <>
@@ -81,12 +90,18 @@ export function WishlistShell() {
                       </Link>
                       <div className="burnbook-title">{item.title}</div>
                       <div className="burnbook-price">{item.price} €</div>
-                      <Link
-                        href={`/products/${item.handle}`}
-                        className="account-btn primary burnbook-cart-btn"
-                      >
-                        GET IN LOSER →
-                      </Link>
+                      {item.variantId ? (
+                        <button
+                          className="account-btn primary burnbook-cart-btn"
+                          onClick={() => addToCart(item.handle, item.variantId!)}
+                        >
+                          {added[item.handle] ? "AJOUTÉ ✓" : "GET IN LOSER →"}
+                        </button>
+                      ) : (
+                        <Link href={`/products/${item.handle}`} className="account-btn primary burnbook-cart-btn">
+                          VOIR LA FICHE →
+                        </Link>
+                      )}
                     </div>
                   );
                 })}

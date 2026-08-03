@@ -141,7 +141,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                 </button>
                 <button
                   className={"pdp-like" + (liked ? " on" : "")}
-                  onClick={() => toggle({ handle: product.handle, title: product.name, price: product.price, image: product.images[0] })}
+                  onClick={() => toggle({ handle: product.handle, title: product.name, price: product.price, image: product.images[0], variantId })}
                   aria-label="Ajouter aux favoris"
                 >
                   <svg viewBox="0 0 24 24" width="22" height="22" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8">

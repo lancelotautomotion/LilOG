@@ -25,7 +25,7 @@ export function ProductCard({ product, idx }: { product: Product; idx: number })
 
   const toggleFav = (e: React.MouseEvent) => {
     e.preventDefault();
-    toggle({ handle: product.handle, title: product.name, price: product.price, image: product.imageA });
+    toggle({ handle: product.handle, title: product.name, price: product.price, image: product.imageA, variantId: product.variantId });
   };
 
   return (
