@@ -23,12 +23,16 @@ export function WishlistShell() {
   const [menu, setMenu] = useState(false);
   const { items, ready, remove } = useWishlist();
   const { addItem } = useCart();
-  const [added, setAdded] = useState<Record<string, boolean>>({});
+  const [pending, setPending] = useState<Record<string, boolean>>({});
 
   const addToCart = async (handle: string, variantId: string) => {
-    setAdded((prev) => ({ ...prev, [handle]: true }));
-    await addItem(variantId, 1);
-    setTimeout(() => setAdded((prev) => ({ ...prev, [handle]: false })), 1400);
+    setPending((prev) => ({ ...prev, [handle]: true }));
+    try {
+      await addItem(variantId, 1);
+      remove(handle);
+    } catch {
+      setPending((prev) => ({ ...prev, [handle]: false }));
+    }
   };
 
   return (
@@ -94,8 +98,9 @@ export function WishlistShell() {
                         <button
                           className="account-btn primary burnbook-cart-btn"
                           onClick={() => addToCart(item.handle, item.variantId!)}
+                          disabled={pending[item.handle]}
                         >
-                          {added[item.handle] ? "AJOUTÉ ✓" : "GET IN LOSER →"}
+                          {pending[item.handle] ? "AJOUT…" : "GET IN LOSER →"}
                         </button>
                       ) : (
                         <Link href={`/products/${item.handle}`} className="account-btn primary burnbook-cart-btn">
