@@ -6,6 +6,7 @@ import type {
   Product,
   ProductByHandleResponse,
   ProductDetail,
+  RichMetafield,
   ShopifyProductNode,
 } from "./types";
 
@@ -52,15 +53,43 @@ function stripEmoji(str: string): string {
   return str.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/u, "").trim();
 }
 
-// Ces pièces vintage sont uniques : la taille n'est pas toujours un vrai variant
-// Shopify ("Default Title" si le produit n'a qu'une option), donc on la déduit
-// aussi des options du produit — même heuristique utilisée sur la PDP et le panier.
+// Un champ méta Catégorie Shopify (namespace "shopify") peut être du texte
+// simple OU référencer un/des metaobject(s) de taxonomie — la vraie valeur
+// affichable vit alors dans le champ "label" du/des metaobject(s) référencé(s).
+function resolveRichMetafield(meta: RichMetafield | null | undefined): string | null {
+  if (!meta) return null;
+  const fromNodes = meta.references?.nodes
+    ?.map((n) => n.field?.value)
+    .filter((v): v is string => Boolean(v));
+  if (fromNodes?.length) return fromNodes.join(", ");
+  if (meta.reference?.field?.value) return meta.reference.field.value;
+  if (meta.value && !meta.value.startsWith("gid://") && !meta.value.startsWith('["gid://')) {
+    try {
+      const parsed = JSON.parse(meta.value);
+      if (Array.isArray(parsed)) {
+        const strs = parsed.filter((v): v is string => typeof v === "string" && !v.startsWith("gid://"));
+        return strs.length ? strs.join(", ") : null;
+      }
+    } catch { /* pas du JSON — valeur texte simple */ }
+    return meta.value;
+  }
+  return null;
+}
+
+// Ces pièces vintage sont uniques : la taille vit dans le champ méta Catégorie
+// "Taille" (shopify.size) ; à défaut on retombe sur les options du variant
+// ("Default Title" si le produit n'a qu'une option) — même heuristique
+// utilisée sur la PDP et le panier.
 export function extractSizeValue(
+  sizeMeta: RichMetafield | null | undefined,
   options: ShopifyProductNode["options"] | undefined,
   handle?: string,
 ): string | null {
+  const fromMeta = resolveRichMetafield(sizeMeta);
+  if (fromMeta) return fromMeta;
+
   if (process.env.NODE_ENV !== "production" && handle) {
-    console.log("[size] options for", handle, JSON.stringify(options));
+    console.log("[size] no sizeMeta, options for", handle, JSON.stringify(options));
   }
   const sizeOption = options?.find((o) =>
     /taille|size|pointure|dimension/i.test(o.name) ||
@@ -151,6 +180,6 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
         availableForSale: e.node.availableForSale,
       }))
       .filter((v) => v.title !== "Default Title"),
-    size: extractSizeValue(node.options, node.handle),
+    size: extractSizeValue(node.sizeMeta, node.options, node.handle),
   };
 }
