@@ -3191,10 +3191,9 @@ a { color: inherit; text-decoration: none; }
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  /* anneau biseauté rétro */
   border: 3px solid #fff;
   box-shadow: 0 0 0 2px #888, 2px 3px 8px rgba(0,0,0,0.25);
-  background: #fff;
+  background: transparent;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -3204,7 +3203,7 @@ a { color: inherit; text-decoration: none; }
   height: 100%;
   object-fit: contain;
   display: block;
-  background: #fff;
+  background: transparent;
 }
 
 .msn-avatar-placeholder {
@@ -3461,16 +3460,16 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  background: #fff;
+  background: #ECE9D8;
   border-top: 2px solid #fff;
   border-left: 2px solid #fff;
   border-right: 2px solid #444;
   border-bottom: 2px solid #444;
   padding: 8px 6px 6px;
   cursor: pointer;
-  transition: filter 0.15s;
+  transition: background 0.15s;
 }
-.msn-avatar-option:hover { filter: brightness(0.96); background: #f0f4ff; }
+.msn-avatar-option:hover { background: #dde8f5; }
 .msn-avatar-option:active {
   border-top: 2px solid #444;
   border-left: 2px solid #444;
@@ -3482,15 +3481,15 @@ a { color: inherit; text-decoration: none; }
   border-left: 2px solid #444;
   border-right: 2px solid #fff;
   border-bottom: 2px solid #fff;
-  background: #ddeeff;
+  background: #c8dcf8;
 }
 
 .msn-avatar-option-img {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   display: block;
-  background: #fff;
+  background: transparent;
   image-rendering: auto;
 }
 

@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+
+const LS_KEY = "lilog_msn_avatar";
 
 const MSN_AVATARS = [
   { name: "Carrie Bradshaw", src: "/MSN/Carrie Bradshaw.png" },
@@ -32,11 +34,31 @@ export function MsnProfile({
   email: string;
   shopifyToken: string | null;
 }) {
-  const [avatar, setAvatar]         = useState<string | null>(null);
-  const [modalOpen, setModalOpen]   = useState(false);
-  const [status, setStatus]         = useState(MSN_STATUSES[0]);
+  const [avatar, setAvatar]             = useState<string | null>(null);
+  const [modalOpen, setModalOpen]       = useState(false);
+  const [status, setStatus]             = useState(MSN_STATUSES[0]);
   const [customStatus, setCustomStatus] = useState("");
   const [editingStatus, setEditingStatus] = useState(false);
+
+  /* Charge l'avatar depuis localStorage au premier rendu */
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(LS_KEY);
+      if (saved) setAvatar(saved);
+    } catch {/* SSR / private browsing */}
+  }, []);
+
+  function pickAvatar(src: string) {
+    setAvatar(src);
+    try { localStorage.setItem(LS_KEY, src); } catch {/* ignore */}
+    setModalOpen(false);
+  }
+
+  function clearAvatar() {
+    setAvatar(null);
+    try { localStorage.removeItem(LS_KEY); } catch {/* ignore */}
+    setModalOpen(false);
+  }
 
   const displayStatus = customStatus || status.label;
 
@@ -58,8 +80,8 @@ export function MsnProfile({
                 <Image
                   src={avatar}
                   alt="Display pic"
-                  width={72}
-                  height={72}
+                  width={96}
+                  height={96}
                   className="msn-avatar-img"
                   unoptimized
                 />
@@ -83,7 +105,6 @@ export function MsnProfile({
           <div className="msn-identity">
             <div className="msn-display-name">{fullName}</div>
 
-            {/* Status selector */}
             <div className="msn-status-row">
               <span className="msn-status-emoji">{status.emoji}</span>
               {editingStatus ? (
@@ -109,7 +130,6 @@ export function MsnProfile({
               )}
             </div>
 
-            {/* Quick status presets */}
             <div className="msn-status-presets">
               {MSN_STATUSES.map(s => (
                 <button
@@ -124,7 +144,6 @@ export function MsnProfile({
             </div>
           </div>
 
-          {/* Divider */}
           <div className="msn-divider" />
 
           {/* Info fields */}
@@ -158,12 +177,10 @@ export function MsnProfile({
       {modalOpen && (
         <div className="msn-modal-scrim" onClick={() => setModalOpen(false)}>
           <div className="msn-modal" onClick={e => e.stopPropagation()}>
-            {/* Win95 title bar */}
             <div className="msn-modal-bar">
               <span className="msn-modal-title">🖼️ Choisir une display pic</span>
               <div className="msn-modal-chrome">
-                <span />
-                <span />
+                <span /><span />
                 <button
                   className="msn-modal-close"
                   onClick={() => setModalOpen(false)}
@@ -179,14 +196,14 @@ export function MsnProfile({
                   <button
                     key={av.name}
                     className={"msn-avatar-option" + (avatar === av.src ? " selected" : "")}
-                    onClick={() => { setAvatar(av.src); setModalOpen(false); }}
+                    onClick={() => pickAvatar(av.src)}
                     title={av.name}
                   >
                     <Image
                       src={av.src}
                       alt={av.name}
-                      width={64}
-                      height={64}
+                      width={80}
+                      height={80}
                       className="msn-avatar-option-img"
                       unoptimized
                     />
@@ -196,10 +213,7 @@ export function MsnProfile({
               </div>
 
               {avatar && (
-                <button
-                  className="msn-clear-avatar"
-                  onClick={() => { setAvatar(null); setModalOpen(false); }}
-                >
+                <button className="msn-clear-avatar" onClick={clearAvatar}>
                   Retirer la photo
                 </button>
               )}
