@@ -71,7 +71,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
                 <>
                   <div className="drawer-parent">
                     <a href={l.href} onClick={onClose} className="drawer-parent-link">
-                      <span className="drawer-folder-icon" aria-hidden="true">📁</span>
+                      <Icon.folder className="drawer-folder-icon" aria-hidden="true" />
                       {DRAWER_LABELS[l.key] ?? t.cat[l.key]}
                     </a>
                     <button
@@ -92,18 +92,28 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
                               className="drawer-subsub-toggle"
                               onClick={() => setExpandedSub(expandedSub === s.href ? null : s.href)}
                             >
+                              <span className="drawer-file-icon" aria-hidden="true">📄</span>
                               {s.label}
                               <Icon.chevD className="caret-sm" />
                             </button>
                             <div className="drawer-subsub">
-                              <a href={s.href} onClick={onClose} className="drawer-subsub-all">Tout voir</a>
+                              <a href={s.href} onClick={onClose} className="drawer-subsub-all">
+                                <span className="drawer-file-icon" aria-hidden="true">📄</span>
+                                Tout voir
+                              </a>
                               {s.sub.map((ss) => (
-                                <a key={ss.href} href={ss.href} onClick={onClose}>{ss.label}</a>
+                                <a key={ss.href} href={ss.href} onClick={onClose}>
+                                  <span className="drawer-file-icon" aria-hidden="true">📄</span>
+                                  {ss.label}
+                                </a>
                               ))}
                             </div>
                           </div>
                         ) : (
-                          <a key={s.href} href={s.href} onClick={onClose}>{s.label}</a>
+                          <a key={s.href} href={s.href} onClick={onClose}>
+                            <span className="drawer-file-icon" aria-hidden="true">📄</span>
+                            {s.label}
+                          </a>
                         )
                       )}
                     </div>
@@ -111,7 +121,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
                 </>
               ) : (
                 <a className="drawer-link" href={l.href} onClick={onClose}>
-                  <span className="drawer-folder-icon" aria-hidden="true">📁</span>
+                  <Icon.folder className="drawer-folder-icon" aria-hidden="true" />
                   {DRAWER_LABELS[l.key] ?? t.cat[l.key]}
                 </a>
               )}

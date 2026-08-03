@@ -302,7 +302,7 @@ a { color: inherit; text-decoration: none; }
 }
 .drawer-scrim.open { opacity: 1; pointer-events: auto; }
 
-/* ── Drawer panel: fenêtre Win95 épurée, fond blanc pur ── */
+/* ── Drawer panel: fenêtre Win95 épurée, fond blanc pur, coin droit arrondi ── */
 .drawer {
   position: fixed;
   top: 0; left: 0; bottom: 0;
@@ -315,12 +315,14 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
   border-right: 1px solid var(--ldl-border);
+  border-radius: 0 18px 18px 0;
   box-shadow: var(--ldl-shadow-window);
 }
 .drawer.open { transform: translateX(0); }
 
-/* Title bar — dégradé bleu marine → violet, titre en Grenze Gotisch */
+/* Title bar — dégradé bleu marine → violet, titre en monospace (comme /account) */
 .drawer-w95-bar {
   display: flex;
   align-items: center;
@@ -334,11 +336,11 @@ a { color: inherit; text-decoration: none; }
   z-index: 2;
 }
 .drawer-w95-title {
-  font-family: var(--gothic);
-  font-size: 1.15rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
   font-weight: 700;
   color: #fff;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   flex: 1;
 }
@@ -367,21 +369,22 @@ a { color: inherit; text-decoration: none; }
 .drawer-w95-close { cursor: pointer; transition: background 120ms; }
 .drawer-w95-close:hover { background: rgba(255,255,255,0.22); }
 
-/* Nav content — liste type explorateur de fichiers */
+/* Nav content — liste de cartes arrondies, façon /account (acct-nav-btn) */
 .drawer-nav {
-  padding: 6px 0 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 8px;
   flex: 1;
   background: #fff;
 }
 .drawer-item {
   display: flex;
   flex-direction: column;
+  gap: 6px;
 }
 
-/* Liens principaux — monospace, alignés à gauche, surlignage plein-largeur au survol */
+/* Liens principaux — cartes blanches arrondies, monospace, surlignage plein au survol */
 .drawer-link, .drawer-parent {
   font-family: var(--mono);
   font-size: 0.82rem;
@@ -389,26 +392,29 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.03em;
   line-height: 1.3;
   color: var(--ldl-text);
-  background: none;
-  border: none;
-  padding: 13px 22px;
+  background: #fff;
+  border: 1px solid var(--ldl-border);
+  border-radius: 8px;
+  padding: 14px 16px;
   text-align: left;
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
   cursor: pointer;
   text-transform: uppercase;
 }
 .drawer-link:hover,
 .drawer-parent:hover {
   background: #1D35D9;
+  border-color: #1D35D9;
   color: #fff;
 }
 .drawer-parent { width: 100%; }
 .drawer-link { width: 100%; }
 
 .drawer-folder-icon { flex-shrink: 0; }
+.drawer-file-icon { flex-shrink: 0; }
 
 /* Nom de catégorie : lien qui navigue vers "tout voir" */
 .drawer-parent-link {
@@ -441,10 +447,10 @@ a { color: inherit; text-decoration: none; }
   transition: transform 0.3s cubic-bezier(.76,0,.24,1);
   margin-left: auto;
 }
-.drawer-item.open .drawer-parent:not(:hover) { color: var(--ldl-primary); }
+.drawer-item.open .drawer-parent:not(:hover) { border-color: var(--ldl-primary); color: var(--ldl-primary); }
 .drawer-item.open .caret { transform: rotate(180deg); }
 
-/* Sous-menu — panneau plat, fond blanc/gris très clair, plus de bevel Win95 */
+/* Sous-menu — carte imbriquée, même vibe arrondie */
 .drawer-sub {
   overflow: hidden;
   max-height: 0;
@@ -454,9 +460,12 @@ a { color: inherit; text-decoration: none; }
 .drawer-sub-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2px 8px;
-  padding: 4px 22px 14px 48px;
+  gap: 3px 8px;
+  padding: 10px 12px;
   background: var(--ldl-bg);
+  border: 1px solid var(--ldl-border);
+  border-radius: 8px;
+  margin-top: 6px;
 }
 .drawer-sub-inner a {
   font-family: var(--mono);
@@ -468,7 +477,9 @@ a { color: inherit; text-decoration: none; }
   padding: 6px 8px;
   border-radius: 4px;
   transition: color 0.15s, background 0.15s;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .drawer-sub-inner a:hover { color: #fff; background: #1D35D9; }
 
@@ -482,7 +493,7 @@ a { color: inherit; text-decoration: none; }
   transition: color 0.15s, background 0.15s;
 }
 .drawer-subsub-toggle:hover { color: #fff; background: #1D35D9; }
-.drawer-subsub-toggle .caret-sm { width: 9px; height: 9px; transition: transform 0.3s; color: inherit; }
+.drawer-subsub-toggle .caret-sm { width: 9px; height: 9px; transition: transform 0.3s; color: inherit; margin-left: auto; }
 .drawer-subsub-wrap.open .drawer-subsub-toggle .caret-sm { transform: rotate(180deg); }
 .drawer-subsub {
   overflow: hidden; max-height: 0;
@@ -495,6 +506,9 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.62rem; color: var(--ldl-muted); padding: 5px 8px;
   border-radius: 4px;
   transition: color 0.15s, background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .drawer-subsub a:hover { color: #fff; background: #1D35D9; }
 .drawer-subsub-all { color: var(--ldl-muted) !important; }
