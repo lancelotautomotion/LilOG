@@ -54,6 +54,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
   const router = useRouter();
   const [menu, setMenu] = useState(false);
   const [added, setAdded] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
   const { has, toggle } = useWishlist();
   const liked = has(product.handle);
 
@@ -70,8 +71,14 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
   const add = async () => {
     if (sold || !variantId) return;
     setAdded(true);
-    await addItem(variantId, 1);
-    setTimeout(() => setAdded(false), 1400);
+    setAddError(null);
+    try {
+      await addItem(variantId, 1);
+      setTimeout(() => setAdded(false), 1400);
+    } catch (err) {
+      setAdded(false);
+      setAddError(err instanceof Error ? err.message : "Erreur lors de l'ajout au panier");
+    }
   };
 
   return (
@@ -142,6 +149,11 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   </svg>
                 </button>
               </div>
+              {addError && (
+                <p style={{ color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.68rem", marginTop: "8px" }}>
+                  ⚠ {addError}
+                </p>
+              )}
 
               {product.descriptionHtml && (() => {
                 const { sections } = parseDescription(product.descriptionHtml);

@@ -63,7 +63,7 @@ export async function createCart(
     0,
   );
   const { cart, userErrors } = data.cartCreate;
-  if (!cart) throw new Error(userErrors[0]?.message ?? "Failed to create cart");
+  if (!cart || userErrors.length > 0) throw new Error(userErrors[0]?.message ?? "Failed to create cart");
   return mapCart(cart);
 }
 
@@ -87,7 +87,7 @@ export async function addCartLine(cartId: string, variantId: string, quantity = 
     0,
   );
   const { cart, userErrors } = data.cartLinesAdd;
-  if (!cart) throw new Error(userErrors[0]?.message ?? "Failed to add to cart");
+  if (!cart || userErrors.length > 0) throw new Error(userErrors[0]?.message ?? "Failed to add to cart");
   return mapCart(cart);
 }
 

@@ -61,8 +61,16 @@ export async function addToCartAction(variantId: string, quantity = 1): Promise<
   try {
     const cart = await addCartLine(cartId, variantId, quantity);
     return (await ensureLinkedToCustomer(cartId, token)) ?? cart;
-  } catch {
-    // The stored cart id is stale (e.g. an old/expired cart) — start a fresh one.
+  } catch (err) {
+    // Only recreate the cart when the cart itself is invalid/expired.
+    // Other errors (invalid variant, sold out, etc.) should propagate.
+    const msg = err instanceof Error ? err.message.toLowerCase() : "";
+    const isStaleCart =
+      msg.includes("cart not found") ||
+      msg.includes("cart does not exist") ||
+      msg.includes("invalid cart") ||
+      msg.includes("provided invalid value");
+    if (!isStaleCart) throw err;
     const cart = await createCart(variantId, quantity, token);
     jar.set(CART_COOKIE, cart.id, { sameSite: "lax", secure: true, maxAge: 60 * 60 * 24 * 30 });
     return cart;
