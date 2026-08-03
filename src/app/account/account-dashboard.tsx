@@ -248,12 +248,12 @@ export function AccountDashboard({
                     </div>
                     <div className="account-panel-body" style={{ padding: "8px", flex: 1 }}>
                       {orders.length === 0 ? (
-                        <div className="account-orders-empty">
-                          <p style={{ marginBottom: "16px" }}>
-                            Aucune commande pour le moment.<br />
-                            Découvre nos dernières pièces.
+                        <div className="account-orders-empty acct-orders-cta">
+                          <p className="acct-orders-cta-text">
+                            ⚠️ Alerte style : Get in, babe.<br />
+                            Ta première pièce unique t&apos;attend.
                           </p>
-                          <a href="/#drops" className="account-btn primary"><span>✦</span> Voir le dernier drop</a>
+                          <a href="/#drops" className="account-btn primary acct-orders-cta-btn">SETUP_MY_LOOK.EXE →</a>
                         </div>
                       ) : (
                         <>
@@ -292,12 +292,12 @@ export function AccountDashboard({
                       <PanelChrome />
                     </div>
                     <div className="account-panel-body" style={{ padding: "8px", flex: 1 }}>
-                      <div className="account-orders-empty">
-                        <p style={{ marginBottom: "16px" }}>
-                          Aucune commande pour le moment.<br />
-                          Le prochain coup de cœur t&apos;attend.
+                      <div className="account-orders-empty acct-orders-cta">
+                        <p className="acct-orders-cta-text">
+                          ⚠️ Alerte style : Get in, babe.<br />
+                          Ta première pièce unique t&apos;attend.
                         </p>
-                        <a href="/#drops" className="account-btn primary"><span>✦</span> Voir le dernier drop</a>
+                        <a href="/#drops" className="account-btn primary acct-orders-cta-btn">SETUP_MY_LOOK.EXE →</a>
                       </div>
                     </div>
                   </>
