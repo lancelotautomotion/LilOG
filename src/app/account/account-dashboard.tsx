@@ -187,8 +187,6 @@ export function AccountDashboard({
 
         {/* ── Toolbar ───────────────────────────────────────── */}
         <div className="acct-toolbar">
-          <a href="/" className="account-toolbar-btn">Boutique</a>
-          <a href="/account/orders" className="account-toolbar-btn">Commandes</a>
           <a href="/wishlist" className="account-toolbar-btn">♥ Wishlist</a>
           {shopifyToken && <a href="/account/edit" className="account-toolbar-btn">Modifier le profil</a>}
           <div className="account-toolbar-sep" />
