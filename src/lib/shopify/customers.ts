@@ -178,7 +178,7 @@ export async function shopifyCustomerCreate(
       customer: ShopifyCustomer | null;
       customerUserErrors: { message: string }[];
     };
-  }>(CUSTOMER_CREATE, { input: { email, password, firstName, lastName } }).catch(() => null);
+  }>(CUSTOMER_CREATE, { input: { email, password, firstName, lastName } }, 0).catch(() => null);
 
   if (!data) return { customer: null, error: "Erreur réseau" };
   const errs = data.customerCreate.customerUserErrors;
@@ -195,7 +195,7 @@ export async function shopifyCustomerLogin(
       customerAccessToken: { accessToken: string; expiresAt: string } | null;
       customerUserErrors: { message: string }[];
     };
-  }>(CUSTOMER_LOGIN, { input: { email, password } }).catch(() => null);
+  }>(CUSTOMER_LOGIN, { input: { email, password } }, 0).catch(() => null);
 
   if (!data) return { token: null, error: "Erreur réseau" };
   const errs = data.customerAccessTokenCreate.customerUserErrors;
@@ -208,6 +208,7 @@ export async function shopifyGetCustomer(token: string): Promise<ShopifyCustomer
   const data = await shopifyFetch<{ customer: ShopifyCustomer | null }>(
     CUSTOMER_QUERY,
     { token },
+    0,
   ).catch(() => null);
   return data?.customer ?? null;
 }
@@ -220,7 +221,7 @@ export async function shopifyGetCustomerWithOrders(token: string): Promise<{
     customer: (ShopifyCustomer & {
       orders: { edges: { node: ShopifyOrder }[] };
     }) | null;
-  }>(CUSTOMER_WITH_ORDERS_QUERY, { token }).catch(() => null);
+  }>(CUSTOMER_WITH_ORDERS_QUERY, { token }, 0).catch(() => null);
 
   if (!data?.customer) return { customer: null, orders: [] };
   const { orders, ...customer } = data.customer;
@@ -241,7 +242,7 @@ export async function shopifyGetCustomerOrders(
         pageInfo: { hasNextPage: boolean; endCursor: string | null };
       };
     } | null;
-  }>(CUSTOMER_ORDERS_QUERY, { token, cursor: cursor ?? null }).catch(() => null);
+  }>(CUSTOMER_ORDERS_QUERY, { token, cursor: cursor ?? null }, 0).catch(() => null);
 
   if (!data?.customer) return { orders: [], hasNextPage: false, endCursor: null };
   return {
@@ -257,7 +258,7 @@ export async function shopifyGetCustomerOrder(
 ): Promise<ShopifyOrder | null> {
   const data = await shopifyFetch<{
     customer: { order: ShopifyOrder | null } | null;
-  }>(CUSTOMER_ORDER_QUERY, { token, id: orderId }).catch(() => null);
+  }>(CUSTOMER_ORDER_QUERY, { token, id: orderId }, 0).catch(() => null);
   return data?.customer?.order ?? null;
 }
 
@@ -346,7 +347,7 @@ export async function shopifyGetAddresses(token: string): Promise<{
       defaultAddress: { id: string } | null;
       addresses: { edges: { node: ShopifyAddress }[] };
     } | null;
-  }>(CUSTOMER_ADDRESSES_QUERY, { token }).catch(() => null);
+  }>(CUSTOMER_ADDRESSES_QUERY, { token }, 0).catch(() => null);
 
   if (!data?.customer) return { addresses: [], defaultAddressId: null };
   return {
@@ -364,7 +365,7 @@ export async function shopifyCreateAddress(
       customerAddress: ShopifyAddress | null;
       customerUserErrors: { message: string }[];
     };
-  }>(ADDRESS_CREATE, { token, address }).catch(() => null);
+  }>(ADDRESS_CREATE, { token, address }, 0).catch(() => null);
 
   if (!data) return { address: null, error: "Erreur réseau" };
   const errs = data.customerAddressCreate.customerUserErrors;
@@ -382,7 +383,7 @@ export async function shopifyUpdateAddress(
       customerAddress: ShopifyAddress | null;
       customerUserErrors: { message: string }[];
     };
-  }>(ADDRESS_UPDATE, { token, id, address }).catch(() => null);
+  }>(ADDRESS_UPDATE, { token, id, address }, 0).catch(() => null);
 
   if (!data) return { address: null, error: "Erreur réseau" };
   const errs = data.customerAddressUpdate.customerUserErrors;
@@ -399,7 +400,7 @@ export async function shopifyDeleteAddress(
       deletedCustomerAddressId: string | null;
       customerUserErrors: { message: string }[];
     };
-  }>(ADDRESS_DELETE, { token, id }).catch(() => null);
+  }>(ADDRESS_DELETE, { token, id }, 0).catch(() => null);
 
   if (!data) return { error: "Erreur réseau" };
   const errs = data.customerAddressDelete.customerUserErrors;
@@ -416,7 +417,7 @@ export async function shopifySetDefaultAddress(
       customer: { id: string } | null;
       customerUserErrors: { message: string }[];
     };
-  }>(ADDRESS_DEFAULT, { token, addressId }).catch(() => null);
+  }>(ADDRESS_DEFAULT, { token, addressId }, 0).catch(() => null);
 
   if (!data) return { error: "Erreur réseau" };
   const errs = data.customerDefaultAddressUpdate.customerUserErrors;
@@ -433,7 +434,7 @@ export async function shopifyUpdateCustomer(
       customer: ShopifyCustomer | null;
       customerUserErrors: { message: string }[];
     };
-  }>(CUSTOMER_UPDATE, { token, customer: input }).catch(() => null);
+  }>(CUSTOMER_UPDATE, { token, customer: input }, 0).catch(() => null);
 
   if (!data) return { customer: null, error: "Erreur réseau" };
   const errs = data.customerUpdate.customerUserErrors;

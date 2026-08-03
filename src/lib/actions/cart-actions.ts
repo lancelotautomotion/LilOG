@@ -24,7 +24,10 @@ async function getShopifyToken(): Promise<string | null> {
    condition pour que la commande finale apparaisse dans son historique. */
 async function ensureLinkedToCustomer(cartId: string, token: string | null): Promise<Cart | null> {
   if (!token) return null;
-  return cartBuyerIdentityUpdate(cartId, token).catch(() => null);
+  return cartBuyerIdentityUpdate(cartId, token).catch((err) => {
+    console.error("[cart] échec de l'association panier ↔ client:", err instanceof Error ? err.message : err);
+    return null;
+  });
 }
 
 export async function getCartAction(): Promise<Cart | null> {
