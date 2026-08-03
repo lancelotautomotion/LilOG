@@ -410,6 +410,16 @@ a { color: inherit; text-decoration: none; }
   border-color: #1D35D9;
   color: #fff;
 }
+
+/* Contact — bouton en couleur inversée (permanent), léger espace au-dessus */
+.drawer-item-contact { margin-top: 10px; }
+.drawer-link-contact,
+.drawer-link-contact:hover {
+  background: #1D35D9;
+  border-color: #1D35D9;
+  color: #fff;
+}
+.drawer-link-contact:hover { filter: brightness(1.1); }
 .drawer-parent { width: 100%; }
 .drawer-link { width: 100%; }
 
