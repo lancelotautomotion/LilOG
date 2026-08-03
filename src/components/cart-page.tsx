@@ -212,7 +212,7 @@ export function CartPage() {
                         <div className="oc-summary-info">
                           <span className="oc-summary-name">{line.title}</span>
                           <div className="oc-summary-meta">
-                            {line.variantTitle && <span className="oc-summary-meta-item">Taille : {line.variantTitle}</span>}
+                            {(line.variantTitle || line.size) && <span className="oc-summary-meta-item">Taille : {line.variantTitle || line.size}</span>}
                             {line.etat && <span className="oc-summary-meta-item">État : {line.etat}</span>}
                             {line.vendor && <span className="oc-summary-meta-item">Marque : {line.vendor}</span>}
                           </div>

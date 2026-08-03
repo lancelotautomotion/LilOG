@@ -116,7 +116,13 @@ export interface ShopifyCartLineNode {
     availableForSale: boolean;
     price: ShopifyMoney;
     image: ShopifyImage | null;
-    product: { title: string; handle: string; vendor: string; etat: { value: string } | null };
+    product: {
+      title: string;
+      handle: string;
+      vendor: string;
+      etat: { value: string } | null;
+      options?: { name: string; optionValues?: { name: string }[] }[];
+    };
   };
 }
 
@@ -160,6 +166,7 @@ export interface CartLine {
   available: boolean;
   vendor: string;
   etat: string | null;
+  size: string | null;
 }
 
 export interface Cart {

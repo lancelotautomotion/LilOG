@@ -218,6 +218,12 @@ const CART_FRAGMENT = /* GraphQL */ `
                 etat: metafield(namespace: "custom", key: "etat") {
                   value
                 }
+                options {
+                  name
+                  optionValues {
+                    name
+                  }
+                }
               }
             }
           }
