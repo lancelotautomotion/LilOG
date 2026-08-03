@@ -1640,11 +1640,12 @@ a { color: inherit; text-decoration: none; }
   gap: 10px;
 }
 .oc-win95-title {
-  font-family: var(--gothic);
-  font-size: 1.05rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
   font-weight: 700;
   color: #fff;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -1913,7 +1914,7 @@ a { color: inherit; text-decoration: none; }
 
 /* ── Summary panel (fenêtre Win95, toujours visible, à droite de la machine) ── */
 .oc-summary {
-  width: min(340px, 92vw);
+  width: min(620px, 94vw);
   flex-shrink: 0;
   align-self: stretch;
   display: flex;
@@ -1947,8 +1948,8 @@ a { color: inherit; text-decoration: none; }
 .oc-summary-line {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px;
+  gap: 14px;
+  padding: 10px;
   background: #fff;
   border: 1px solid var(--ldl-border);
   border-radius: 8px;
@@ -1962,10 +1963,11 @@ a { color: inherit; text-decoration: none; }
 }
 .oc-summary-line-active .oc-summary-name,
 .oc-summary-line-active .oc-summary-price,
-.oc-summary-line-active .oc-summary-variant { color: #fff; }
+.oc-summary-line-active .oc-summary-meta-item { color: #fff; }
+.oc-summary-line-active .oc-summary-meta-item { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.14); }
 .oc-summary-thumb {
-  width: 48px;
-  height: 60px;
+  width: 64px;
+  height: 80px;
   flex-shrink: 0;
   background: var(--ldl-bg);
   border: 1px solid var(--ldl-border);
@@ -1985,25 +1987,38 @@ a { color: inherit; text-decoration: none; }
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 5px;
 }
 .oc-summary-name {
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 700;
   text-transform: uppercase;
   color: var(--ldl-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.oc-summary-variant {
+/* Taille / État / Marque — infos étendues de la ligne produit */
+.oc-summary-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.oc-summary-meta-item {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.02em;
   color: var(--ldl-muted);
+  background: var(--ldl-bg);
+  border: 1px solid var(--ldl-border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  white-space: nowrap;
 }
 .oc-summary-price {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--ldl-primary);
 }
@@ -2171,10 +2186,10 @@ a { color: inherit; text-decoration: none; }
   .ch-heart-msg { font-size: 1rem; width: 92px; }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   .oc-page { flex-direction: column; align-items: center; }
   .oc-center { width: min(420px, 92vw); }
-  .oc-summary { width: min(420px, 92vw); }
+  .oc-summary { width: min(560px, 92vw); }
 }
 @media (max-width: 480px) {
   .oc-center { width: 92vw; }
