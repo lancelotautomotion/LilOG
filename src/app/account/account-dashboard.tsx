@@ -251,7 +251,7 @@ export function AccountDashboard({
                         <div className="account-orders-empty acct-orders-cta">
                           <p className="acct-orders-cta-text">
                             ⚠️ Alerte style : Get in, babe.<br />
-                            Ta première pièce unique t&apos;attend.
+                            Ta première pépite t&apos;attend déjà.
                           </p>
                           <a href="/#drops" className="account-btn primary acct-orders-cta-btn">SETUP_MY_LOOK.EXE →</a>
                         </div>
@@ -295,7 +295,7 @@ export function AccountDashboard({
                       <div className="account-orders-empty acct-orders-cta">
                         <p className="acct-orders-cta-text">
                           ⚠️ Alerte style : Get in, babe.<br />
-                          Ta première pièce unique t&apos;attend.
+                          Ta première pépite t&apos;attend déjà.
                         </p>
                         <a href="/#drops" className="account-btn primary acct-orders-cta-btn">SETUP_MY_LOOK.EXE →</a>
                       </div>
