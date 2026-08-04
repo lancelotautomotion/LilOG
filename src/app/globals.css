@@ -5822,6 +5822,8 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   border-color: transparent;
 }
 .dm-size:focus-within { box-shadow: 0 0 0 3px rgba(27, 72, 206, 0.16); }
+.dm-size-all { letter-spacing: 0.08em; font-size: 0.58rem; color: var(--ldl-muted); }
+.dm-size-all.on { color: #fff; }
 
 .dm-gate-launch { width: 100%; padding: 13px 16px; font-size: 0.72rem; }
 .dm-gate-skip {

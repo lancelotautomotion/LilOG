@@ -1,7 +1,7 @@
 import { shopifyFetch } from "./client";
 import { ALL_PRODUCTS_QUERY } from "./queries";
 import { CATEGORIES } from "@/lib/categories";
-import { compareSizes, looksLikeSize, normalizeSize } from "@/lib/sizes";
+import { compareSizes, looksLikeSize, normalizeSize, sizeFromTag } from "@/lib/sizes";
 import type { AllProductsResponse, ClosetItem, ClosetSlot, ClosetVariant, ShopifyClosetNode } from "./types";
 
 // Storefront API caps `first` at 250 — page through until the catalogue is
@@ -99,6 +99,43 @@ function stripEmoji(str: string): string {
  * Mapping
  * ------------------------------------------------------------------ */
 
+/**
+ * Every size a piece is available in, looked up in three places — shops file
+ * sizing inconsistently, and a closet with no sizes is a closet with no gate.
+ * Empty = one-size / unsized, which the gate treats as matching any morphology.
+ */
+function collectSizes(node: ShopifyClosetNode, variants: ClosetVariant[]): string[] {
+  const set = new Set<string>();
+
+  // 1. Buyable variants — the most reliable source.
+  for (const v of variants) {
+    if (v.available && v.size) set.add(v.size);
+  }
+
+  // 2. Product-level options, for single-variant listings that still declare
+  //    the sizes they were cut in.
+  if (set.size === 0) {
+    for (const opt of node.options ?? []) {
+      const named = SIZE_OPTION_RE.test(opt.name);
+      for (const raw of opt.values ?? []) {
+        if (!named && !looksLikeSize(raw)) continue;
+        const s = normalizeSize(raw);
+        if (s) set.add(s);
+      }
+    }
+  }
+
+  // 3. Tags — where vintage shops usually put the size of a one-of-one piece.
+  if (set.size === 0) {
+    for (const tag of node.tags) {
+      const s = sizeFromTag(tag);
+      if (s) set.add(s);
+    }
+  }
+
+  return [...set].sort(compareSizes);
+}
+
 function mapClosetItem(node: ShopifyClosetNode, slot: ClosetSlot): ClosetItem {
   const variants: ClosetVariant[] = node.variants.edges.map((e) => ({
     id: e.node.id,
@@ -108,11 +145,7 @@ function mapClosetItem(node: ShopifyClosetNode, slot: ClosetSlot): ClosetItem {
     size: variantSize(e.node),
   }));
 
-  // Union of every size the piece is actually buyable in. Empty = one-size /
-  // unsized, which the gate treats as matching any morphology.
-  const sizes = [...new Set(
-    variants.filter((v) => v.available).flatMap((v) => (v.size ? [v.size] : [])),
-  )].sort(compareSizes);
+  const sizes = collectSizes(node, variants);
 
   const images = node.images.edges.map((e) => e.node.url);
 

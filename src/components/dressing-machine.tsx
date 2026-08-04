@@ -8,7 +8,7 @@ import { Drawer } from "@/components/drawer";
 import { SmartImg } from "@/components/smart-img";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/hooks/use-wishlist";
-import { compareSizes } from "@/lib/sizes";
+import { compareSizes, STANDARD_SIZES } from "@/lib/sizes";
 import type { ClosetItem, ClosetSlot, ClosetVariant } from "@/lib/shopify/types";
 
 /* ================================================================== *
@@ -126,19 +126,25 @@ function useTyped(text: string, active: boolean, speed = 18): string {
  * ÉTAPE 1 — SYSTEM_LOGIN.EXE
  * ================================================================== */
 
+const ALL_SIZES = "__all__";
+
 function SizeGate({
   sizes,
+  inferred,
   onLaunch,
-  onSkip,
 }: {
   sizes: string[];
-  onLaunch: (size: string) => void;
-  onSkip: () => void;
+  /** true when the catalogue carried no sizing and we fell back to XS–XL. */
+  inferred: boolean;
+  onLaunch: (size: string | null) => void;
 }) {
-  const [picked, setPicked] = useState<string | null>(sizes[0] ?? null);
+  // Pre-select the middle of the range: the launch button is never dead, and
+  // the shopper still sees their own size is a deliberate choice.
+  const [picked, setPicked] = useState<string>(
+    () => sizes[Math.floor(sizes.length / 2)] ?? ALL_SIZES,
+  );
   const intro = "Veuillez entrer vos paramètres morphologiques pour initialiser la machine.";
   const typed = useTyped(intro, true, 16);
-  const hasSizes = sizes.length > 0;
 
   return (
     <div className="dm-gate-scrim" role="dialog" aria-modal="true" aria-label="SYSTEM_LOGIN.EXE">
@@ -163,42 +169,44 @@ function SizeGate({
 
           <div className="dm-gate-field">
             <span className="dm-gate-label">Taille</span>
-            {hasSizes ? (
-              <div className="dm-size-grid">
-                {sizes.map((s) => (
-                  <label key={s} className={"dm-size" + (picked === s ? " on" : "")}>
-                    <input
-                      type="radio"
-                      name="dm-size"
-                      value={s}
-                      checked={picked === s}
-                      onChange={() => setPicked(s)}
-                    />
-                    {s}
-                  </label>
-                ))}
-              </div>
-            ) : (
+            <div className="dm-size-grid">
+              {sizes.map((s) => (
+                <label key={s} className={"dm-size" + (picked === s ? " on" : "")}>
+                  <input
+                    type="radio"
+                    name="dm-size"
+                    value={s}
+                    checked={picked === s}
+                    onChange={() => setPicked(s)}
+                  />
+                  {s}
+                </label>
+              ))}
+              <label className={"dm-size dm-size-all" + (picked === ALL_SIZES ? " on" : "")}>
+                <input
+                  type="radio"
+                  name="dm-size"
+                  value={ALL_SIZES}
+                  checked={picked === ALL_SIZES}
+                  onChange={() => setPicked(ALL_SIZES)}
+                />
+                TOUTES
+              </label>
+            </div>
+            {inferred && (
               <p className="dm-gate-note">
-                Aucune taille n&apos;est renseignée sur le catalogue pour le moment — la machine
-                va piocher dans toutes les pièces disponibles.
+                Le catalogue ne renseigne pas encore les tailles : toutes les pièces resteront
+                affichées quel que soit votre choix.
               </p>
             )}
           </div>
 
           <button
             className="dm-btn dm-btn-primary dm-gate-launch"
-            onClick={() => (hasSizes && picked ? onLaunch(picked) : onSkip())}
-            disabled={hasSizes && !picked}
+            onClick={() => onLaunch(picked === ALL_SIZES ? null : picked)}
           >
             LANCER_LA_MACHINE.EXE →
           </button>
-
-          {hasSizes && (
-            <button className="dm-gate-skip" onClick={onSkip}>
-              ignorer — voir tout le catalogue
-            </button>
-          )}
         </div>
 
         <div className="dm-statusbar">
@@ -604,10 +612,16 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
     return acc;
   }, [items]);
 
-  const allSizes = useMemo(() => {
+  // A single size across the whole catalogue isn't a choice — fall back to the
+  // standard range so the gate always has something to pick from. The machine
+  // still works: pieces with no size data match every morphology.
+  const { gateSizes, sizesInferred } = useMemo(() => {
     const set = new Set<string>();
     for (const it of [...bySlot.top, ...bySlot.bottom]) for (const s of it.sizes) set.add(s);
-    return [...set].sort(compareSizes);
+    const found = [...set].sort(compareSizes);
+    return found.length >= 2
+      ? { gateSizes: found, sizesInferred: false }
+      : { gateSizes: STANDARD_SIZES, sizesInferred: true };
   }, [bySlot]);
 
   const pools = useMemo(() => ({
@@ -857,11 +871,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
       </main>
 
       {gateOpen && (
-        <SizeGate
-          sizes={allSizes}
-          onLaunch={(s) => launch(s)}
-          onSkip={() => launch(null)}
-        />
+        <SizeGate sizes={gateSizes} inferred={sizesInferred} onLaunch={launch} />
       )}
     </>
   );

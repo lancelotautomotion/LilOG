@@ -51,6 +51,24 @@ export function looksLikeSize(value: string): boolean {
   return false;
 }
 
+/**
+ * Size hidden in a product tag — `taille-m`, `Taille 38`, `T38`, `size-L`,
+ * or a bare letter size. Numerics need an explicit prefix: a lone `40` tag is
+ * as likely to be a decade as a size.
+ */
+export function sizeFromTag(tag: string): string | null {
+  const t = tag.trim().toUpperCase().replace(/\s+/g, " ");
+  const prefixed = t.match(/^(?:TAILLE|SIZE|POINTURE|T)[\s._-]*(.+)$/);
+  if (prefixed) {
+    const value = prefixed[1].trim();
+    return looksLikeSize(value) ? normalizeSize(value) : null;
+  }
+  return LETTER_SIZES.has(t) ? t : null;
+}
+
+/** Shown in the gate when the catalogue carries no size data of its own. */
+export const STANDARD_SIZES = ["XS", "S", "M", "L", "XL"];
+
 const SIZE_RANK = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
 /** Letter sizes first (in wearing order), then numeric, then everything else. */

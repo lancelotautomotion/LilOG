@@ -118,6 +118,7 @@ export interface ShopifyClosetNode {
   images: { edges: { node: ShopifyImage }[] };
   priceRange: { minVariantPrice: ShopifyMoney };
   collections: { edges: { node: { handle: string } }[] };
+  options?: { name: string; values?: string[] }[];
   variants: {
     edges: {
       node: {

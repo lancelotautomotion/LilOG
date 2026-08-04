@@ -90,6 +90,10 @@ export const ALL_PRODUCTS_QUERY = /* GraphQL */ `
               }
             }
           }
+          options {
+            name
+            values
+          }
           variants(first: 30) {
             edges {
               node {
