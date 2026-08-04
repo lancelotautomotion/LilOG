@@ -21,7 +21,12 @@ const WORD_SIZES: Record<string, string> = {
 
 /** Canonical size label, or `null` when the value carries no size information. */
 export function normalizeSize(raw: string): string | null {
-  const upper = raw.trim().toUpperCase().replace(/\s+/g, " ");
+  const upper = raw
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, " ")
+    // "38 / 40" and "38/40" are the same combined size — one chip, not two.
+    .replace(/\s*([/-])\s*/g, "$1");
   if (ONE_SIZE.has(upper)) return null;
   const mapped = WORD_SIZES[upper] ?? upper;
   return ONE_SIZE.has(mapped) ? null : mapped;

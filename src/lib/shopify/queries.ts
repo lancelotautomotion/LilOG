@@ -48,9 +48,41 @@ export const FEATURED_PRODUCTS_QUERY = /* GraphQL */ `
   }
 `;
 
+// Shopify's category (taxonomy) metafields hold the size for products sold
+// without variants — the case for one-of-one vintage. Their value is a
+// metaobject reference, so the human-readable size lives in the referenced
+// object's `label` field, not in `value` (which is a gid://).
+const SIZE_METAFIELD_FRAGMENT = /* GraphQL */ `
+  fragment SizeMetafield on Metafield {
+    type
+    value
+    reference {
+      ... on Metaobject {
+        handle
+        field(key: "label") {
+          value
+        }
+      }
+    }
+    references(first: 20) {
+      edges {
+        node {
+          ... on Metaobject {
+            handle
+            field(key: "label") {
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 // Whole-catalogue sweep for the Virtual Closet: needs the collection handles
-// (to slot a piece into Hauts / Bas / module) and every variant's size.
+// (to slot a piece into Hauts / Bas / module) and every source of sizing.
 export const ALL_PRODUCTS_QUERY = /* GraphQL */ `
+  ${SIZE_METAFIELD_FRAGMENT}
   query AllProducts($first: Int!, $after: String) {
     products(first: $first, after: $after, sortKey: CREATED_AT, reverse: true) {
       pageInfo {
@@ -93,6 +125,18 @@ export const ALL_PRODUCTS_QUERY = /* GraphQL */ `
           options {
             name
             values
+          }
+          sizeMeta: metafield(namespace: "shopify", key: "size") {
+            ...SizeMetafield
+          }
+          sizeMeta2: metafield(namespace: "custom", key: "taille") {
+            ...SizeMetafield
+          }
+          sizeMeta3: metafield(namespace: "shopify", key: "clothing-size") {
+            ...SizeMetafield
+          }
+          sizeMeta4: metafield(namespace: "shopify", key: "shoe-size") {
+            ...SizeMetafield
           }
           variants(first: 30) {
             edges {

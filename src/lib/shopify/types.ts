@@ -107,6 +107,21 @@ export interface Product {
 
 // ---- Virtual Closet (/dressing-machine) ----
 
+/** Taxonomy metaobject holding one taxonomy value ("M", "Rouge", …). */
+export interface ShopifyTaxonomyValue {
+  handle: string | null;
+  field: { value: string } | null;
+}
+
+export interface ShopifySizeMetafield {
+  type: string;
+  value: string;
+  /** Set for single-value metafields. */
+  reference: ShopifyTaxonomyValue | null;
+  /** Set for list metafields. */
+  references: { edges: { node: ShopifyTaxonomyValue }[] } | null;
+}
+
 export interface ShopifyClosetNode {
   id: string;
   handle: string;
@@ -119,6 +134,10 @@ export interface ShopifyClosetNode {
   priceRange: { minVariantPrice: ShopifyMoney };
   collections: { edges: { node: { handle: string } }[] };
   options?: { name: string; values?: string[] }[];
+  sizeMeta?: ShopifySizeMetafield | null;
+  sizeMeta2?: ShopifySizeMetafield | null;
+  sizeMeta3?: ShopifySizeMetafield | null;
+  sizeMeta4?: ShopifySizeMetafield | null;
   variants: {
     edges: {
       node: {

@@ -2,7 +2,14 @@ import { shopifyFetch } from "./client";
 import { ALL_PRODUCTS_QUERY } from "./queries";
 import { CATEGORIES } from "@/lib/categories";
 import { compareSizes, looksLikeSize, normalizeSize, sizeFromTag } from "@/lib/sizes";
-import type { AllProductsResponse, ClosetItem, ClosetSlot, ClosetVariant, ShopifyClosetNode } from "./types";
+import type {
+  AllProductsResponse,
+  ClosetItem,
+  ClosetSlot,
+  ClosetVariant,
+  ShopifyClosetNode,
+  ShopifySizeMetafield,
+} from "./types";
 
 // Storefront API caps `first` at 250 — page through until the catalogue is
 // exhausted (bounded, so a runaway store can't stall the render).
@@ -99,21 +106,70 @@ function stripEmoji(str: string): string {
  * Mapping
  * ------------------------------------------------------------------ */
 
+function parseMetaList(raw: string): string[] {
+  if (!raw?.trim()) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed.map(String);
+    if (typeof parsed === "string") return [parsed];
+  } catch { /* not JSON */ }
+  return raw.split(/[,;|]/).map((s) => s.trim()).filter(Boolean);
+}
+
 /**
- * Every size a piece is available in, looked up in three places — shops file
+ * Sizes out of a Shopify category (taxonomy) metafield.
+ *
+ * Their `value` is a `gid://shopify/Metaobject/…` reference, so the readable
+ * size sits on the referenced object's `label` field. Falls back to the
+ * metaobject handle, then to a plain-text value for shops that use a custom
+ * text metafield instead of the taxonomy one.
+ */
+function sizesFromMetafield(meta: ShopifySizeMetafield | null | undefined): string[] {
+  if (!meta) return [];
+
+  const nodes = [
+    ...(meta.reference ? [meta.reference] : []),
+    ...(meta.references?.edges.map((e) => e.node) ?? []),
+  ];
+  const labels = nodes.flatMap((n) => {
+    const label = n.field?.value?.trim();
+    if (label) return [label];
+    return n.handle ? [n.handle.replace(/[-_]+/g, " ")] : [];
+  });
+
+  const raw = labels.length > 0 ? labels : parseMetaList(meta.value);
+
+  return raw.flatMap((v) => {
+    if (v.startsWith("gid://")) return []; // unresolved reference, not a size
+    const s = normalizeSize(v);
+    return s ? [s] : [];
+  });
+}
+
+/**
+ * Every size a piece is available in, looked up in four places — shops file
  * sizing inconsistently, and a closet with no sizes is a closet with no gate.
  * Empty = one-size / unsized, which the gate treats as matching any morphology.
  */
 function collectSizes(node: ShopifyClosetNode, variants: ClosetVariant[]): string[] {
   const set = new Set<string>();
 
-  // 1. Buyable variants — the most reliable source.
+  // 1. Buyable variants — the most reliable source when the shop uses them.
   for (const v of variants) {
     if (v.available && v.size) set.add(v.size);
   }
 
-  // 2. Product-level options, for single-variant listings that still declare
-  //    the sizes they were cut in.
+  // 2. Category metafield — where the size lives for a product sold without
+  //    variants, which is the norm for one-of-one vintage.
+  if (set.size === 0) {
+    for (const meta of [node.sizeMeta, node.sizeMeta2, node.sizeMeta3, node.sizeMeta4]) {
+      for (const s of sizesFromMetafield(meta)) set.add(s);
+      if (set.size > 0) break;
+    }
+  }
+
+  // 3. Product-level options, for listings that declare the sizes they were
+  //    cut in without splitting them into variants.
   if (set.size === 0) {
     for (const opt of node.options ?? []) {
       const named = SIZE_OPTION_RE.test(opt.name);
@@ -125,7 +181,7 @@ function collectSizes(node: ShopifyClosetNode, variants: ClosetVariant[]): strin
     }
   }
 
-  // 3. Tags — where vintage shops usually put the size of a one-of-one piece.
+  // 4. Tags — last resort for shops that only tag their sizing.
   if (set.size === 0) {
     for (const tag of node.tags) {
       const s = sizeFromTag(tag);
