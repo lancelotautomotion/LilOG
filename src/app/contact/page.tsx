@@ -112,36 +112,60 @@ function FlipPhone() {
     [muted],
   );
 
+  /* Pavé numérique : la touche s'inscrit à l'écran et joue sa tonalité. */
   const press = (key: string) => {
     beep(key);
     setDialed((d) => (key === "#" ? "" : (d + key).slice(-12)));
   };
 
+  /* Touche verte : tonalité d'appel seule — elle ne compose pas de chiffre. */
+  const call = () => beep("*");
+
+  /* Touche rouge : raccroche, donc efface le numéro. */
+  const hangUp = () => {
+    beep("#");
+    setDialed("");
+  };
+
   return (
     <div className="flex flex-col items-center">
-      {/* ---- Coque du téléphone ---- */}
-      <div
-        className="w-full max-w-[290px] rounded-3xl border-4 border-purple-300/80 p-3 shadow-xl"
-        style={{
-          background:
-            "linear-gradient(150deg, #e9d5ff 0%, #c9a7f5 30%, #f0abfc 58%, #a97fe0 100%)",
-          boxShadow:
-            "inset 0 3px 8px rgba(255,255,255,0.85), inset 0 -4px 10px rgba(80,30,140,0.35), 0 12px 22px rgba(80,30,140,0.28)",
-        }}
-      >
-        {/* ---- Clapet supérieur : écran LCD ---- */}
+      {/* ============================================================
+          Téléphone à clapet ouvert.
+          Le conteneur pose une perspective : le clapet du haut est
+          basculé en arrière (rotateX) autour de la charnière, la base
+          est inclinée vers l'avant. C'est ce pliage — plus la charnière
+          cylindrique et le bloc navigation/appel — qui fait lire un
+          téléphone plutôt qu'un bloc plat de touches.
+          ============================================================ */}
+      <div className="w-full max-w-[272px] [perspective:1100px]">
+
+        {/* ---------- CLAPET SUPÉRIEUR ---------- */}
         <div
-          className="rounded-2xl border-2 border-purple-200/70 p-2"
+          className="relative mx-auto w-[92%] rounded-t-[26px] rounded-b-lg border-2 border-purple-200/60 px-2.5 pt-3 pb-4"
           style={{
-            background: "linear-gradient(180deg, #d8bcf5 0%, #b98fe6 100%)",
-            boxShadow: "inset 0 2px 5px rgba(255,255,255,0.8)",
+            transform: "rotateX(-13deg)",
+            transformOrigin: "bottom center",
+            background:
+              "linear-gradient(158deg, #f4e8ff 0%, #dcc0f7 26%, #f0abfc 55%, #b98fe6 100%)",
+            boxShadow:
+              "inset 0 3px 9px rgba(255,255,255,0.9), inset 0 -3px 8px rgba(80,30,140,0.3), 0 -6px 16px rgba(80,30,140,0.22)",
           }}
         >
-          {/* Haut-parleur */}
-          <div className="mx-auto mb-2 h-[5px] w-12 rounded-full bg-purple-900/30 shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)]" />
-
+          {/* Antenne — détail Y2K par excellence */}
           <div
-            className="relative overflow-hidden rounded-lg border-2 border-[#1d3b1f] px-3 py-2"
+            aria-hidden
+            className="absolute -top-[13px] right-5 h-[15px] w-[7px] rounded-t-full"
+            style={{
+              background: "linear-gradient(180deg,#8b5cf6 0%,#5b21b6 100%)",
+              boxShadow: "inset 1px 0 1px rgba(255,255,255,0.5)",
+            }}
+          />
+          {/* Écouteur */}
+          <div className="mx-auto mb-2.5 h-[6px] w-14 rounded-full bg-purple-950/35 shadow-[inset_0_1.5px_2px_rgba(0,0,0,0.6)]" />
+
+          {/* Écran LCD */}
+          <div
+            className="relative overflow-hidden rounded-md border-2 border-[#1d3b1f] px-2.5 py-2"
             style={{
               background:
                 "radial-gradient(120% 100% at 50% 0%, #1d4224 0%, #0d2412 100%)",
@@ -149,7 +173,6 @@ function FlipPhone() {
                 "inset 0 0 14px rgba(0,0,0,0.75), 0 0 12px rgba(74,222,128,0.22)",
             }}
           >
-            {/* Scanlines LCD */}
             <div
               aria-hidden
               className="pointer-events-none absolute inset-0 opacity-25"
@@ -161,70 +184,199 @@ function FlipPhone() {
             <div
               className={`relative ${LCD_FONT} text-[#7dfba1] [text-shadow:0_0_6px_rgba(125,251,161,0.75)]`}
             >
-              <div className="flex items-baseline justify-between text-[1.05rem] leading-tight">
+              {/* Barre d'état façon téléphone : réseau + batterie */}
+              <div className="flex items-end justify-between text-[0.7rem] leading-none opacity-80">
+                <span className="flex items-end gap-[2px]" aria-hidden>
+                  <i className="block h-[3px] w-[2px] bg-[#7dfba1]" />
+                  <i className="block h-[5px] w-[2px] bg-[#7dfba1]" />
+                  <i className="block h-[7px] w-[2px] bg-[#7dfba1]" />
+                  <i className="block h-[9px] w-[2px] bg-[#7dfba1]" />
+                </span>
+                <span>▮▮▮</span>
+              </div>
+              <div className="mt-1.5 flex items-baseline justify-between text-[1rem] leading-tight">
                 <span>LIL&apos;OG HOTLINE</span>
-                <span className="animate-pulse text-[0.8rem]">🟢</span>
+                <span className="animate-pulse text-[0.75rem]">🟢</span>
               </div>
               <div className="mt-1 h-px bg-[#7dfba1]/30" />
-              <div className="mt-1 text-[0.95rem] leading-snug">
+              <div className="mt-1 text-[0.9rem] leading-snug">
                 <div>STATUS: ONLINE</div>
                 <div>RESP-TIME: &lt; 2H</div>
               </div>
               <div className="mt-1 h-px bg-[#7dfba1]/30" />
-              <div className="mt-1 flex items-center gap-1 text-[0.95rem] leading-none">
+              <div className="mt-1 flex items-center gap-1 text-[0.9rem] leading-none">
                 <span className="text-[#7dfba1]/60">DIAL&gt;</span>
                 <span className="truncate">{dialed}</span>
                 <span className="animate-pulse">_</span>
               </div>
             </div>
           </div>
+
+          <p
+            className={`${MONO} mt-2 text-center text-[0.42rem] tracking-[0.3em] text-purple-950/45`}
+          >
+            LIL&apos;OG
+          </p>
         </div>
 
-        {/* ---- Charnière ---- */}
-        <div className="my-2 flex items-center justify-center gap-1.5">
-          <div className="h-1.5 flex-1 rounded-full bg-purple-900/25 shadow-[inset_0_1px_2px_rgba(0,0,0,0.45)]" />
+        {/* ---------- CHARNIÈRE ---------- */}
+        <div className="relative z-10 -my-1 mx-auto flex w-[97%] items-center justify-center gap-1">
+          {/* Barillet cylindrique, avec ses embouts qui dépassent */}
+          <span
+            aria-hidden
+            className="h-[13px] w-2.5 rounded-l-full"
+            style={{
+              background: "linear-gradient(180deg,#c9b6e8 0%,#6d5591 55%,#3f3059 100%)",
+            }}
+          />
+          <div
+            className="h-[13px] flex-1 rounded-full"
+            style={{
+              background:
+                "linear-gradient(180deg,#efe6fb 0%,#b9a4dd 40%,#6b5391 72%,#43335f 100%)",
+              boxShadow:
+                "inset 0 1px 1px rgba(255,255,255,0.85), inset 0 -1px 2px rgba(0,0,0,0.45)",
+            }}
+          />
           <button
             type="button"
             onClick={() => setMuted((m) => !m)}
             aria-pressed={muted}
             aria-label={muted ? "Activer le son du clavier" : "Couper le son du clavier"}
             title={muted ? "Son coupé" : "Son actif"}
-            className={`grid h-6 w-6 shrink-0 place-items-center rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.6rem] transition ${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105`}
+            className={`grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.55rem] transition ${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105`}
           >
             {muted ? "🔇" : "🔊"}
           </button>
-          <div className="h-1.5 flex-1 rounded-full bg-purple-900/25 shadow-[inset_0_1px_2px_rgba(0,0,0,0.45)]" />
+          <div
+            className="h-[13px] flex-1 rounded-full"
+            style={{
+              background:
+                "linear-gradient(180deg,#efe6fb 0%,#b9a4dd 40%,#6b5391 72%,#43335f 100%)",
+              boxShadow:
+                "inset 0 1px 1px rgba(255,255,255,0.85), inset 0 -1px 2px rgba(0,0,0,0.45)",
+            }}
+          />
+          <span
+            aria-hidden
+            className="h-[13px] w-2.5 rounded-r-full"
+            style={{
+              background: "linear-gradient(180deg,#c9b6e8 0%,#6d5591 55%,#3f3059 100%)",
+            }}
+          />
         </div>
 
-        {/* ---- Clapet inférieur : clavier ---- */}
+        {/* ---------- BASE ---------- */}
         <div
-          className="rounded-2xl border-2 border-purple-200/70 p-2.5"
+          className="relative rounded-t-lg rounded-b-[28px] border-2 border-purple-200/60 px-2.5 pt-3 pb-3.5"
           style={{
-            background: "linear-gradient(180deg, #e5d0fa 0%, #b98fe6 100%)",
-            boxShadow: "inset 0 2px 5px rgba(255,255,255,0.8)",
+            transform: "rotateX(7deg)",
+            transformOrigin: "top center",
+            background:
+              "linear-gradient(180deg, #e9d5ff 0%, #cdaaf2 40%, #a97fe0 100%)",
+            boxShadow:
+              "inset 0 3px 9px rgba(255,255,255,0.9), inset 0 -4px 10px rgba(80,30,140,0.35), 0 14px 24px rgba(80,30,140,0.3)",
           }}
         >
-          <div className="grid grid-cols-3 gap-1.5">
+          {/* ---- Bloc navigation : softkeys + croix + appel/raccrocher ---- */}
+          <div className="mb-2.5 flex items-center justify-between gap-1.5">
+            {/* Colonne gauche : softkey + touche appel */}
+            <div className="flex flex-col items-center gap-1.5">
+              <span
+                aria-hidden
+                className={`h-[13px] w-8 rounded-[5px] border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#e6e3f0_100%)] ${PLASTIC}`}
+              />
+              <button
+                type="button"
+                onClick={call}
+                aria-label="Touche appel"
+                title="Appeler"
+                className={`grid h-7 w-9 place-items-center rounded-[9px] border border-emerald-700/40 text-[0.62rem] text-white transition ${PLASTIC_PRESS} hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                style={{
+                  background: "linear-gradient(180deg,#6ee7a8 0%,#22c55e 50%,#15803d 100%)",
+                  boxShadow:
+                    "inset 0 2px 3px rgba(255,255,255,0.75), inset 0 -2px 4px rgba(0,0,0,0.3), 0 2px 3px rgba(30,36,48,0.25)",
+                }}
+              >
+                ☎
+              </button>
+            </div>
+
+            {/* Croix de navigation */}
+            <div
+              aria-hidden
+              className="relative grid h-[54px] w-[54px] shrink-0 place-items-center rounded-full border border-[#c6c2d8]"
+              style={{
+                background:
+                  "conic-gradient(from 45deg, #fdfdff, #dedaec, #fdfdff, #dedaec, #fdfdff)",
+                boxShadow:
+                  "inset 0 2px 4px rgba(255,255,255,0.95), inset 0 -2px 5px rgba(0,0,0,0.28), 0 2px 4px rgba(30,36,48,0.22)",
+              }}
+            >
+              <span className="absolute top-[3px] text-[0.42rem] text-[#262626]/60">▲</span>
+              <span className="absolute bottom-[3px] text-[0.42rem] text-[#262626]/60">▼</span>
+              <span className="absolute left-[4px] text-[0.42rem] text-[#262626]/60">◀</span>
+              <span className="absolute right-[4px] text-[0.42rem] text-[#262626]/60">▶</span>
+              <span
+                className={`${MONO} grid h-[22px] w-[22px] place-items-center rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#e2dfee_100%)] text-[0.38rem] font-bold text-[#262626]/70 shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.2)]`}
+              >
+                OK
+              </span>
+            </div>
+
+            {/* Colonne droite : softkey + touche raccrocher */}
+            <div className="flex flex-col items-center gap-1.5">
+              <span
+                aria-hidden
+                className={`h-[13px] w-8 rounded-[5px] border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#e6e3f0_100%)] ${PLASTIC}`}
+              />
+              <button
+                type="button"
+                onClick={hangUp}
+                aria-label="Touche raccrocher — efface le numéro"
+                title="Raccrocher / effacer"
+                className={`grid h-7 w-9 place-items-center rounded-[9px] border border-rose-800/40 text-[0.62rem] text-white transition ${PLASTIC_PRESS} hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                style={{
+                  background: "linear-gradient(180deg,#fda4af 0%,#f43f5e 50%,#9f1239 100%)",
+                  boxShadow:
+                    "inset 0 2px 3px rgba(255,255,255,0.7), inset 0 -2px 4px rgba(0,0,0,0.3), 0 2px 3px rgba(30,36,48,0.25)",
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+
+          {/* ---- Pavé numérique ---- */}
+          <div className="grid grid-cols-3 gap-x-1.5 gap-y-1">
             {KEYPAD.map((key) => (
               <button
                 key={key}
                 type="button"
                 onClick={() => press(key)}
                 aria-label={`Touche ${key}`}
-                className={`flex flex-col items-center justify-center rounded-lg border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] py-1.5 leading-none text-[#262626] transition ${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                /* Touches larges et basses, légèrement arquées : la silhouette
+                   d'un clavier de téléphone, pas d'une calculatrice. */
+                className={`flex h-[26px] flex-col items-center justify-center rounded-[10px] border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] leading-none text-[#262626] transition ${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
               >
-                <span className={`${MONO} text-[0.85rem] font-bold`}>{key}</span>
-                <span className={`${MONO} text-[0.42rem] tracking-widest text-[#262626]/45`}>
+                <span className={`${MONO} text-[0.78rem] font-bold`}>{key}</span>
+                <span
+                  className={`${MONO} mt-[1px] text-[0.36rem] leading-none tracking-[0.12em] text-[#262626]/45`}
+                >
                   {KEY_LETTERS[key]}
                 </span>
               </button>
             ))}
           </div>
-          <p className={`${MONO} mt-2 text-center text-[0.5rem] tracking-wider text-purple-950/55`}>
-            [#] POUR EFFACER
-          </p>
+
+          {/* Micro */}
+          <div className="mx-auto mt-2.5 h-[5px] w-10 rounded-full bg-purple-950/30 shadow-[inset_0_1px_2px_rgba(0,0,0,0.55)]" />
         </div>
       </div>
+
+      <p className={`${MONO} mt-4 text-center text-[0.5rem] tracking-wider text-purple-950/55`}>
+        [✕] POUR EFFACER
+      </p>
 
       {/* ---- Raccourcis « icônes de bureau » ---- */}
       <div className="mt-6 grid w-full max-w-[320px] grid-cols-3 gap-3">
