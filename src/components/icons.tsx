@@ -57,4 +57,16 @@ export const Icon = {
       <path d="m6 9 6 6 6-6" />
     </svg>
   ),
+  // Dossier Win95, jaune fixe — indépendant du rendu emoji de la plateforme.
+  folder: (p: SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 20 16" width="16" height="14" {...p}>
+      <path
+        d="M1.5 2.5C1.5 1.94772 1.94772 1.5 2.5 1.5H7.29289C7.5598 1.5 7.81607 1.60357 8.00889 1.78823L9.4 3.1H17.5C18.0523 3.1 18.5 3.54772 18.5 4.1V13.1C18.5 13.6523 18.0523 14.1 17.5 14.1H2.5C1.94772 14.1 1.5 13.6523 1.5 13.1V2.5Z"
+        fill="#FFC83D"
+        stroke="#B8860B"
+        strokeWidth="0.9"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
 };

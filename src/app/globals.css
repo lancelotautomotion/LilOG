@@ -311,33 +311,34 @@ a { color: inherit; text-decoration: none; }
 }
 .drawer-scrim.open { opacity: 1; pointer-events: auto; }
 
-/* ── Drawer panel: Win95 window ── */
+/* ── Drawer panel: fenêtre Win95 épurée, fond blanc pur, coin droit arrondi ── */
 .drawer {
   position: fixed;
   top: 0; left: 0; bottom: 0;
   width: min(440px, 88vw);
-  background: #c0c0c0;
-  color: #000;
+  background: #fff;
+  color: var(--ldl-text);
   z-index: var(--z-drawer);
   transform: translateX(-102%);
   transition: transform 0.45s cubic-bezier(.76,0,.24,1);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  /* Win95 right-side bevel */
-  border-right: 3px solid #444;
-  box-shadow: 4px 0 0 #000;
+  overflow-x: hidden;
+  border-right: 1px solid var(--ldl-border);
+  border-radius: 0 18px 18px 0;
+  box-shadow: var(--ldl-shadow-window);
 }
 .drawer.open { transform: translateX(0); }
 
-/* Win95 title bar */
+/* Title bar — dégradé bleu marine → violet, titre en monospace (comme /account) */
 .drawer-w95-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #000080, #1084d0);
-  padding: 5px 8px;
-  gap: 8px;
+  background: linear-gradient(90deg, #061987 0%, #1D35D9 70%, #6852F6 100%);
+  padding: 10px 12px;
+  gap: 10px;
   flex-shrink: 0;
   position: sticky;
   top: 0;
@@ -345,7 +346,8 @@ a { color: inherit; text-decoration: none; }
 }
 .drawer-w95-title {
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: #fff;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -354,93 +356,97 @@ a { color: inherit; text-decoration: none; }
 .drawer-w95-dots {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 5px;
 }
-.drawer-w95-dots span {
-  width: 14px; height: 12px;
-  background: #c0c0c0;
-  border-top: 1.5px solid #fff;
-  border-left: 1.5px solid #fff;
-  border-right: 1.5px solid #444;
-  border-bottom: 1.5px solid #444;
-  display: block;
-}
+.drawer-w95-dots span,
 .drawer-w95-close {
-  background: #c0c0c0;
-  border-top: 1.5px solid #fff;
-  border-left: 1.5px solid #fff;
-  border-right: 1.5px solid #444;
-  border-bottom: 1.5px solid #444;
-  color: #000;
+  width: 26px; height: 18px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.92);
   font-family: var(--mono);
-  font-size: 0.65rem;
-  width: 16px; height: 14px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  padding: 0;
   line-height: 1;
+  padding: 0;
+  cursor: default;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 1px 2px rgba(0,0,0,0.18);
 }
-.drawer-w95-close:active {
-  border-top: 1.5px solid #444;
-  border-left: 1.5px solid #444;
-  border-right: 1.5px solid #fff;
-  border-bottom: 1.5px solid #fff;
-}
+.drawer-w95-close { cursor: pointer; transition: background 120ms; }
+.drawer-w95-close:hover { background: rgba(255,255,255,0.22); }
 
-/* Nav content */
+/* Nav content — liste de cartes arrondies, façon /account (acct-nav-btn) */
 .drawer-nav {
-  padding: clamp(16px, 3vw, 28px) clamp(20px, 3vw, 36px);
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 8px;
   flex: 1;
+  background: #fff;
 }
 .drawer-item {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid #999;
+  gap: 6px;
 }
-.drawer-item:last-child { border-bottom: none; }
 
-/* Main nav links — keep the gothic serif font */
+/* Liens principaux — cartes blanches arrondies, monospace, surlignage plein au survol */
 .drawer-link, .drawer-parent {
-  font-family: var(--serif);
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
-  font-weight: 500;
-  line-height: 1.1;
-  color: #000;
-  background: none;
-  border: none;
-  padding: 10px 0;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+  color: var(--ldl-text);
+  background: #fff;
+  border: 1px solid var(--ldl-border);
+  border-radius: 8px;
+  padding: 14px 16px;
   text-align: left;
   display: flex;
   align-items: center;
   gap: 10px;
-  transition: color 0.2s, background 0.2s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
   cursor: pointer;
+  text-transform: uppercase;
 }
-.drawer-link:hover, .drawer-parent:hover {
-  color: #d4006e;
-  background: rgba(212,0,110,0.06);
-  padding-left: 10px;
+.drawer-link:hover,
+.drawer-parent:hover {
+  background: #1D35D9;
+  border-color: #1D35D9;
+  color: #fff;
 }
+
+/* Contact — bouton en couleur inversée (permanent), léger espace au-dessus */
+.drawer-item-contact { margin-top: 10px; }
+.drawer-link-contact,
+.drawer-link-contact:hover {
+  background: #1D35D9;
+  border-color: #1D35D9;
+  color: #fff;
+}
+.drawer-link-contact:hover { filter: brightness(1.1); }
 .drawer-parent { width: 100%; }
 .drawer-link { width: 100%; }
 
-/* Category label: link that navigates to "tout voir" */
+.drawer-folder-icon { flex-shrink: 0; }
+.drawer-file-icon { flex-shrink: 0; }
+
+/* Nom de catégorie : lien qui navigue vers "tout voir" */
 .drawer-parent-link {
-  font-family: var(--serif);
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
-  font-weight: 500;
-  line-height: 1.1;
+  font: inherit;
   color: inherit;
   text-decoration: none;
   flex: 1;
-  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.drawer-parent-link:hover { color: #d4006e; }
 
-/* Chevron-only toggle button */
+/* Bouton chevron (déplie/replie le sous-menu) */
 .drawer-parent-toggle {
   background: none;
   border: none;
@@ -448,22 +454,22 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
   display: flex;
   align-items: center;
-  color: #d4006e;
+  color: var(--ldl-muted);
   flex-shrink: 0;
 }
+.drawer-parent:hover .drawer-parent-toggle { color: #fff; }
 
-/* Fuchsia caret */
 .drawer-parent .caret {
-  width: 18px; height: 18px;
+  width: 16px; height: 16px;
   flex-shrink: 0;
-  color: #d4006e;
+  color: inherit;
   transition: transform 0.3s cubic-bezier(.76,0,.24,1);
   margin-left: auto;
 }
-.drawer-item.open .drawer-parent { color: #d4006e; }
+.drawer-item.open .drawer-parent:not(:hover) { border-color: var(--ldl-primary); color: var(--ldl-primary); }
 .drawer-item.open .caret { transform: rotate(180deg); }
 
-/* Submenu panel: Win95 sunken inset */
+/* Sous-menu — carte imbriquée, même vibe arrondie */
 .drawer-sub {
   overflow: hidden;
   max-height: 0;
@@ -473,51 +479,58 @@ a { color: inherit; text-decoration: none; }
 .drawer-sub-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2px 20px;
-  padding: 10px 10px 14px 12px;
-  background: #d8d8d8;
-  border-top: 2px solid #444;
-  border-left: 2px solid #444;
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-  margin: 0 0 8px;
+  gap: 3px 8px;
+  padding: 10px 12px;
+  background: var(--ldl-bg);
+  border: 1px solid var(--ldl-border);
+  border-radius: 8px;
+  margin-top: 6px;
 }
 .drawer-sub-inner a {
   font-family: var(--mono);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.68rem;
-  color: #222;
-  padding: 5px 4px;
-  transition: color 0.2s, background 0.15s;
-  display: block;
+  letter-spacing: 0.03em;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--ldl-muted);
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-.drawer-sub-inner a:hover { color: #d4006e; background: rgba(212,0,110,0.08); }
+.drawer-sub-inner a:hover { color: #fff; background: #1D35D9; }
 
-/* 3rd level sub-sub */
+/* 3ᵉ niveau (ex. Bijoux) */
 .drawer-subsub-toggle {
   display: flex; align-items: center; gap: 6px; width: 100%;
   background: none; border: none; cursor: pointer; text-align: left;
-  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em;
-  font-size: 0.68rem; color: #222; padding: 5px 4px;
-  transition: color 0.2s;
+  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700;
+  font-size: 0.66rem; color: var(--ldl-muted); padding: 6px 8px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
 }
-.drawer-subsub-toggle:hover { color: #d4006e; }
-.drawer-subsub-toggle .caret-sm { width: 9px; height: 9px; transition: transform 0.3s; color: #d4006e; }
+.drawer-subsub-toggle:hover { color: #fff; background: #1D35D9; }
+.drawer-subsub-toggle .caret-sm { width: 9px; height: 9px; transition: transform 0.3s; color: inherit; margin-left: auto; }
 .drawer-subsub-wrap.open .drawer-subsub-toggle .caret-sm { transform: rotate(180deg); }
 .drawer-subsub {
   overflow: hidden; max-height: 0;
   transition: max-height 0.35s cubic-bezier(.76,0,.24,1);
-  display: flex; flex-direction: column; padding-left: 12px;
+  display: flex; flex-direction: column; padding-left: 8px;
 }
 .drawer-subsub-wrap.open .drawer-subsub { max-height: 400px; }
 .drawer-subsub a {
-  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em;
-  font-size: 0.64rem; color: #444; padding: 4px 0;
-  transition: color 0.2s;
+  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700;
+  font-size: 0.62rem; color: var(--ldl-muted); padding: 5px 8px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-.drawer-subsub a:hover { color: #d4006e; }
-.drawer-subsub-all { color: #888 !important; }
+.drawer-subsub a:hover { color: #fff; background: #1D35D9; }
+.drawer-subsub-all { color: var(--ldl-muted) !important; }
 
 /* Footer links */
 .drawer-foot {
@@ -1629,16 +1642,14 @@ a { color: inherit; text-decoration: none; }
 .oc-center > .oc-win95-outer { flex: 1; display: flex; flex-direction: column; }
 .oc-center > .oc-win95-outer .oc-win95-screen { flex: 1; }
 
-/* Windows 95 outer shell */
+/* Window shell — fond blanc pur, bordures fines, standard UI 2026 (aligné /account) */
 .oc-win95-outer {
   width: 100%;
-  /* Win95 beveled raised border */
-  border-top: 3px solid #fff;
-  border-left: 3px solid #fff;
-  border-right: 3px solid #444;
-  border-bottom: 3px solid #444;
-  background: #c0c0c0;
-  box-shadow: 2px 2px 0 #000, inset 1px 1px 0 #dfdfdf;
+  background: #fff;
+  border: 1px solid var(--ldl-border);
+  border-radius: 12px;
+  box-shadow: var(--ldl-shadow-window);
+  overflow: hidden;
 }
 
 /* Title bar */
@@ -1646,49 +1657,38 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #000080, #1084d0);
-  padding: 4px 6px;
-  gap: 8px;
+  background: linear-gradient(90deg, #061987 0%, #1D35D9 70%, #6852F6 100%);
+  padding: 9px 12px;
+  gap: 10px;
 }
 .oc-win95-title {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
   color: #fff;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.oc-win95-dots { display: flex; gap: 3px; }
-.oc-win95-dots span {
-  width: 14px; height: 12px;
-  background: #c0c0c0;
-  border-top: 1.5px solid #fff;
-  border-left: 1.5px solid #fff;
-  border-right: 1.5px solid #444;
-  border-bottom: 1.5px solid #444;
-  display: block;
+  line-height: 1;
 }
 
-/* Screen (inset sunken) */
+/* Screen — cadre propre, fond blanc/gris très clair (évite tout bug de transparence PNG) */
 .oc-win95-screen {
-  margin: 8px;
-  border-top: 2px solid #444;
-  border-left: 2px solid #444;
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-  background: #6e89c8;
+  margin: 0;
+  border: none;
+  background: #fff;
   position: relative;
   min-height: 300px;
   display: flex;
   flex-direction: column;
 }
-.oc-screen-item { display: flex; flex-direction: column; flex: 1; background: #c0c0c0; }
+.oc-screen-item { display: flex; flex-direction: column; flex: 1; background: #fff; }
 .oc-screen-bg {
   flex: 0 0 auto;   /* taille fixée par aspect-ratio, ne concurrence pas le meter */
-  background: #7090d0;
+  background: var(--ldl-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1696,6 +1696,7 @@ a { color: inherit; text-decoration: none; }
   max-height: 54vh;
   overflow: hidden;
   position: relative;
+  border-bottom: 1px solid var(--ldl-border);
 }
 .oc-img-wrap { display: block; width: 100%; height: 100%; }
 .oc-img-wrap img, .oc-img-wrap span {
@@ -1722,9 +1723,9 @@ a { color: inherit; text-decoration: none; }
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    rgba(100, 180, 255, 0.12) 40%,
-    rgba(160, 220, 255, 0.35) 75%,
-    rgba(200, 240, 255, 0.65) 100%
+    rgba(27, 72, 206, 0.12) 40%,
+    rgba(27, 72, 206, 0.30) 75%,
+    rgba(104, 82, 246, 0.55) 100%
   );
   animation: ocScanBeam 360ms linear forwards;
 }
@@ -1738,14 +1739,14 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
   align-items: baseline;
   gap: 8px;
-  background: #c0c0c0;
-  padding: 6px 10px;
-  border-top: 1px solid #888;
+  background: #fff;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--ldl-border);
 }
 .oc-item-name {
   font-family: var(--mono);
   font-size: 0.68rem;
-  color: #000;
+  color: var(--ldl-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1757,20 +1758,18 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--mono);
   font-size: 0.72rem;
   font-weight: 700;
-  color: #000080;
+  color: var(--ldl-primary);
   flex-shrink: 0;
 }
-/* ── Style Scanner (Win95) ── */
+/* ── Style Scanner — épuré, bleu roi sur fond blanc ── */
 .oc-style-meter {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 14px 16px;
-  /* Win95 grey — continuité avec .oc-item-label */
-  background: #c0c0c0;
-  border-top: 1px solid #888;
+  padding: 16px;
+  background: #fff;
   flex: 1;          /* prend tout l'espace restant après la photo + label */
   text-align: center;
 }
@@ -1779,33 +1778,28 @@ a { color: inherit; text-decoration: none; }
 .oc-scan-header {
   font-family: var(--font-lcd), monospace;
   font-size: 1rem;
-  color: #000;
+  color: var(--ldl-primary);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   user-select: none;
 }
 
-/* Barre Win95 — blocs segmentés authentiques */
+/* Barre — segments bleu roi sur piste claire */
 .oc-scan-bar-track {
   width: 88%;
-  height: 14px;
-  /* Win95 sunken inset */
-  border-top: 2px solid #444;
-  border-left: 2px solid #444;
-  border-right: 2px solid #dfdfdf;
-  border-bottom: 2px solid #dfdfdf;
-  background: #c0c0c0;   /* gris = segments non chargés */
+  height: 12px;
+  border: 1px solid var(--ldl-border);
+  background: var(--ldl-bg);
   position: relative;
   overflow: hidden;
 }
 .oc-scan-bar-fill {
   height: 100%;
   width: 0%;
-  /* Blocs bleus 10px / interstices gris 2px — look Win98 pur */
   background: repeating-linear-gradient(
     90deg,
-    #000080 0px,
-    #000080 10px,
+    var(--ldl-primary) 0px,
+    var(--ldl-primary) 10px,
     transparent 10px,
     transparent 12px
   );
@@ -1814,12 +1808,12 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
   transition: width 360ms linear;
 }
-/* Plein : blocs deviennent bleu vif */
+/* Plein : blocs deviennent violet vif (glow) */
 .oc-scan-bar-fill.oc-bar-glow {
   background: repeating-linear-gradient(
     90deg,
-    #1084d0 0px,
-    #1084d0 10px,
+    #6852F6 0px,
+    #6852F6 10px,
     transparent 10px,
     transparent 12px
   );
@@ -1837,7 +1831,7 @@ a { color: inherit; text-decoration: none; }
 .oc-scan-cursor {
   font-family: var(--mono);
   font-size: 0.7rem;
-  color: #000080;
+  color: var(--ldl-primary);
   animation: ocCursorBlink 500ms step-end infinite;
 }
 
@@ -1845,7 +1839,7 @@ a { color: inherit; text-decoration: none; }
 .oc-scan-phrase {
   font-family: var(--font-lcd), monospace;
   font-size: 1.55rem;
-  color: #000;
+  color: var(--ldl-text);
   font-style: normal;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1873,7 +1867,7 @@ a { color: inherit; text-decoration: none; }
 .oc-counter {
   font-family: var(--mono);
   font-size: 0.62rem;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.8);
   letter-spacing: 0.1em;
   flex-shrink: 0;
 }
@@ -1886,64 +1880,63 @@ a { color: inherit; text-decoration: none; }
   gap: 16px;
   padding: 40px 24px;
 }
-.oc-screen-empty p { font-family: var(--mono); font-size: 0.8rem; color: #fff; margin: 0; text-align: center; }
-.oc-link { font-family: var(--mono); font-size: 0.7rem; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.5); padding-bottom: 2px; }
+.oc-screen-empty p { font-family: var(--mono); font-size: 0.8rem; color: var(--ldl-text); margin: 0; text-align: center; }
+.oc-link { font-family: var(--mono); font-size: 0.7rem; color: var(--ldl-primary); border-bottom: 1px solid var(--ldl-primary); padding-bottom: 2px; }
 
-/* Win95 nav buttons */
+/* Boutons de navigation — épurés, agrandis, fond blanc / bleu au survol */
 .oc-nav-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 10px 12px 14px;
-  background: #c0c0c0;
+  gap: 10px;
+  padding: 14px 12px;
+  background: #fff;
+  border-top: 1px solid var(--ldl-border);
 }
 .oc-nav-btn {
   cursor: pointer;
-  background: #c0c0c0;
+  background: transparent;
   border: none;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: none;
 }
-.oc-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.oc-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .oc-btn-face {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  color: #111;
-  padding: 8px 18px;
-  background: #c0c0c0;
-  /* Win95 raised button */
-  border-top: 2.5px solid #fff;
-  border-left: 2.5px solid #fff;
-  border-right: 2.5px solid #444;
-  border-bottom: 2.5px solid #444;
+  color: var(--ldl-text);
+  padding: 11px 22px;
+  background: #fff;
+  border: 1px solid var(--ldl-border);
+  border-radius: 8px;
   font-family: var(--mono);
   font-size: 0.65rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   user-select: none;
-  min-width: 52px;
+  min-width: 56px;
   white-space: nowrap;
+  transition: background var(--ldl-transition), border-color var(--ldl-transition), color var(--ldl-transition), transform var(--ldl-transition);
 }
-.oc-btn-face-wide { padding: 8px 20px; }
+.oc-btn-face-wide { padding: 11px 24px; }
+.oc-nav-btn:hover:not(:disabled) .oc-btn-face {
+  background: var(--ldl-primary);
+  border-color: var(--ldl-primary);
+  color: #fff;
+}
 .oc-nav-btn:active:not(:disabled) .oc-btn-face {
-  border-top: 2.5px solid #444;
-  border-left: 2.5px solid #444;
-  border-right: 2.5px solid #fff;
-  border-bottom: 2.5px solid #fff;
-  padding-top: 9px;
-  padding-left: 19px;
+  transform: scale(0.96);
 }
-.oc-nav-remove .oc-btn-face { color: #800000; }
+.oc-nav-remove .oc-btn-face { color: #c00; border-color: rgba(204,0,0,0.25); }
+.oc-nav-remove:hover:not(:disabled) .oc-btn-face { background: #c00; border-color: #c00; color: #fff; }
 
-/* ── Summary panel (Win95 window, always visible, right of machine) ── */
+/* ── Summary panel (fenêtre Win95, toujours visible, à droite de la machine) ── */
 .oc-summary {
-  width: min(340px, 92vw);
+  width: min(620px, 94vw);
   flex-shrink: 0;
   align-self: stretch;
   display: flex;
@@ -1951,15 +1944,16 @@ a { color: inherit; text-decoration: none; }
 }
 .oc-summary-win { width: 100%; height: 100%; display: flex; flex-direction: column; }
 .oc-summary-body {
-  padding: 10px 10px 14px;
+  padding: 12px;
   flex: 1;
   overflow-y: auto;
   max-height: 70vh;
+  background: #fff;
 }
 .oc-summary-empty {
   font-family: var(--mono);
   font-size: 0.75rem;
-  color: #555;
+  color: var(--ldl-muted);
   text-align: center;
   padding: 16px 0;
   margin: 0;
@@ -1970,34 +1964,36 @@ a { color: inherit; text-decoration: none; }
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
+/* Carte blanche minimale, bordure fine */
 .oc-summary-line {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 5px;
-  background: #d8d8d8;
-  border-top: 1.5px solid #fff;
-  border-left: 1.5px solid #fff;
-  border-right: 1.5px solid #888;
-  border-bottom: 1.5px solid #888;
+  gap: 14px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid var(--ldl-border);
+  border-radius: 8px;
   cursor: pointer;
+  transition: border-color var(--ldl-transition), background var(--ldl-transition);
 }
+.oc-summary-line:hover { border-color: var(--ldl-primary); }
 .oc-summary-line-active {
-  background: #000080;
-  border-color: #000080;
+  background: var(--ldl-primary);
+  border-color: var(--ldl-primary);
 }
 .oc-summary-line-active .oc-summary-name,
 .oc-summary-line-active .oc-summary-price,
-.oc-summary-line-active .oc-summary-variant { color: #fff; }
+.oc-summary-line-active .oc-summary-meta-item { color: #fff; }
+.oc-summary-line-active .oc-summary-meta-item { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.14); }
 .oc-summary-thumb {
-  width: 48px;
-  height: 60px;
+  width: 64px;
+  height: 80px;
   flex-shrink: 0;
-  background: #bbb;
+  background: var(--ldl-bg);
+  border: 1px solid var(--ldl-border);
   overflow: hidden;
-  border: none;
   padding: 0;
   cursor: pointer;
   display: block;
@@ -2013,92 +2009,106 @@ a { color: inherit; text-decoration: none; }
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 5px;
 }
 .oc-summary-name {
   font-family: var(--mono);
-  font-size: 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 700;
   text-transform: uppercase;
-  color: #000;
+  color: var(--ldl-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.oc-summary-variant {
+/* Taille / État / Marque — infos étendues de la ligne produit */
+.oc-summary-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.oc-summary-meta-item {
   font-family: var(--mono);
-  font-size: 0.6rem;
-  color: #555;
+  font-size: 0.58rem;
+  letter-spacing: 0.02em;
+  color: var(--ldl-muted);
+  background: var(--ldl-bg);
+  border: 1px solid var(--ldl-border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  white-space: nowrap;
 }
 .oc-summary-price {
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #000080;
+  color: var(--ldl-primary);
 }
+/* Bouton de suppression — discret */
 .oc-summary-remove {
-  background: #c0c0c0;
-  border-top: 1.5px solid #fff;
-  border-left: 1.5px solid #fff;
-  border-right: 1.5px solid #444;
-  border-bottom: 1.5px solid #444;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
   font-family: var(--mono);
-  font-size: 0.6rem;
-  color: #800000;
+  font-size: 0.62rem;
+  color: var(--ldl-muted);
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 4px 7px;
   flex-shrink: 0;
   line-height: 1;
+  transition: color var(--ldl-transition), border-color var(--ldl-transition), background var(--ldl-transition);
 }
+.oc-summary-line:hover .oc-summary-remove { color: #c00; border-color: rgba(204,0,0,0.25); }
+.oc-summary-line-active .oc-summary-remove { color: rgba(255,255,255,0.85); }
+.oc-summary-remove:hover:not(:disabled) { background: #fff0f0; color: #c00 !important; border-color: #c00; }
 .oc-summary-remove:disabled { opacity: 0.4; cursor: not-allowed; }
-.oc-summary-remove:active:not(:disabled) {
-  border-top: 1.5px solid #444;
-  border-left: 1.5px solid #444;
-  border-right: 1.5px solid #fff;
-  border-bottom: 1.5px solid #fff;
-}
 .oc-summary-footer {
-  border-top: 1px solid #999;
-  padding: 10px 10px 12px;
+  border-top: 1px solid var(--ldl-border);
+  padding: 12px 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   flex-shrink: 0;
+  background: #fff;
 }
 .oc-summary-total {
   display: flex;
   justify-content: space-between;
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #000;
+  color: var(--ldl-text);
 }
 .oc-summary-note {
   font-family: var(--mono);
   font-size: 0.6rem;
-  color: #666;
+  color: var(--ldl-muted);
   margin: 0;
 }
+/* CTA principal — harmonisé avec SETUP_MY_LOOK.EXE (/account) */
 .oc-checkout-btn {
   display: block;
+  width: 100%;
   text-align: center;
-  background: #000080;
+  background: linear-gradient(135deg, #1B48CE 0%, #8B5CF6 100%);
   color: #fff;
   font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 10px 20px;
+  padding: 16px 20px;
   text-decoration: none;
-  border-top: 2px solid #6060c0;
-  border-left: 2px solid #6060c0;
-  border-right: 2px solid #00003a;
-  border-bottom: 2px solid #00003a;
-  margin-top: 4px;
-  transition: filter 0.15s;
+  border: none;
+  border-radius: 8px;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.15s;
 }
-.oc-checkout-btn:hover { filter: brightness(1.15); }
+.oc-checkout-btn:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+.oc-checkout-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ── Checkout flying heart ── */
 .ch-overlay {
@@ -2198,16 +2208,16 @@ a { color: inherit; text-decoration: none; }
   .ch-heart-msg { font-size: 1rem; width: 92px; }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   .oc-page { flex-direction: column; align-items: center; }
   .oc-center { width: min(420px, 92vw); }
-  .oc-summary { width: min(420px, 92vw); }
+  .oc-summary { width: min(560px, 92vw); }
 }
 @media (max-width: 480px) {
   .oc-center { width: 92vw; }
   .oc-summary { width: 92vw; }
-  .oc-btn-face { padding: 7px 10px; min-width: 38px; }
-  .oc-btn-face-wide { padding: 7px 12px; }
+  .oc-btn-face { padding: 9px 14px; min-width: 40px; }
+  .oc-btn-face-wide { padding: 9px 16px; }
 }
 
 /* ============================================================
@@ -5213,13 +5223,11 @@ html, body {
 }
 
 /* Entrée /dressing-machine dans le menu — c'est l'attraction du site. */
+/* Entrée /dressing-machine : même carte que les autres dossiers du menu,
+   simplement soulignée par un filet accent — elle ne dépareille pas. */
 .drawer-link-closet {
-  color: #d4006e;
-  letter-spacing: 0.01em;
-}
-.drawer-link-closet:hover {
-  color: #fff;
-  background: #d4006e;
+  border-color: var(--ldl-accent);
+  box-shadow: inset 3px 0 0 var(--ldl-accent);
 }
 
 /* ============================================================

@@ -102,8 +102,10 @@ export function CartPage() {
                   {firstName ? `Dressing de ${firstName}` : "Dressing"}
                 </span>
                 {total > 0 && <span className="oc-counter">{current + 1}/{total}</span>}
-                <div className="oc-win95-dots">
-                  <span /><span /><span />
+                <div className="account-win95-chrome">
+                  <span>_</span>
+                  <span>□</span>
+                  <span>×</span>
                 </div>
               </div>
 
@@ -190,7 +192,11 @@ export function CartPage() {
             <div className="oc-win95-outer oc-summary-win">
               <div className="oc-win95-titlebar">
                 <span className="oc-win95-title">MON PANIER — {total} article{total !== 1 ? "s" : ""}</span>
-                <div className="oc-win95-dots"><span /><span /><span /></div>
+                <div className="account-win95-chrome">
+                  <span>_</span>
+                  <span>□</span>
+                  <span>×</span>
+                </div>
               </div>
 
               <div className="oc-summary-body">
@@ -205,7 +211,11 @@ export function CartPage() {
                         </div>
                         <div className="oc-summary-info">
                           <span className="oc-summary-name">{line.title}</span>
-                          {line.variantTitle && <span className="oc-summary-variant">{line.variantTitle}</span>}
+                          <div className="oc-summary-meta">
+                            {(line.variantTitle || line.size) && <span className="oc-summary-meta-item">Taille : {line.variantTitle || line.size}</span>}
+                            {line.etat && <span className="oc-summary-meta-item">État : {line.etat}</span>}
+                            {line.vendor && <span className="oc-summary-meta-item">Marque : {line.vendor}</span>}
+                          </div>
                           <span className="oc-summary-price">€{(line.price * line.quantity).toFixed(2)}{line.quantity > 1 && ` ×${line.quantity}`}</span>
                         </div>
                         <button

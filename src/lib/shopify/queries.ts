@@ -1,3 +1,25 @@
+// "Taille" vit dans les champs méta Catégorie de Shopify (namespace "shopify",
+// clé "size") — un champ de taxonomie standard qui référence des metaobjects
+// ("label") plutôt que de stocker directement du texte. On récupère la
+// référence (valeur unique) et les références (valeur liste) en plus de la
+// valeur brute, pour couvrir les deux formes possibles.
+const SIZE_META_FIELDS = /* GraphQL */ `
+  value
+  type
+  reference {
+    ... on Metaobject {
+      field(key: "label") { value }
+    }
+  }
+  references(first: 5) {
+    nodes {
+      ... on Metaobject {
+        field(key: "label") { value }
+      }
+    }
+  }
+`;
+
 export const FEATURED_PRODUCTS_QUERY = /* GraphQL */ `
   query FeaturedProducts($first: Int!) {
     products(first: $first, sortKey: CREATED_AT, reverse: true) {
@@ -197,6 +219,9 @@ export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
       etat: metafield(namespace: "custom", key: "etat") {
         value
       }
+      sizeMeta: metafield(namespace: "shopify", key: "size") {
+        ${SIZE_META_FIELDS}
+      }
       collections(first: 10) {
         edges {
           node {
@@ -327,6 +352,19 @@ const CART_FRAGMENT = /* GraphQL */ `
               product {
                 title
                 handle
+                vendor
+                etat: metafield(namespace: "custom", key: "etat") {
+                  value
+                }
+                sizeMeta: metafield(namespace: "shopify", key: "size") {
+                  ${SIZE_META_FIELDS}
+                }
+                options {
+                  name
+                  optionValues {
+                    name
+                  }
+                }
               }
             }
           }
