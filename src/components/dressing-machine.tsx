@@ -535,6 +535,10 @@ function ModuleWindow({
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     onFocus();
+    // The ✕ lives inside the drag handle. Capturing the pointer here would
+    // retarget the whole gesture — including the click — onto the title bar,
+    // so the close button would never fire.
+    if ((e.target as HTMLElement).closest("button, a")) return;
     drag.current = { sx: e.clientX, sy: e.clientY, ox: pos.x, oy: pos.y };
     e.currentTarget.setPointerCapture(e.pointerId);
   };
@@ -569,7 +573,12 @@ function ModuleWindow({
       >
         <span className="dm-panel-title">{mod.window}</span>
         <div className="dm-chrome">
-          <button className="dm-chrome-btn" onClick={onClose} aria-label={`Fermer ${mod.window}`}>
+          <button
+            type="button"
+            className="dm-chrome-btn"
+            onClick={onClose}
+            aria-label={`Fermer ${mod.window}`}
+          >
             ✕
           </button>
         </div>
