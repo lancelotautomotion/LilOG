@@ -8,7 +8,7 @@ import { Drawer } from "@/components/drawer";
 import { SmartImg } from "@/components/smart-img";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/hooks/use-wishlist";
-import { compareSizes, STANDARD_SIZES } from "@/lib/sizes";
+import { compareSizes, STANDARD_SHOE_SIZES, STANDARD_SIZES } from "@/lib/sizes";
 import type { ClosetItem, ClosetSlot, ClosetVariant } from "@/lib/shopify/types";
 
 /* ================================================================== *
@@ -65,30 +65,48 @@ function phraseFor(keys: string[]): string {
   return STYLE_PHRASES[Math.abs(h) % STYLE_PHRASES.length];
 }
 
-/** The variant to buy for a piece: the shopper's size when it exists. */
-function variantFor(item: ClosetItem, size: string | null): ClosetVariant | null {
+/** The variant to buy for a piece: one of the shopper's sizes when it exists. */
+function variantFor(item: ClosetItem, selected: ReadonlySet<string>): ClosetVariant | null {
   const buyable = item.variants.filter((v) => v.available);
   const pool = buyable.length > 0 ? buyable : item.variants;
-  if (size) {
-    const exact = pool.find((v) => v.size === size);
+  if (selected.size > 0) {
+    const exact = pool.find((v) => v.size && selected.has(v.size));
     if (exact) return exact;
   }
   return pool[0] ?? null;
 }
 
-function priceOf(item: ClosetItem, size: string | null): number {
-  return variantFor(item, size)?.price ?? item.price;
+function priceOf(item: ClosetItem, selected: ReadonlySet<string>): number {
+  return variantFor(item, selected)?.price ?? item.price;
 }
 
 /**
- * Narrow a pool to the shopper's size. `strict` columns (Hauts / Bas) show
- * nothing when nothing fits; the optional modules fall back to the full pool
- * rather than going dark — bags and bijoux don't have a morphology.
+ * Narrow a pool to the shopper's sizes — an empty selection means "toutes".
+ * `strict` columns (Hauts / Bas) show nothing when nothing fits; the optional
+ * modules fall back to the full pool rather than going dark, since a bag or a
+ * collier has no morphology to speak of.
  */
-function applySize(list: ClosetItem[], size: string | null, strict: boolean): ClosetItem[] {
-  if (!size) return list;
-  const matched = list.filter((i) => i.sizes.length === 0 || i.sizes.includes(size));
+function applySizes(
+  list: ClosetItem[],
+  selected: ReadonlySet<string>,
+  strict: boolean,
+): ClosetItem[] {
+  if (selected.size === 0) return list;
+  const matched = list.filter(
+    (i) => i.sizes.length === 0 || i.sizes.some((s) => selected.has(s)),
+  );
   return strict || matched.length > 0 ? matched : list;
+}
+
+function toggleIn(set: ReadonlySet<string>, value: string): Set<string> {
+  const next = new Set(set);
+  if (!next.delete(value)) next.add(value);
+  return next;
+}
+
+/** "M, L" — for the toolbar tag and the empty-rack message. */
+function describe(selected: ReadonlySet<string>): string {
+  return selected.size === 0 ? "toutes" : [...selected].join(", ");
 }
 
 function euros(n: number): string {
@@ -126,25 +144,93 @@ function useTyped(text: string, active: boolean, speed = 18): string {
  * ÉTAPE 1 — SYSTEM_LOGIN.EXE
  * ================================================================== */
 
-const ALL_SIZES = "__all__";
+/** One multi-select row of size chips, plus a "toutes" reset. */
+function SizeRow({
+  label,
+  hint,
+  name,
+  options,
+  selected,
+  onToggle,
+  onClear,
+}: {
+  label: string;
+  hint?: string;
+  name: string;
+  options: string[];
+  selected: ReadonlySet<string>;
+  onToggle: (value: string) => void;
+  onClear: () => void;
+}) {
+  return (
+    <div className="dm-gate-field">
+      <span className="dm-gate-label">
+        {label}
+        <em className="dm-gate-hint">plusieurs choix possibles</em>
+      </span>
+      <div className="dm-size-grid">
+        {options.map((s) => (
+          <label key={s} className={"dm-size" + (selected.has(s) ? " on" : "")}>
+            <input
+              type="checkbox"
+              name={name}
+              value={s}
+              checked={selected.has(s)}
+              onChange={() => onToggle(s)}
+            />
+            {s}
+          </label>
+        ))}
+        <label className={"dm-size dm-size-all" + (selected.size === 0 ? " on" : "")}>
+          <input
+            type="checkbox"
+            name={`${name}-all`}
+            checked={selected.size === 0}
+            onChange={onClear}
+          />
+          TOUTES
+        </label>
+      </div>
+      {hint && <p className="dm-gate-note">{hint}</p>}
+    </div>
+  );
+}
 
 function SizeGate({
   sizes,
+  shoeSizes,
   inferred,
+  shoeInferred,
+  initialSizes,
+  initialShoeSizes,
   onLaunch,
 }: {
   sizes: string[];
-  /** true when the catalogue carried no sizing and we fell back to XS–XL. */
+  /** Empty when the catalogue holds no shoes — the row is then hidden. */
+  shoeSizes: string[];
+  /** true when the catalogue carried no sizing and we fell back to a default. */
   inferred: boolean;
-  onLaunch: (size: string | null) => void;
+  shoeInferred: boolean;
+  initialSizes: ReadonlySet<string>;
+  initialShoeSizes: ReadonlySet<string>;
+  onLaunch: (sizes: Set<string>, shoeSizes: Set<string>) => void;
 }) {
-  // Pre-select the middle of the range: the launch button is never dead, and
-  // the shopper still sees their own size is a deliberate choice.
-  const [picked, setPicked] = useState<string>(
-    () => sizes[Math.floor(sizes.length / 2)] ?? ALL_SIZES,
+  // Seeded from the current selection so re-opening the gate from the toolbar
+  // shows what the shopper already picked rather than resetting it.
+  const [picked, setPicked] = useState<ReadonlySet<string>>(() =>
+    initialSizes.size > 0
+      ? new Set(initialSizes)
+      : new Set(sizes[Math.floor(sizes.length / 2)] ? [sizes[Math.floor(sizes.length / 2)]] : []),
   );
+  const [pickedShoes, setPickedShoes] = useState<ReadonlySet<string>>(
+    () => new Set(initialShoeSizes),
+  );
+
   const intro = "Veuillez entrer vos paramètres morphologiques pour initialiser la machine.";
   const typed = useTyped(intro, true, 16);
+
+  const noSizing = "Le catalogue ne renseigne pas encore les tailles : toutes les pièces resteront affichées quel que soit votre choix.";
+  const noPointure = "Aucune pointure n'est renseignée : toutes les chaussures resteront affichées.";
 
   return (
     <div className="dm-gate-scrim" role="dialog" aria-modal="true" aria-label="SYSTEM_LOGIN.EXE">
@@ -167,43 +253,31 @@ function SizeGate({
             </p>
           </div>
 
-          <div className="dm-gate-field">
-            <span className="dm-gate-label">Taille</span>
-            <div className="dm-size-grid">
-              {sizes.map((s) => (
-                <label key={s} className={"dm-size" + (picked === s ? " on" : "")}>
-                  <input
-                    type="radio"
-                    name="dm-size"
-                    value={s}
-                    checked={picked === s}
-                    onChange={() => setPicked(s)}
-                  />
-                  {s}
-                </label>
-              ))}
-              <label className={"dm-size dm-size-all" + (picked === ALL_SIZES ? " on" : "")}>
-                <input
-                  type="radio"
-                  name="dm-size"
-                  value={ALL_SIZES}
-                  checked={picked === ALL_SIZES}
-                  onChange={() => setPicked(ALL_SIZES)}
-                />
-                TOUTES
-              </label>
-            </div>
-            {inferred && (
-              <p className="dm-gate-note">
-                Le catalogue ne renseigne pas encore les tailles : toutes les pièces resteront
-                affichées quel que soit votre choix.
-              </p>
-            )}
-          </div>
+          <SizeRow
+            label="Taille"
+            hint={inferred ? noSizing : undefined}
+            name="dm-size"
+            options={sizes}
+            selected={picked}
+            onToggle={(v) => setPicked((p) => toggleIn(p, v))}
+            onClear={() => setPicked(new Set())}
+          />
+
+          {shoeSizes.length > 0 && (
+            <SizeRow
+              label="Pointure"
+              hint={shoeInferred ? noPointure : undefined}
+              name="dm-shoe-size"
+              options={shoeSizes}
+              selected={pickedShoes}
+              onToggle={(v) => setPickedShoes((p) => toggleIn(p, v))}
+              onClear={() => setPickedShoes(new Set())}
+            />
+          )}
 
           <button
             className="dm-btn dm-btn-primary dm-gate-launch"
-            onClick={() => onLaunch(picked === ALL_SIZES ? null : picked)}
+            onClick={() => onLaunch(new Set(picked), new Set(pickedShoes))}
           >
             LANCER_LA_MACHINE.EXE →
           </button>
@@ -226,7 +300,7 @@ function Rack({
   label,
   items,
   index,
-  size,
+  selected,
   onPrev,
   onNext,
   onChangeSize,
@@ -234,7 +308,7 @@ function Rack({
   label: string;
   items: ClosetItem[];
   index: number;
-  size: string | null;
+  selected: ReadonlySet<string>;
   onPrev: () => void;
   onNext: () => void;
   onChangeSize: () => void;
@@ -261,7 +335,7 @@ function Rack({
           ) : (
             <div className="dm-frame-empty">
               <p>
-                AUCUNE PIÈCE{size ? ` EN ${size}` : ""}
+                AUCUNE PIÈCE{selected.size > 0 ? ` EN ${describe(selected)}` : ""}
                 <br />
                 DANS CE RAYON.
               </p>
@@ -293,7 +367,7 @@ function Rack({
 
         <div className="dm-caption">
           <span className="dm-caption-name">{item ? item.name : "—"}</span>
-          <span className="dm-caption-price">{item ? euros(priceOf(item, size)) : "—"}</span>
+          <span className="dm-caption-price">{item ? euros(priceOf(item, selected)) : "—"}</span>
         </div>
       </div>
     </section>
@@ -428,7 +502,7 @@ function ModuleWindow({
   mod,
   items,
   index,
-  size,
+  selected,
   z,
   onFocus,
   onPrev,
@@ -438,7 +512,7 @@ function ModuleWindow({
   mod: ModuleDef;
   items: ClosetItem[];
   index: number;
-  size: string | null;
+  selected: ReadonlySet<string>;
   z: number;
   onFocus: () => void;
   onPrev: () => void;
@@ -520,7 +594,7 @@ function ModuleWindow({
 
         <div className="dm-caption dm-caption-sm">
           <span className="dm-caption-name">{item.name}</span>
-          <span className="dm-caption-price">{euros(priceOf(item, size))}</span>
+          <span className="dm-caption-price">{euros(priceOf(item, selected))}</span>
         </div>
       </div>
     </div>
@@ -582,7 +656,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
   const wishlist = useWishlist();
 
   const [menu, setMenu] = useState(false);
-  const [size, setSize] = useState<string | null>(null);
+  const [sizes, setSizes] = useState<ReadonlySet<string>>(() => new Set());
+  const [shoeSizes, setShoeSizes] = useState<ReadonlySet<string>>(() => new Set());
   const [gateOpen, setGateOpen] = useState(true);
   const [topIdx, setTopIdx] = useState(0);
   const [bottomIdx, setBottomIdx] = useState(0);
@@ -615,23 +690,40 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
   // A single size across the whole catalogue isn't a choice — fall back to the
   // standard range so the gate always has something to pick from. The machine
   // still works: pieces with no size data match every morphology.
-  const { gateSizes, sizesInferred } = useMemo(() => {
-    const set = new Set<string>();
-    for (const it of [...bySlot.top, ...bySlot.bottom]) for (const s of it.sizes) set.add(s);
-    const found = [...set].sort(compareSizes);
-    return found.length >= 2
-      ? { gateSizes: found, sizesInferred: false }
-      : { gateSizes: STANDARD_SIZES, sizesInferred: true };
+  const gateOptions = useMemo(() => {
+    const collect = (lists: ClosetItem[][]) => {
+      const set = new Set<string>();
+      for (const list of lists) for (const it of list) for (const s of it.sizes) set.add(s);
+      return [...set].sort(compareSizes);
+    };
+
+    const clothes = collect([bySlot.top, bySlot.bottom, bySlot.accessory]);
+    const shoes = collect([bySlot.shoes]);
+
+    return {
+      gateSizes: clothes.length >= 2 ? clothes : STANDARD_SIZES,
+      sizesInferred: clothes.length < 2,
+      // Hidden entirely when the catalogue holds no shoes at all.
+      gateShoeSizes:
+        bySlot.shoes.length === 0 ? [] : shoes.length >= 2 ? shoes : STANDARD_SHOE_SIZES,
+      shoeSizesInferred: bySlot.shoes.length > 0 && shoes.length < 2,
+    };
   }, [bySlot]);
 
+  /** Clothing sizes everywhere, pointures for the shoe module. */
+  const selectedFor = useCallback(
+    (slot: ClosetSlot): ReadonlySet<string> => (slot === "shoes" ? shoeSizes : sizes),
+    [sizes, shoeSizes],
+  );
+
   const pools = useMemo(() => ({
-    top: applySize(bySlot.top, size, true),
-    bottom: applySize(bySlot.bottom, size, true),
-    jewelry: applySize(bySlot.jewelry, size, false),
-    bag: applySize(bySlot.bag, size, false),
-    accessory: applySize(bySlot.accessory, size, false),
-    shoes: applySize(bySlot.shoes, size, false),
-  }), [bySlot, size]);
+    top: applySizes(bySlot.top, sizes, true),
+    bottom: applySizes(bySlot.bottom, sizes, true),
+    jewelry: applySizes(bySlot.jewelry, sizes, false),
+    bag: applySizes(bySlot.bag, sizes, false),
+    accessory: applySizes(bySlot.accessory, sizes, false),
+    shoes: applySizes(bySlot.shoes, shoeSizes, false),
+  }), [bySlot, sizes, shoeSizes]);
 
   const counts = useMemo(
     () => Object.fromEntries(Object.entries(pools).map(([k, v]) => [k, v.length])),
@@ -658,23 +750,28 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
     [top, bottom, modulePieces],
   );
 
-  const total = look.reduce((sum, p) => sum + priceOf(p, size), 0);
+  const total = look.reduce((sum, p) => sum + priceOf(p, selectedFor(p.slot)), 0);
   const lookKeys = look.map((p) => p.handle);
 
   /* ---- actions ---- */
 
-  const shuffle = useCallback((chosen: string | null) => {
-    const tops = applySize(bySlot.top, chosen, true);
-    const bottoms = applySize(bySlot.bottom, chosen, true);
+  const shuffle = useCallback((chosen: ReadonlySet<string>) => {
+    const tops = applySizes(bySlot.top, chosen, true);
+    const bottoms = applySizes(bySlot.bottom, chosen, true);
     setTopIdx(tops.length ? Math.floor(Math.random() * tops.length) : 0);
     setBottomIdx(bottoms.length ? Math.floor(Math.random() * bottoms.length) : 0);
   }, [bySlot]);
 
-  const launch = (chosen: string | null) => {
-    setSize(chosen);
+  const launch = (chosen: Set<string>, chosenShoes: Set<string>) => {
+    setSizes(chosen);
+    setShoeSizes(chosenShoes);
     setGateOpen(false);
     shuffle(chosen);
-    setStatus(chosen ? `MORPHOLOGIE ${chosen} CHARGÉE.` : "CATALOGUE COMPLET CHARGÉ.");
+    setStatus(
+      chosen.size > 0
+        ? `MORPHOLOGIE ${describe(chosen)} CHARGÉE.`
+        : "CATALOGUE COMPLET CHARGÉ.",
+    );
   };
 
   const step = (slot: ClosetSlot, delta: number) => {
@@ -721,9 +818,9 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
       wishlist.add({
         handle: piece.handle,
         title: piece.name,
-        price: priceOf(piece, size),
+        price: priceOf(piece, selectedFor(piece.slot)),
         image: piece.image,
-        variantId: variantFor(piece, size)?.id ?? null,
+        variantId: variantFor(piece, selectedFor(piece.slot))?.id ?? null,
       });
     }
     setStatus(`LOOK SAUVEGARDÉ — ${look.length} PIÈCE${look.length > 1 ? "S" : ""} 💋`);
@@ -735,7 +832,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
     setStatus("COP_THE_LOOK.EXE — AJOUT AU PANIER…");
     try {
       for (const piece of look) {
-        const variant = variantFor(piece, size);
+        const variant = variantFor(piece, selectedFor(piece.slot));
         if (variant) await addItem(variant.id, 1);
       }
       router.push("/cart");
@@ -769,7 +866,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               ⚙ Morphologie
             </button>
             <span className="dm-toolbar-sep" />
-            <button className="dm-toolbar-btn" onClick={() => shuffle(size)}>
+            <button className="dm-toolbar-btn" onClick={() => shuffle(sizes)}>
               ⟳ Mélanger
             </button>
             <span className="dm-toolbar-sep" />
@@ -777,7 +874,10 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               ♡ Mes looks
             </Link>
             <span className="dm-toolbar-tag">
-              Taille <strong>{size ?? "toutes"}</strong>
+              Taille <strong>{describe(sizes)}</strong>
+              {gateOptions.gateShoeSizes.length > 0 && (
+                <> · Pointure <strong>{describe(shoeSizes)}</strong></>
+              )}
             </span>
           </div>
 
@@ -788,7 +888,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
                 label="HAUTS"
                 items={pools.top}
                 index={Math.min(topIdx, Math.max(0, pools.top.length - 1))}
-                size={size}
+                selected={sizes}
                 onPrev={() => step("top", -1)}
                 onNext={() => step("top", 1)}
                 onChangeSize={() => setGateOpen(true)}
@@ -797,7 +897,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
                 label="BAS"
                 items={pools.bottom}
                 index={Math.min(bottomIdx, Math.max(0, pools.bottom.length - 1))}
-                size={size}
+                selected={sizes}
                 onPrev={() => step("bottom", -1)}
                 onNext={() => step("bottom", 1)}
                 onChangeSize={() => setGateOpen(true)}
@@ -859,7 +959,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               mod={mod}
               items={pool}
               index={Math.min(moduleIdx[slot] ?? 0, Math.max(0, pool.length - 1))}
-              size={size}
+              selected={selectedFor(slot)}
               z={topZ[slot] ?? 60}
               onFocus={() => focusWindow(slot)}
               onPrev={() => step(slot, -1)}
@@ -871,7 +971,15 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
       </main>
 
       {gateOpen && (
-        <SizeGate sizes={gateSizes} inferred={sizesInferred} onLaunch={launch} />
+        <SizeGate
+          sizes={gateOptions.gateSizes}
+          shoeSizes={gateOptions.gateShoeSizes}
+          inferred={gateOptions.sizesInferred}
+          shoeInferred={gateOptions.shoeSizesInferred}
+          initialSizes={sizes}
+          initialShoeSizes={shoeSizes}
+          onLaunch={launch}
+        />
       )}
     </>
   );

@@ -5756,7 +5756,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   backdrop-filter: blur(3px);
 }
 .dm-gate-win { width: min(440px, 100%); }
-.dm-gate-body { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.dm-gate-body { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
 .dm-gate-intro { display: flex; gap: 12px; align-items: flex-start; }
 .dm-gate-glyph {
   width: 34px;
@@ -5791,15 +5791,28 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 
 .dm-gate-field { display: flex; flex-direction: column; gap: 7px; }
 .dm-gate-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
   font-family: var(--mono);
   font-size: 0.57rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--ldl-muted);
 }
+.dm-gate-hint {
+  font-style: normal;
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--ldl-muted);
+  opacity: 0.65;
+}
 .dm-size-grid { display: flex; flex-wrap: wrap; gap: 6px; }
 .dm-size {
   position: relative;
+  flex: 0 0 auto;
   font-family: var(--mono);
   font-size: 0.66rem;
   font-weight: 700;

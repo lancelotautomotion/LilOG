@@ -74,6 +74,9 @@ export function sizeFromTag(tag: string): string | null {
 /** Shown in the gate when the catalogue carries no size data of its own. */
 export const STANDARD_SIZES = ["XS", "S", "M", "L", "XL"];
 
+/** Same idea for footwear — EU sizes, the range Lil'OG actually stocks. */
+export const STANDARD_SHOE_SIZES = ["35", "36", "37", "38", "39", "40", "41", "42"];
+
 const SIZE_RANK = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
 /** Letter sizes first (in wearing order), then numeric, then everything else. */
