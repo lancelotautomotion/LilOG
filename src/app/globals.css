@@ -5973,12 +5973,14 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   gap: 1px;
   padding: 4px 11px;
 }
+/* Seul libellé de la console posé dans un puits sombre : le gris des autres
+   captions y serait à peine lisible. */
 .dm-cop-label {
   font-family: var(--mono);
   font-size: 0.5rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #6f6f7c;
+  color: #ffffff;
 }
 .dm-cop-total {
   font-family: var(--font-lcd), monospace;
