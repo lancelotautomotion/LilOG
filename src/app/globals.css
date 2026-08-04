@@ -1633,14 +1633,16 @@ a { color: inherit; text-decoration: none; }
 .oc-center > .oc-win95-outer { flex: 1; display: flex; flex-direction: column; }
 .oc-center > .oc-win95-outer .oc-win95-screen { flex: 1; }
 
-/* Window shell — fond blanc pur, bordures fines, standard UI 2026 (aligné /account) */
+/* Windows 95 outer shell */
 .oc-win95-outer {
   width: 100%;
-  background: #fff;
-  border: 1px solid var(--ldl-border);
-  border-radius: 12px;
-  box-shadow: var(--ldl-shadow-window);
-  overflow: hidden;
+  /* Win95 beveled raised border */
+  border-top: 3px solid #fff;
+  border-left: 3px solid #fff;
+  border-right: 3px solid #444;
+  border-bottom: 3px solid #444;
+  background: #c0c0c0;
+  box-shadow: 2px 2px 0 #000, inset 1px 1px 0 #dfdfdf;
 }
 
 /* Title bar */
@@ -1648,38 +1650,49 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #061987 0%, #1D35D9 70%, #6852F6 100%);
-  padding: 9px 12px;
-  gap: 10px;
+  background: linear-gradient(90deg, #000080, #1084d0);
+  padding: 4px 6px;
+  gap: 8px;
 }
 .oc-win95-title {
   font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 0.7rem;
   color: #fff;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1;
+}
+.oc-win95-dots { display: flex; gap: 3px; }
+.oc-win95-dots span {
+  width: 14px; height: 12px;
+  background: #c0c0c0;
+  border-top: 1.5px solid #fff;
+  border-left: 1.5px solid #fff;
+  border-right: 1.5px solid #444;
+  border-bottom: 1.5px solid #444;
+  display: block;
 }
 
-/* Screen — cadre propre, fond blanc/gris très clair (évite tout bug de transparence PNG) */
+/* Screen (inset sunken) */
 .oc-win95-screen {
-  margin: 0;
-  border: none;
-  background: #fff;
+  margin: 8px;
+  border-top: 2px solid #444;
+  border-left: 2px solid #444;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  background: #6e89c8;
   position: relative;
   min-height: 300px;
   display: flex;
   flex-direction: column;
 }
-.oc-screen-item { display: flex; flex-direction: column; flex: 1; background: #fff; }
+.oc-screen-item { display: flex; flex-direction: column; flex: 1; background: #c0c0c0; }
 .oc-screen-bg {
   flex: 0 0 auto;   /* taille fixée par aspect-ratio, ne concurrence pas le meter */
-  background: var(--ldl-bg);
+  background: #7090d0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1687,7 +1700,6 @@ a { color: inherit; text-decoration: none; }
   max-height: 54vh;
   overflow: hidden;
   position: relative;
-  border-bottom: 1px solid var(--ldl-border);
 }
 .oc-img-wrap { display: block; width: 100%; height: 100%; }
 .oc-img-wrap img, .oc-img-wrap span {
@@ -1714,9 +1726,9 @@ a { color: inherit; text-decoration: none; }
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    rgba(27, 72, 206, 0.12) 40%,
-    rgba(27, 72, 206, 0.30) 75%,
-    rgba(104, 82, 246, 0.55) 100%
+    rgba(100, 180, 255, 0.12) 40%,
+    rgba(160, 220, 255, 0.35) 75%,
+    rgba(200, 240, 255, 0.65) 100%
   );
   animation: ocScanBeam 360ms linear forwards;
 }
@@ -1730,14 +1742,14 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
   align-items: baseline;
   gap: 8px;
-  background: #fff;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--ldl-border);
+  background: #c0c0c0;
+  padding: 6px 10px;
+  border-top: 1px solid #888;
 }
 .oc-item-name {
   font-family: var(--mono);
   font-size: 0.68rem;
-  color: var(--ldl-text);
+  color: #000;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1749,18 +1761,20 @@ a { color: inherit; text-decoration: none; }
   font-family: var(--mono);
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--ldl-primary);
+  color: #000080;
   flex-shrink: 0;
 }
-/* ── Style Scanner — épuré, bleu roi sur fond blanc ── */
+/* ── Style Scanner (Win95) ── */
 .oc-style-meter {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 16px;
-  background: #fff;
+  padding: 14px 16px;
+  /* Win95 grey — continuité avec .oc-item-label */
+  background: #c0c0c0;
+  border-top: 1px solid #888;
   flex: 1;          /* prend tout l'espace restant après la photo + label */
   text-align: center;
 }
@@ -1769,28 +1783,33 @@ a { color: inherit; text-decoration: none; }
 .oc-scan-header {
   font-family: var(--font-lcd), monospace;
   font-size: 1rem;
-  color: var(--ldl-primary);
+  color: #000;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   user-select: none;
 }
 
-/* Barre — segments bleu roi sur piste claire */
+/* Barre Win95 — blocs segmentés authentiques */
 .oc-scan-bar-track {
   width: 88%;
-  height: 12px;
-  border: 1px solid var(--ldl-border);
-  background: var(--ldl-bg);
+  height: 14px;
+  /* Win95 sunken inset */
+  border-top: 2px solid #444;
+  border-left: 2px solid #444;
+  border-right: 2px solid #dfdfdf;
+  border-bottom: 2px solid #dfdfdf;
+  background: #c0c0c0;   /* gris = segments non chargés */
   position: relative;
   overflow: hidden;
 }
 .oc-scan-bar-fill {
   height: 100%;
   width: 0%;
+  /* Blocs bleus 10px / interstices gris 2px — look Win98 pur */
   background: repeating-linear-gradient(
     90deg,
-    var(--ldl-primary) 0px,
-    var(--ldl-primary) 10px,
+    #000080 0px,
+    #000080 10px,
     transparent 10px,
     transparent 12px
   );
@@ -1799,12 +1818,12 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
   transition: width 360ms linear;
 }
-/* Plein : blocs deviennent violet vif (glow) */
+/* Plein : blocs deviennent bleu vif */
 .oc-scan-bar-fill.oc-bar-glow {
   background: repeating-linear-gradient(
     90deg,
-    #6852F6 0px,
-    #6852F6 10px,
+    #1084d0 0px,
+    #1084d0 10px,
     transparent 10px,
     transparent 12px
   );
@@ -1822,7 +1841,7 @@ a { color: inherit; text-decoration: none; }
 .oc-scan-cursor {
   font-family: var(--mono);
   font-size: 0.7rem;
-  color: var(--ldl-primary);
+  color: #000080;
   animation: ocCursorBlink 500ms step-end infinite;
 }
 
@@ -1830,7 +1849,7 @@ a { color: inherit; text-decoration: none; }
 .oc-scan-phrase {
   font-family: var(--font-lcd), monospace;
   font-size: 1.55rem;
-  color: var(--ldl-text);
+  color: #000;
   font-style: normal;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1858,7 +1877,7 @@ a { color: inherit; text-decoration: none; }
 .oc-counter {
   font-family: var(--mono);
   font-size: 0.62rem;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.75);
   letter-spacing: 0.1em;
   flex-shrink: 0;
 }
@@ -1871,59 +1890,60 @@ a { color: inherit; text-decoration: none; }
   gap: 16px;
   padding: 40px 24px;
 }
-.oc-screen-empty p { font-family: var(--mono); font-size: 0.8rem; color: var(--ldl-text); margin: 0; text-align: center; }
-.oc-link { font-family: var(--mono); font-size: 0.7rem; color: var(--ldl-primary); border-bottom: 1px solid var(--ldl-primary); padding-bottom: 2px; }
+.oc-screen-empty p { font-family: var(--mono); font-size: 0.8rem; color: #fff; margin: 0; text-align: center; }
+.oc-link { font-family: var(--mono); font-size: 0.7rem; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.5); padding-bottom: 2px; }
 
-/* Boutons de navigation — épurés, agrandis, fond blanc / bleu au survol */
+/* Win95 nav buttons */
 .oc-nav-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 14px 12px;
-  background: #fff;
-  border-top: 1px solid var(--ldl-border);
+  gap: 8px;
+  padding: 10px 12px 14px;
+  background: #c0c0c0;
 }
 .oc-nav-btn {
   cursor: pointer;
-  background: transparent;
+  background: #c0c0c0;
   border: none;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: none;
 }
-.oc-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.oc-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .oc-btn-face {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  color: var(--ldl-text);
-  padding: 11px 22px;
-  background: #fff;
-  border: 1px solid var(--ldl-border);
-  border-radius: 8px;
+  color: #111;
+  padding: 8px 18px;
+  background: #c0c0c0;
+  /* Win95 raised button */
+  border-top: 2.5px solid #fff;
+  border-left: 2.5px solid #fff;
+  border-right: 2.5px solid #444;
+  border-bottom: 2.5px solid #444;
   font-family: var(--mono);
   font-size: 0.65rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   user-select: none;
-  min-width: 56px;
+  min-width: 52px;
   white-space: nowrap;
-  transition: background var(--ldl-transition), border-color var(--ldl-transition), color var(--ldl-transition), transform var(--ldl-transition);
 }
-.oc-btn-face-wide { padding: 11px 24px; }
-.oc-nav-btn:hover:not(:disabled) .oc-btn-face {
-  background: var(--ldl-primary);
-  border-color: var(--ldl-primary);
-  color: #fff;
-}
+.oc-btn-face-wide { padding: 8px 20px; }
 .oc-nav-btn:active:not(:disabled) .oc-btn-face {
-  transform: scale(0.96);
+  border-top: 2.5px solid #444;
+  border-left: 2.5px solid #444;
+  border-right: 2.5px solid #fff;
+  border-bottom: 2.5px solid #fff;
+  padding-top: 9px;
+  padding-left: 19px;
 }
-.oc-nav-remove .oc-btn-face { color: #c00; border-color: rgba(204,0,0,0.25); }
-.oc-nav-remove:hover:not(:disabled) .oc-btn-face { background: #c00; border-color: #c00; color: #fff; }
+.oc-nav-remove .oc-btn-face { color: #800000; }
 
 /* ── Summary panel (fenêtre Win95, toujours visible, à droite de la machine) ── */
 .oc-summary {
@@ -1934,6 +1954,28 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
 }
 .oc-summary-win { width: 100%; height: 100%; display: flex; flex-direction: column; }
+
+/* Coque fond blanc / bordure fine (aligné /account) — uniquement la fenêtre
+   MON PANIER : la machine à dressing garde son châssis Win95 d'origine. */
+.oc-win95-outer.oc-summary-win {
+  background: #fff;
+  border: 1px solid var(--ldl-border);
+  border-radius: 12px;
+  box-shadow: var(--ldl-shadow-window);
+  overflow: hidden;
+}
+.oc-summary-win .oc-win95-titlebar {
+  background: linear-gradient(90deg, #061987 0%, #1D35D9 70%, #6852F6 100%);
+  padding: 9px 12px;
+  gap: 10px;
+}
+.oc-summary-win .oc-win95-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
 .oc-summary-body {
   padding: 12px;
   flex: 1;
@@ -2207,8 +2249,8 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 480px) {
   .oc-center { width: 92vw; }
   .oc-summary { width: 92vw; }
-  .oc-btn-face { padding: 9px 14px; min-width: 40px; }
-  .oc-btn-face-wide { padding: 9px 16px; }
+  .oc-btn-face { padding: 7px 10px; min-width: 38px; }
+  .oc-btn-face-wide { padding: 7px 12px; }
 }
 
 /* ============================================================
