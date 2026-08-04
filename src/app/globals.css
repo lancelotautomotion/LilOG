@@ -5493,14 +5493,18 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   color: #ff8fa8;
 }
 
-/* Étiquette produit, façon plaque sérigraphiée */
+/* Étiquette produit, façon plaque sérigraphiée.
+   Hauteur fixe + margin-top:auto sur le bouton : les deux SPIN tombent sur
+   la même ligne quelle que soit la longueur des noms de produit. */
 .dm-bay-plate {
   flex-shrink: 0;
+  margin-top: auto;
+  height: 34px;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 5px 12px;
+  padding: 0 12px;
   background: var(--dm-chassis);
   border-top: 2px solid var(--dm-hi);
   font-family: var(--mono);
@@ -5524,87 +5528,129 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   color: #0f2a86;
 }
 
-/* ---- Bouton casino ---- */
+/* ---- Bouton casino : plastique épais bombé, coins pleinement arrondis ----
+   Le relief ne vient plus de bordures biseautées (incompatibles avec un
+   rayon) mais d'ombres internes : reflet haut, creux bas, tranche portée. */
 .dm-spin {
   flex-shrink: 0;
-  margin: 7px 9px 9px;
-  padding: 11px 10px;
-  background: linear-gradient(180deg, #e6e2da 0%, var(--dm-chassis) 55%, var(--dm-chassis-2) 100%);
-  border-top: 5px solid var(--dm-hi);
-  border-left: 5px solid var(--dm-hi);
-  border-right: 5px solid var(--dm-lo);
-  border-bottom: 5px solid var(--dm-lo);
-  box-shadow: inset -2px -2px 0 var(--dm-mid), inset 2px 2px 0 #fdfdfd, 0 2px 0 rgba(0, 0, 0, 0.22);
+  margin: 0 12px 12px;       /* margin-top: auto sur .dm-bay épingle en bas */
+  min-height: 54px;
+  padding: 12px 14px;
+  border: 1px solid rgba(24, 22, 30, 0.34);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fdfcfa 0%, #eeeae2 44%, #d2cdc4 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.98),
+    inset 0 1px 0 1px rgba(255, 255, 255, 0.72),
+    inset 0 -9px 14px rgba(86, 84, 96, 0.34),
+    0 4px 0 #a29d93,
+    0 8px 14px rgba(0, 0, 0, 0.24);
   font-family: var(--mono);
-  font-size: 1.02rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   color: #14161d;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
   cursor: pointer;
   user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+  transition: filter 120ms, box-shadow 90ms, transform 90ms;
 }
-.dm-spin:hover:not(:disabled) { background: linear-gradient(180deg, #f2efe9 0%, #dedad2 55%, #cbc7bf 100%); }
-.dm-spin:active:not(:disabled),
-.dm-spin.pressed {
-  border-top-color: var(--dm-lo);
-  border-left-color: var(--dm-lo);
-  border-right-color: var(--dm-hi);
-  border-bottom-color: var(--dm-hi);
-  box-shadow: inset 2px 2px 0 var(--dm-mid);
-  padding: 12px 10px 10px;
+.dm-spin:hover:not(:disabled) { filter: brightness(1.04); }
+.dm-spin:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow:
+    inset 0 4px 9px rgba(86, 84, 96, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.5),
+    0 0 0 #a29d93,
+    0 2px 5px rgba(0, 0, 0, 0.2);
 }
-.dm-spin:disabled { color: var(--dm-mid); cursor: default; }
-.dm-spin-emoji { font-size: 1.15rem; line-height: 1; }
+.dm-spin:focus-visible { outline: 2px dotted #14161d; outline-offset: 3px; }
+.dm-spin:disabled {
+  color: #9a97a2;
+  cursor: default;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.7), inset 0 -6px 10px rgba(86, 84, 96, 0.22), 0 2px 0 #b5b1a8;
+}
+.dm-spin-emoji { font-size: 1.1rem; line-height: 1; }
 
-/* ---- L'arête centrale + SHUFFLE_ALL ---- */
+/* ---- L'arête centrale + le bouton d'arcade ---- */
 .dm-divider {
   flex: 0 0 4px;
   position: relative;
   background: #14161d;
   box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.18), inset -1px 0 0 rgba(0, 0, 0, 0.6);
 }
-.dm-shuffle {
+
+/* Bulle d'arcade : cercle parfait, plastique fuchsia bombé, à cheval sur
+   l'arête. Le bombé tient à trois couches — reflet spéculaire haut, ombre
+   interne basse, tranche portée sous le bouton. */
+.dm-style-me {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 5;
-  width: 104px;
-  padding: 15px 7px;
+  width: clamp(104px, 9vw, 132px);
+  aspect-ratio: 1;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse 64% 40% at 50% 15%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.18) 58%, transparent 74%),
+    radial-gradient(ellipse 88% 60% at 50% 116%, rgba(255, 255, 255, 0.3) 0%, transparent 46%),
+    linear-gradient(180deg, #ff96db 0%, #ff44b2 44%, #cf1179 100%);
+  box-shadow:
+    inset 0 -15px 24px rgba(116, 0, 63, 0.62),
+    inset 0 12px 20px rgba(255, 255, 255, 0.42),
+    inset 0 0 0 3px rgba(255, 255, 255, 0.3),
+    0 9px 0 #8d0a52,
+    0 16px 30px rgba(0, 0, 0, 0.46);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 7px;
-  background: linear-gradient(180deg, #ffe9a8 0%, #f3c85f 55%, #d9a92f 100%);
-  border-top: 5px solid #fff6dd;
-  border-left: 5px solid #fff6dd;
-  border-right: 5px solid #8a6a12;
-  border-bottom: 5px solid #8a6a12;
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), 0 10px 26px rgba(0, 0, 0, 0.32);
-  font-family: var(--mono);
-  font-size: 0.54rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  line-height: 1.4;
-  color: #3a2a00;
-  text-align: center;
+  justify-content: center;
   cursor: pointer;
   user-select: none;
+  transition: filter 130ms, box-shadow 90ms, transform 90ms;
 }
-.dm-shuffle:hover { background: linear-gradient(180deg, #fff3c9 0%, #ffd77a 55%, #e4b73c 100%); }
-.dm-shuffle:active {
-  border-top-color: #8a6a12;
-  border-left-color: #8a6a12;
-  border-right-color: #fff6dd;
-  border-bottom-color: #fff6dd;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
-  transform: translate(-50%, calc(-50% + 3px));
+/* Éclat spéculaire : la calotte brillante d'une bille de plastique dur */
+.dm-style-me::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  transform: translateX(-50%);
+  width: 64%;
+  height: 33%;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.12) 78%, transparent 100%);
+  filter: blur(0.5px);
+  pointer-events: none;
 }
-.dm-shuffle-emoji { font-size: 1.7rem; line-height: 1; }
+.dm-style-me-label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--mono);
+  font-size: clamp(0.62rem, 0.72vw, 0.76rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+  text-shadow: 0 2px 3px rgba(116, 0, 63, 0.8), 0 0 12px rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+.dm-style-me:hover { filter: brightness(1.07) saturate(1.06); }
+.dm-style-me:active {
+  transform: translate(-50%, calc(-50% + 6px));
+  box-shadow:
+    inset 0 -9px 18px rgba(116, 0, 63, 0.7),
+    inset 0 7px 14px rgba(255, 255, 255, 0.3),
+    inset 0 0 0 3px rgba(255, 255, 255, 0.24),
+    0 3px 0 #8d0a52,
+    0 7px 14px rgba(0, 0, 0, 0.4);
+}
+.dm-style-me:focus-visible { outline: 3px dotted #fff; outline-offset: 4px; }
 
 /* ================================================================
    LA CONSOLE — barre de contrôle basse
@@ -5744,40 +5790,49 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 @keyframes dmBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 .dm-caret { animation: dmBlink 500ms step-end infinite; }
 
-/* ---- Boutons Win95 de la console ---- */
+/* ---- Boutons de la console : même plastique bombé que le SPIN ---- */
 .dm-w95 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 9px 16px;
-  background: linear-gradient(180deg, #e6e2da 0%, var(--dm-chassis) 55%, var(--dm-chassis-2) 100%);
-  border-top: 4px solid var(--dm-hi);
-  border-left: 4px solid var(--dm-hi);
-  border-right: 4px solid var(--dm-lo);
-  border-bottom: 4px solid var(--dm-lo);
-  box-shadow: inset -1px -1px 0 var(--dm-mid), inset 1px 1px 0 #fdfdfd;
+  padding: 10px 20px;
+  border: 1px solid rgba(24, 22, 30, 0.32);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fdfcfa 0%, #eeeae2 44%, #d2cdc4 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.98),
+    inset 0 1px 0 1px rgba(255, 255, 255, 0.7),
+    inset 0 -7px 12px rgba(86, 84, 96, 0.32),
+    0 3px 0 #a29d93,
+    0 6px 12px rgba(0, 0, 0, 0.22);
   font-family: var(--mono);
   font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #14161d;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
   text-decoration: none;
+  transition: filter 120ms, box-shadow 90ms, transform 90ms;
 }
-.dm-w95:hover:not(:disabled) { background: linear-gradient(180deg, #f2efe9 0%, #dedad2 55%, #cbc7bf 100%); }
+.dm-w95:hover:not(:disabled) { filter: brightness(1.04); }
 .dm-w95:active:not(:disabled), .dm-w95.pressed {
-  border-top-color: var(--dm-lo);
-  border-left-color: var(--dm-lo);
-  border-right-color: var(--dm-hi);
-  border-bottom-color: var(--dm-hi);
-  box-shadow: inset 1px 1px 0 var(--dm-mid);
-  padding: 10px 16px 8px;
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 4px 9px rgba(86, 84, 96, 0.48),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.5),
+    0 0 0 #a29d93,
+    0 2px 5px rgba(0, 0, 0, 0.2);
 }
-.dm-w95:disabled { color: var(--dm-mid); cursor: default; }
-.dm-w95:focus-visible { outline: 2px dotted #14161d; outline-offset: -6px; }
+.dm-w95:disabled {
+  color: #9a97a2;
+  cursor: default;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.7), inset 0 -5px 9px rgba(86, 84, 96, 0.2), 0 2px 0 #b5b1a8;
+}
+.dm-w95:focus-visible { outline: 2px dotted #14161d; outline-offset: 3px; }
 
 /* Save — Win95 gris, LED verte quand le look est en wishlist */
 .dm-save { align-self: center; }
@@ -5818,18 +5873,25 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   text-shadow: 0 0 8px rgba(255, 119, 200, 0.5);
 }
 .dm-cop-btn {
-  background: linear-gradient(180deg, #3f6bff 0%, #1b48ce 55%, #12329a 100%);
-  border-top-color: #90aaff;
-  border-left-color: #90aaff;
-  border-right-color: #0a1f63;
-  border-bottom-color: #0a1f63;
-  box-shadow: inset -1px -1px 0 #0d2570, inset 1px 1px 0 #a8bcff;
+  border-color: rgba(6, 16, 56, 0.5);
+  background: linear-gradient(180deg, #8fb0ff 0%, #2f60f0 42%, #1637a8 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.62),
+    inset 0 -8px 14px rgba(4, 14, 58, 0.55),
+    0 3px 0 #0d2570,
+    0 6px 12px rgba(0, 0, 0, 0.3);
   color: #fff;
+  text-shadow: 0 1px 2px rgba(6, 16, 56, 0.7);
   font-size: 0.7rem;
-  padding: 9px 20px;
+  padding: 10px 22px;
 }
-.dm-cop-btn:hover:not(:disabled) { background: linear-gradient(180deg, #5a80ff 0%, #2455e0 55%, #1a3fad 100%); }
-.dm-cop-btn:disabled { background: linear-gradient(180deg, #cfcbc3 0%, #bab6ae 100%); color: #8b8b95; }
+.dm-cop-btn:hover:not(:disabled) { filter: brightness(1.08); }
+.dm-cop-btn:disabled {
+  background: linear-gradient(180deg, #dedad2 0%, #bab6ae 100%);
+  color: #8b8b95;
+  text-shadow: none;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.6), inset 0 -5px 9px rgba(86, 84, 96, 0.2), 0 2px 0 #b5b1a8;
+}
 
 /* ---- Barre d'état : DA /account ---- */
 .dm-statusbar {
@@ -6018,32 +6080,39 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-size {
   position: relative;
   flex: 0 0 auto;
-  min-width: 54px;
-  padding: 8px 14px;
+  min-width: 56px;
+  padding: 9px 15px;
   text-align: center;
-  background: linear-gradient(180deg, #e6e2da 0%, var(--dm-chassis) 55%, var(--dm-chassis-2) 100%);
-  border-top: 3px solid var(--dm-hi);
-  border-left: 3px solid var(--dm-hi);
-  border-right: 3px solid var(--dm-lo);
-  border-bottom: 3px solid var(--dm-lo);
+  border: 1px solid rgba(24, 22, 30, 0.32);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fdfcfa 0%, #eeeae2 44%, #d2cdc4 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -6px 10px rgba(86, 84, 96, 0.3),
+    0 3px 0 #a29d93,
+    0 5px 10px rgba(0, 0, 0, 0.18);
   font-family: var(--mono);
   font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: #14161d;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
   cursor: pointer;
   user-select: none;
+  transition: filter 120ms, box-shadow 90ms, transform 90ms;
 }
-.dm-size:hover { background: linear-gradient(180deg, #f2efe9 0%, #dedad2 55%, #cbc7bf 100%); }
+.dm-size:hover { filter: brightness(1.04); }
 .dm-size input { position: absolute; opacity: 0; width: 0; height: 0; }
 .dm-size.on {
-  border-top-color: var(--dm-lo);
-  border-left-color: var(--dm-lo);
-  border-right-color: var(--dm-hi);
-  border-bottom-color: var(--dm-hi);
-  background: #0d1017;
+  transform: translateY(3px);
+  background: linear-gradient(180deg, #12161f 0%, #0d1017 100%);
+  border-color: rgba(0, 0, 0, 0.6);
+  box-shadow:
+    inset 0 4px 10px rgba(0, 0, 0, 0.75),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 #a29d93;
   color: var(--dm-lcd);
-  text-shadow: 0 0 6px rgba(124, 255, 178, 0.6);
+  text-shadow: 0 0 7px rgba(124, 255, 178, 0.7);
 }
 .dm-size:focus-within { outline: 2px dotted #14161d; outline-offset: -7px; }
 .dm-size-all { min-width: 74px; font-size: 0.58rem; }
@@ -6077,8 +6146,8 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-desktop { padding-top: calc(var(--dm-nav-h) + 10px); padding-bottom: 10px; }
   .dm-main { height: calc(100dvh - var(--dm-nav-h) - 20px); }
   .dm-console { padding: 8px 10px; gap: 8px; }
-  .dm-spin { margin: 6px 8px 8px; padding: 10px 8px; font-size: 0.92rem; }
-  .dm-shuffle { width: 82px; padding: 11px 5px; }
+  .dm-spin { margin: 0 10px 10px; min-height: 46px; padding: 10px 12px; font-size: 0.9rem; }
+  .dm-style-me { width: clamp(88px, 8vw, 108px); }
   .dm-cop-btn { padding: 10px 18px; }
 }
 
@@ -6089,8 +6158,28 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-screen { flex-direction: column; }
   .dm-viewport { height: min(58vh, 420px); flex: 0 0 auto; }
   .dm-divider { flex: 0 0 4px; height: 4px; width: 100%; }
-  .dm-shuffle { position: static; transform: none; width: 100%; flex-direction: row; gap: 10px; padding: 12px; }
-  .dm-shuffle:active { transform: none; }
+  /* En pile, l'arête devient horizontale. Elle prend une vraie bande pour
+     que la bulle ait sa place au lieu de recouvrir le SPIN du dessus. */
+  .dm-divider {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 132px;
+    background: var(--dm-chassis);
+    box-shadow: none;
+  }
+  .dm-divider::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 4px;
+    margin-top: -2px;
+    background: #14161d;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+  }
+  .dm-style-me { width: 104px; }
+  .dm-style-me:active { transform: translate(-50%, calc(-50% + 4px)); }
   .dm-console { grid-template-columns: 1fr; }
   .dm-cop-btn { width: 100%; }
   .dm-save { width: 100%; }

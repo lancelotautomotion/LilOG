@@ -964,14 +964,11 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
             <div className="dm-divider">
               <button
                 type="button"
-                className="dm-shuffle"
+                className="dm-style-me"
                 onClick={shuffleAll}
-                aria-label="Tirer un look complet au hasard"
+                aria-label="Composer un look complet au hasard"
               >
-                <span className="dm-shuffle-emoji" aria-hidden>🎲</span>
-                SHUFFLE
-                <br />
-                ALL.EXE
+                <span className="dm-style-me-label">STYLE_ME</span>
               </button>
             </div>
 
