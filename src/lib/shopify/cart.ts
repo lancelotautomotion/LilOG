@@ -49,15 +49,24 @@ export async function getCart(cartId: string): Promise<Cart | null> {
   return node ? mapCart(node) : null;
 }
 
-export async function createCart(
-  variantId: string,
-  quantity = 1,
+/** One line of a cart mutation — several can go in a single round-trip. */
+export interface CartLineInput {
+  variantId: string;
+  quantity: number;
+}
+
+function toMerchandise(lines: CartLineInput[]) {
+  return lines.map((l) => ({ merchandiseId: l.variantId, quantity: l.quantity }));
+}
+
+export async function createCartWithLines(
+  lines: CartLineInput[],
   customerAccessToken?: string | null,
 ): Promise<Cart> {
   const data = await shopifyFetch<CartCreateResponse>(
     CART_CREATE_MUTATION,
     {
-      lines: [{ merchandiseId: variantId, quantity }],
+      lines: toMerchandise(lines),
       ...(customerAccessToken && { buyerIdentity: { customerAccessToken } }),
     },
     0,
@@ -65,6 +74,14 @@ export async function createCart(
   const { cart, userErrors } = data.cartCreate;
   if (!cart || userErrors.length > 0) throw new Error(userErrors[0]?.message ?? "Failed to create cart");
   return mapCart(cart);
+}
+
+export async function createCart(
+  variantId: string,
+  quantity = 1,
+  customerAccessToken?: string | null,
+): Promise<Cart> {
+  return createCartWithLines([{ variantId, quantity }], customerAccessToken);
 }
 
 /* Associe le panier au client Shopify connecté — condition pour que la
@@ -80,15 +97,19 @@ export async function cartBuyerIdentityUpdate(cartId: string, customerAccessToke
   return mapCart(cart);
 }
 
-export async function addCartLine(cartId: string, variantId: string, quantity = 1): Promise<Cart> {
+export async function addCartLines(cartId: string, lines: CartLineInput[]): Promise<Cart> {
   const data = await shopifyFetch<CartLinesAddResponse>(
     CART_LINES_ADD_MUTATION,
-    { cartId, lines: [{ merchandiseId: variantId, quantity }] },
+    { cartId, lines: toMerchandise(lines) },
     0,
   );
   const { cart, userErrors } = data.cartLinesAdd;
   if (!cart || userErrors.length > 0) throw new Error(userErrors[0]?.message ?? "Failed to add to cart");
   return mapCart(cart);
+}
+
+export async function addCartLine(cartId: string, variantId: string, quantity = 1): Promise<Cart> {
+  return addCartLines(cartId, [{ variantId, quantity }]);
 }
 
 export async function updateCartLine(cartId: string, lineId: string, quantity: number): Promise<Cart> {

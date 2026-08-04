@@ -3,14 +3,15 @@
 import { cookies } from "next/headers";
 import { auth } from "@/auth";
 import {
-  addCartLine,
+  addCartLines,
   cartBuyerIdentityUpdate,
-  createCart,
+  createCartWithLines,
   getCartNode,
   mapCart,
   removeCartLine,
   updateCartLine,
 } from "@/lib/shopify/cart";
+import type { CartLineInput } from "@/lib/shopify/cart";
 import type { Cart } from "@/lib/shopify/types";
 
 const CART_COOKIE = "lilog_cart_id";
@@ -47,19 +48,32 @@ export async function getCartAction(): Promise<Cart | null> {
   }
 }
 
-export async function addToCartAction(variantId: string, quantity = 1): Promise<Cart> {
+/**
+ * Ajoute plusieurs lignes d'un coup.
+ *
+ * Un appel par pièce ne marche pas pour un look complet : le tout premier
+ * crée le panier *et* pose le cookie, et les appels suivants sont émis avant
+ * que le navigateur ait forcément appliqué ce Set-Cookie — ils repartent donc
+ * sans identifiant et recréent chacun leur panier. Une seule mutation Shopify
+ * pour tout le look supprime la course.
+ */
+export async function addLinesToCartAction(lines: CartLineInput[]): Promise<Cart> {
+  if (lines.length === 0) throw new Error("Aucune ligne à ajouter au panier.");
+
   const jar = await cookies();
   const cartId = jar.get(CART_COOKIE)?.value;
   const token = await getShopifyToken();
 
-  if (!cartId) {
-    const cart = await createCart(variantId, quantity, token);
+  const createFresh = async () => {
+    const cart = await createCartWithLines(lines, token);
     jar.set(CART_COOKIE, cart.id, { sameSite: "lax", secure: true, maxAge: 60 * 60 * 24 * 30 });
     return cart;
-  }
+  };
+
+  if (!cartId) return createFresh();
 
   try {
-    const cart = await addCartLine(cartId, variantId, quantity);
+    const cart = await addCartLines(cartId, lines);
     return (await ensureLinkedToCustomer(cartId, token)) ?? cart;
   } catch (err) {
     // Only recreate the cart when the cart itself is invalid/expired.
@@ -71,10 +85,12 @@ export async function addToCartAction(variantId: string, quantity = 1): Promise<
       msg.includes("invalid cart") ||
       msg.includes("provided invalid value");
     if (!isStaleCart) throw err;
-    const cart = await createCart(variantId, quantity, token);
-    jar.set(CART_COOKIE, cart.id, { sameSite: "lax", secure: true, maxAge: 60 * 60 * 24 * 30 });
-    return cart;
+    return createFresh();
   }
+}
+
+export async function addToCartAction(variantId: string, quantity = 1): Promise<Cart> {
+  return addLinesToCartAction([{ variantId, quantity }]);
 }
 
 export async function updateCartLineAction(lineId: string, quantity: number): Promise<Cart | null> {

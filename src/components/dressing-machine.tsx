@@ -733,7 +733,7 @@ function MatchScanner({ keys }: { keys: string[] }) {
 
 export function DressingMachine({ items }: { items: ClosetItem[] }) {
   const router = useRouter();
-  const { addItem, pending } = useCart();
+  const { addItems, pending } = useCart();
   const wishlist = useWishlist();
 
   const [menu, setMenu] = useState(false);
@@ -954,18 +954,30 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
     setStatus(`LOOK SAUVEGARDÉ — ${look.length} PIÈCE${look.length > 1 ? "S" : ""}.`);
   };
 
-  const copTheLook = async () => {
+  /** Tout le look au panier, puis droit au panier pour finaliser l'achat. */
+  const buyTheLook = async () => {
     if (look.length === 0 || copping) return;
+
+    const lines = look.flatMap((piece) => {
+      const variant = variantFor(piece, selectedFor(piece.slot));
+      return variant ? [{ variantId: variant.id, quantity: 1 }] : [];
+    });
+
+    if (lines.length === 0) {
+      setStatus("[ERREUR] AUCUNE PIÈCE ACHETABLE DANS CE LOOK.");
+      return;
+    }
+
     setCopping(true);
-    setStatus("BUY_THE_LOOK.EXE — AJOUT AU PANIER…");
+    setStatus(`BUY_THE_LOOK.EXE — ${lines.length} PIÈCE${lines.length > 1 ? "S" : ""} AU PANIER…`);
     try {
-      for (const piece of look) {
-        const variant = variantFor(piece, selectedFor(piece.slot));
-        if (variant) await addItem(variant.id, 1);
-      }
+      // Une seule mutation pour tout le look, sinon les appels concurrents se
+      // disputent le cookie de panier (cf. addLinesToCartAction).
+      await addItems(lines);
       router.push("/cart");
-    } catch {
-      setStatus("[ERREUR] AJOUT AU PANIER IMPOSSIBLE.");
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : "";
+      setStatus(`[ERREUR] AJOUT AU PANIER IMPOSSIBLE.${detail ? ` ${detail.toUpperCase()}` : ""}`);
       setCopping(false);
     }
   };
@@ -1090,7 +1102,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               <button
                 type="button"
                 className="dm-w95 dm-cop-btn"
-                onClick={copTheLook}
+                onClick={buyTheLook}
                 disabled={look.length === 0 || busy}
               >
                 {busy ? "CHARGEMENT…" : "BUY_THE_LOOK.EXE →"}
