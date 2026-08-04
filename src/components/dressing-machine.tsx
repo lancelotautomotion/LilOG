@@ -611,8 +611,39 @@ function ModuleWindow({
 }
 
 /* ================================================================== *
- * ÉTAPE 5 — Scanner
+ * ÉTAPE 5 — Barre d'actions
  * ================================================================== */
+
+/** Lips at rest, check once the whole look is in the wishlist. */
+function SaveIcon({ saved }: { saved: boolean }) {
+  return (
+    <svg className="dm-save-icon" viewBox="0 0 24 24" aria-hidden focusable="false">
+      {saved ? (
+        <path
+          d="M4.5 12.6 9.4 17.5 19.5 7.4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ) : (
+        <>
+          {/* upper lip, cupid's bow */}
+          <path
+            d="M12 9.9C10.8 8.3 9.3 7.1 7.8 6.7 5.9 6.2 3.9 7.5 2.8 9.9h18.4c-1.1-2.4-3.1-3.7-5-3.2-1.5.4-3 1.6-4.2 3.2Z"
+            fill="currentColor"
+          />
+          {/* lower lip */}
+          <path
+            d="M2.8 11.1c2 3.4 5.4 5.7 9.2 5.7s7.2-2.3 9.2-5.7H2.8Z"
+            fill="currentColor"
+          />
+        </>
+      )}
+    </svg>
+  );
+}
 
 function MatchScanner({ keys }: { keys: string[] }) {
   const signature = keys.join("|");
@@ -761,6 +792,10 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
 
   const total = look.reduce((sum, p) => sum + priceOf(p, selectedFor(p.slot)), 0);
   const lookKeys = look.map((p) => p.handle);
+
+  // Live against the wishlist rather than a one-shot flag: swap a piece and
+  // the button honestly drops back to "à sauvegarder".
+  const lookSaved = look.length > 0 && look.every((p) => wishlist.has(p.handle));
 
   /* ---- actions ---- */
 
@@ -928,8 +963,14 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
           <div className="dm-actionbar">
             <MatchScanner keys={lookKeys} />
 
-            <button className="dm-btn dm-btn-save" onClick={saveLook} disabled={look.length === 0}>
-              SAUVEGARDER LE LOOK <span aria-hidden>💋</span>
+            <button
+              type="button"
+              className={"dm-save" + (lookSaved ? " saved" : "")}
+              onClick={saveLook}
+              disabled={look.length === 0}
+            >
+              <SaveIcon saved={lookSaved} />
+              {lookSaved ? "Look sauvegardé" : "Sauvegarder le look"}
             </button>
 
             <div className="dm-cop">
