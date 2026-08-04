@@ -140,6 +140,22 @@ function useTyped(text: string, active: boolean, speed = 18): string {
   return text.slice(0, count);
 }
 
+/**
+ * Roulette de casino. Deux noms d'animation alternés : rejouer en changeant de
+ * classe évite de remonter le DOM, donc l'image ne se recharge pas entre deux
+ * tours. `SPIN_SWAP` est le moment où la pièce est échangée : au creux du
+ * flou, pour que la substitution ne se voie pas. Doit rester en phase avec la
+ * durée des keyframes dmSpinA/dmSpinB (440ms) dans globals.css.
+ */
+const SPIN_SWAP = 190;
+
+function useReel() {
+  const [run, setRun] = useState(0);
+  const play = useCallback(() => setRun((r) => r + 1), []);
+  const className = run === 0 ? "" : run % 2 === 1 ? " spin-a" : " spin-b";
+  return { play, className };
+}
+
 /* ================================================================== *
  * ÉTAPE 1 — SYSTEM_LOGIN.EXE
  * ================================================================== */
@@ -276,7 +292,7 @@ function SizeGate({
           )}
 
           <button
-            className="dm-btn dm-btn-primary dm-gate-launch"
+            className="dm-w95 dm-cop-btn dm-gate-launch"
             onClick={() => onLaunch(new Set(picked), new Set(pickedShoes))}
           >
             LANCER_LA_MACHINE.EXE →
@@ -293,15 +309,15 @@ function SizeGate({
 }
 
 /* ================================================================== *
- * ÉTAPE 3 — Colonnes Hauts / Bas
+ * ÉTAPE 3 — Les deux baies plein cadre
  * ================================================================== */
 
-function Rack({
+function Bay({
   label,
   items,
   index,
   selected,
-  onPrev,
+  spinSignal,
   onNext,
   onChangeSize,
 }: {
@@ -309,73 +325,85 @@ function Rack({
   items: ClosetItem[];
   index: number;
   selected: ReadonlySet<string>;
-  onPrev: () => void;
+  /** Bumped by SHUFFLE_ALL so both bays spin together. */
+  spinSignal: number;
   onNext: () => void;
   onChangeSize: () => void;
 }) {
   const item = items[index];
+  const reel = useReel();
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+
+  // Replay during render rather than in an effect, so the animation starts on
+  // the same commit as the shuffle instead of one frame later.
+  const [prevSignal, setPrevSignal] = useState(spinSignal);
+  if (prevSignal !== spinSignal) {
+    setPrevSignal(spinSignal);
+    reel.play();
+  }
+
+  const pull = () => {
+    reel.play();
+    timers.current.push(setTimeout(onNext, SPIN_SWAP));
+  };
 
   return (
-    <section className="dm-rack">
-      <header className="dm-panel-bar">
-        <span className="dm-panel-title">{label}</span>
-        <span className="dm-panel-count">
+    <section className="dm-bay">
+      <header className="dm-bay-head">
+        <span className="dm-bay-label">{label}</span>
+        <span className="dm-bay-count">
           {items.length === 0
             ? "00/00"
             : `${String(index + 1).padStart(2, "0")}/${String(items.length).padStart(2, "0")}`}
         </span>
       </header>
 
-      <div className="dm-rack-body">
-        <div className="dm-frame">
-          {item ? (
-            <Link href={`/products/${item.handle}`} className="dm-frame-img" title={item.name}>
-              <SmartImg src={item.image} alt={item.name} />
+      <div className="dm-viewport">
+        {item ? (
+          <div className={"dm-reel" + reel.className}>
+            <SmartImg className="dm-reel-bg" src={item.image} alt="" />
+            <Link href={`/products/${item.handle}`} className="dm-reel-link" title={item.name}>
+              <SmartImg className="dm-reel-img" src={item.image} alt={item.name} />
             </Link>
-          ) : (
-            <div className="dm-frame-empty">
-              <p>
-                AUCUNE PIÈCE{selected.size > 0 ? ` EN ${describe(selected)}` : ""}
-                <br />
-                DANS CE RAYON.
-              </p>
-              <button className="dm-btn dm-btn-sm" onClick={onChangeSize}>
-                CHANGER DE TAILLE
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="dm-arrows">
-          <button
-            className="dm-arrow"
-            onClick={onPrev}
-            disabled={items.length < 2}
-            aria-label={`${label} précédent`}
-          >
-            ◄
-          </button>
-          <button
-            className="dm-arrow"
-            onClick={onNext}
-            disabled={items.length < 2}
-            aria-label={`${label} suivant`}
-          >
-            ►
-          </button>
-        </div>
-
-        <div className="dm-caption">
-          <span className="dm-caption-name">{item ? item.name : "—"}</span>
-          <span className="dm-caption-price">{item ? euros(priceOf(item, selected)) : "—"}</span>
-        </div>
+            <span className="dm-reel-shade" aria-hidden />
+          </div>
+        ) : (
+          <div className="dm-bay-empty">
+            <p>
+              &gt; AUCUNE PIÈCE{selected.size > 0 ? ` EN ${describe(selected)}` : ""}
+              <br />
+              &gt; DANS CE RAYON.
+            </p>
+            <button type="button" className="dm-w95" onClick={onChangeSize}>
+              CHANGER DE TAILLE
+            </button>
+          </div>
+        )}
       </div>
+
+      <div className="dm-bay-plate">
+        <span className="dm-plate-name">{item ? item.name : "—"}</span>
+        <span className="dm-plate-price">{item ? euros(priceOf(item, selected)) : "—"}</span>
+      </div>
+
+      <button
+        type="button"
+        className="dm-spin"
+        onClick={pull}
+        disabled={items.length < 2}
+        aria-label={`Faire tourner ${label}`}
+      >
+        <span className="dm-spin-emoji" aria-hidden>🎰</span>
+        [ SPIN ]
+      </button>
     </section>
   );
 }
 
 /* ================================================================== *
- * ÉTAPE 4 — Le terminal .EXE
+ * ÉTAPE 4 — Le terminal .EXE, encastré dans la console
  * ================================================================== */
 
 function LogLine({ exe, failed }: { exe: string; failed: boolean }) {
@@ -432,70 +460,63 @@ function ModuleTerminal({
     return () => clearInterval(id);
   }, [booted]);
 
-  if (!open) {
-    return (
-      <div className="dm-module-bar">
-        <button className="dm-add-module" onClick={onOpen}>
+  return (
+    <div className="dm-modules">
+      <span className="dm-modules-cap">
+        <span>Modules.exe</span>
+        <span>
+          {active.size}/{MODULES.length} chargé{active.size > 1 ? "s" : ""}
+        </span>
+      </span>
+
+      {!open ? (
+        <button type="button" className="dm-w95 dm-modules-open" onClick={onOpen}>
           [ + ] AJOUTER UN MODULE
         </button>
-      </div>
-    );
-  }
+      ) : (
+        <div className="dm-well dm-modules-screen" role="region" aria-label="Terminal modules">
+          <p className="dm-term-boot">
+            {typed}
+            {!booted && <span className="dm-caret">_</span>}
+          </p>
 
-  return (
-    <div className="dm-terminal" role="region" aria-label="Terminal modules">
-      <div className="dm-panel-bar">
-        <span className="dm-panel-title">MODULES.EXE</span>
-        <span className="dm-panel-count">
-          {active.size}/{MODULES.length} CHARGÉ{active.size > 1 ? "S" : ""}
-        </span>
-      </div>
-
-      <div className="dm-term-screen">
-        <p className="dm-term-boot">
-          {typed}
-          {!booted && <span className="dm-caret">_</span>}
-        </p>
-
-        <div className="dm-term-options">
-          {MODULES.map((mod, i) => {
-            const on = active.has(mod.slot);
-            const empty = (counts[mod.slot] ?? 0) === 0;
-            return (
-              <button
-                key={mod.slot}
-                className={
-                  "dm-term-opt" +
-                  (revealed > i ? " in" : "") +
-                  (on ? " on" : "") +
-                  (empty ? " out" : "")
-                }
-                onClick={() => onLaunch(mod)}
-                disabled={revealed <= i}
-                aria-pressed={on}
-              >
-                <span className="dm-term-box">[{on ? "x" : " "}]</span>
-                <span className="dm-term-exe">{mod.exe}</span>
-                <span className="dm-term-cursor">_</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {logs.length > 0 && (
-          <div className="dm-term-logs">
-            {logs.map((l) => (
-              <LogLine key={l.id} exe={l.exe} failed={l.failed} />
-            ))}
+          <div className="dm-term-options">
+            {MODULES.map((mod, i) => {
+              const on = active.has(mod.slot);
+              const empty = (counts[mod.slot] ?? 0) === 0;
+              return (
+                <button
+                  key={mod.slot}
+                  type="button"
+                  className={
+                    "dm-term-opt" +
+                    (revealed > i ? " in" : "") +
+                    (on ? " on" : "") +
+                    (empty ? " out" : "")
+                  }
+                  onClick={() => onLaunch(mod)}
+                  disabled={revealed <= i}
+                  aria-pressed={on}
+                >
+                  <span className="dm-term-box">[{on ? "x" : " "}]</span>
+                  <span className="dm-term-exe">{mod.exe}</span>
+                  <span className="dm-term-cursor">_</span>
+                </button>
+              );
+            })}
           </div>
-        )}
-      </div>
+
+          {logs.map((l) => (
+            <LogLine key={l.id} exe={l.exe} failed={l.failed} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 /* ================================================================== *
- * ÉTAPE 4 — Fenêtre flottante d'un module
+ * Fenêtre flottante d'un module
  * ================================================================== */
 
 function ModuleWindow({
@@ -505,7 +526,6 @@ function ModuleWindow({
   selected,
   z,
   onFocus,
-  onPrev,
   onNext,
   onClose,
 }: {
@@ -515,7 +535,6 @@ function ModuleWindow({
   selected: ReadonlySet<string>;
   z: number;
   onFocus: () => void;
-  onPrev: () => void;
   onNext: () => void;
   onClose: () => void;
 }) {
@@ -523,15 +542,24 @@ function ModuleWindow({
   // clamp the cascade so a narrow desktop never opens a module off-screen.
   const [pos, setPos] = useState(() => {
     if (typeof window === "undefined") return mod.offset;
-    const maxX = Math.max(90, window.innerWidth / 2 - 120);
-    const maxY = Math.max(60, window.innerHeight / 2 - 130);
+    const maxX = Math.max(90, window.innerWidth / 2 - 130);
+    const maxY = Math.max(60, window.innerHeight / 2 - 150);
     return {
       x: Math.max(-maxX, Math.min(maxX, mod.offset.x)),
       y: Math.max(-maxY, Math.min(maxY, mod.offset.y)),
     };
   });
   const drag = useRef<{ sx: number; sy: number; ox: number; oy: number } | null>(null);
+  const reel = useReel();
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const item = items[index];
+
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+
+  const pull = () => {
+    reel.play();
+    timers.current.push(setTimeout(onNext, SPIN_SWAP));
+  };
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     onFocus();
@@ -560,18 +588,18 @@ function ModuleWindow({
 
   return (
     <div
-      className="dm-win dm-float"
+      className="dm-float"
       style={{ zIndex: z, transform: `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y}px))` }}
       onPointerDown={onFocus}
     >
       <div
-        className="dm-panel-bar dm-float-bar"
+        className="dm-float-bar"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
       >
-        <span className="dm-panel-title">{mod.window}</span>
+        <span className="dm-float-title">{mod.window}</span>
         <div className="dm-chrome">
           <button
             type="button"
@@ -585,65 +613,41 @@ function ModuleWindow({
       </div>
 
       <div className="dm-float-body">
-        <Link href={`/products/${item.handle}`} className="dm-float-img" title={item.name}>
-          <SmartImg src={item.image} alt={item.name} />
-        </Link>
-
-        <div className="dm-float-arrows">
-          <button className="dm-arrow dm-arrow-sm" onClick={onPrev} disabled={items.length < 2} aria-label="Précédent">
-            ◄
-          </button>
-          <span className="dm-float-count">
-            {String(index + 1).padStart(2, "0")}/{String(items.length).padStart(2, "0")}
-          </span>
-          <button className="dm-arrow dm-arrow-sm" onClick={onNext} disabled={items.length < 2} aria-label="Suivant">
-            ►
-          </button>
+        <div className="dm-float-img">
+          <div className={"dm-reel" + reel.className} style={{ position: "relative", inset: "auto", height: "100%" }}>
+            <Link href={`/products/${item.handle}`} title={item.name}>
+              <SmartImg className="dm-reel-img" src={item.image} alt={item.name} />
+            </Link>
+          </div>
         </div>
 
-        <div className="dm-caption dm-caption-sm">
-          <span className="dm-caption-name">{item.name}</span>
-          <span className="dm-caption-price">{euros(priceOf(item, selected))}</span>
+        <span className="dm-float-count">
+          {String(index + 1).padStart(2, "0")}/{String(items.length).padStart(2, "0")}
+        </span>
+
+        <div className="dm-float-plate">
+          <span className="dm-float-name">{item.name}</span>
+          <span className="dm-float-price">{euros(priceOf(item, selected))}</span>
         </div>
+
+        <button
+          type="button"
+          className="dm-spin dm-float-spin"
+          onClick={pull}
+          disabled={items.length < 2}
+          aria-label={`Faire tourner ${mod.window}`}
+        >
+          <span className="dm-spin-emoji" aria-hidden>🎰</span>
+          [ SPIN ]
+        </button>
       </div>
     </div>
   );
 }
 
 /* ================================================================== *
- * ÉTAPE 5 — Barre d'actions
+ * ÉTAPE 5 — Le scanner de la console
  * ================================================================== */
-
-/** Lips at rest, check once the whole look is in the wishlist. */
-function SaveIcon({ saved }: { saved: boolean }) {
-  return (
-    <svg className="dm-save-icon" viewBox="0 0 24 24" aria-hidden focusable="false">
-      {saved ? (
-        <path
-          d="M4.5 12.6 9.4 17.5 19.5 7.4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      ) : (
-        <>
-          {/* upper lip, cupid's bow */}
-          <path
-            d="M12 9.9C10.8 8.3 9.3 7.1 7.8 6.7 5.9 6.2 3.9 7.5 2.8 9.9h18.4c-1.1-2.4-3.1-3.7-5-3.2-1.5.4-3 1.6-4.2 3.2Z"
-            fill="currentColor"
-          />
-          {/* lower lip */}
-          <path
-            d="M2.8 11.1c2 3.4 5.4 5.7 9.2 5.7s7.2-2.3 9.2-5.7H2.8Z"
-            fill="currentColor"
-          />
-        </>
-      )}
-    </svg>
-  );
-}
 
 function MatchScanner({ keys }: { keys: string[] }) {
   const signature = keys.join("|");
@@ -674,7 +678,8 @@ function MatchScanner({ keys }: { keys: string[] }) {
   return (
     <div className="dm-scanner">
       <span className="dm-scanner-head">
-        {scanning ? "SCANNING…" : <>MATCH DETECTED : <strong>{target}%</strong></>}
+        <span>Match detected</span>
+        <span className="dm-scanner-pct">{scanning ? "--" : target}%</span>
       </span>
       <div className="dm-gauge">
         <div className={"dm-gauge-fill" + (scanning ? "" : " full")} style={{ width: `${pct}%` }} />
@@ -707,6 +712,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
   const [logs, setLogs] = useState<{ id: number; exe: string; failed: boolean }[]>([]);
   const [topZ, setTopZ] = useState<Record<string, number>>({});
   const [status, setStatus] = useState("PRÊT.");
+  // Bumped by SHUFFLE_ALL so every bay plays its reel on the same commit.
+  const [spinSignal, setSpinSignal] = useState(0);
   const [copping, setCopping] = useState(false);
   const zRef = useRef(60);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -805,6 +812,23 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
     setTopIdx(tops.length ? Math.floor(Math.random() * tops.length) : 0);
     setBottomIdx(bottoms.length ? Math.floor(Math.random() * bottoms.length) : 0);
   }, [bySlot]);
+
+  /** Full random look: reels roll, pieces swap under the blur. */
+  const shuffleAll = useCallback(() => {
+    setSpinSignal((n) => n + 1);
+    later(() => {
+      shuffle(sizes);
+      setModuleIdx((m) => {
+        const next = { ...m };
+        for (const slot of openSlots) {
+          const len = pools[slot as keyof typeof pools].length;
+          next[slot] = len ? Math.floor(Math.random() * len) : 0;
+        }
+        return next;
+      });
+      setStatus("SHUFFLE_ALL.EXE — NOUVEAU LOOK TIRÉ.");
+    }, SPIN_SWAP);
+  }, [later, shuffle, sizes, openSlots, pools]);
 
   const launch = (chosen: Set<string>, chosenShoes: Set<string>) => {
     setSizes(chosen);
@@ -925,30 +949,47 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
             </span>
           </div>
 
-          {/* ---- ÉTAPE 3 : les deux rayons ---- */}
-          <div className="dm-body">
-            <div className="dm-racks">
-              <Rack
-                label="HAUTS"
-                items={pools.top}
-                index={Math.min(topIdx, Math.max(0, pools.top.length - 1))}
-                selected={sizes}
-                onPrev={() => step("top", -1)}
-                onNext={() => step("top", 1)}
-                onChangeSize={() => setGateOpen(true)}
-              />
-              <Rack
-                label="BAS"
-                items={pools.bottom}
-                index={Math.min(bottomIdx, Math.max(0, pools.bottom.length - 1))}
-                selected={sizes}
-                onPrev={() => step("bottom", -1)}
-                onNext={() => step("bottom", 1)}
-                onChangeSize={() => setGateOpen(true)}
-              />
+          {/* ---- ÉTAPE 3 : l'écran scindé ---- */}
+          <div className="dm-screen">
+            <Bay
+              label="HAUTS"
+              items={pools.top}
+              index={Math.min(topIdx, Math.max(0, pools.top.length - 1))}
+              selected={sizes}
+              spinSignal={spinSignal}
+              onNext={() => step("top", 1)}
+              onChangeSize={() => setGateOpen(true)}
+            />
+
+            <div className="dm-divider">
+              <button
+                type="button"
+                className="dm-shuffle"
+                onClick={shuffleAll}
+                aria-label="Tirer un look complet au hasard"
+              >
+                <span className="dm-shuffle-emoji" aria-hidden>🎲</span>
+                SHUFFLE
+                <br />
+                ALL.EXE
+              </button>
             </div>
 
-            {/* ---- ÉTAPE 4 : le module .EXE ---- */}
+            <Bay
+              label="BAS"
+              items={pools.bottom}
+              index={Math.min(bottomIdx, Math.max(0, pools.bottom.length - 1))}
+              selected={sizes}
+              spinSignal={spinSignal}
+              onNext={() => step("bottom", 1)}
+              onChangeSize={() => setGateOpen(true)}
+            />
+          </div>
+
+          {/* ---- ÉTAPES 4 + 5 : la console ---- */}
+          <div className="dm-console">
+            <MatchScanner keys={lookKeys} />
+
             <ModuleTerminal
               open={terminalOpen}
               onOpen={() => setTerminalOpen(true)}
@@ -957,31 +998,27 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               logs={logs}
               onLaunch={launchModule}
             />
-          </div>
-
-          {/* ---- ÉTAPE 5 : barre d'actions ---- */}
-          <div className="dm-actionbar">
-            <MatchScanner keys={lookKeys} />
 
             <button
               type="button"
-              className={"dm-save" + (lookSaved ? " saved" : "")}
+              className={"dm-w95 dm-save" + (lookSaved ? " pressed" : "")}
               onClick={saveLook}
               disabled={look.length === 0}
             >
-              <SaveIcon saved={lookSaved} />
-              {lookSaved ? "Look sauvegardé" : "Sauvegarder le look"}
+              <span className="dm-save-led" aria-hidden />
+              💾 SAVE_TO_BURNBOOK.EXE
             </button>
 
             <div className="dm-cop">
-              <span className="dm-cop-total">
-                TOTAL : <strong>{euros(total)}</strong>
-                <span className="dm-cop-count">
-                  {look.length} PIÈCE{look.length > 1 ? "S" : ""}
+              <div className="dm-well dm-cop-readout">
+                <span className="dm-cop-label">
+                  Total · {look.length} pc{look.length > 1 ? "s" : ""}
                 </span>
-              </span>
+                <span className="dm-cop-total">{euros(total)}</span>
+              </div>
               <button
-                className="dm-btn dm-btn-primary dm-cop-btn"
+                type="button"
+                className="dm-w95 dm-cop-btn"
                 onClick={copTheLook}
                 disabled={look.length === 0 || busy}
               >
@@ -1012,7 +1049,6 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               selected={selectedFor(slot)}
               z={topZ[slot] ?? 60}
               onFocus={() => focusWindow(slot)}
-              onPrev={() => step(slot, -1)}
               onNext={() => step(slot, 1)}
               onClose={() => setOpenSlots((s) => s.filter((x) => x !== slot))}
             />

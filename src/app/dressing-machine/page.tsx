@@ -25,7 +25,7 @@ export default async function Page() {
           <div className="dm-error-body">
             <p>&gt; ERREUR — CATALOGUE INDISPONIBLE.</p>
             <p>&gt; La machine n&apos;a trouvé aucune pièce à charger.</p>
-            <Link className="dm-btn dm-btn-primary" href="/">RETOUR_ACCUEIL.EXE →</Link>
+            <Link className="dm-w95 dm-cop-btn" href="/">RETOUR_ACCUEIL.EXE →</Link>
           </div>
         </div>
       </main>
