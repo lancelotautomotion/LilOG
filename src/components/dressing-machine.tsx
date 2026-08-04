@@ -393,23 +393,6 @@ function Bay({
             </button>
           </div>
         )}
-
-        {item && (
-          <button
-            type="button"
-            className={"dm-heart" + (saved ? " on" : "")}
-            onClick={onToggleSave}
-            aria-pressed={saved}
-            aria-label={
-              saved
-                ? `Retirer ${item.name} de la wishlist`
-                : `Ajouter ${item.name} à la wishlist`
-            }
-            title={saved ? "Retirer de la wishlist" : "Enregistrer cette pièce"}
-          >
-            {saved ? "♥" : "♡"}
-          </button>
-        )}
       </div>
 
       <div className="dm-bay-plate" style={cell}>
@@ -417,17 +400,36 @@ function Bay({
         <span className="dm-plate-price">{item ? euros(priceOf(item, selected)) : "—"}</span>
       </div>
 
-      <button
-        type="button"
-        className="dm-spin"
-        style={cell}
-        onClick={pull}
-        disabled={items.length < 2}
-        aria-label={`Faire tourner ${label}`}
-      >
-        <span className="dm-spin-emoji" aria-hidden>🎰</span>
-        [ SPIN ]
-      </button>
+      <div className="dm-bay-actions" style={cell}>
+        <button
+          type="button"
+          className="dm-spin"
+          onClick={pull}
+          disabled={items.length < 2}
+          aria-label={`Faire tourner ${label}`}
+        >
+          <span className="dm-spin-emoji" aria-hidden>🎰</span>
+          [ SPIN ]
+        </button>
+
+        <button
+          type="button"
+          className={"dm-heart" + (saved ? " on" : "")}
+          onClick={onToggleSave}
+          disabled={!item}
+          aria-pressed={saved}
+          aria-label={
+            item
+              ? saved
+                ? `Retirer ${item.name} de la wishlist`
+                : `Ajouter ${item.name} à la wishlist`
+              : "Aucune pièce à enregistrer"
+          }
+          title={saved ? "Retirer de la wishlist" : "Enregistrer cette pièce seule"}
+        >
+          {saved ? "♥" : "♡"}
+        </button>
+      </div>
     </>
   );
 }
