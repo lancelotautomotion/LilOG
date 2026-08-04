@@ -742,17 +742,10 @@ const FLOPPY_CSS = `
   to{transform:rotate(14deg) translateX(900px)}}
 .lilfd:hover .lilfd-gleam{opacity:.55;animation:lilfd-gleam 1.05s ease-out}
 
-@keyframes lilfd-scan{
-  0%{opacity:0;transform:translateY(-140px)}
-  22%{opacity:.9}
-  100%{opacity:0;transform:translateY(150px)}
-}
-.lilfd:hover .lilfd-scan{animation:lilfd-scan 1.5s ease-in-out .12s}
-
 @media (prefers-reduced-motion: reduce){
   .lilfd,.lilfd-sticker,.lilfd-label{transition:none}
   .lilfd:hover{transform:none}
-  .lilfd-sticker,.lilfd:hover .lilfd-gleam,.lilfd:hover .lilfd-scan{animation:none}
+  .lilfd-sticker,.lilfd:hover .lilfd-gleam{animation:none}
   .lilfd:hover .lilfd-sticker{transform:rotate(var(--r,0deg))}
 }
 `;
@@ -948,16 +941,6 @@ function Floppy({
                 strokeWidth="2.4"
               />
               <rect x="277" y="20" width="63" height="11" rx="5" fill="rgba(0,0,0,0.13)" />
-              <rect
-                className="lilfd-scan"
-                x="277"
-                y="20"
-                width="63"
-                height="136"
-                rx="5"
-                fill={`url(#${uid}-sweep)`}
-                opacity="0"
-              />
             </g>
 
             {/* Sérigraphie technique */}
