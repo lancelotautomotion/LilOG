@@ -102,8 +102,10 @@ export function CartPage() {
                   {firstName ? `Dressing de ${firstName}` : "Dressing"}
                 </span>
                 {total > 0 && <span className="oc-counter">{current + 1}/{total}</span>}
-                <div className="oc-win95-dots">
-                  <span /><span /><span />
+                <div className="account-win95-chrome">
+                  <span>_</span>
+                  <span>□</span>
+                  <span>×</span>
                 </div>
               </div>
 
