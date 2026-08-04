@@ -725,7 +725,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
   const [logs, setLogs] = useState<{ id: number; exe: string; failed: boolean }[]>([]);
   const [topZ, setTopZ] = useState<Record<string, number>>({});
   const [status, setStatus] = useState("PRÊT.");
-  // Bumped by SHUFFLE_ALL so every bay plays its reel on the same commit.
+  // Bumped by STYLE_ME so every bay plays its reel on the same commit.
   const [spinSignal, setSpinSignal] = useState(0);
   const [copping, setCopping] = useState(false);
   const zRef = useRef(60);
@@ -839,7 +839,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
         }
         return next;
       });
-      setStatus("SHUFFLE_ALL.EXE — NOUVEAU LOOK TIRÉ.");
+      setStatus("STYLE_ME.EXE — NOUVEAU LOOK TIRÉ.");
     }, SPIN_SWAP);
   }, [later, shuffle, sizes, openSlots, pools]);
 
@@ -910,7 +910,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
   const copTheLook = async () => {
     if (look.length === 0 || copping) return;
     setCopping(true);
-    setStatus("COP_THE_LOOK.EXE — AJOUT AU PANIER…");
+    setStatus("BUY_THE_LOOK.EXE — AJOUT AU PANIER…");
     try {
       for (const piece of look) {
         const variant = variantFor(piece, selectedFor(piece.slot));
@@ -1027,7 +1027,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               disabled={look.length === 0}
             >
               <span className="dm-save-led" aria-hidden />
-              💾 SAVE_TO_BURNBOOK.EXE
+              💾 SAVE_TO_WISHLIST.EXE
             </button>
 
             <div className="dm-cop">
@@ -1043,7 +1043,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
                 onClick={copTheLook}
                 disabled={look.length === 0 || busy}
               >
-                {busy ? "CHARGEMENT…" : "COP_THE_LOOK.EXE →"}
+                {busy ? "CHARGEMENT…" : "BUY_THE_LOOK.EXE →"}
               </button>
             </div>
           </div>

@@ -5745,12 +5745,14 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   text-transform: uppercase;
   color: #6f6f7c;
 }
+/* Posé sur le châssis clair, pas dans un puits sombre : le vert LCD y est
+   illisible, on garde donc l'encre noire du reste de la console. */
 .dm-scanner-pct {
   font-family: var(--font-lcd), monospace;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   line-height: 1;
-  color: var(--dm-lcd);
-  text-shadow: 0 0 7px rgba(124, 255, 178, 0.55);
+  font-weight: 700;
+  color: #14161d;
 }
 .dm-gauge {
   height: 11px;
