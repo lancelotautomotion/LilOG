@@ -27,6 +27,30 @@ export function normalizeSize(raw: string): string | null {
   return ONE_SIZE.has(mapped) ? null : mapped;
 }
 
+const LETTER_SIZES = new Set(["XXXS", "XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL", "XXXXL"]);
+
+/**
+ * Does this value actually look like a size?
+ *
+ * Shopify options aren't named consistently — a shop may file the brand, the
+ * era or the condition as a variant option. Without this guard the closet
+ * offered "BLANCHEPORTE" and "PHILDAR" as morphologies. Only applied to
+ * options we *couldn't* identify by name; an option explicitly called
+ * "Taille" is trusted whatever the merchant typed in it.
+ */
+export function looksLikeSize(value: string): boolean {
+  const v = value.trim().toUpperCase();
+  if (LETTER_SIZES.has(v)) return true;
+  if (/^\d{1,2}$/.test(v)) {
+    const n = Number(v);
+    return n >= 24 && n <= 60; // tailles FR vêtement + pointures
+  }
+  if (/^\d{2}\s?[/-]\s?\d{2}$/.test(v)) return true;   // 38/40
+  if (/^T\.?\s?\d{1,2}$/.test(v)) return true;         // T2, T.38
+  if (/^(EU|FR|UK|US|IT)\s?\d{1,2}$/.test(v)) return true;
+  return false;
+}
+
 const SIZE_RANK = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
 /** Letter sizes first (in wearing order), then numeric, then everything else. */

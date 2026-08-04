@@ -138,6 +138,7 @@ function SizeGate({
   const [picked, setPicked] = useState<string | null>(sizes[0] ?? null);
   const intro = "Veuillez entrer vos paramètres morphologiques pour initialiser la machine.";
   const typed = useTyped(intro, true, 16);
+  const hasSizes = sizes.length > 0;
 
   return (
     <div className="dm-gate-scrim" role="dialog" aria-modal="true" aria-label="SYSTEM_LOGIN.EXE">
@@ -153,21 +154,19 @@ function SizeGate({
 
         <div className="dm-gate-body">
           <div className="dm-gate-intro">
-            <span className="dm-gate-glyph" aria-hidden>▓</span>
+            <span className="dm-gate-glyph" aria-hidden>◧</span>
             <p className="dm-gate-text">
               {typed}
               <span className="dm-caret">_</span>
             </p>
           </div>
 
-          <fieldset className="dm-fieldset">
-            <legend className="dm-legend">TAILLE</legend>
-            {sizes.length === 0 ? (
-              <p className="dm-gate-note">Aucune taille détectée dans le catalogue.</p>
-            ) : (
-              <div className="dm-radio-grid">
+          <div className="dm-gate-field">
+            <span className="dm-gate-label">Taille</span>
+            {hasSizes ? (
+              <div className="dm-size-grid">
                 {sizes.map((s) => (
-                  <label key={s} className={"dm-radio" + (picked === s ? " on" : "")}>
+                  <label key={s} className={"dm-size" + (picked === s ? " on" : "")}>
                     <input
                       type="radio"
                       name="dm-size"
@@ -175,25 +174,31 @@ function SizeGate({
                       checked={picked === s}
                       onChange={() => setPicked(s)}
                     />
-                    <span className="dm-radio-dot" aria-hidden />
-                    <span className="dm-radio-label">{s}</span>
+                    {s}
                   </label>
                 ))}
               </div>
+            ) : (
+              <p className="dm-gate-note">
+                Aucune taille n&apos;est renseignée sur le catalogue pour le moment — la machine
+                va piocher dans toutes les pièces disponibles.
+              </p>
             )}
-          </fieldset>
+          </div>
 
           <button
             className="dm-btn dm-btn-primary dm-gate-launch"
-            onClick={() => picked && onLaunch(picked)}
-            disabled={!picked}
+            onClick={() => (hasSizes && picked ? onLaunch(picked) : onSkip())}
+            disabled={hasSizes && !picked}
           >
             LANCER_LA_MACHINE.EXE →
           </button>
 
-          <button className="dm-gate-skip" onClick={onSkip}>
-            ignorer — voir tout le catalogue
-          </button>
+          {hasSizes && (
+            <button className="dm-gate-skip" onClick={onSkip}>
+              ignorer — voir tout le catalogue
+            </button>
+          )}
         </div>
 
         <div className="dm-statusbar">
@@ -230,56 +235,58 @@ function Rack({
 
   return (
     <section className="dm-rack">
-      <header className="dm-rack-head">
-        <span className="dm-rack-label">{label}</span>
-        <span className="dm-rack-count">
+      <header className="dm-panel-bar">
+        <span className="dm-panel-title">{label}</span>
+        <span className="dm-panel-count">
           {items.length === 0
             ? "00/00"
             : `${String(index + 1).padStart(2, "0")}/${String(items.length).padStart(2, "0")}`}
         </span>
       </header>
 
-      <div className="dm-frame">
-        {item ? (
-          <Link href={`/products/${item.handle}`} className="dm-frame-img" title={item.name}>
-            <SmartImg src={item.image} alt={item.name} />
-          </Link>
-        ) : (
-          <div className="dm-frame-empty">
-            <p>
-              AUCUNE PIÈCE{size ? ` EN ${size}` : ""}
-              <br />
-              DANS CE RAYON.
-            </p>
-            <button className="dm-btn dm-btn-sm" onClick={onChangeSize}>
-              CHANGER DE TAILLE
-            </button>
-          </div>
-        )}
-      </div>
+      <div className="dm-rack-body">
+        <div className="dm-frame">
+          {item ? (
+            <Link href={`/products/${item.handle}`} className="dm-frame-img" title={item.name}>
+              <SmartImg src={item.image} alt={item.name} />
+            </Link>
+          ) : (
+            <div className="dm-frame-empty">
+              <p>
+                AUCUNE PIÈCE{size ? ` EN ${size}` : ""}
+                <br />
+                DANS CE RAYON.
+              </p>
+              <button className="dm-btn dm-btn-sm" onClick={onChangeSize}>
+                CHANGER DE TAILLE
+              </button>
+            </div>
+          )}
+        </div>
 
-      <div className="dm-arrows">
-        <button
-          className="dm-arrow"
-          onClick={onPrev}
-          disabled={items.length < 2}
-          aria-label={`${label} précédent`}
-        >
-          ◄
-        </button>
-        <button
-          className="dm-arrow"
-          onClick={onNext}
-          disabled={items.length < 2}
-          aria-label={`${label} suivant`}
-        >
-          ►
-        </button>
-      </div>
+        <div className="dm-arrows">
+          <button
+            className="dm-arrow"
+            onClick={onPrev}
+            disabled={items.length < 2}
+            aria-label={`${label} précédent`}
+          >
+            ◄
+          </button>
+          <button
+            className="dm-arrow"
+            onClick={onNext}
+            disabled={items.length < 2}
+            aria-label={`${label} suivant`}
+          >
+            ►
+          </button>
+        </div>
 
-      <div className="dm-caption">
-        <span className="dm-caption-name">{item ? item.name : "—"}</span>
-        <span className="dm-caption-price">{item ? euros(priceOf(item, size)) : "—"}</span>
+        <div className="dm-caption">
+          <span className="dm-caption-name">{item ? item.name : "—"}</span>
+          <span className="dm-caption-price">{item ? euros(priceOf(item, size)) : "—"}</span>
+        </div>
       </div>
     </section>
   );
@@ -355,43 +362,52 @@ function ModuleTerminal({
 
   return (
     <div className="dm-terminal" role="region" aria-label="Terminal modules">
-      <p className="dm-term-boot">
-        {typed}
-        {!booted && <span className="dm-caret">_</span>}
-      </p>
-
-      <div className="dm-term-options">
-        {MODULES.map((mod, i) => {
-          const on = active.has(mod.slot);
-          const empty = (counts[mod.slot] ?? 0) === 0;
-          return (
-            <button
-              key={mod.slot}
-              className={
-                "dm-term-opt" +
-                (revealed > i ? " in" : "") +
-                (on ? " on" : "") +
-                (empty ? " out" : "")
-              }
-              onClick={() => onLaunch(mod)}
-              disabled={revealed <= i}
-              aria-pressed={on}
-            >
-              <span className="dm-term-box">[{on ? "x" : " "}]</span>
-              <span className="dm-term-exe">{mod.exe}</span>
-              <span className="dm-term-cursor">_</span>
-            </button>
-          );
-        })}
+      <div className="dm-panel-bar">
+        <span className="dm-panel-title">MODULES.EXE</span>
+        <span className="dm-panel-count">
+          {active.size}/{MODULES.length} CHARGÉ{active.size > 1 ? "S" : ""}
+        </span>
       </div>
 
-      {logs.length > 0 && (
-        <div className="dm-term-logs">
-          {logs.map((l) => (
-            <LogLine key={l.id} exe={l.exe} failed={l.failed} />
-          ))}
+      <div className="dm-term-screen">
+        <p className="dm-term-boot">
+          {typed}
+          {!booted && <span className="dm-caret">_</span>}
+        </p>
+
+        <div className="dm-term-options">
+          {MODULES.map((mod, i) => {
+            const on = active.has(mod.slot);
+            const empty = (counts[mod.slot] ?? 0) === 0;
+            return (
+              <button
+                key={mod.slot}
+                className={
+                  "dm-term-opt" +
+                  (revealed > i ? " in" : "") +
+                  (on ? " on" : "") +
+                  (empty ? " out" : "")
+                }
+                onClick={() => onLaunch(mod)}
+                disabled={revealed <= i}
+                aria-pressed={on}
+              >
+                <span className="dm-term-box">[{on ? "x" : " "}]</span>
+                <span className="dm-term-exe">{mod.exe}</span>
+                <span className="dm-term-cursor">_</span>
+              </button>
+            );
+          })}
         </div>
-      )}
+
+        {logs.length > 0 && (
+          <div className="dm-term-logs">
+            {logs.map((l) => (
+              <LogLine key={l.id} exe={l.exe} failed={l.failed} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -463,13 +479,13 @@ function ModuleWindow({
       onPointerDown={onFocus}
     >
       <div
-        className="dm-titlebar dm-float-bar"
+        className="dm-panel-bar dm-float-bar"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
       >
-        <span className="dm-titlebar-text">{mod.window}</span>
+        <span className="dm-panel-title">{mod.window}</span>
         <div className="dm-chrome">
           <button className="dm-chrome-btn" onClick={onClose} aria-label={`Fermer ${mod.window}`}>
             ✕
@@ -536,7 +552,7 @@ function MatchScanner({ keys }: { keys: string[] }) {
   return (
     <div className="dm-scanner">
       <span className="dm-scanner-head">
-        {scanning ? "SCANNING…" : `MATCH DETECTED: ${target}%`}
+        {scanning ? "SCANNING…" : <>MATCH DETECTED : <strong>{target}%</strong></>}
       </span>
       <div className="dm-gauge">
         <div className={"dm-gauge-fill" + (scanning ? "" : " full")} style={{ width: `${pct}%` }} />
@@ -669,7 +685,9 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
 
     const empty = (counts[mod.slot] ?? 0) === 0;
     const id = Date.now() + Math.random();
-    setLogs((l) => [...l.slice(-3), { id, exe: mod.exe, failed: empty }]);
+    // Deux lignes de log max : au-delà le terminal pousse la fenêtre
+    // au-delà du viewport et le corps se met à scroller.
+    setLogs((l) => [...l.slice(-1), { id, exe: mod.exe, failed: empty }]);
     if (empty) return;
 
     later(() => {
@@ -732,16 +750,21 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
             </div>
           </div>
 
-          <div className="dm-menubar">
-            <span>Fichier</span>
-            <span>Édition</span>
-            <span>Affichage</span>
-            <button className="dm-menubar-btn" onClick={() => setGateOpen(true)}>
-              Taille : {size ?? "toutes"}
+          <div className="dm-toolbar">
+            <button className="dm-toolbar-btn" onClick={() => setGateOpen(true)}>
+              ⚙ Morphologie
             </button>
-            <button className="dm-menubar-btn" onClick={() => shuffle(size)}>
-              Mélanger
+            <span className="dm-toolbar-sep" />
+            <button className="dm-toolbar-btn" onClick={() => shuffle(size)}>
+              ⟳ Mélanger
             </button>
+            <span className="dm-toolbar-sep" />
+            <Link className="dm-toolbar-btn" href="/wishlist">
+              ♡ Mes looks
+            </Link>
+            <span className="dm-toolbar-tag">
+              Taille <strong>{size ?? "toutes"}</strong>
+            </span>
           </div>
 
           {/* ---- ÉTAPE 3 : les deux rayons ---- */}
@@ -804,11 +827,11 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
           </div>
 
           <div className="dm-statusbar">
-            <span className="dm-status-cell">{status}</span>
-            <span className="dm-status-cell dm-status-grow">
-              CATALOGUE : {items.length} PIÈCES
+            <span className="dm-status-cell dm-status-grow">{status}</span>
+            <span className="dm-status-cell">CATALOGUE : {items.length} PIÈCES</span>
+            <span className="dm-status-cell dm-status-pink">
+              {look.length} PIÈCE{look.length > 1 ? "S" : ""} DANS LE LOOK
             </span>
-            <span className="dm-status-cell">TAILLE : {size ?? "TOUTES"}</span>
           </div>
         </div>
 

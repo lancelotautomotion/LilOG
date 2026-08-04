@@ -1,7 +1,7 @@
 import { shopifyFetch } from "./client";
 import { ALL_PRODUCTS_QUERY } from "./queries";
 import { CATEGORIES } from "@/lib/categories";
-import { compareSizes, normalizeSize } from "@/lib/sizes";
+import { compareSizes, looksLikeSize, normalizeSize } from "@/lib/sizes";
 import type { AllProductsResponse, ClosetItem, ClosetSlot, ClosetVariant, ShopifyClosetNode } from "./types";
 
 // Storefront API caps `first` at 250 — page through until the catalogue is
@@ -77,10 +77,18 @@ function classify(node: ShopifyClosetNode): ClosetSlot | null {
 const SIZE_OPTION_RE = /taille|size|pointure/i;
 
 function variantSize(variant: ShopifyClosetNode["variants"]["edges"][number]["node"]): string | null {
-  const opt = variant.selectedOptions?.find((o) => SIZE_OPTION_RE.test(o.name));
-  if (opt) return normalizeSize(opt.value);
-  // Single-option products often expose the size as the bare variant title.
-  return normalizeSize(variant.title);
+  // An option the merchant explicitly named "Taille" is authoritative.
+  const named = variant.selectedOptions?.find((o) => SIZE_OPTION_RE.test(o.name));
+  if (named) return normalizeSize(named.value);
+
+  // Otherwise only accept a value that is actually size-shaped: shops also
+  // file brand, era or condition as variant options, and those must never
+  // end up in the morphology picker.
+  const shaped = variant.selectedOptions?.find((o) => looksLikeSize(o.value));
+  if (shaped) return normalizeSize(shaped.value);
+
+  // Single-option products expose the value as the bare variant title.
+  return looksLikeSize(variant.title) ? normalizeSize(variant.title) : null;
 }
 
 function stripEmoji(str: string): string {
