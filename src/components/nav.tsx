@@ -32,9 +32,9 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
         <button className="menu-btn" aria-label="Open menu" onClick={onMenu}>
           <span></span><span></span><span></span>
         </button>
-        <a className="nav-icon-btn" href="#drops" aria-label={t.nav.search}>
-          <Icon.search width={18} height={18} />
-        </a>
+        <Link className="nav-link nav-closet" href="/dressing-machine">
+          Dressing machine
+        </Link>
       </div>
       <a className="nav-brand" href="/" aria-label="Lil'OG">
         <Image className="brand-logo light" src={logoWhite} alt="Lil'OG" priority />
@@ -42,6 +42,9 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
       </a>
       <div className="nav-right">
         <div className="nav-account">
+          <a className="nav-icon-btn" href="#drops" aria-label={t.nav.search}>
+            <Icon.search width={18} height={18} />
+          </a>
           <Link className="nav-link nav-login-text" href={session ? "/account" : "/login"}>
             {session ? (session.user?.name?.split(" ")[0] ?? "Mon compte") : t.nav.login}
           </Link>

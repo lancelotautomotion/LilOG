@@ -236,6 +236,15 @@ a { color: inherit; text-decoration: none; }
   color: inherit;
 }
 
+/* Entrée directe vers la machine, à droite du menu. */
+.nav-closet {
+  white-space: nowrap;
+  letter-spacing: 0.1em;
+}
+.nav-closet::after { background: var(--ldl-accent); }
+.nav-closet:hover { color: var(--ldl-accent); }
+.nav-closet:hover::after { width: 100%; }
+
 /* ---- language switch ---- */
 .lang-switch { position: relative; }
 .lang-btn { background: none; border: none; color: #e0006e; }
@@ -2221,6 +2230,7 @@ a { color: inherit; text-decoration: none; }
   .nav-account { gap: 14px; }
   .nav.solid .nav-account { gap: 14px; }
   .nav-left { gap: 12px; }
+  .nav-closet { display: none; }
   .nav-login-text { display: none; }
   .nav-login-icon { display: inline-flex; }
   .footer-cols { grid-template-columns: 1fr; }
