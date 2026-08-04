@@ -319,6 +319,8 @@ function Bay({
   selected,
   spinSignal,
   col,
+  saved,
+  onToggleSave,
   onNext,
   onChangeSize,
 }: {
@@ -330,6 +332,9 @@ function Bay({
   spinSignal: number;
   /** Grid column of .dm-screen — 1 for HAUTS, 3 for BAS. */
   col: 1 | 3;
+  /** This piece alone is in the wishlist — unrelated to the full-look save. */
+  saved: boolean;
+  onToggleSave: () => void;
   onNext: () => void;
   onChangeSize: () => void;
 }) {
@@ -387,6 +392,23 @@ function Bay({
               CHANGER DE TAILLE
             </button>
           </div>
+        )}
+
+        {item && (
+          <button
+            type="button"
+            className={"dm-heart" + (saved ? " on" : "")}
+            onClick={onToggleSave}
+            aria-pressed={saved}
+            aria-label={
+              saved
+                ? `Retirer ${item.name} de la wishlist`
+                : `Ajouter ${item.name} à la wishlist`
+            }
+            title={saved ? "Retirer de la wishlist" : "Enregistrer cette pièce"}
+          >
+            {saved ? "♥" : "♡"}
+          </button>
         )}
       </div>
 
@@ -813,9 +835,33 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
   const total = look.reduce((sum, p) => sum + priceOf(p, selectedFor(p.slot)), 0);
   const lookKeys = look.map((p) => p.handle);
 
-  // Live against the wishlist rather than a one-shot flag: swap a piece and
-  // the button honestly drops back to "à sauvegarder".
-  const lookSaved = look.length > 0 && look.every((p) => wishlist.has(p.handle));
+  const lookKey = lookKeys.join("|");
+  // Le bouton du bas ne réagit qu'à une sauvegarde explicite du look complet :
+  // cocher les cœurs un par un ne doit pas l'allumer. On mémorise la signature
+  // du look enregistré, et on vérifie que ses pièces y sont toujours — changer
+  // une pièce ou décocher son cœur éteint donc le témoin.
+  const [savedLookKey, setSavedLookKey] = useState<string | null>(null);
+  const lookSaved =
+    look.length > 0 &&
+    savedLookKey === lookKey &&
+    look.every((p) => wishlist.has(p.handle));
+
+  /** Wishlist d'une seule pièce, sans toucher au look complet. */
+  const toggleSaveItem = (piece: ClosetItem) => {
+    const wasSaved = wishlist.has(piece.handle);
+    wishlist.toggle({
+      handle: piece.handle,
+      title: piece.name,
+      price: priceOf(piece, selectedFor(piece.slot)),
+      image: piece.image,
+      variantId: variantFor(piece, selectedFor(piece.slot))?.id ?? null,
+    });
+    setStatus(
+      wasSaved
+        ? `${piece.name.toUpperCase()} — RETIRÉ DE LA WISHLIST.`
+        : `${piece.name.toUpperCase()} — AJOUTÉ À LA WISHLIST.`,
+    );
+  };
 
   /* ---- actions ---- */
 
@@ -904,7 +950,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
         variantId: variantFor(piece, selectedFor(piece.slot))?.id ?? null,
       });
     }
-    setStatus(`LOOK SAUVEGARDÉ — ${look.length} PIÈCE${look.length > 1 ? "S" : ""} 💋`);
+    setSavedLookKey(lookKey);
+    setStatus(`LOOK SAUVEGARDÉ — ${look.length} PIÈCE${look.length > 1 ? "S" : ""}.`);
   };
 
   const copTheLook = async () => {
@@ -971,6 +1018,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               index={Math.min(topIdx, Math.max(0, pools.top.length - 1))}
               selected={sizes}
               spinSignal={spinSignal}
+              saved={top ? wishlist.has(top.handle) : false}
+              onToggleSave={() => top && toggleSaveItem(top)}
               onNext={() => step("top", 1)}
               onChangeSize={() => setGateOpen(true)}
             />
@@ -1001,6 +1050,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               index={Math.min(bottomIdx, Math.max(0, pools.bottom.length - 1))}
               selected={sizes}
               spinSignal={spinSignal}
+              saved={bottom ? wishlist.has(bottom.handle) : false}
+              onToggleSave={() => bottom && toggleSaveItem(bottom)}
               onNext={() => step("bottom", 1)}
               onChangeSize={() => setGateOpen(true)}
             />
