@@ -5351,27 +5351,24 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 /* ================================================================
    L'ÉCRAN — deux baies plein cadre, séparées par une arête de 4px
    ================================================================ */
+/* Grille plutôt que deux colonnes flex : bandeau, hublot, plaque et bouton
+   partagent les mêmes rangées, donc s'alignent par construction — et la
+   bulle centrale peut se poser sur la rangée du hublot, pas sur toute la
+   hauteur de l'écran. */
 .dm-screen {
   flex: 1 1 auto;          /* ~80 % de la fenêtre une fois les barres posées */
   min-height: 0;
-  display: flex;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
   background: var(--dm-chassis);
   border-top: 3px solid var(--dm-lo);
   position: relative;
 }
 
-.dm-bay {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  background: var(--dm-chassis);
-}
-
 /* Bandeau industriel de la baie */
 .dm-bay-head {
-  flex-shrink: 0;
+  grid-row: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -5399,7 +5396,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 
 /* Le hublot : aucun padding, l'image touche les bords */
 .dm-viewport {
-  flex: 1 1 auto;
+  grid-row: 2;
   min-height: 0;
   position: relative;
   overflow: hidden;
@@ -5497,8 +5494,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
    Hauteur fixe + margin-top:auto sur le bouton : les deux SPIN tombent sur
    la même ligne quelle que soit la longueur des noms de produit. */
 .dm-bay-plate {
-  flex-shrink: 0;
-  margin-top: auto;
+  grid-row: 3;
   height: 34px;
   display: flex;
   align-items: center;
@@ -5532,8 +5528,8 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
    Le relief ne vient plus de bordures biseautées (incompatibles avec un
    rayon) mais d'ombres internes : reflet haut, creux bas, tranche portée. */
 .dm-spin {
-  flex-shrink: 0;
-  margin: 0 12px 12px;       /* margin-top: auto sur .dm-bay épingle en bas */
+  grid-row: 4;
+  margin: 0 12px 12px;
   min-height: 54px;
   padding: 12px 14px;
   border: 1px solid rgba(24, 22, 30, 0.34);
@@ -5578,21 +5574,33 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 
 /* ---- L'arête centrale + le bouton d'arcade ---- */
 .dm-divider {
-  flex: 0 0 4px;
+  grid-column: 2;
+  grid-row: 1 / -1;
   position: relative;
   background: #14161d;
   box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.18), inset -1px 0 0 rgba(0, 0, 0, 0.6);
+}
+
+/* Cellule large de 4px : la bulle y est centrée et déborde à parts égales
+   des deux côtés, pile au milieu du hublot. */
+.dm-style-cell {
+  grid-column: 2;
+  grid-row: 2;
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 /* Bulle d'arcade : cercle parfait, plastique fuchsia bombé, à cheval sur
    l'arête. Le bombé tient à trois couches — reflet spéculaire haut, ombre
    interne basse, tranche portée sous le bouton. */
 .dm-style-me {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 5;
+  position: relative;
+  pointer-events: auto;
+  flex: 0 0 auto;
   width: clamp(104px, 9vw, 132px);
   aspect-ratio: 1;
   padding: 0;
@@ -5642,7 +5650,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 }
 .dm-style-me:hover { filter: brightness(1.07) saturate(1.06); }
 .dm-style-me:active {
-  transform: translate(-50%, calc(-50% + 6px));
+  transform: translateY(6px);
   box-shadow:
     inset 0 -9px 18px rgba(116, 0, 63, 0.7),
     inset 0 7px 14px rgba(255, 255, 255, 0.3),
@@ -5729,20 +5737,32 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 }
 
 /* ---- Modules, encastrés dans la console ---- */
-.dm-modules { display: flex; flex-direction: column; gap: 3px; min-width: 0; justify-content: center; }
-.dm-modules-cap {
+/* Le bloc s'aligne sur les autres boutons de la console : pas de libellé
+   au-dessus, contenu centré verticalement. */
+.dm-modules { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+/* Déployé, l'écran prend la place qu'il lui faut : la console grandit et
+   l'écran cède quelques pixels, plutôt que d'écraser le texte. */
+.dm-modules-screen { display: flex; flex-direction: column; gap: 4px; }
+.dm-modules-head { display: flex; align-items: center; gap: 8px; }
+.dm-modules-head .dm-term-boot { flex: 1; min-width: 0; }
+.dm-term-close {
+  flex-shrink: 0;
+  width: 20px;
+  height: 16px;
+  padding: 0;
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 4px;
   font-family: var(--mono);
-  font-size: 0.5rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #6f6f7c;
+  font-size: 9px;
+  line-height: 1;
+  color: #e6eaf5;
+  cursor: pointer;
 }
-/* Hauteur bornée : une ligne de log ne doit pas repousser l'écran vers le haut. */
-.dm-modules-screen { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 3px; max-height: 38px; overflow-y: auto; }
+.dm-term-close:hover { background: rgba(255, 255, 255, 0.24); }
 .dm-term-boot {
   margin: 0;
   font-family: var(--mono);
@@ -6147,7 +6167,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-main { height: calc(100dvh - var(--dm-nav-h) - 20px); }
   .dm-console { padding: 8px 10px; gap: 8px; }
   .dm-spin { margin: 0 10px 10px; min-height: 46px; padding: 10px 12px; font-size: 0.9rem; }
-  .dm-style-me { width: clamp(88px, 8vw, 108px); }
+  .dm-style-me { width: clamp(90px, 8vw, 110px); }
   .dm-cop-btn { padding: 10px 18px; }
 }
 
@@ -6155,19 +6175,15 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 @media (max-width: 900px) {
   .dm-desktop { align-items: flex-start; padding-top: calc(var(--dm-nav-h) + 10px); }
   .dm-main { height: auto; max-height: none; }
-  .dm-screen { flex-direction: column; }
+  /* L'ordre du DOM (baie 1, arête, baie 2) donne l'empilement voulu. */
+  .dm-screen { display: flex; flex-direction: column; }
   .dm-viewport { height: min(58vh, 420px); flex: 0 0 auto; }
   .dm-divider { flex: 0 0 4px; height: 4px; width: 100%; }
-  /* En pile, l'arête devient horizontale. Elle prend une vraie bande pour
-     que la bulle ait sa place au lieu de recouvrir le SPIN du dessus. */
-  .dm-divider {
-    flex: 0 0 auto;
-    width: 100%;
-    height: 132px;
-    background: var(--dm-chassis);
-    box-shadow: none;
-  }
-  .dm-divider::after {
+  /* En pile, la cellule de la bulle porte elle-même l'arête horizontale :
+     la bulle garde son chevauchement sans recouvrir le SPIN du dessus. */
+  .dm-divider { display: none; }
+  .dm-style-cell { height: 132px; flex: 0 0 auto; }
+  .dm-style-cell::before {
     content: "";
     position: absolute;
     left: 0;
@@ -6179,7 +6195,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
   }
   .dm-style-me { width: 104px; }
-  .dm-style-me:active { transform: translate(-50%, calc(-50% + 4px)); }
+  .dm-style-me:active { transform: translateY(4px); }
   .dm-console { grid-template-columns: 1fr; }
   .dm-cop-btn { width: 100%; }
   .dm-save { width: 100%; }

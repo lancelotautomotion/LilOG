@@ -318,6 +318,7 @@ function Bay({
   index,
   selected,
   spinSignal,
+  col,
   onNext,
   onChangeSize,
 }: {
@@ -325,8 +326,10 @@ function Bay({
   items: ClosetItem[];
   index: number;
   selected: ReadonlySet<string>;
-  /** Bumped by SHUFFLE_ALL so both bays spin together. */
+  /** Bumped by STYLE_ME so both bays spin together. */
   spinSignal: number;
+  /** Grid column of .dm-screen — 1 for HAUTS, 3 for BAS. */
+  col: 1 | 3;
   onNext: () => void;
   onChangeSize: () => void;
 }) {
@@ -349,9 +352,13 @@ function Bay({
     timers.current.push(setTimeout(onNext, SPIN_SWAP));
   };
 
+  // Rendered as grid cells rather than a nested column, so both bays share
+  // the same four rows and line up whatever their content.
+  const cell = { gridColumn: col };
+
   return (
-    <section className="dm-bay">
-      <header className="dm-bay-head">
+    <>
+      <header className="dm-bay-head" style={cell}>
         <span className="dm-bay-label">{label}</span>
         <span className="dm-bay-count">
           {items.length === 0
@@ -360,7 +367,7 @@ function Bay({
         </span>
       </header>
 
-      <div className="dm-viewport">
+      <div className="dm-viewport" style={cell}>
         {item ? (
           <div className={"dm-reel" + reel.className}>
             <SmartImg className="dm-reel-bg" src={item.image} alt="" />
@@ -383,7 +390,7 @@ function Bay({
         )}
       </div>
 
-      <div className="dm-bay-plate">
+      <div className="dm-bay-plate" style={cell}>
         <span className="dm-plate-name">{item ? item.name : "—"}</span>
         <span className="dm-plate-price">{item ? euros(priceOf(item, selected)) : "—"}</span>
       </div>
@@ -391,6 +398,7 @@ function Bay({
       <button
         type="button"
         className="dm-spin"
+        style={cell}
         onClick={pull}
         disabled={items.length < 2}
         aria-label={`Faire tourner ${label}`}
@@ -398,7 +406,7 @@ function Bay({
         <span className="dm-spin-emoji" aria-hidden>🎰</span>
         [ SPIN ]
       </button>
-    </section>
+    </>
   );
 }
 
@@ -426,6 +434,7 @@ function LogLine({ exe, failed }: { exe: string; failed: boolean }) {
 function ModuleTerminal({
   open,
   onOpen,
+  onClose,
   active,
   counts,
   logs,
@@ -433,6 +442,7 @@ function ModuleTerminal({
 }: {
   open: boolean;
   onOpen: () => void;
+  onClose: () => void;
   active: Set<ClosetSlot>;
   counts: Record<string, number>;
   logs: { id: number; exe: string; failed: boolean }[];
@@ -462,23 +472,26 @@ function ModuleTerminal({
 
   return (
     <div className="dm-modules">
-      <span className="dm-modules-cap">
-        <span>Modules.exe</span>
-        <span>
-          {active.size}/{MODULES.length} chargé{active.size > 1 ? "s" : ""}
-        </span>
-      </span>
-
       {!open ? (
         <button type="button" className="dm-w95 dm-modules-open" onClick={onOpen}>
           [ + ] AJOUTER UN MODULE
         </button>
       ) : (
         <div className="dm-well dm-modules-screen" role="region" aria-label="Terminal modules">
-          <p className="dm-term-boot">
-            {typed}
-            {!booted && <span className="dm-caret">_</span>}
-          </p>
+          <div className="dm-modules-head">
+            <p className="dm-term-boot">
+              {typed}
+              {!booted && <span className="dm-caret">_</span>}
+            </p>
+            <button
+              type="button"
+              className="dm-term-close"
+              onClick={onClose}
+              aria-label="Fermer le terminal des modules"
+            >
+              ✕
+            </button>
+          </div>
 
           <div className="dm-term-options">
             {MODULES.map((mod, i) => {
@@ -953,6 +966,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
           <div className="dm-screen">
             <Bay
               label="HAUTS"
+              col={1}
               items={pools.top}
               index={Math.min(topIdx, Math.max(0, pools.top.length - 1))}
               selected={sizes}
@@ -961,7 +975,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               onChangeSize={() => setGateOpen(true)}
             />
 
-            <div className="dm-divider">
+            <div className="dm-divider" aria-hidden />
+            <div className="dm-style-cell">
               <button
                 type="button"
                 className="dm-style-me"
@@ -974,6 +989,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
 
             <Bay
               label="BAS"
+              col={3}
               items={pools.bottom}
               index={Math.min(bottomIdx, Math.max(0, pools.bottom.length - 1))}
               selected={sizes}
@@ -990,6 +1006,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
             <ModuleTerminal
               open={terminalOpen}
               onOpen={() => setTerminalOpen(true)}
+              onClose={() => setTerminalOpen(false)}
               active={new Set(openSlots)}
               counts={counts}
               logs={logs}
