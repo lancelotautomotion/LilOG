@@ -5901,18 +5901,6 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-term-opt .dm-term-cursor { opacity: 0; }
 .dm-term-opt.in:hover { background: #fff; color: var(--dm-well); }
 .dm-term-opt.in:hover .dm-term-cursor { opacity: 1; animation: dmBlink 500ms step-end infinite; }
-.dm-term-log {
-  margin: 0;
-  font-family: var(--mono);
-  font-size: 0.54rem;
-  letter-spacing: 0.04em;
-  color: #8d94a6;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.dm-term-ok { color: var(--dm-lcd); }
-.dm-term-err { color: #ff8fa8; }
 
 @keyframes dmBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 .dm-caret { animation: dmBlink 500ms step-end infinite; }
@@ -6120,7 +6108,10 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   text-overflow: ellipsis;
 }
 .dm-float-price { font-family: var(--font-lcd), monospace; font-size: 1.05rem; color: #0f2a86; }
-.dm-float-spin { margin: 0; padding: 9px 8px; font-size: 0.74rem; letter-spacing: 0.12em; }
+.dm-float-actions { display: flex; align-items: stretch; gap: 6px; }
+.dm-float-spin { flex: 1; min-width: 0; min-height: 38px; padding: 8px; font-size: 0.7rem; letter-spacing: 0.1em; }
+.dm-float-spin .dm-spin-emoji { font-size: 0.85rem; }
+.dm-float-heart { width: 46px; font-size: 1.1rem; }
 .dm-float-count {
   font-family: var(--font-lcd), monospace;
   font-size: 0.9rem;

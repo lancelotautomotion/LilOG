@@ -438,30 +438,12 @@ function Bay({
  * ÉTAPE 4 — Le terminal .EXE, encastré dans la console
  * ================================================================== */
 
-function LogLine({ exe, failed }: { exe: string; failed: boolean }) {
-  const head = `> Exécution de ${exe}...`;
-  const typed = useTyped(head, true, 14);
-  const done = typed.length === head.length;
-
-  return (
-    <p className="dm-term-log">
-      {typed}
-      {done && (
-        <span className={failed ? "dm-term-err" : "dm-term-ok"}>
-          {failed ? " [ERREUR — RAYON VIDE]" : " [OK]"}
-        </span>
-      )}
-    </p>
-  );
-}
-
 function ModuleTerminal({
   open,
   onOpen,
   onClose,
   active,
   counts,
-  logs,
   onLaunch,
 }: {
   open: boolean;
@@ -469,7 +451,6 @@ function ModuleTerminal({
   onClose: () => void;
   active: Set<ClosetSlot>;
   counts: Record<string, number>;
-  logs: { id: number; exe: string; failed: boolean }[];
   onLaunch: (mod: ModuleDef) => void;
 }) {
   const boot = "> SYSTÈME PRÊT. SÉLECTIONNEZ UN MODULE :";
@@ -542,10 +523,6 @@ function ModuleTerminal({
               );
             })}
           </div>
-
-          {logs.map((l) => (
-            <LogLine key={l.id} exe={l.exe} failed={l.failed} />
-          ))}
         </div>
       )}
     </div>
@@ -562,7 +539,9 @@ function ModuleWindow({
   index,
   selected,
   z,
+  saved,
   onFocus,
+  onToggleSave,
   onNext,
   onClose,
 }: {
@@ -571,7 +550,10 @@ function ModuleWindow({
   index: number;
   selected: ReadonlySet<string>;
   z: number;
+  /** Cette pièce seule est en wishlist. */
+  saved: boolean;
   onFocus: () => void;
+  onToggleSave: () => void;
   onNext: () => void;
   onClose: () => void;
 }) {
@@ -667,16 +649,33 @@ function ModuleWindow({
           <span className="dm-float-price">{euros(priceOf(item, selected))}</span>
         </div>
 
-        <button
-          type="button"
-          className="dm-spin dm-float-spin"
-          onClick={pull}
-          disabled={items.length < 2}
-          aria-label={`Faire tourner ${mod.window}`}
-        >
-          <span className="dm-spin-emoji" aria-hidden>🎰</span>
-          [ SPIN ]
-        </button>
+        <div className="dm-float-actions">
+          <button
+            type="button"
+            className="dm-spin dm-float-spin"
+            onClick={pull}
+            disabled={items.length < 2}
+            aria-label={`Faire tourner ${mod.window}`}
+          >
+            <span className="dm-spin-emoji" aria-hidden>🎰</span>
+            [ SPIN ]
+          </button>
+
+          <button
+            type="button"
+            className={"dm-heart dm-float-heart" + (saved ? " on" : "")}
+            onClick={onToggleSave}
+            aria-pressed={saved}
+            aria-label={
+              saved
+                ? `Retirer ${item.name} de la wishlist`
+                : `Ajouter ${item.name} à la wishlist`
+            }
+            title={saved ? "Retirer de la wishlist" : "Enregistrer cette pièce seule"}
+          >
+            {saved ? "♥" : "♡"}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -746,7 +745,6 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [openSlots, setOpenSlots] = useState<ClosetSlot[]>([]);
   const [moduleIdx, setModuleIdx] = useState<Record<string, number>>({});
-  const [logs, setLogs] = useState<{ id: number; exe: string; failed: boolean }[]>([]);
   const [topZ, setTopZ] = useState<Record<string, number>>({});
   const [status, setStatus] = useState("PRÊT.");
   // Bumped by STYLE_ME so every bay plays its reel on the same commit.
@@ -923,11 +921,11 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
       return;
     }
 
+    // Le journal d'exécution part dans la barre d'état plutôt que dans le
+    // terminal : celle-ci est à hauteur fixe, la console ne grandit donc plus
+    // à chaque module lancé.
     const empty = (counts[mod.slot] ?? 0) === 0;
-    const id = Date.now() + Math.random();
-    // Deux lignes de log max : au-delà le terminal pousse la fenêtre
-    // au-delà du viewport et le corps se met à scroller.
-    setLogs((l) => [...l.slice(-1), { id, exe: mod.exe, failed: empty }]);
+    setStatus(`${mod.exe} — ${empty ? "[ERREUR] RAYON VIDE." : "[OK]"}`);
     if (empty) return;
 
     later(() => {
@@ -1069,7 +1067,6 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               onClose={() => setTerminalOpen(false)}
               active={new Set(openSlots)}
               counts={counts}
-              logs={logs}
               onLaunch={launchModule}
             />
 
@@ -1114,6 +1111,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
         {openSlots.map((slot) => {
           const mod = MODULES.find((m) => m.slot === slot)!;
           const pool = pools[slot as keyof typeof pools];
+          const piece = pool[Math.min(moduleIdx[slot] ?? 0, Math.max(0, pool.length - 1))];
           return (
             <ModuleWindow
               key={slot}
@@ -1122,7 +1120,9 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               index={Math.min(moduleIdx[slot] ?? 0, Math.max(0, pool.length - 1))}
               selected={selectedFor(slot)}
               z={topZ[slot] ?? 60}
+              saved={piece ? wishlist.has(piece.handle) : false}
               onFocus={() => focusWindow(slot)}
+              onToggleSave={() => piece && toggleSaveItem(piece)}
               onNext={() => step(slot, 1)}
               onClose={() => setOpenSlots((s) => s.filter((x) => x !== slot))}
             />
