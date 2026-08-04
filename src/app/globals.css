@@ -6319,3 +6319,169 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-reel.spin-a, .dm-reel.spin-b { animation: none; }
   .dm-caret, .dm-term-opt.in:hover .dm-term-cursor { animation: none; }
 }
+
+/* ============================================================
+   Navbar — boutons « chunky plastic » (Y2K / Mac OS 9)
+
+   Chaque cible cliquable du header devient une pastille de plastique
+   moulé : dégradé gris teinté violet, lumière en haut, creux en bas,
+   tranche portée. Le bloc est en fin de feuille et porte des !important
+   là où la section LDL en pose déjà (fond, bordure, rayon, padding des
+   .nav-icon-btn) — sans quoi ces règles-là l'emporteraient.
+   ============================================================ */
+
+:root {
+  --nav-plastic: linear-gradient(180deg, #f6f5fb 0%, #e7e5f1 48%, #d3d0e1 100%);
+  --nav-plastic-border: #c6c2d8;
+  --nav-plastic-ink: #262626;
+  --nav-plastic-lift:
+    inset 0 2px 4px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(30, 36, 48, 0.16);
+  --nav-plastic-press:
+    inset 0 3px 6px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.nav .menu-btn,
+.nav .nav-icon-btn,
+.nav .nav-closet,
+.nav .nav-login-text,
+.nav .lang-btn {
+  background: var(--nav-plastic) !important;
+  border: 1px solid var(--nav-plastic-border) !important;
+  border-radius: 999px !important;
+  box-shadow: var(--nav-plastic-lift);
+  color: var(--nav-plastic-ink) !important;
+  transition: filter 130ms ease, box-shadow 90ms ease, transform 90ms ease !important;
+}
+
+/* Pastilles à texte — même hauteur que les rondes, la rangée s'aligne. */
+.nav .nav-closet,
+.nav .nav-login-text,
+.nav .lang-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 17px !important;
+  line-height: 1;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+/* Le soulignement animé n'a plus de sens sur un bouton bombé. */
+.nav .nav-closet::after,
+.nav .nav-login-text::after,
+.nav .lang-btn::after { display: none !important; }
+
+/* Pastilles à icône : carrées, l'icône bien centrée */
+.nav .nav-icon-btn {
+  padding: 0 !important;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+}
+.nav .nav-icon-btn svg { display: block; }
+
+/* Burger : les trois barres centrées dans la pastille */
+.nav .menu-btn {
+  width: 40px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+}
+.nav .menu-btn span {
+  width: 17px !important;
+  height: 2px !important;
+  background: var(--nav-plastic-ink) !important;
+  border-radius: 2px;
+}
+.nav .menu-btn span:nth-child(2) { width: 12px !important; }
+
+.nav .lang-btn { display: inline-flex; align-items: center; gap: 3px; }
+.nav .lang-caret { width: 12px; height: 12px; }
+
+/* États */
+.nav .menu-btn:hover,
+.nav .nav-icon-btn:hover,
+.nav .nav-closet:hover,
+.nav .nav-login-text:hover,
+.nav .lang-btn:hover {
+  background: var(--nav-plastic) !important;
+  filter: brightness(1.05);
+}
+.nav .menu-btn:active,
+.nav .nav-icon-btn:active,
+.nav .nav-closet:active,
+.nav .nav-login-text:active,
+.nav .lang-btn:active,
+.nav .lang-switch.open .lang-btn {
+  transform: scale(0.95);
+  box-shadow: var(--nav-plastic-press);
+}
+.nav .menu-btn:focus-visible,
+.nav .nav-icon-btn:focus-visible,
+.nav .nav-closet:focus-visible,
+.nav .nav-login-text:focus-visible,
+.nav .lang-btn:focus-visible {
+  outline: 2px solid #7147d4;
+  outline-offset: 2px;
+}
+
+/* Les pastilles portent leur propre respiration : on resserre les gouttières */
+.nav .nav-left { gap: 10px; }
+.nav .nav-right,
+.nav .nav-account { gap: 8px !important; }
+
+/* Badge : petite bille de plastique violette incrustée */
+.nav .nav-icon-btn .count {
+  top: -3px !important;
+  right: -3px !important;
+  background: #7147d4 !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  border-radius: 999px !important;
+  font-family: var(--mono) !important;
+  font-size: 0.55rem !important;
+  font-weight: 700 !important;
+  min-width: 17px;
+  height: 17px;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(30, 36, 48, 0.3);
+}
+
+@media (max-width: 560px) {
+  /* Les pastilles à texte sont masquées plus haut dans la feuille, mais
+     `.nav .nav-closet` l'emporte sur `.nav-closet` : il faut le redire ici,
+     sinon elles reviennent et chevauchent le logo centré. */
+  .nav .nav-closet,
+  .nav .nav-login-text { display: none; }
+  /* Le logo cesse d'être centré en absolu : en flux, la barre le place
+     entre les deux groupes et plus rien ne peut le recouvrir. */
+  .nav-brand {
+    position: static !important;
+    transform: none !important;
+    flex: 0 1 auto;
+    min-width: 0;
+    margin: 0 6px;
+  }
+  .nav .nav-icon-btn { width: 32px; height: 32px; }
+  .nav .menu-btn { width: 36px !important; height: 32px !important; }
+  .nav .lang-btn { min-height: 32px; padding: 0 12px !important; }
+  .nav .nav-left { gap: 8px; }
+  .nav .nav-right,
+  .nav .nav-account { gap: 6px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav .menu-btn:active,
+  .nav .nav-icon-btn:active,
+  .nav .nav-closet:active,
+  .nav .nav-login-text:active,
+  .nav .lang-btn:active { transform: none; }
+}
