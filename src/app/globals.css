@@ -5577,8 +5577,52 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   grid-column: 2;
   grid-row: 1 / -1;
   position: relative;
-  background: #14161d;
+  background: linear-gradient(180deg, #14161d 0%, #262b38 50%, #14161d 100%);
   box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.18), inset -1px 0 0 rgba(0, 0, 0, 0.6);
+}
+
+/* Bling 2000s, dosé : deux breloques au-dessus, deux en dessous. Étoiles
+   chromées et cœurs violets assortis à la bulle, en dégradé sur le texte
+   plutôt qu'en emoji — le rendu ne dépend alors d'aucune police système.
+   Portées par .dm-style-cell, donc cantonnées à la rangée du hublot : elles
+   restent sur l'écran sombre et ne débordent pas sur le châssis clair. */
+.dm-bling {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.dm-bling-star {
+  background: linear-gradient(180deg, #ffffff 0%, #dce8fa 28%, #8ea7c9 50%, #ffffff 58%, #b8c8de 78%, #7b8ea9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.45));
+}
+.dm-bling-heart {
+  background: linear-gradient(180deg, #e6d8ff 0%, #a98cff 45%, #7147d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 6px rgba(113, 71, 212, 0.7));
+}
+.dm-bling-1 { top: 9%; }
+.dm-bling-2 { top: 23%; font-size: 11px; }
+.dm-bling-3 { bottom: 23%; font-size: 11px; }
+.dm-bling-4 { bottom: 9%; }
+
+/* Chevrons encadrant la bulle, alignés dans l'axe de l'arête */
+.dm-style-arrow {
+  flex: 0 0 auto;
+  font-size: 13px;
+  line-height: 1;
+  color: #d3dcec;
+  text-shadow: 0 0 7px rgba(211, 220, 236, 0.7);
+  pointer-events: none;
+  user-select: none;
 }
 
 /* Cellule large de 4px : la bulle y est centrée et déborde à parts égales
@@ -5589,8 +5633,10 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   position: relative;
   z-index: 5;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 9px;
   pointer-events: none;
 }
 
@@ -5606,15 +5652,16 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   padding: 0;
   border: none;
   border-radius: 50%;
+  /* Violet #7147D4 : la teinte de fin du dégradé --acct-titlebar. */
   background:
     radial-gradient(ellipse 64% 40% at 50% 15%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.18) 58%, transparent 74%),
-    radial-gradient(ellipse 88% 60% at 50% 116%, rgba(255, 255, 255, 0.3) 0%, transparent 46%),
-    linear-gradient(180deg, #ff96db 0%, #ff44b2 44%, #cf1179 100%);
+    radial-gradient(ellipse 88% 60% at 50% 116%, rgba(255, 255, 255, 0.28) 0%, transparent 46%),
+    linear-gradient(180deg, #b795ff 0%, #7147d4 44%, #45219b 100%);
   box-shadow:
-    inset 0 -15px 24px rgba(116, 0, 63, 0.62),
-    inset 0 12px 20px rgba(255, 255, 255, 0.42),
+    inset 0 -15px 24px rgba(26, 7, 68, 0.62),
+    inset 0 12px 20px rgba(255, 255, 255, 0.4),
     inset 0 0 0 3px rgba(255, 255, 255, 0.3),
-    0 9px 0 #8d0a52,
+    0 9px 0 #2f1470,
     0 16px 30px rgba(0, 0, 0, 0.46);
   display: flex;
   align-items: center;
@@ -5645,17 +5692,17 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #fff;
-  text-shadow: 0 2px 3px rgba(116, 0, 63, 0.8), 0 0 12px rgba(255, 255, 255, 0.4);
+  text-shadow: 0 2px 3px rgba(26, 7, 68, 0.85), 0 0 12px rgba(255, 255, 255, 0.4);
   white-space: nowrap;
 }
 .dm-style-me:hover { filter: brightness(1.07) saturate(1.06); }
 .dm-style-me:active {
   transform: translateY(6px);
   box-shadow:
-    inset 0 -9px 18px rgba(116, 0, 63, 0.7),
-    inset 0 7px 14px rgba(255, 255, 255, 0.3),
+    inset 0 -9px 18px rgba(26, 7, 68, 0.7),
+    inset 0 7px 14px rgba(255, 255, 255, 0.28),
     inset 0 0 0 3px rgba(255, 255, 255, 0.24),
-    0 3px 0 #8d0a52,
+    0 3px 0 #2f1470,
     0 7px 14px rgba(0, 0, 0, 0.4);
 }
 .dm-style-me:focus-visible { outline: 3px dotted #fff; outline-offset: 4px; }
@@ -6194,6 +6241,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     background: #14161d;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
   }
+  .dm-bling { display: none; }
   .dm-style-me { width: 104px; }
   .dm-style-me:active { transform: translateY(4px); }
   .dm-console { grid-template-columns: 1fr; }

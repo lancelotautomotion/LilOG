@@ -976,7 +976,13 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
             />
 
             <div className="dm-divider" aria-hidden />
+
             <div className="dm-style-cell">
+              <span className="dm-bling dm-bling-star dm-bling-1" aria-hidden>✦</span>
+              <span className="dm-bling dm-bling-heart dm-bling-2" aria-hidden>♥</span>
+              <span className="dm-bling dm-bling-heart dm-bling-3" aria-hidden>♥</span>
+              <span className="dm-bling dm-bling-star dm-bling-4" aria-hidden>✦</span>
+              <span className="dm-style-arrow" aria-hidden>▼</span>
               <button
                 type="button"
                 className="dm-style-me"
@@ -985,6 +991,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               >
                 <span className="dm-style-me-label">STYLE_ME</span>
               </button>
+              <span className="dm-style-arrow" aria-hidden>▲</span>
             </div>
 
             <Bay
