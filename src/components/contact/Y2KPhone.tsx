@@ -28,6 +28,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { GemSticker } from "@/components/contact/stickers";
+
 /* ------------------------------------------------------------
    Constantes de calage (en % de la boîte image 813 × 1483)
    ------------------------------------------------------------ */
@@ -50,6 +52,71 @@ const TILT = 7.1;
 
 /** Longueur maximale du numéro composé. */
 const MAX_LEN = 18;
+
+/* ------------------------------------------------------------
+   Bijoux du clapet
+   ------------------------------------------------------------
+   Le visuel de référence portait des strass photoréalistes qui
+   juraient avec la DA du site. Les petits (ronds facettés, étoiles
+   métalliques) ont été gommés dans l'asset lui-même ; les quatre
+   grosses gemmes roses, elles, débordent de la silhouette — les
+   effacer obligerait à reconstruire le bord du téléphone. On pose
+   donc par-dessus le sticker vectoriel de même forme, calibré pour
+   les recouvrir entièrement (~1,3× leur emprise). Ce sont les
+   mêmes pastilles que les disquettes d'INFOS_PRATIQUES.
+
+   Emprises relevées sur le visuel 813 × 1483 :
+     étoile capot   x258-371  y128-247
+     cœur capot     x694-808  y511-620
+     étoile breloque x7-126   y1133-1265
+     cœur base      x604-692  y1295-1389
+   ------------------------------------------------------------ */
+
+const PINK_STAR: [string, string, string] = ["#FFB3D6", "#F0509A", "#B7175C"];
+const PINK_HEART: [string, string, string] = ["#FFC0DF", "#EE4B96", "#B3155A"];
+
+type Gem = {
+  id: string;
+  half: "lid" | "base";
+  shape: "star" | "heart";
+  hue: [string, string, string];
+  left: number;
+  top: number;
+  width: number;
+  rot: number;
+};
+
+/* Les rotations ne sont pas estimées à l'œil mais relevées sur le visuel :
+   angle des cinq pointes de chaque étoile photographiée, ramené modulo 72°
+   (l'étoile SVG de référence pointe vers le haut). */
+const GEMS: Gem[] = [
+  { id: "star-lid", half: "lid", shape: "star", hue: PINK_STAR, left: 27.4, top: 7.0, width: 22.5, rot: 20.5 },
+  { id: "heart-lid", half: "lid", shape: "heart", hue: PINK_HEART, left: 82.6, top: 32.6, width: 19.6, rot: 10 },
+  { id: "star-charm", half: "base", shape: "star", hue: PINK_STAR, left: -4.0, top: 74.75, width: 24.5, rot: 11.5 },
+  { id: "heart-base", half: "base", shape: "heart", hue: PINK_HEART, left: 71.4, top: 85.8, width: 16.6, rot: 6 },
+];
+
+function Gems({ where }: { where: "lid" | "base" }) {
+  return (
+    <>
+      {GEMS.filter((g) => g.half === where).map((g) => (
+        <span
+          key={g.id}
+          aria-hidden
+          className="y2kp-gem"
+          style={{
+            left: `${g.left}%`,
+            top: `${g.top}%`,
+            width: `${g.width}%`,
+            transform: `rotate(${g.rot}deg)`,
+          }}
+        >
+          <GemSticker uid={`y2kp-${g.id}`} shape={g.shape} hue={g.hue} />
+        </span>
+      ))}
+    </>
+  );
+}
 
 type Hotspot = { id: string; label: string; x: number; y: number };
 
@@ -210,11 +277,31 @@ function buzz(pattern: number | number[]) {
    ============================================================ */
 const CSS = `
 .y2kp{position:relative;width:100%;max-width:340px;margin-inline:auto;
-  container-type:inline-size;-webkit-tap-highlight-color:transparent}
+  -webkit-tap-highlight-color:transparent}
 .y2kp:focus{outline:none}
 .y2kp:focus-visible{outline:2px solid #7147d4;outline-offset:6px;border-radius:18px}
+/* Le contexte de conteneur vit sur la scène, pas sur .y2kp : les tailles
+   internes sont en cqw et doivent suivre la largeur du VISUEL, laquelle
+   se décorrèle de celle de .y2kp dès que le clapet est piloté en hauteur. */
 .y2kp-stage{position:relative;width:100%;aspect-ratio:813/1483;
+  container-type:inline-size;
   perspective:1500px;perspective-origin:52% 40%}
+
+/* En deux colonnes, c'est la HAUTEUR disponible qui commande : le
+   clapet se cale exactement sur celle du bloc SEND_MESSAGE.SYS et
+   sa largeur se déduit du ratio. En pile (mobile), on revient au
+   dimensionnement par la largeur — sans hauteur de référence, une
+   taille pilotée par la hauteur s'effondrerait.
+
+   .y2kp devient une colonne flex : la scène absorbe la hauteur restante
+   et en déduit sa largeur par le ratio, tandis que le bandeau d'aide
+   garde sa hauteur propre — sans quoi il déborderait sous le clapet et
+   viendrait chevaucher les raccourcis. */
+@media (min-width:1024px){
+  .y2kp{height:100%;display:flex;flex-direction:column}
+  .y2kp-stage{flex:1 1 0%;min-height:0;width:auto;height:auto;align-self:center}
+  .y2kp-hint{flex:0 0 auto}
+}
 .y2kp-intro,.y2kp-float,.y2kp-shake,.y2kp-tilt{position:absolute;inset:0;
   transform-style:preserve-3d}
 
@@ -269,6 +356,11 @@ const CSS = `
   filter:drop-shadow(0 18px 26px rgba(72,28,128,.26))}
 .y2kp-clip-top{clip-path:polygon(0 0,100% 0,100% 53.48%,0 46.65%)}
 .y2kp-clip-bottom{clip-path:polygon(0 46.65%,100% 53.48%,100% 100%,0 100%)}
+
+/* Bijoux vectoriels — voir STICKERS plus bas. Posés dans la moitié
+   à laquelle ils appartiennent, ils suivent donc le pliage. */
+.y2kp-gem{position:absolute;aspect-ratio:1;
+  filter:drop-shadow(0 2px 3px rgba(72,28,128,.34))}
 
 .y2kp-fold{position:absolute;inset:0;transform-style:preserve-3d;
   transform-origin:56.21% 53%;
@@ -614,6 +706,7 @@ export default function Y2KPhone() {
                   {/* eslint-disable-next-line @next/next/no-img-element -- visuel décoratif piloté par des transforms 3D ; le wrapper de next/image casserait le pliage du clapet. */}
                   <img src={ASSET} alt="" width={813} height={1483} draggable={false} />
                   <span className="y2kp-gloss" aria-hidden />
+                  <Gems where="base" />
                 </div>
 
                 {/* ---------- Clapet : la moitié haute qui pivote ---------- */}
@@ -623,6 +716,7 @@ export default function Y2KPhone() {
                       {/* eslint-disable-next-line @next/next/no-img-element -- idem : même visuel, découpé au-dessus de la charnière. */}
                       <img src={ASSET} alt="" width={813} height={1483} draggable={false} />
                       <span className="y2kp-gloss" aria-hidden />
+                      <Gems where="lid" />
                     </div>
 
                     {/* ---- Écran LCD dynamique ---- */}
