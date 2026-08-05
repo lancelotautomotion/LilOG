@@ -4,9 +4,9 @@
    la ligne, liens). Créé côté client, il garde ses enfants statiques —
    sérialisé depuis le serveur, React réclamerait une clé par enfant. */
 
-import { LegalCenter, LegalSectionY2K, P, Tldr, Notice, A } from "@/components/legal-center";
+import { DocCenter, DocSection, P, Tldr, Notice, A } from "@/components/doc-center";
 
-const SECTIONS: LegalSectionY2K[] = [
+const SECTIONS: DocSection[] = [
   {
     id: "editeur",
     num: "01",
@@ -127,7 +127,7 @@ const SECTIONS: LegalSectionY2K[] = [
 
 export default function MentionsLegalesPage() {
   return (
-    <LegalCenter
+    <DocCenter
       activeHref="/mentions-legales"
       icon="💬"
       title="Mentions Légales"

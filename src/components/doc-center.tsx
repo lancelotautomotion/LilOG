@@ -1,8 +1,12 @@
 "use client";
 
 /* ============================================================
-   LEGAL_CENTER.EXE — coque commune aux pages légales
-   (/cgv, /cookies, /mentions-legales, /confidentialite)
+   DOC_CENTER — coque « fenêtre rétro » des pages de documentation
+   ------------------------------------------------------------
+   Deux applications l'utilisent, avec chacune sa barre d'onglets :
+   • LEGAL_CENTER.EXE : /cgv, /cookies, /mentions-legales,
+     /confidentialite
+   • AIDE_CENTER.EXE  : /livraison, /retours (+ raccourci FAQ)
 
    Direction artistique Y2K / Windows OS / Chunky Plastic,
    strictement alignée sur /contact : mêmes jetons plastique,
@@ -10,13 +14,14 @@
    mêmes pastilles.
 
    ⚠ PAREFEU : tout le style vit ici, via Tailwind et une feuille
-   locale entièrement préfixée `lilcgv-`. AUCUNE classe globale de
+   locale entièrement préfixée `lildoc-`. AUCUNE classe globale de
    `globals.css` n'est utilisée : les autres pages du site ne
    peuvent pas être impactées.
    ============================================================ */
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { PageShell } from "@/components/page-shell";
 import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
 
@@ -44,18 +49,18 @@ const GRID_BG = {
 
 /* ---- Feuille locale : pastilles, colle du sommaire, impression ---- */
 const CGV_CSS = `
-@keyframes lilcgv-bob{
+@keyframes lildoc-bob{
   0%,100%{transform:translate3d(0,0,0) rotate(var(--r,0deg)) scale(1)}
   50%{transform:translate3d(0,-7%,0) rotate(calc(var(--r,0deg) + 6deg)) scale(1.05)}
 }
-.lilcgv-sticker{animation:lilcgv-bob 7s ease-in-out infinite;
+.lildoc-sticker{animation:lildoc-bob 7s ease-in-out infinite;
   filter:drop-shadow(0 3px 4px rgba(30,36,48,.3))}
-.lilcgv-s2{animation-duration:8.4s;animation-delay:-2.2s}
-.lilcgv-s3{animation-duration:6.2s;animation-delay:-3.7s}
-.lilcgv-s4{animation-duration:9s;animation-delay:-5.1s}
+.lildoc-s2{animation-duration:8.4s;animation-delay:-2.2s}
+.lildoc-s3{animation-duration:6.2s;animation-delay:-3.7s}
+.lildoc-s4{animation-duration:9s;animation-delay:-5.1s}
 
 @media (prefers-reduced-motion: reduce){
-  .lilcgv-sticker{animation:none}
+  .lildoc-sticker{animation:none}
 }
 
 /* overflow-x:hidden sur body (globals.css) ferait du body un conteneur de
@@ -66,13 +71,13 @@ body{overflow-x:clip}
 
 /* ---- Impression : on ne garde que le document ---- */
 @media print{
-  nav.nav, footer.footer, .lilcgv-noprint{display:none !important}
-  .lilcgv-main{padding:0 !important; background:#fff !important}
-  .lilcgv-window{max-width:none !important; border:none !important;
+  nav.nav, footer.footer, .lildoc-noprint{display:none !important}
+  .lildoc-main{padding:0 !important; background:#fff !important}
+  .lildoc-window{max-width:none !important; border:none !important;
     border-radius:0 !important; box-shadow:none !important; background:#fff !important}
-  .lilcgv-body{background:#fff !important; background-image:none !important; padding:0 !important}
-  .lilcgv-reader{border:none !important; box-shadow:none !important; padding:0 !important}
-  .lilcgv-section{break-inside:avoid; page-break-inside:avoid}
+  .lildoc-body{background:#fff !important; background-image:none !important; padding:0 !important}
+  .lildoc-reader{border:none !important; box-shadow:none !important; padding:0 !important}
+  .lildoc-section{break-inside:avoid; page-break-inside:avoid}
 }
 `;
 
@@ -162,6 +167,20 @@ export function Tldr({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** Champ encastré façon formulaire Win95 — adresse, coordonnées, code. */
+export function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-4 flex flex-col gap-1.5">
+      <span className={`${MONO} text-[0.55rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>{label}</span>
+      <div
+        className={`${MONO} rounded-lg border border-gray-300 bg-white p-3.5 text-[clamp(0.68rem,1.4vw,0.75rem)] leading-[1.9] font-bold text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]`}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 /** Boîte de dialogue système : l'avertissement qui compte. */
 export function Notice({
   title = "SYSTEM_NOTICE.DLG",
@@ -210,42 +229,65 @@ export function Notice({
    Coque
    ============================================================ */
 
-export type LegalSectionY2K = {
+export type DocSection = {
   id: string;
   num: string;
   /** Nom de fichier affiché dans l'arborescence et sur le scotch. */
   file: string;
   title: string;
   content: React.ReactNode;
+  /** Illustration facultative, encadrée façon vignette plastique. */
+  image?: { src: string; alt?: string };
 };
 
-/* Onglets de navigation rapide entre les pages légales. */
-const TABS = [
+export type DocTab = { href: string; icon: string; label: string };
+
+/** LEGAL_CENTER.EXE — les quatre documents juridiques. */
+export const LEGAL_TABS: DocTab[] = [
   { href: "/cgv", icon: "📜", label: "CGV" },
   { href: "/cookies", icon: "📄", label: "COOKIES" },
   { href: "/mentions-legales", icon: "💬", label: "MENTIONS LÉGALES" },
   { href: "/confidentialite", icon: "🔒", label: "CONFIDENTIALITÉ" },
 ];
 
-export function LegalCenter({
+/** AIDE_CENTER.EXE — les pages pratiques. */
+export const HELP_TABS: DocTab[] = [
+  { href: "/livraison", icon: "📦", label: "LIVRAISON" },
+  { href: "/retours", icon: "↩️", label: "RETOURS" },
+  { href: "/faq", icon: "❓", label: "FAQ" },
+];
+
+export function DocCenter({
   activeHref,
+  appName = "LEGAL_CENTER.EXE",
+  tabs = LEGAL_TABS,
   icon,
   title,
   subtitle,
   folder,
+  root = "LEGAL",
   date,
+  status = "lilog.shop@gmail.com — SIRET 98014870400011",
   sections,
 }: {
-  /** Onglet à afficher enfoncé — doit correspondre à une entrée de TABS. */
+  /** Onglet à afficher enfoncé — doit correspondre à une entrée de `tabs`. */
   activeHref: string;
+  /** Nom de l'application affiché dans la barre de titre. */
+  appName?: string;
+  /** Barre d'onglets : LEGAL_TABS par défaut. */
+  tabs?: DocTab[];
   /** Pictogramme du document (badge de l'en-tête). */
   icon: string;
   title: string;
   subtitle: string;
-  /** Dossier affiché dans le chemin C:\LILOG\LEGAL\…\ */
+  /** Dossier affiché dans le chemin C:\LILOG\…\…\ */
   folder: string;
+  /** Racine du chemin — LEGAL par défaut, AIDE pour les pages pratiques. */
+  root?: string;
   date: string;
-  sections: LegalSectionY2K[];
+  /** Texte de gauche de la barre de statut. */
+  status?: string;
+  sections: DocSection[];
 }) {
   const [active, setActive] = useState(sections[0]?.id ?? "");
   const [treeOpen, setTreeOpen] = useState(false);
@@ -282,14 +324,14 @@ export function LegalCenter({
 
   return (
     <PageShell>
-      <main className="lilcgv-main relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(48px,8vw,100px)]">
+      <main className="lildoc-main relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(48px,8vw,100px)]">
         <style>{CGV_CSS}</style>
 
         {/* Décor photo, comme /contact et le panier : calé sur le viewport
             (et non sur la hauteur du document) pour rester net. */}
         <span
           aria-hidden
-          className="lilcgv-noprint pointer-events-none fixed inset-0 z-0"
+          className="lildoc-noprint pointer-events-none fixed inset-0 z-0"
           style={{
             backgroundImage: "url('/leo.jpeg')",
             backgroundSize: "cover",
@@ -297,16 +339,16 @@ export function LegalCenter({
             backgroundRepeat: "no-repeat",
           }}
         />
-        <span aria-hidden className="lilcgv-noprint pointer-events-none fixed inset-0 z-0 bg-black/25" />
+        <span aria-hidden className="lildoc-noprint pointer-events-none fixed inset-0 z-0 bg-black/25" />
 
         {/* Le conteneur relatif porte les pastilles : elles peuvent ainsi
             déborder de la fenêtre, qui elle reste rognée. */}
         <div className="relative z-[1] mx-auto max-w-[1180px]">
 
           {/* ---- Pastilles décoratives (mêmes bijoux que /contact) ---- */}
-          <span aria-hidden className="lilcgv-noprint pointer-events-none absolute inset-0 z-20">
+          <span aria-hidden className="lildoc-noprint pointer-events-none absolute inset-0 z-20">
             <span
-              className="lilcgv-sticker absolute h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)] -left-[10px] -top-[18px]"
+              className="lildoc-sticker absolute h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)] -left-[10px] -top-[18px]"
               style={{ ["--r" as string]: "-16deg" }}
             >
               <ChromeStar uid="lc-star-a" />
@@ -314,19 +356,19 @@ export function LegalCenter({
             {/* Volontairement calée sur le flanc gauche, sous les onglets :
                 elle ne doit jamais recouvrir les boutons de fenêtre. */}
             <span
-              className="lilcgv-sticker lilcgv-s2 absolute h-[clamp(26px,3.6vw,42px)] w-[clamp(26px,3.6vw,42px)] -left-[16px] top-[70px]"
+              className="lildoc-sticker lildoc-s2 absolute h-[clamp(26px,3.6vw,42px)] w-[clamp(26px,3.6vw,42px)] -left-[16px] top-[70px]"
               style={{ ["--r" as string]: "12deg" }}
             >
               <GemSticker uid="lc-star-b" shape="star" hue={["#FFB3D6", "#F0509A", "#B7175C"]} />
             </span>
             <span
-              className="lilcgv-sticker lilcgv-s3 absolute h-[clamp(30px,4.2vw,50px)] w-[clamp(30px,4.2vw,50px)] -bottom-[16px] -left-[6px]"
+              className="lildoc-sticker lildoc-s3 absolute h-[clamp(30px,4.2vw,50px)] w-[clamp(30px,4.2vw,50px)] -bottom-[16px] -left-[6px]"
               style={{ ["--r" as string]: "10deg" }}
             >
               <HoloSmiley uid="lc-smiley" />
             </span>
             <span
-              className="lilcgv-sticker lilcgv-s4 absolute h-[clamp(26px,3.6vw,42px)] w-[clamp(26px,3.6vw,42px)] -right-[6px] -bottom-[18px]"
+              className="lildoc-sticker lildoc-s4 absolute h-[clamp(26px,3.6vw,42px)] w-[clamp(26px,3.6vw,42px)] -right-[6px] -bottom-[18px]"
               style={{ ["--r" as string]: "-12deg" }}
             >
               <GemSticker uid="lc-heart" shape="heart" hue={["#FFC0DF", "#EE4B96", "#B3155A"]} />
@@ -338,7 +380,7 @@ export function LegalCenter({
               n'ouvre pas de conteneur de défilement, sans quoi le sommaire
               en `sticky` resterait figé en haut de la fenêtre. */}
           <div
-            className="lilcgv-window relative z-[1] overflow-clip rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1]"
+            className="lildoc-window relative z-[1] overflow-clip rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1]"
             style={{
               boxShadow:
                 "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), 0 14px 30px rgba(30,36,48,0.28)",
@@ -356,10 +398,10 @@ export function LegalCenter({
                 <h1
                   className={`${MONO} truncate text-[clamp(0.62rem,2.1vw,0.9rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
                 >
-                  LEGAL_CENTER.EXE
+                  {appName}
                 </h1>
               </div>
-              <div className="lilcgv-noprint flex shrink-0 items-center gap-1.5">
+              <div className="lildoc-noprint flex shrink-0 items-center gap-1.5">
                 <WindowButton label="Réduire" glyph="_" />
                 <WindowButton label="Agrandir" glyph="🗖" />
                 <WindowButton label="Fermer" glyph="✖" />
@@ -369,9 +411,9 @@ export function LegalCenter({
             {/* ---- Sous-barre d'onglets légaux ---- */}
             <nav
               aria-label="Pages légales"
-              className="lilcgv-noprint flex gap-1 overflow-x-auto border-b-2 border-[#b8b4cc] bg-[#ded9ee] px-2 pt-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="lildoc-noprint flex gap-1 overflow-x-auto border-b-2 border-[#b8b4cc] bg-[#ded9ee] px-2 pt-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
-              {TABS.map(({ href, icon: tabIcon, label }) => {
+              {tabs.map(({ href, icon: tabIcon, label }) => {
                 const on = href === activeHref;
                 return (
                   <Link
@@ -391,7 +433,7 @@ export function LegalCenter({
             </nav>
 
             {/* ---- Corps de la fenêtre : papier millimétré ---- */}
-            <div className="lilcgv-body p-[clamp(14px,3vw,32px)]" style={GRID_BG}>
+            <div className="lildoc-body p-[clamp(14px,3vw,32px)]" style={GRID_BG}>
 
               {/* ============ EN-TÊTE DU DOCUMENT ============ */}
               <header
@@ -406,7 +448,7 @@ export function LegalCenter({
                 </span>
                 <div className="min-w-[180px] flex-1">
                   <p className={`${MONO} mb-1 text-[0.55rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
-                    C:\LILOG\LEGAL\ <span style={{ color: PINK }}>★</span> DOCUMENT_OFFICIEL
+                    C:\LILOG\{root}\ <span style={{ color: PINK }}>★</span> DOCUMENT_OFFICIEL
                   </p>
                   <h2
                     className={`${LCD} text-[clamp(1.5rem,5vw,2.4rem)] leading-[1.05] tracking-[0.02em] text-[#2a1266] uppercase`}
@@ -433,7 +475,7 @@ export function LegalCenter({
                 {/* Figée au défilement dès le format deux colonnes. */}
                 <aside
                   aria-label="Sommaire"
-                  className="lilcgv-noprint lg:sticky lg:top-[96px] lg:max-h-[calc(100dvh-120px)] lg:self-start lg:overflow-y-auto lg:pr-1"
+                  className="lildoc-noprint lg:sticky lg:top-[96px] lg:max-h-[calc(100dvh-120px)] lg:self-start lg:overflow-y-auto lg:pr-1"
                 >
                   <div
                     className="overflow-hidden rounded-xl border border-[#c6c2d8] bg-white/85 backdrop-blur-[1px]"
@@ -467,7 +509,7 @@ export function LegalCenter({
 
                     <div className={`${treeOpen ? "block" : "hidden"} p-2.5 lg:block`}>
                       <p className={`${MONO} mb-2 truncate px-1 text-[0.5rem] tracking-[0.08em] text-[#8b86a3]`}>
-                        C:\LILOG\LEGAL\{folder}\
+                        C:\LILOG\{root}\{folder}\
                       </p>
                       <div className="flex flex-col gap-1.5">
                         {sections.map(({ id, file }, i) => {
@@ -526,14 +568,16 @@ export function LegalCenter({
                 {/* ---------- COLONNE DROITE : LECTEUR « NOTEPAD » ---------- */}
                 <section aria-label={title} className="min-w-0">
                   <div
-                    className="lilcgv-reader rounded-2xl border border-gray-200 bg-white p-[clamp(16px,3.4vw,32px)]"
+                    className="lildoc-reader rounded-2xl border border-gray-200 bg-white p-[clamp(16px,3.4vw,32px)]"
                     style={{ boxShadow: "inset 2px 2px 6px rgba(0,0,0,0.15)" }}
                   >
-                    {sections.map(({ id, num, file, title: t, content }, i) => (
+                    {sections.map(({ id, num, file, title: t, content, image }, i) => (
                       <article
                         key={id}
                         id={id}
-                        className={`lilcgv-section scroll-mt-[110px] ${i > 0 ? "mt-[clamp(30px,5vw,48px)]" : ""}`}
+                        className={`lildoc-section flow-root scroll-mt-[110px] ${
+                          i > 0 ? "mt-[clamp(30px,5vw,48px)]" : ""
+                        }`}
                       >
                         {/* Scotch adhésif + titre rétro */}
                         <div className="mb-3">
@@ -554,6 +598,22 @@ export function LegalCenter({
                             }}
                           />
                         </div>
+                        {/* Vignette : posée en flottant à droite dès qu'il y a
+                            la place, empilée au-dessus du texte sinon. */}
+                        {image && (
+                          <span
+                            className={`mb-3 block w-[62%] max-w-[220px] rounded-2xl border border-[#c6c2d8] bg-white p-2 sm:float-right sm:mb-2 sm:ml-5 sm:w-[clamp(120px,26%,190px)] ${PLASTIC}`}
+                          >
+                            <Image
+                              src={image.src}
+                              alt={image.alt ?? ""}
+                              width={260}
+                              height={260}
+                              sizes="(max-width: 640px) 60vw, 190px"
+                              className="h-auto w-full"
+                            />
+                          </span>
+                        )}
                         {content}
                       </article>
                     ))}
@@ -570,9 +630,9 @@ export function LegalCenter({
             </div>
 
             {/* ---- Barre de statut ---- */}
-            <div className="lilcgv-noprint flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
+            <div className="lildoc-noprint flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
               <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
-                <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com — SIRET 98014870400011
+                <span style={{ color: PINK }}>✦</span> {status}
               </span>
               <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
                 {sections.length} objet(s) — 1.44 Mo

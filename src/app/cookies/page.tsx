@@ -4,9 +4,9 @@
    la ligne, liens). Créé côté client, il garde ses enfants statiques —
    sérialisé depuis le serveur, React réclamerait une clé par enfant. */
 
-import { LegalCenter, LegalSectionY2K, P, Bullets, Tldr, Notice } from "@/components/legal-center";
+import { DocCenter, DocSection, P, Bullets, Tldr, Notice } from "@/components/doc-center";
 
-const SECTIONS: LegalSectionY2K[] = [
+const SECTIONS: DocSection[] = [
   {
     id: "definition",
     num: "01",
@@ -43,8 +43,9 @@ const SECTIONS: LegalSectionY2K[] = [
           ]}
         />
         <P>
-          <strong>Cookies analytiques</strong> (avec consentement) — Ces cookies nous permettent de mesurer l&apos;audience
-          du site et d&apos;améliorer son contenu. Ils collectent des données anonymisées sur les pages visitées et les
+          <strong>Cookies analytiques</strong>{" "}
+          (avec consentement) — Ces cookies nous permettent de mesurer l&apos;audience du site et d&apos;améliorer son
+          contenu. Ils collectent des données anonymisées sur les pages visitées et les
           parcours utilisateurs.
         </P>
         <P>
@@ -112,7 +113,7 @@ const SECTIONS: LegalSectionY2K[] = [
 
 export default function CookiesPage() {
   return (
-    <LegalCenter
+    <DocCenter
       activeHref="/cookies"
       icon="🍪"
       title="Politique de Cookies"
