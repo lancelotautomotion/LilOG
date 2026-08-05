@@ -155,23 +155,58 @@ function PolaroidCard({ p, style, mobile = false }: { p: Polaroid; style?: React
   );
 }
 
+function SocialButton({ href, label, hue, children }: { href: string; label: string; hue: string; children: React.ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      title={label}
+      className={`grid h-11 w-11 shrink-0 place-items-center rounded-full border border-black/10 transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC}`}
+      style={{ background: hue, color: "#fff" }}
+    >
+      {children}
+    </a>
+  );
+}
+
+function PinterestGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden>
+      <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.995-.285 1.203.6 2.183 1.79 2.183 2.147 0 3.802-2.269 3.802-5.554 0-2.897-2.081-4.925-5.019-4.925-3.421 0-5.428 2.567-5.428 5.222 0 1.024.395 2.128.885 2.729.098.121.112.226.083.343-.09.375-.293 1.197-.334 1.362-.053.219-.174.264-.402.159-1.499-.699-2.436-2.892-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.003 2.35-1.494 3.146 1.126.346 2.317.535 3.55.535 6.625 0 11.99-5.367 11.99-11.987C23.997 5.367 18.632.001 12.017.001Z" />
+    </svg>
+  );
+}
+
+function InstagramGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
+      <rect x="3" y="3" width="18" height="18" rx="5.5" />
+      <circle cx="12" cy="12" r="4.2" />
+      <circle cx="17.4" cy="6.6" r="1.05" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 function CameraWidget() {
   return (
     <section>
       <SectionLabel n="00" file="CANON_DIGICAM.SYS" />
       <div className="relative mx-auto flex flex-col items-center py-[clamp(14px,2.6vw,24px)]">
         {/* Mur de polaroids desktop : couvre toute la largeur de la zone.
-            Plaque + boîtier forment une colonne centrée, seule et lisible,
-            dans le canal libre entre les deux colonnes de polaroids. */}
-        <div className="relative flex w-full max-w-[960px] items-center justify-center md:min-h-[clamp(420px,54vw,600px)]">
+            Grille à 3 rangées (libre / boîtier / libre) : la plaque et les
+            boutons sociaux se centrent chacun dans leur canal vide, au-dessus
+            et en dessous du boîtier, qui reste seul et lisible au centre. */}
+        <div className="relative flex w-full max-w-[960px] flex-col items-center gap-3 md:grid md:grid-rows-[1fr_auto_1fr] md:justify-items-center md:gap-0 md:min-h-[clamp(460px,58vw,640px)]">
           <div aria-hidden className="pointer-events-none absolute inset-0 z-20 hidden md:block">
             {POLAROIDS.map((p, i) => (
               <PolaroidCard key={p.src} p={p} style={SCATTER[i]} />
             ))}
           </div>
 
-          <div className="relative z-10 flex w-[clamp(220px,26vw,300px)] flex-col items-center gap-3">
-            {/* Plaque signalétique + LED */}
+          {/* Plaque signalétique + LED — centrée dans l'espace libre au-dessus du boîtier. */}
+          <div className="relative z-10 flex w-[clamp(220px,26vw,300px)] items-center justify-center md:h-full">
             <div className="flex w-full items-center justify-between rounded-full border border-[#c6c2d8] bg-white/90 px-4 py-1.5 backdrop-blur-[1px]" style={{ boxShadow: "inset 0 1px 2px rgba(255,255,255,0.9), 0 3px 8px rgba(30,36,48,0.14)" }}>
               <span className={`${LCD} text-[0.9rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}>
                 LOUNA.RAW
@@ -181,26 +216,36 @@ function CameraWidget() {
                 <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#6b6480]`}>REC</span>
               </span>
             </div>
+          </div>
 
-            {/* ---- Boîtier plastique bombé 3D ---- */}
+          {/* ---- Boîtier plastique bombé 3D ---- */}
+          <div
+            className={`relative z-10 w-[clamp(220px,26vw,300px)] rounded-[28px] border-2 border-[#b8b4cc] bg-[linear-gradient(160deg,#f4f3fa_0%,#dcd9ea_55%,#c3bfd8_100%)] p-3 ${PLASTIC}`}
+          >
             <div
-              className={`w-full rounded-[28px] border-2 border-[#b8b4cc] bg-[linear-gradient(160deg,#f4f3fa_0%,#dcd9ea_55%,#c3bfd8_100%)] p-3 ${PLASTIC}`}
+              className="relative overflow-hidden rounded-2xl bg-white"
+              style={{ boxShadow: "inset 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(255,255,255,0.8)" }}
             >
-              <div
-                className="relative overflow-hidden rounded-2xl bg-white"
-                style={{ boxShadow: "inset 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(255,255,255,0.8)" }}
-              >
-                <Image
-                  src="/Lou.png"
-                  alt="Louna Lili Guitton, fondatrice de Lil'OG"
-                  width={1080}
-                  height={1350}
-                  sizes="(max-width: 768px) 70vw, 300px"
-                  className="h-auto w-full"
-                  priority
-                />
-              </div>
+              <Image
+                src="/Lou.png"
+                alt="Louna Lili Guitton, fondatrice de Lil'OG"
+                width={1080}
+                height={1350}
+                sizes="(max-width: 768px) 70vw, 300px"
+                className="h-auto w-full"
+                priority
+              />
             </div>
+          </div>
+
+          {/* Réseaux sociaux — centrés dans l'espace libre en dessous du boîtier. */}
+          <div className="relative z-10 flex items-center justify-center gap-4 md:h-full">
+            <SocialButton href="https://fr.pinterest.com/lounaliliguitton/" label="Pinterest de Louna" hue="linear-gradient(160deg,#ff2f5e 0%,#c8102e 100%)">
+              <PinterestGlyph />
+            </SocialButton>
+            <SocialButton href="https://www.instagram.com/lounaliliguitton/" label="Instagram de Louna" hue="linear-gradient(160deg,#f9ce34 0%,#ee2a7b 55%,#6228d7 100%)">
+              <InstagramGlyph />
+            </SocialButton>
           </div>
         </div>
 
