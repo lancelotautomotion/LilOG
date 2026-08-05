@@ -439,6 +439,26 @@ function ImpactCounters() {
    SECTION 3 — RECYCLE_BIN.EXE
    ============================================================ */
 
+/** Corbeille grillagée dessinée en SVG — un glyphe emoji n'est pas garanti
+ *  centré dans sa boîte de caractère selon la police/plateforme du lecteur ;
+ *  un viewBox local rend le centrage exact partout. */
+function RecycleBinIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 64 64" className={className} aria-hidden>
+      <defs>
+        <linearGradient id="durab-bin-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#eaf6fb" />
+          <stop offset="100%" stopColor="#8fd0e0" />
+        </linearGradient>
+      </defs>
+      <path d="M23 9 V6.5 A2.5 2.5 0 0 1 25.5 4 h13 A2.5 2.5 0 0 1 41 6.5 V9" fill="none" stroke="#3d7f92" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="9" y="9" width="46" height="6" rx="3" fill="#4a90a4" />
+      <path d="M14 17 H50 L45.5 55 A4 4 0 0 1 41.5 58 H22.5 A4 4 0 0 1 18.5 55 Z" fill="url(#durab-bin-grad)" stroke="#3d7f92" strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M21 21 L23.5 54 M28.5 21 L29.5 56 M35.5 21 L34.5 56 M43 21 L40.5 54" stroke="#3d7f92" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
+    </svg>
+  );
+}
+
 function RecycleBin() {
   return (
     <section>
@@ -463,7 +483,9 @@ function RecycleBin() {
         <div className="flex flex-col gap-5 p-4 sm:flex-row sm:items-start sm:p-6" style={GRID_BG}>
           {/* Icône : corbeille Win95 d'où sortent des vêtements étincelants */}
           <div className="relative mx-auto h-28 w-28 shrink-0 sm:mx-0" aria-hidden>
-            <span className="absolute inset-0 grid place-items-center text-[4rem]">🗑️</span>
+            <span className="absolute inset-0 grid place-items-center">
+              <RecycleBinIcon className="h-16 w-16" />
+            </span>
             <span className="durab-sticker absolute -top-1 left-2 text-2xl" style={{ ["--r" as string]: "-12deg" }}>
               👗
             </span>
