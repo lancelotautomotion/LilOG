@@ -1,89 +1,152 @@
-import { LegalShell, LegalSection } from "@/components/legal-shell";
+"use client";
 
-const sections: LegalSection[] = [
+/* Composant client : les sections sont du JSX riche (gras, retours à
+   la ligne, liens). Créé côté client, il garde ses enfants statiques —
+   sérialisé depuis le serveur, React réclamerait une clé par enfant. */
+
+import { LegalCenter, LegalSectionY2K, P, Bullets, Tldr, Notice } from "@/components/legal-center";
+
+const SECTIONS: LegalSectionY2K[] = [
   {
-    id: "responsable", num: "01", title: "Responsable du traitement",
+    id: "responsable",
+    num: "01",
+    file: "01_RESPONSABLE.INF",
+    title: "Responsable du traitement",
     content: (
       <>
-        <p>Le responsable du traitement des données personnelles collectées via le site lil-og.vercel.app est :</p>
-        <p><strong>Louna Lili Guitton — Lil'OG</strong><br />
-        26 rue Soubise, 93400 Saint-Ouen-Sur-Seine, France<br />
-        Contact : <strong>lilog.shop@gmail.com</strong></p>
+        <P>
+          Le responsable du traitement des données personnelles collectées via le site lil-og.vercel.app est :
+        </P>
+        <P>
+          <strong>Louna Lili Guitton — Lil&apos;OG</strong>
+          <br />
+          26 rue Soubise, 93400 Saint-Ouen-Sur-Seine, France
+          <br />
+          Contact : <strong>lilog.shop@gmail.com</strong>
+        </P>
       </>
     ),
   },
   {
-    id: "collecte", num: "02", title: "Données collectées",
+    id: "collecte",
+    num: "02",
+    file: "02_DONNEES_COLLECTEES.DAT",
+    title: "Données collectées",
     content: (
       <>
-        <p>Dans le cadre de son activité, Lil'OG collecte les données suivantes :</p>
-        <ul>
-          <li><strong>Données d'identification :</strong> nom, prénom, adresse e-mail, numéro de téléphone</li>
-          <li><strong>Données de livraison :</strong> adresse postale complète</li>
-          <li><strong>Données de paiement :</strong> traitées directement par Shopify Payments — Lil'OG n'a pas accès aux données bancaires</li>
-          <li><strong>Données de navigation :</strong> adresse IP, pages visitées, durée de session (via cookies analytiques avec consentement)</li>
-          <li><strong>Données de communication :</strong> échanges e-mail avec le service client</li>
-        </ul>
+        <Tldr>
+          ce qu&apos;il faut pour t&apos;envoyer ton colis et te répondre — jamais tes coordonnées bancaires, gérées par
+          Shopify Payments.
+        </Tldr>
+        <P>Dans le cadre de son activité, Lil&apos;OG collecte les données suivantes :</P>
+        <Bullets
+          items={[
+            { label: "Données d'identification :", text: "nom, prénom, adresse e-mail, numéro de téléphone" },
+            { label: "Données de livraison :", text: "adresse postale complète" },
+            {
+              label: "Données de paiement :",
+              text: "traitées directement par Shopify Payments — Lil'OG n'a pas accès aux données bancaires",
+            },
+            {
+              label: "Données de navigation :",
+              text: "adresse IP, pages visitées, durée de session (via cookies analytiques avec consentement)",
+            },
+            { label: "Données de communication :", text: "échanges e-mail avec le service client" },
+          ]}
+        />
       </>
     ),
   },
   {
-    id: "finalites", num: "03", title: "Finalités du traitement",
+    id: "finalites",
+    num: "03",
+    file: "03_FINALITES.SYS",
+    title: "Finalités du traitement",
     content: (
       <>
-        <p>Vos données sont collectées pour les finalités suivantes :</p>
-        <ul>
-          <li>Traitement et suivi des commandes (base légale : exécution du contrat)</li>
-          <li>Gestion du service client et des retours (base légale : exécution du contrat)</li>
-          <li>Envoi de la newsletter avec votre consentement (base légale : consentement)</li>
-          <li>Amélioration du site et analyse d'audience avec votre consentement (base légale : consentement)</li>
-          <li>Respect des obligations légales comptables et fiscales (base légale : obligation légale)</li>
-        </ul>
+        <P>Vos données sont collectées pour les finalités suivantes :</P>
+        <Bullets
+          items={[
+            "Traitement et suivi des commandes (base légale : exécution du contrat)",
+            "Gestion du service client et des retours (base légale : exécution du contrat)",
+            "Envoi de la newsletter avec votre consentement (base légale : consentement)",
+            "Amélioration du site et analyse d'audience avec votre consentement (base légale : consentement)",
+            "Respect des obligations légales comptables et fiscales (base légale : obligation légale)",
+          ]}
+        />
       </>
     ),
   },
   {
-    id: "conservation", num: "04", title: "Durée de conservation",
+    id: "conservation",
+    num: "04",
+    file: "04_CONSERVATION.LOG",
+    title: "Durée de conservation",
     content: (
       <>
-        <p>Vos données sont conservées pour les durées suivantes :</p>
-        <ul>
-          <li><strong>Données de commande :</strong> 10 ans (obligation comptable légale)</li>
-          <li><strong>Données client (compte) :</strong> 3 ans après le dernier achat ou contact</li>
-          <li><strong>Newsletter :</strong> jusqu'à désinscription</li>
-          <li><strong>Données de navigation :</strong> 13 mois maximum</li>
-        </ul>
+        <P>Vos données sont conservées pour les durées suivantes :</P>
+        <Bullets
+          items={[
+            { label: "Données de commande :", text: "10 ans (obligation comptable légale)" },
+            { label: "Données client (compte) :", text: "3 ans après le dernier achat ou contact" },
+            { label: "Newsletter :", text: "jusqu'à désinscription" },
+            { label: "Données de navigation :", text: "13 mois maximum" },
+          ]}
+        />
       </>
     ),
   },
   {
-    id: "partage", num: "05", title: "Partage des données",
+    id: "partage",
+    num: "05",
+    file: "05_PARTAGE.DLL",
+    title: "Partage des données",
     content: (
       <>
-        <p>Lil'OG ne vend aucune donnée personnelle. Vos données peuvent être transmises aux sous-traitants suivants, dans le strict cadre de l'exécution du service :</p>
-        <ul>
-          <li><strong>Shopify Inc.</strong> — plateforme e-commerce et paiement</li>
-          <li><strong>Colissimo / Mondial Relay</strong> — transporteurs pour la livraison</li>
-          <li><strong>Klarna / Alma</strong> — paiement fractionné (si utilisé)</li>
-        </ul>
-        <p>Ces prestataires agissent en qualité de sous-traitants et s'engagent contractuellement à assurer la confidentialité et la sécurité de vos données.</p>
+        <Tldr>aucune donnée n&apos;est vendue. Seuls les prestataires qui exécutent le service y ont accès.</Tldr>
+        <P>
+          Lil&apos;OG ne vend aucune donnée personnelle. Vos données peuvent être transmises aux sous-traitants suivants,
+          dans le strict cadre de l&apos;exécution du service :
+        </P>
+        <Bullets
+          items={[
+            { label: "Shopify Inc.", text: "— plateforme e-commerce et paiement" },
+            { label: "Colissimo / Mondial Relay", text: "— transporteurs pour la livraison" },
+            { label: "Klarna / Alma", text: "— paiement fractionné (si utilisé)" },
+          ]}
+        />
+        <P>
+          Ces prestataires agissent en qualité de sous-traitants et s&apos;engagent contractuellement à assurer la
+          confidentialité et la sécurité de vos données.
+        </P>
       </>
     ),
   },
   {
-    id: "droits", num: "06", title: "Vos droits",
+    id: "droits",
+    num: "06",
+    file: "06_TES_DROITS.EXE",
+    title: "Vos droits",
     content: (
       <>
-        <p>Conformément au RGPD et à la loi Informatique et Libertés, vous disposez des droits suivants :</p>
-        <ul>
-          <li><strong>Droit d'accès :</strong> obtenir une copie de vos données</li>
-          <li><strong>Droit de rectification :</strong> corriger des données inexactes</li>
-          <li><strong>Droit à l'effacement :</strong> demander la suppression de vos données</li>
-          <li><strong>Droit d'opposition :</strong> vous opposer à certains traitements</li>
-          <li><strong>Droit à la portabilité :</strong> recevoir vos données dans un format structuré</li>
-          <li><strong>Droit de retrait du consentement :</strong> à tout moment pour les traitements basés sur le consentement</li>
-        </ul>
-        <p>Pour exercer vos droits, contactez : <strong>lilog.shop@gmail.com</strong>. Vous pouvez également introduire une réclamation auprès de la CNIL (www.cnil.fr).</p>
+        <P>Conformément au RGPD et à la loi Informatique et Libertés, vous disposez des droits suivants :</P>
+        <Bullets
+          items={[
+            { label: "Droit d'accès :", text: "obtenir une copie de vos données" },
+            { label: "Droit de rectification :", text: "corriger des données inexactes" },
+            { label: "Droit à l'effacement :", text: "demander la suppression de vos données" },
+            { label: "Droit d'opposition :", text: "vous opposer à certains traitements" },
+            { label: "Droit à la portabilité :", text: "recevoir vos données dans un format structuré" },
+            {
+              label: "Droit de retrait du consentement :",
+              text: "à tout moment pour les traitements basés sur le consentement",
+            },
+          ]}
+        />
+        <Notice title="EXERCER_TES_DROITS.DLG">
+          Pour exercer vos droits, contactez : <strong>lilog.shop@gmail.com</strong>. Vous pouvez également introduire une
+          réclamation auprès de la CNIL (www.cnil.fr).
+        </Notice>
       </>
     ),
   },
@@ -91,12 +154,14 @@ const sections: LegalSection[] = [
 
 export default function ConfidentialitePage() {
   return (
-    <LegalShell
-      eyebrow="Légal"
+    <LegalCenter
+      activeHref="/confidentialite"
+      icon="🔒"
       title="Politique de Confidentialité"
       subtitle="Comment Lil'OG collecte, utilise et protège vos données personnelles."
+      folder="PRIVACY"
       date="14 juillet 2026"
-      sections={sections}
+      sections={SECTIONS}
     />
   );
 }
