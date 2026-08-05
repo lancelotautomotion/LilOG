@@ -14,19 +14,15 @@
    ============================================================ */
 
 import Image from "next/image";
-import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
 import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
 
 /* ---- Jetons "chunky plastic" — identiques à /contact, /durabilite, /cgv ---- */
 const PLASTIC =
   "shadow-[inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_5px_rgba(0,0,0,0.25),0_2px_3px_rgba(30,36,48,0.18)]";
-const PLASTIC_PRESS =
-  "active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.32),inset_0_-1px_0_rgba(255,255,255,0.7)] active:scale-95";
 
 const MONO = "font-[family-name:var(--mono)]";
 const LCD = "font-[family-name:var(--font-lcd)]";
-const SCRIPT = "font-[family-name:var(--font-script)]";
 
 const PINK = "#d3016d";
 
@@ -163,9 +159,10 @@ function CameraWidget() {
   return (
     <section>
       <SectionLabel n="00" file="CANON_DIGICAM.SYS" />
-      <div className="relative mx-auto flex flex-col items-center py-[clamp(20px,4vw,36px)]">
-        {/* Mur de polaroids desktop : couvre toute la largeur de la zone,
-            l'appareil reste seul et lisible au centre. */}
+      <div className="relative mx-auto flex flex-col items-center py-[clamp(14px,2.6vw,24px)]">
+        {/* Mur de polaroids desktop : couvre toute la largeur de la zone.
+            Plaque + boîtier forment une colonne centrée, seule et lisible,
+            dans le canal libre entre les deux colonnes de polaroids. */}
         <div className="relative flex w-full max-w-[960px] items-center justify-center md:min-h-[clamp(420px,54vw,600px)]">
           <div aria-hidden className="pointer-events-none absolute inset-0 z-20 hidden md:block">
             {POLAROIDS.map((p, i) => (
@@ -173,37 +170,38 @@ function CameraWidget() {
             ))}
           </div>
 
-          {/* ---- Boîtier plastique bombé 3D ---- */}
-          <div
-            className={`relative z-10 w-[clamp(220px,26vw,300px)] rounded-[28px] border-2 border-[#b8b4cc] bg-[linear-gradient(160deg,#f4f3fa_0%,#dcd9ea_55%,#c3bfd8_100%)] p-3 ${PLASTIC}`}
-          >
+          <div className="relative z-10 flex w-[clamp(220px,26vw,300px)] flex-col items-center gap-3">
+            {/* Plaque signalétique + LED */}
+            <div className="flex w-full items-center justify-between rounded-full border border-[#c6c2d8] bg-white/90 px-4 py-1.5 backdrop-blur-[1px]" style={{ boxShadow: "inset 0 1px 2px rgba(255,255,255,0.9), 0 3px 8px rgba(30,36,48,0.14)" }}>
+              <span className={`${LCD} text-[0.9rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}>
+                LOUNA.RAW
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="lj-led h-1.5 w-1.5 rounded-full bg-[#5aff8c]" aria-hidden />
+                <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#6b6480]`}>REC</span>
+              </span>
+            </div>
+
+            {/* ---- Boîtier plastique bombé 3D ---- */}
             <div
-              className="relative overflow-hidden rounded-2xl bg-white"
-              style={{ boxShadow: "inset 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(255,255,255,0.8)" }}
+              className={`w-full rounded-[28px] border-2 border-[#b8b4cc] bg-[linear-gradient(160deg,#f4f3fa_0%,#dcd9ea_55%,#c3bfd8_100%)] p-3 ${PLASTIC}`}
             >
-              <Image
-                src="/Lou.png"
-                alt="Louna Lili Guitton, fondatrice de Lil'OG"
-                width={1080}
-                height={1350}
-                sizes="(max-width: 768px) 70vw, 300px"
-                className="h-auto w-full"
-                priority
-              />
+              <div
+                className="relative overflow-hidden rounded-2xl bg-white"
+                style={{ boxShadow: "inset 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(255,255,255,0.8)" }}
+              >
+                <Image
+                  src="/Lou.png"
+                  alt="Louna Lili Guitton, fondatrice de Lil'OG"
+                  width={1080}
+                  height={1350}
+                  sizes="(max-width: 768px) 70vw, 300px"
+                  className="h-auto w-full"
+                  priority
+                />
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Plaque signalétique + LED — hors de la zone de dispersion des
-            polaroids, jamais recouverte. */}
-        <div className="relative z-20 mt-3 flex w-[clamp(220px,26vw,300px)] items-center justify-between rounded-full border border-[#c6c2d8] bg-white/90 px-4 py-1.5 backdrop-blur-[1px]" style={{ boxShadow: "inset 0 1px 2px rgba(255,255,255,0.9), 0 3px 8px rgba(30,36,48,0.14)" }}>
-          <span className={`${LCD} text-[0.9rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}>
-            LOUNA.RAW
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="lj-led h-1.5 w-1.5 rounded-full bg-[#5aff8c]" aria-hidden />
-            <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#6b6480]`}>REC</span>
-          </span>
         </div>
 
         {/* Bande mobile : les mêmes polaroids en scroll horizontal. */}
@@ -402,55 +400,6 @@ function SystemLogs() {
 }
 
 /* ============================================================
-   CONCLUSION — SUCCESSFULLY_LOADED.SYS
-   ============================================================ */
-
-function Manifesto() {
-  return (
-    <section>
-      <SectionLabel n="SYS" file="SUCCESSFULLY_LOADED.SYS" />
-      <div
-        className="overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#eeecf6]"
-        style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.14), 0 10px 24px rgba(30,36,48,0.22)" }}
-      >
-        <div className="flex items-center justify-between gap-2 px-4 py-2.5" style={{ background: VIOLET_BAR }}>
-          <span className={`${MONO} text-[0.62rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}>
-            ✔ SUCCESSFULLY_LOADED.SYS
-          </span>
-          <div className="flex shrink-0 items-center gap-1.5">
-            <WindowButton label="Réduire" glyph="_" />
-            <WindowButton label="Agrandir" glyph="🗖" />
-            <WindowButton label="Fermer" glyph="✖" />
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center gap-5 px-[clamp(18px,4vw,48px)] py-[clamp(28px,5vw,52px)] text-center" style={GRID_BG}>
-          <p className={`${MONO} text-[0.6rem] leading-relaxed text-emerald-700`}>
-            &gt; CHARGEMENT DU MANIFESTE... OK
-            <br />
-            &gt; STATUT : PRÊT.
-          </p>
-
-          <p className={`${SCRIPT} max-w-[26ch] text-[clamp(1.8rem,5.4vw,3rem)] leading-[1.15]`} style={{ color: "#3b1d8f" }}>
-            Style et seconde main ne s&apos;opposent pas.
-            <br />
-            <span style={{ color: PINK }}>Une pièce à la fois.</span>
-          </p>
-
-          <Link
-            href="/dressing-machine"
-            className={`${MONO} mt-2 inline-flex items-center gap-2 rounded-full border border-black/10 px-8 py-4 text-[0.76rem] font-bold tracking-[0.06em] text-white uppercase no-underline transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
-            style={{ background: VIOLET_BAR }}
-          >
-            🛍️ DÉCOUVRIR_LA_SÉLECTION.EXE
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ============================================================
    Coque principale
    ============================================================ */
 
@@ -527,7 +476,7 @@ export function HistoireShell() {
             <div className="p-[clamp(14px,3.4vw,34px)]" style={GRID_BG}>
               {/* ---- Intro ---- */}
               <header
-                className="mb-[clamp(24px,4vw,40px)] rounded-2xl border border-[#c6c2d8] bg-white/85 p-[clamp(14px,2.6vw,24px)] text-center backdrop-blur-[1px]"
+                className="mb-[clamp(16px,2.8vw,26px)] rounded-2xl border border-[#c6c2d8] bg-white/85 p-[clamp(14px,2.6vw,24px)] text-center backdrop-blur-[1px]"
                 style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)" }}
               >
                 <p className={`${MONO} mb-1 text-[0.56rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
@@ -542,11 +491,10 @@ export function HistoireShell() {
                 </p>
               </header>
 
-              <div className="flex flex-col gap-[clamp(30px,5vw,52px)]">
+              <div className="flex flex-col gap-[clamp(18px,3.2vw,32px)]">
                 <CameraWidget />
                 <BackstagePass />
                 <SystemLogs />
-                <Manifesto />
               </div>
             </div>
 
