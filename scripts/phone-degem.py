@@ -133,6 +133,39 @@ sy, sx = slice(ry0 - 6, ry1 + 7), slice(x0 - PAD, x1 + PAD)
 blur = cv2.GaussianBlur(rgb[sy, sx], (0, 0), 1.1)
 rgb[sy, sx] = np.where(heart[sy, sx][..., None], blur, rgb[sy, sx])
 
+# ---- 3. Pictogrammes des touches hautes --------------------------------
+# Les quatre glyphes du visuel (décrocher, raccrocher et les deux touches
+# de fonction) sont illisibles — des gribouillis. On les gomme ici, des
+# icônes vectorielles propres sont reposées par-dessus dans Y2KPhone.
+# Les fenêtres de recherche sont serrées sur les glyphes SEULS : élargies,
+# elles happent le contour sombre des touches, qui doit rester intact.
+luma = rgb.mean(axis=2)
+R, G, B = rgb[:, :, 0].astype(int), rgb[:, :, 1].astype(int), rgb[:, :, 2].astype(int)
+
+
+def window(y0, y1, x0, x1):
+    m = np.zeros(alpha.shape, bool)
+    m[y0:y1, x0:x1] = True
+    return m
+
+
+GLYPHS = [
+    (window(873, 915, 270, 338), luma < 150),                      # touche fonction gauche
+    (window(933, 992, 238, 342), (G - R > 20) & (G - B > 20)),      # décrocher (vert)
+    (window(912, 962, 556, 614), luma < 150),                      # touche fonction droite
+    (window(972, 1024, 545, 655), (R - G > 40) & (R > 110)),        # raccrocher (rose)
+]
+gmask = np.zeros(alpha.shape, np.uint8)
+for win, cond in GLYPHS:
+    gmask[win & cond & (alpha > 128)] = 255
+gmask = cv2.dilate(gmask, np.ones((11, 11), np.uint8))
+print("pictos gommés :", int((gmask > 0).sum()), "px")
+
+gb = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+gfix = cv2.inpaint(gb, gmask, 10, cv2.INPAINT_TELEA)
+gfix = cv2.inpaint(gfix, cv2.dilate(gmask, np.ones((3, 3), np.uint8)), 5, cv2.INPAINT_NS)
+rgb = np.where((gmask > 0)[..., None], cv2.cvtColor(gfix, cv2.COLOR_BGR2RGB), rgb)
+
 out = np.dstack([rgb, alpha]).astype(np.uint8)
 img = Image.fromarray(out, "RGBA")
 

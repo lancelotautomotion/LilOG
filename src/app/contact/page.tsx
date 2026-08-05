@@ -676,10 +676,30 @@ export default function ContactPage() {
 
   return (
     <PageShell>
-      <main className="px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(48px,8vw,100px)]">
+      {/* Fond photo, comme le panier : leo.jpeg plein cadre avec un voile
+          sombre pour que la fenêtre Win95 garde son contraste par-dessus.
+          Le décor est posé en `fixed` plutôt qu'en fond du <main> : cadrée
+          sur toute la hauteur du document (~3600 px ici), la photo se
+          retrouverait grossie à l'extrême, donc floue. Calée sur le
+          viewport, elle reste nette et le décor ne défile pas. */}
+      <main className="relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(48px,8vw,100px)]">
+        <span
+          aria-hidden
+          className="pointer-events-none fixed inset-0 z-0"
+          style={{
+            backgroundImage: "url('/leo.jpeg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+        <span
+          aria-hidden
+          className="pointer-events-none fixed inset-0 z-0 bg-black/25"
+        />
         {/* ================= FENÊTRE WINDOWS 95 ================= */}
         <div
-          className="mx-auto max-w-[1180px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1]"
+          className="relative z-[1] mx-auto max-w-[1180px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1]"
           style={{
             boxShadow:
               "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), 0 14px 30px rgba(30,36,48,0.28)",

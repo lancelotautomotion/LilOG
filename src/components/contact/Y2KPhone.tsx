@@ -134,6 +134,127 @@ function Gems({ where }: { where: "lid" | "base" }) {
   );
 }
 
+/* ------------------------------------------------------------
+   Pictogrammes des touches hautes
+   ------------------------------------------------------------
+   Les glyphes du visuel étaient illisibles ; ils ont été gommés
+   de l'asset (scripts/phone-degem.py) et sont redessinés ici en
+   vectoriel. Les centres sont relevés sur les glyphes d'origine,
+   et l'inclinaison reprend celle du téléphone pour que les icônes
+   se posent bien à plat sur les touches.
+   ------------------------------------------------------------ */
+
+/* Combiné classique : un corps ARQUÉ terminé par deux pavillons ronds.
+   C'est la courbure qui fait lire le ☎ — un corps droit entre deux
+   boules donne un haltère, pas un téléphone. Décrocher = combiné
+   penché ; raccrocher = combiné reposé, tourné à l'opposé. */
+function Handset({ down = false }: { down?: boolean }) {
+  return (
+    <g transform={`rotate(${down ? 128 : -38} 12 12)`}>
+      <path
+        d="M15.4 3.9 C9.4 7.8 9.4 16.2 15.4 20.1"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinecap="round"
+      />
+      <circle cx="15.4" cy="3.9" r="3.3" />
+      <circle cx="15.4" cy="20.1" r="3.3" />
+    </g>
+  );
+}
+
+type KeyIcon = {
+  id: string;
+  label: string;
+  color: string;
+  left: number;
+  top: number;
+  width: number;
+  draw: React.ReactNode;
+};
+
+const KEY_ICONS: KeyIcon[] = [
+  {
+    id: "menu",
+    label: "menu",
+    color: "#3d3950",
+    left: 33.28,
+    top: 58.7,
+    width: 6.5,
+    draw: (
+      <>
+        <rect x="3.5" y="5.4" width="17" height="2.8" rx="1.4" />
+        <rect x="3.5" y="10.6" width="17" height="2.8" rx="1.4" />
+        <rect x="3.5" y="15.8" width="17" height="2.8" rx="1.4" />
+      </>
+    ),
+  },
+  {
+    id: "call",
+    label: "décrocher",
+    color: "#17a34a",
+    left: 31.03,
+    top: 62.53,
+    width: 8.8,
+    draw: <Handset />,
+  },
+  {
+    id: "contacts",
+    label: "contacts",
+    color: "#3d3950",
+    left: 70.06,
+    top: 61.07,
+    width: 6.5,
+    draw: (
+      <>
+        <circle cx="12" cy="8.2" r="4.3" />
+        <path d="M3.5 21.2c0-4.4 3.9-6.9 8.5-6.9s8.5 2.5 8.5 6.9z" />
+      </>
+    ),
+  },
+  {
+    id: "end",
+    label: "raccrocher",
+    color: "#e11d48",
+    left: 67.19,
+    top: 65.29,
+    width: 8.8,
+    draw: <Handset down />,
+  },
+];
+
+function KeyIcons() {
+  return (
+    <>
+      {KEY_ICONS.map((k) => (
+        <span
+          key={k.id}
+          aria-hidden
+          className="y2kp-icon"
+          style={{
+            left: `${k.left}%`,
+            top: `${k.top}%`,
+            width: `${k.width}%`,
+            transform: `rotate(${TILT}deg)`,
+          }}
+        >
+          {/* `color` porte la teinte : les glyphes pleins l'utilisent en
+              remplissage, le corps arqué du combiné en contour. */}
+          <svg
+            viewBox="0 0 24 24"
+            className="y2kp-icon-svg"
+            style={{ color: k.color }}
+            fill="currentColor"
+          >
+            {k.draw}
+          </svg>
+        </span>
+      ))}
+    </>
+  );
+}
+
 type Hotspot = { id: string; label: string; x: number; y: number };
 
 /** Centres des 12 touches du pavé numérique. */
@@ -386,6 +507,12 @@ const CSS = `
    donc jamais rognés : ils débordent de la silhouette par nature. */
 .y2kp-gem{position:absolute;aspect-ratio:1;
   filter:drop-shadow(0 2px 3px rgba(72,28,128,.34))}
+
+/* Pictogrammes des touches : le liseré clair sous le glyphe imite
+   l'impression en creux des légendes du clavier. */
+.y2kp-icon{position:absolute;aspect-ratio:1;
+  filter:drop-shadow(0 .6px 0 rgba(255,255,255,.6))}
+.y2kp-icon-svg{display:block;width:100%;height:100%}
 
 .y2kp-fold{position:absolute;inset:0;transform-style:preserve-3d;
   transform-origin:56.21% 53%;
@@ -733,6 +860,7 @@ export default function Y2KPhone() {
                     <img className="y2kp-clip-bottom" src={ASSET} alt="" width={813} height={1483} draggable={false} />
                     <span className="y2kp-gloss y2kp-clip-bottom" aria-hidden />
                   </div>
+                  <KeyIcons />
                   <Gems where="base" />
                 </div>
 
@@ -745,7 +873,6 @@ export default function Y2KPhone() {
                         <img className="y2kp-clip-top" src={ASSET} alt="" width={813} height={1483} draggable={false} />
                         <span className="y2kp-gloss y2kp-clip-top" aria-hidden />
                       </div>
-                      <Gems where="lid" />
                     </div>
 
                     {/* ---- Écran LCD dynamique ---- */}
@@ -805,6 +932,11 @@ export default function Y2KPhone() {
                         </span>
                       )}
                     </div>
+
+                    {/* Les bijoux du capot viennent APRÈS l'écran : posés
+                        avant, l'étoile du coin passait dessous et se
+                        retrouvait tranchée net par le bord de la lucarne. */}
+                    <Gems where="lid" />
                   </div>
 
                   {/* Dos du clapet — visible uniquement téléphone fermé. */}
