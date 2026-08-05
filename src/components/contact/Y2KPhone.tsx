@@ -174,14 +174,23 @@ type KeyIcon = {
   draw: React.ReactNode;
 };
 
+/* Chaque icône est centrée sur le centre de sa touche, pas calée sur le
+   glyphe d'origine qui, lui, était décentré. Les boîtes sont carrées :
+   `left`/`top` valent donc centre − demi-côté, le demi-côté étant
+   exprimé dans le référentiel correspondant (813 px en x, 1483 en y).
+
+   Centres mesurés sur la FACE de chaque touche (segmentée par sa
+   saturation : le plastique gris des touches est neutre, le corps du
+   téléphone est lavande) — menu (302, 892) · décrocher (291, 962)
+   contacts (585, 932) · raccrocher (590, 1001). */
 const KEY_ICONS: KeyIcon[] = [
   {
     id: "menu",
     label: "menu",
     color: "#3d3950",
-    left: 33.28,
-    top: 58.7,
-    width: 6.5,
+    left: 34.69,
+    top: 58.8,
+    width: 4.92,
     draw: (
       <>
         <rect x="3.5" y="5.4" width="17" height="2.8" rx="1.4" />
@@ -194,18 +203,18 @@ const KEY_ICONS: KeyIcon[] = [
     id: "call",
     label: "décrocher",
     color: "#17a34a",
-    left: 31.03,
-    top: 62.53,
-    width: 8.8,
+    left: 33.33,
+    top: 63.52,
+    width: 4.92,
     draw: <Handset />,
   },
   {
     id: "contacts",
     label: "contacts",
     color: "#3d3950",
-    left: 70.06,
-    top: 61.07,
-    width: 6.5,
+    left: 69.62,
+    top: 61.56,
+    width: 4.67,
     draw: (
       <>
         <circle cx="12" cy="8.2" r="4.3" />
@@ -217,9 +226,9 @@ const KEY_ICONS: KeyIcon[] = [
     id: "end",
     label: "raccrocher",
     color: "#e11d48",
-    left: 67.19,
-    top: 65.29,
-    width: 8.8,
+    left: 70.11,
+    top: 66.15,
+    width: 4.92,
     draw: <Handset down />,
   },
 ];

@@ -36,9 +36,13 @@ RHINESTONES = [
     (680, 140, 31),  # gros strass rond, capot haut-droit
     (667, 232, 29),  # strass rond, capot droit
     (752, 202, 17),  # éclat, bord droit du capot
-    (757, 250, 13),  # éclat, bord droit du capot
+    # Ces trois-là débordaient des masques d'origine et laissaient des
+    # fragments de strass flous autour de l'écran ; recentrés à la mesure.
+    (760, 233, 14),  # éclat, bord droit du capot
+    (760, 265, 15),  # éclat, bord droit du capot
     (310, 632, 27),  # petite étoile métallique, sous l'écran à gauche
     (628, 660, 29),  # petite étoile métallique, sous l'écran à droite
+    (629, 681, 23),  # sa monture, sous « Y2K BABY »
     (223, 1352, 27),  # strass rond, base
     (560, 1390, 27),  # strass carré, base
 ]
