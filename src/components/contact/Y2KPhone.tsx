@@ -28,7 +28,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { GemSticker } from "@/components/contact/stickers";
+import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 
 /* ------------------------------------------------------------
    Constantes de calage (en % de la boîte image 813 × 1483)
@@ -58,42 +58,54 @@ const MAX_LEN = 18;
    ------------------------------------------------------------
    Le visuel de référence portait des strass photoréalistes qui
    juraient avec la DA du site. Les petits (ronds facettés, étoiles
-   métalliques) ont été gommés dans l'asset lui-même ; les quatre
-   grosses gemmes roses, elles, débordent de la silhouette — les
-   effacer obligerait à reconstruire le bord du téléphone. On pose
-   donc par-dessus le sticker vectoriel de même forme, calibré pour
-   les recouvrir entièrement (~1,3× leur emprise). Ce sont les
-   mêmes pastilles que les disquettes d'INFOS_PRATIQUES.
+   métalliques) ont été gommés dans l'asset lui-même, tout comme le
+   cœur du coin bas-droit — voir scripts/phone-degem.py.
+
+   Les trois grosses gemmes roses restantes débordent de la
+   silhouette : les effacer obligerait à reconstruire le bord du
+   téléphone à chaque fois. On pose donc par-dessus le sticker
+   vectoriel de même forme, calibré pour les recouvrir entièrement
+   (~1,3× leur emprise). Ce sont les mêmes pastilles que les
+   disquettes d'INFOS_PRATIQUES, d'où le module partagé.
 
    Emprises relevées sur le visuel 813 × 1483 :
-     étoile capot   x258-371  y128-247
-     cœur capot     x694-808  y511-620
-     étoile breloque x7-126   y1133-1265
-     cœur base      x604-692  y1295-1389
+     étoile capot    x258-371  y128-247
+     cœur capot      x694-808  y511-620
+     étoile breloque x7-126    y1133-1265
    ------------------------------------------------------------ */
 
 const PINK_STAR: [string, string, string] = ["#FFB3D6", "#F0509A", "#B7175C"];
 const PINK_HEART: [string, string, string] = ["#FFC0DF", "#EE4B96", "#B3155A"];
 
-type Gem = {
+type Placement = {
   id: string;
   half: "lid" | "base";
-  shape: "star" | "heart";
-  hue: [string, string, string];
   left: number;
   top: number;
   width: number;
   rot: number;
 };
 
+type Gem = Placement &
+  (
+    | { kind: "gem"; shape: "star" | "heart"; hue: [string, string, string] }
+    /* Étoile chromée : celle des disquettes. Elle ne recouvre aucune gemme —
+       le cœur qui occupait le coin bas-droit a été retiré du visuel. */
+    | { kind: "chrome" }
+  );
+
 /* Les rotations ne sont pas estimées à l'œil mais relevées sur le visuel :
    angle des cinq pointes de chaque étoile photographiée, ramené modulo 72°
    (l'étoile SVG de référence pointe vers le haut). */
 const GEMS: Gem[] = [
-  { id: "star-lid", half: "lid", shape: "star", hue: PINK_STAR, left: 27.4, top: 7.0, width: 22.5, rot: 20.5 },
-  { id: "heart-lid", half: "lid", shape: "heart", hue: PINK_HEART, left: 82.6, top: 32.6, width: 19.6, rot: 10 },
-  { id: "star-charm", half: "base", shape: "star", hue: PINK_STAR, left: -4.0, top: 74.75, width: 24.5, rot: 11.5 },
-  { id: "heart-base", half: "base", shape: "heart", hue: PINK_HEART, left: 71.4, top: 85.8, width: 16.6, rot: 6 },
+  { id: "star-lid", half: "lid", kind: "gem", shape: "star", hue: PINK_STAR, left: 27.4, top: 7.0, width: 22.5, rot: 20.5 },
+  { id: "heart-lid", half: "lid", kind: "gem", shape: "heart", hue: PINK_HEART, left: 82.6, top: 32.6, width: 19.6, rot: 10 },
+  { id: "star-charm", half: "base", kind: "gem", shape: "star", hue: PINK_STAR, left: -4.0, top: 74.75, width: 24.5, rot: 11.5 },
+  /* Grappe chromée en bas à droite, à la place du second cœur rose : deux
+     cœurs identiques du même côté faisaient répétition. */
+  { id: "chrome-a", half: "base", kind: "chrome", left: 75.5, top: 86.4, width: 14.0, rot: 8 },
+  { id: "chrome-b", half: "base", kind: "chrome", left: 69.8, top: 91.6, width: 8.6, rot: -16 },
+  { id: "chrome-c", half: "base", kind: "chrome", left: 86.4, top: 90.2, width: 7.8, rot: 22 },
 ];
 
 function Gems({ where }: { where: "lid" | "base" }) {
@@ -111,7 +123,11 @@ function Gems({ where }: { where: "lid" | "base" }) {
             transform: `rotate(${g.rot}deg)`,
           }}
         >
-          <GemSticker uid={`y2kp-${g.id}`} shape={g.shape} hue={g.hue} />
+          {g.kind === "chrome" ? (
+            <ChromeStar uid={`y2kp-${g.id}`} />
+          ) : (
+            <GemSticker uid={`y2kp-${g.id}`} shape={g.shape} hue={g.hue} />
+          )}
         </span>
       ))}
     </>
@@ -352,13 +368,22 @@ const CSS = `
    preserve-3d imbriquée. */
 .y2kp-half,.y2kp-fold{pointer-events:none}
 .y2kp-half{position:absolute;inset:0}
-.y2kp-half img{position:absolute;inset:0;width:100%;height:100%;display:block;
+.y2kp-half img{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* La découpe le long de la charnière porte sur le VISUEL (image +
+   reflet), jamais sur la moitié entière : un clip-path rogne aussi
+   l'ombre portée et tout ce qui dépasse. L'ombre est donc posée sur
+   .y2kp-plate, qui n'est pas découpé — il prend pour source l'image
+   déjà découpée, si bien que l'ombre épouse la silhouette tout en
+   pouvant s'étendre librement au-delà. Sans cela, le dégradé se
+   coupait net sur les bords de la boîte. */
+.y2kp-plate{position:absolute;inset:0;
   filter:drop-shadow(0 18px 26px rgba(72,28,128,.26))}
 .y2kp-clip-top{clip-path:polygon(0 0,100% 0,100% 53.48%,0 46.65%)}
 .y2kp-clip-bottom{clip-path:polygon(0 46.65%,100% 53.48%,100% 100%,0 100%)}
 
-/* Bijoux vectoriels — voir STICKERS plus bas. Posés dans la moitié
-   à laquelle ils appartiennent, ils suivent donc le pliage. */
+/* Bijoux vectoriels — voir STICKERS plus bas. Hors du .y2kp-plate,
+   donc jamais rognés : ils débordent de la silhouette par nature. */
 .y2kp-gem{position:absolute;aspect-ratio:1;
   filter:drop-shadow(0 2px 3px rgba(72,28,128,.34))}
 
@@ -702,20 +727,24 @@ export default function Y2KPhone() {
             <div ref={shakeRef} className="y2kp-shake">
               <div className="y2kp-tilt">
                 {/* ---------- Socle : clavier, charnière, breloque ---------- */}
-                <div className="y2kp-half y2kp-clip-bottom">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- visuel décoratif piloté par des transforms 3D ; le wrapper de next/image casserait le pliage du clapet. */}
-                  <img src={ASSET} alt="" width={813} height={1483} draggable={false} />
-                  <span className="y2kp-gloss" aria-hidden />
+                <div className="y2kp-half">
+                  <div className="y2kp-plate">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- visuel décoratif piloté par des transforms 3D ; le wrapper de next/image casserait le pliage du clapet. */}
+                    <img className="y2kp-clip-bottom" src={ASSET} alt="" width={813} height={1483} draggable={false} />
+                    <span className="y2kp-gloss y2kp-clip-bottom" aria-hidden />
+                  </div>
                   <Gems where="base" />
                 </div>
 
                 {/* ---------- Clapet : la moitié haute qui pivote ---------- */}
                 <div className="y2kp-fold">
                   <div className="y2kp-face">
-                    <div className="y2kp-half y2kp-clip-top">
-                      {/* eslint-disable-next-line @next/next/no-img-element -- idem : même visuel, découpé au-dessus de la charnière. */}
-                      <img src={ASSET} alt="" width={813} height={1483} draggable={false} />
-                      <span className="y2kp-gloss" aria-hidden />
+                    <div className="y2kp-half">
+                      <div className="y2kp-plate">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- idem : même visuel, découpé au-dessus de la charnière. */}
+                        <img className="y2kp-clip-top" src={ASSET} alt="" width={813} height={1483} draggable={false} />
+                        <span className="y2kp-gloss y2kp-clip-top" aria-hidden />
+                      </div>
                       <Gems where="lid" />
                     </div>
 

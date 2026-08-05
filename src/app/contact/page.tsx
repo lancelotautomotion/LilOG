@@ -72,34 +72,52 @@ const SHORTCUTS = [
   },
 ];
 
+/* Le clapet occupe désormais toute la hauteur de la colonne — donc celle
+   du formulaire, puisque c'est lui qui dicte la hauteur de la rangée. Les
+   raccourcis ont leur propre bande, plus bas. */
 function HotlineColumn() {
   return (
-    <div className="flex h-full w-full flex-col items-center">
-      {/* Le clapet absorbe la hauteur restante ; `min-h-0` l'autorise à
-          se réduire sous sa taille naturelle, sans quoi il déborderait. */}
-      <div className="flex w-full min-h-0 flex-1 justify-center">
-        <Y2KPhone />
-      </div>
+    <div className="flex h-full w-full flex-col items-center justify-center">
+      <Y2KPhone />
+    </div>
+  );
+}
 
-      {/* ---- Raccourcis « icônes de bureau » ---- */}
-      <div className="mt-6 grid w-full max-w-[320px] shrink-0 grid-cols-3 gap-3">
+/* ============================================================
+   Bande de raccourcis — pleine largeur, entre le formulaire et
+   les disquettes. Icônes de bureau format « gros bouton ».
+   ============================================================ */
+function Shortcuts() {
+  return (
+    <section
+      aria-label="Raccourcis"
+      className="mt-[clamp(26px,4.5vw,44px)]"
+    >
+      <div className={`${MONO} mb-3 flex items-center gap-2 text-[0.58rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>
+        <span className="h-px flex-1 bg-[#5b2fb8]/20" />
+        🖱 RACCOURCIS
+        <span className="h-px flex-1 bg-[#5b2fb8]/20" />
+      </div>
+      {/* Grille à colonnes égales : les trois pastilles ont exactement la
+          même largeur et la même hauteur, quel que soit leur libellé. */}
+      <div className="mx-auto grid w-full max-w-[760px] grid-cols-3 gap-[clamp(8px,2vw,20px)]">
         {SHORTCUTS.map(({ icon, label, href, external }) => (
           <a
             key={label}
             href={href}
             {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-            className={`flex flex-col items-center gap-1.5 rounded-xl border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#eeecf6_48%,#d8d5e6_100%)] px-1.5 py-3 text-center no-underline transition ${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+            className={`flex flex-col items-center justify-center gap-2.5 rounded-2xl border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#eeecf6_48%,#d8d5e6_100%)] px-2 py-[clamp(16px,2.6vw,26px)] text-center no-underline transition sm:px-4 ${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
           >
-            <span className="text-[1.5rem] leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)]">
+            <span className="text-[clamp(1.7rem,4vw,2.6rem)] leading-none drop-shadow-[0_3px_3px_rgba(0,0,0,0.25)]">
               {icon}
             </span>
-            <span className={`${MONO} text-[0.47rem] leading-tight font-bold break-all text-[#262626]`}>
+            <span className={`${MONO} text-[clamp(0.5rem,1.1vw,0.72rem)] leading-tight font-bold break-all tracking-[0.02em] text-[#262626]`}>
               {label}
             </span>
           </a>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -862,8 +880,11 @@ export default function ContactPage() {
               </section>
             </div>
 
+            {/* ============ RACCOURCIS ============ */}
+            <Shortcuts />
+
             {/* ============ DISQUETTES 3.5" ============ */}
-            <div className="mt-[clamp(24px,4vw,40px)]">
+            <div className="mt-[clamp(26px,4.5vw,44px)]">
               <style>{FLOPPY_CSS}</style>
               <div className={`${MONO} mb-3 flex items-center gap-2 text-[0.58rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>
                 <span className="h-px flex-1 bg-[#5b2fb8]/20" />
