@@ -1,104 +1,557 @@
-"use client";
+/* ============================================================
+   LOUNA_JOURNAL_2000.EXE — /histoire
+   ------------------------------------------------------------
+   Toute la page vit dans une seule fenêtre applicative Y2K /
+   Windows 95, direction "chunky plastic", alignée sur /contact,
+   /durabilite et /cgv (mêmes jetons plastique, même quadrillage
+   papier millimétré, mêmes pastilles ChromeStar / GemSticker /
+   HoloSmiley).
 
-import { useState } from "react";
+   ⚠ PAREFEU : tout le style vit ici, via Tailwind + une feuille
+   locale entièrement préfixée `lj-`. Aucune classe globale de
+   globals.css n'est utilisée : les autres pages ne peuvent pas
+   être impactées.
+   ============================================================ */
+
 import Image from "next/image";
-import { Nav } from "@/components/nav";
-import { Drawer } from "@/components/drawer";
-import { Footer } from "@/components/footer";
+import Link from "next/link";
+import { PageShell } from "@/components/page-shell";
+import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
 
-export function HistoireShell() {
-  const [menu, setMenu] = useState(false);
+/* ---- Jetons "chunky plastic" — identiques à /contact, /durabilite, /cgv ---- */
+const PLASTIC =
+  "shadow-[inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_5px_rgba(0,0,0,0.25),0_2px_3px_rgba(30,36,48,0.18)]";
+const PLASTIC_PRESS =
+  "active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.32),inset_0_-1px_0_rgba(255,255,255,0.7)] active:scale-95";
 
+const MONO = "font-[family-name:var(--mono)]";
+const LCD = "font-[family-name:var(--font-lcd)]";
+const SCRIPT = "font-[family-name:var(--font-script)]";
+const HAND = "font-[family-name:var(--font-hand)]";
+
+const PINK = "#d3016d";
+
+/* Quadrillage "papier millimétré" pastel du fond de fenêtre. */
+const GRID_BG = {
+  backgroundColor: "#f0f0f5",
+  backgroundImage:
+    "linear-gradient(rgba(113,71,212,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(113,71,212,0.08) 1px, transparent 1px)",
+  backgroundSize: "22px 22px",
+};
+
+const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 55%, #a86fe8 100%)";
+
+/* ---- Feuille locale : scotch, bob, glow, blink ---- */
+const JOURNAL_CSS = `
+@keyframes ljBob {
+  0%, 100% { transform: translate3d(0,0,0) rotate(var(--r,0deg)) scale(1); }
+  50%      { transform: translate3d(0,-8%,0) rotate(calc(var(--r,0deg) + 5deg)) scale(1.05); }
+}
+.lj-sticker { animation: ljBob 6.8s ease-in-out infinite; filter: drop-shadow(0 3px 4px rgba(30,36,48,.3)); }
+
+@keyframes ljLed {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(90,255,140,0.9); }
+  50%      { opacity: 0.4; box-shadow: 0 0 2px rgba(90,255,140,0.4); }
+}
+.lj-led { animation: ljLed 2.4s ease-in-out infinite; }
+
+.lj-polaroid { transition: transform 220ms ease, box-shadow 220ms ease; }
+.lj-polaroid:hover { transform: rotate(0deg) scale(1.08) !important; box-shadow: 0 12px 26px rgba(0,0,0,0.28); z-index: 30; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lj-sticker, .lj-led { animation: none !important; }
+}
+`;
+
+/* ============================================================
+   Briques d'interface
+   ============================================================ */
+
+/** Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ ✖ ] */
+function WindowButton({ label, glyph }: { label: string; glyph: string }) {
   return (
-    <>
-      <Nav onMenu={() => setMenu(true)} forceSolid />
-      <Drawer open={menu} onClose={() => setMenu(false)} />
-      <main className="static-page">
+    <span
+      role="presentation"
+      aria-label={label}
+      title={label}
+      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.7rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
+    >
+      {glyph}
+    </span>
+  );
+}
 
-        {/* Hero : titre à gauche, fond léopard */}
-        <div className="static-hero static-hero--light static-hero--bg" style={{ backgroundImage: "url('/leo.jpeg')" }}>
-          <div className="static-hero-text">
-            <p className="static-eyebrow">Notre histoire</p>
-            <h1 className="static-title">
-              <span className="static-title-line1">
-                La mode
-                <Image
-                  src="/histoire-hero-img.png"
-                  alt=""
-                  width={220}
-                  height={150}
-                  style={{ objectFit: "contain", width: "260px", height: "auto", display: "inline-block", verticalAlign: "top", marginTop: "-0.5em" }}
-                  priority
-                />
-              </span>
-              <em style={{ display: "block", marginTop: "-0.5em" }}>autrement.</em>
-            </h1>
+/** Étiquette de module — cohérente avec /durabilite. */
+function SectionLabel({ n, file }: { n: string; file: string }) {
+  return (
+    <p className={`${MONO} mb-3 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#5b2fb8]`}>
+      <span style={{ color: PINK }}>▶</span> {n} — {file}
+    </p>
+  );
+}
+
+/** Bandelette de scotch, façon /wishlist mais en jeton local. */
+function Tape({ rotate = "-2deg", className = "" }: { rotate?: string; className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`pointer-events-none absolute z-20 h-[18px] w-[46px] border border-[rgba(90,88,80,0.28)] opacity-80 ${className}`}
+      style={{
+        transform: `translateX(-50%) rotate(${rotate})`,
+        background:
+          "repeating-linear-gradient(115deg, rgba(255,255,255,0.16) 0 2px, rgba(0,0,0,0.03) 2px 4px), linear-gradient(100deg, #cfccc2 0%, #dedad0 45%, #c4c1b7 100%)",
+        boxShadow: "0 1px 2px rgba(0,0,0,0.18), inset 0 0 3px rgba(255,255,255,0.25)",
+      }}
+    />
+  );
+}
+
+/* ============================================================
+   WIDGET APPAREIL PHOTO — Canon digicam + polaroids scotchés
+   ============================================================ */
+
+type Polaroid = { src: string; caption: string; rot: string };
+
+const POLAROIDS: Polaroid[] = [
+  { src: "/histoire/look-04.jpg", caption: "dust & desire", rot: "-7deg" },
+  { src: "/histoire/look-06.jpg", caption: "paris edit, 6×7", rot: "5deg" },
+  { src: "/histoire/look-07.jpg", caption: "roll 1, frame 9", rot: "-4deg" },
+  { src: "/histoire/look-09.jpg", caption: "test, avril", rot: "6deg" },
+];
+
+/* Coordonnées de dispersion desktop, en % du conteneur de l'appareil.
+   Volontairement modestes pour ne jamais toucher les bords arrondis
+   de la fenêtre principale (overflow-clip). */
+const SCATTER: React.CSSProperties[] = [
+  { top: "-6%", left: "-20%" },
+  { top: "2%", right: "-22%" },
+  { bottom: "-8%", left: "-16%" },
+  { bottom: "0%", right: "-18%" },
+];
+
+function PolaroidCard({ p, style, mobile = false }: { p: Polaroid; style?: React.CSSProperties; mobile?: boolean }) {
+  return (
+    <div
+      className={`lj-polaroid ${mobile ? "relative w-[108px] shrink-0" : "absolute w-[118px]"} bg-[#fafafa] p-1.5 pb-6`}
+      style={{
+        ...style,
+        transform: mobile ? `rotate(${p.rot})` : `rotate(${p.rot})`,
+        boxShadow: "0 4px 14px rgba(0,0,0,0.22)",
+        border: "1px solid #e5e7eb",
+      }}
+    >
+      <Tape rotate={p.rot} className="top-[-9px] left-1/2" />
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#e7e5f1]">
+        <Image src={p.src} alt="" fill sizes="120px" className="object-cover" />
+      </div>
+      <p className={`${HAND} mt-1 text-center text-[0.85rem] leading-none text-[#4a4560]`}>{p.caption}</p>
+    </div>
+  );
+}
+
+function CameraWidget() {
+  return (
+    <section>
+      <SectionLabel n="00" file="CANON_DIGICAM.SYS" />
+      <div className="relative mx-auto flex flex-col items-center py-[clamp(20px,4vw,36px)]">
+        {/* Scatter desktop : les polaroids flottent autour du boîtier — cantonnés
+            à la zone du portrait, jamais sur la plaque signalétique en dessous. */}
+        <div className="relative w-[clamp(220px,32vw,300px)]">
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-20 hidden md:block">
+            {POLAROIDS.map((p, i) => (
+              <PolaroidCard key={p.src} p={p} style={SCATTER[i]} />
+            ))}
           </div>
-        </div>
 
-        <div className="static-body histoire-body">
-
-          {/* Bloc 1 : texte à gauche + photo à droite */}
-          <div className="histoire-split">
-            <section className="histoire-section static-section--left">
-              <h2>De la Normandie aux plateaux</h2>
-              <p>
-                Je m'appelle Louna Lili Guitton. Je suis originaire de l'Orne — le genre d'endroit où tu apprends vite
-                que le style, c'est ce que tu construis toi-même, pas ce que tu trouves au centre commercial du coin.
-                Adolescente, la mode était ma fenêtre sur autre chose. Une façon de dire quelque chose sans parler.
-              </p>
-              <p>
-                Alors j'ai fait mes valises pour Paris. J'ai étudié la mode, j'ai appris le métier, et j'ai eu la chance
-                de travailler avec des stars, de signer des éditos pour <strong>Vogue, Elle Arabia, Vanity Fair</strong>…
-                J'ai été de l'autre côté de l'objectif aussi — photographe pour une marque de prêt-à-porter —
-                parce que la mode, c'est une image, un geste, une histoire entière.
-              </p>
-            </section>
-            <div className="histoire-lou">
+          {/* ---- Boîtier plastique bombé 3D ---- */}
+          <div
+            className={`relative z-10 rounded-[28px] border-2 border-[#b8b4cc] bg-[linear-gradient(160deg,#f4f3fa_0%,#dcd9ea_55%,#c3bfd8_100%)] p-3 ${PLASTIC}`}
+          >
+            <div
+              className="relative overflow-hidden rounded-2xl bg-white"
+              style={{ boxShadow: "inset 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(255,255,255,0.8)" }}
+            >
               <Image
                 src="/Lou.png"
-                alt="Louna Lili Guitton"
-                width={320}
-                height={420}
-                style={{ width: "320px", height: "auto", mixBlendMode: "multiply" }}
+                alt="Louna Lili Guitton, fondatrice de Lil'OG"
+                width={1080}
+                height={1350}
+                sizes="(max-width: 768px) 70vw, 300px"
+                className="h-auto w-full"
+                priority
               />
             </div>
           </div>
+        </div>
 
-          {/* Bloc 2 : texte à droite */}
-          <section className="histoire-section static-section--right histoire-section--accent">
-            <h2>Le tournant OMAJ</h2>
-            <p>
-              Avant d'embrasser pleinement le métier de styliste, j'ai passé deux ans chez <strong>OMAJ</strong> à plonger dans les coulisses d'une plateforme de seconde main — à expertiser, trier, valoriser des pièces. J'y ai vu ce qu'une plateforme peut rater : la curation, le goût, l'exigence éditoriale. Et j'y ai surtout compris ce que la seconde main<em> peut être</em> quand elle est traitée avec le même sérieux que le neuf.
-            </p>
-            <p>
-              Un terrain de jeu incroyable pour qui aime vraiment la mode. Des pièces avec une histoire.
-              Des matières qu'on ne fait plus. Des silhouettes que les années 2000 ont inventées et que personne
-              n'a voulu oublier.
-            </p>
-          </section>
+        {/* Plaque signalétique + LED — hors de la zone de dispersion des
+            polaroids, jamais recouverte. */}
+        <div className="relative z-20 mt-3 flex w-[clamp(220px,32vw,300px)] items-center justify-between rounded-full border border-[#c6c2d8] bg-white/90 px-4 py-1.5 backdrop-blur-[1px]" style={{ boxShadow: "inset 0 1px 2px rgba(255,255,255,0.9), 0 3px 8px rgba(30,36,48,0.14)" }}>
+          <span className={`${LCD} text-[0.9rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}>
+            LOUNA.RAW
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="lj-led h-1.5 w-1.5 rounded-full bg-[#5aff8c]" aria-hidden />
+            <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#6b6480]`}>REC</span>
+          </span>
+        </div>
 
-          {/* Bloc 3 : texte à gauche */}
-          <section className="histoire-section static-section--left">
-            <h2>Lil'OG : combler le vide</h2>
-            <p>
-              Je cherchais une plateforme qui proposerait une vraie <strong>sélection mode</strong> — pas des lots,
-              pas du tout-venant, mais des pièces choisies avec un œil formé. Des pièces qui ont de la gueule.
-              Qui racontent quelque chose. Qui méritent qu'on les remarque.
-            </p>
-            <p>
-              Je ne l'ai pas trouvée. Alors je l'ai créée.
-            </p>
-            <p>
-              <strong>Lil'OG, c'est la conviction que style et seconde main ne s'opposent pas.</strong> Que
-              consommer mieux ne veut pas dire renoncer à son identité. Et que nous, acteurs de la mode, avons une
-              responsabilité — et une chance unique — de montrer que c'est possible. Une pièce à la fois.
-            </p>
-          </section>
+        {/* Bande mobile : les mêmes polaroids en scroll horizontal. */}
+        <div className="mt-6 flex w-full max-w-full gap-4 overflow-x-auto px-2 pt-2 pb-3 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {POLAROIDS.map((p) => (
+            <PolaroidCard key={p.src} p={p} mobile />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
+/* ============================================================
+   BADGES PRESSE — "Backstage Pass" (texte seul, aucun visuel tiers)
+   ============================================================ */
+
+type Pass = { icon: string; label: string; hue: string };
+
+const PASSES: Pass[] = [
+  { icon: "🏷️", label: "VOGUE_EDITO.PDF", hue: "linear-gradient(135deg,#7147d4 0%,#3b1d8f 100%)" },
+  { icon: "🏷️", label: "ELLE_ARABIA.RAW", hue: "linear-gradient(135deg,#d3016d 0%,#8f0148 100%)" },
+  { icon: "🏷️", label: "VANITY_FAIR.JPG", hue: "linear-gradient(135deg,#1B48CE 0%,#0c2670 100%)" },
+];
+
+function PressPin({ icon, label, hue }: Pass) {
+  return (
+    <div
+      className={`relative flex items-center gap-3 rounded-full border border-black/15 py-2 pr-5 pl-6 ${PLASTIC}`}
+      style={{ background: hue }}
+    >
+      <span
+        aria-hidden
+        className="absolute top-1/2 -left-1.5 h-3.5 w-3.5 -translate-y-1/2 rounded-full border border-[#c6c2d8] bg-[radial-gradient(circle_at_35%_30%,#fff_0%,#cfccdc_60%,#9d99b3_100%)]"
+        style={{ boxShadow: "inset 0 1px 1px rgba(0,0,0,0.3)" }}
+      />
+      <span className="text-sm leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]">{icon}</span>
+      <span className={`${MONO} text-[0.62rem] font-bold tracking-[0.06em] whitespace-nowrap text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}>
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function BackstagePass() {
+  return (
+    <section>
+      <SectionLabel n="PRESS" file="BACKSTAGE_PASS.SYS" />
+      <div className="flex flex-wrap justify-center gap-4 rounded-2xl border border-[#c6c2d8] bg-white/70 p-[clamp(14px,2.6vw,22px)] backdrop-blur-[1px]">
+        {PASSES.map((p) => (
+          <PressPin key={p.label} {...p} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   SYSTEM_LOGS — parcours narratif en 4 cartes reliées
+   ============================================================ */
+
+type LogEntry = {
+  n: string;
+  file: string;
+  era: string;
+  paragraphs: React.ReactNode[];
+};
+
+function Hi({ children, tone = "pink" }: { children: React.ReactNode; tone?: "pink" | "blue" }) {
+  return (
+    <mark
+      className="rounded-[3px] px-1 py-0.5 font-bold text-inherit"
+      style={{ background: tone === "pink" ? "rgba(255,47,151,0.18)" : "rgba(38,163,255,0.18)" }}
+    >
+      {children}
+    </mark>
+  );
+}
+
+const LOGS: LogEntry[] = [
+  {
+    n: "01",
+    file: "DE LA NORMANDIE AUX PLATEAUX",
+    era: "L'ORNE → PARIS",
+    paragraphs: [
+      <>
+        Je m&apos;appelle Louna Lili Guitton. Je suis originaire de <Hi>l&apos;Orne</Hi> — le genre d&apos;endroit où
+        tu apprends vite que le style, c&apos;est ce que tu construis toi-même, pas ce que tu trouves au centre
+        commercial du coin. Adolescente, la mode était ma fenêtre sur autre chose. Une façon de dire quelque chose
+        sans parler.
+      </>,
+      <>
+        Alors j&apos;ai fait mes valises pour <Hi tone="blue">Paris</Hi>.
+      </>,
+    ],
+  },
+  {
+    n: "02",
+    file: "LE LOOKBOOK PRO",
+    era: "SHOOTINGS & ÉDITOS",
+    paragraphs: [
+      <>
+        J&apos;ai étudié la mode, j&apos;ai appris le métier, et j&apos;ai eu la chance de travailler avec des
+        stars, de signer des éditos pour <Hi>Vogue, Elle Arabia, Vanity Fair</Hi>… J&apos;ai été de l&apos;autre côté
+        de l&apos;objectif aussi — photographe pour une marque de prêt-à-porter — parce que la mode, c&apos;est une
+        image, un geste, une histoire entière.
+      </>,
+    ],
+  },
+  {
+    n: "03",
+    file: "LE TOURNANT OMAJ",
+    era: "OMAJ — 2 ANS",
+    paragraphs: [
+      <>
+        Avant d&apos;embrasser pleinement le métier de styliste, j&apos;ai passé deux ans chez <Hi tone="blue">OMAJ</Hi> à
+        plonger dans les coulisses d&apos;une plateforme de seconde main — à expertiser, trier, valoriser des pièces.
+        J&apos;y ai vu ce qu&apos;une plateforme peut rater : la curation, le goût, l&apos;exigence éditoriale. Et
+        j&apos;y ai surtout compris ce que la seconde main peut être quand elle est traitée avec le même sérieux que
+        le neuf.
+      </>,
+      <>
+        Un terrain de jeu incroyable pour qui aime vraiment la mode. Des pièces avec une histoire. Des matières
+        qu&apos;on ne fait plus. Des silhouettes que les années 2000 ont inventées et que personne n&apos;a voulu
+        oublier.
+      </>,
+    ],
+  },
+  {
+    n: "04",
+    file: "LIL'OG : COMBLER LE VIDE",
+    era: "LIL'OG — AUJOURD'HUI",
+    paragraphs: [
+      <>
+        Je cherchais une plateforme qui proposerait une vraie sélection mode — pas des lots, pas du tout-venant, mais
+        des pièces choisies avec un œil formé. Des pièces qui ont de la gueule. Qui racontent quelque chose. Qui
+        méritent qu&apos;on les remarque.
+      </>,
+      <>Je ne l&apos;ai pas trouvée. Alors je l&apos;ai créée.</>,
+      <>
+        <Hi>Lil&apos;OG, c&apos;est la conviction que style et seconde main ne s&apos;opposent pas.</Hi> Que consommer
+        mieux ne veut pas dire renoncer à son identité. Et que nous, acteurs de la mode, avons une responsabilité —
+        et une chance unique — de montrer que c&apos;est possible. <Hi tone="blue">Une pièce à la fois.</Hi>
+      </>,
+    ],
+  },
+];
+
+function LogCard({ log }: { log: LogEntry }) {
+  return (
+    <div
+      className="overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#eeecf6]"
+      style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.12), 0 6px 16px rgba(30,36,48,0.16)" }}
+    >
+      <div className="flex items-center justify-between gap-2 px-4 py-2.5" style={{ background: VIOLET_BAR }}>
+        <span className={`${MONO} text-[0.6rem] font-bold tracking-[0.06em] text-white/85`}>LOG_{log.n}.DAT</span>
+        <span className={`${MONO} rounded-full border border-white/40 bg-white/10 px-2 py-0.5 text-[0.5rem] font-bold tracking-[0.08em] text-white`}>
+          {log.era}
+        </span>
+      </div>
+      <div className="p-[clamp(16px,3vw,26px)]" style={GRID_BG}>
+        <h3 className={`${LCD} mb-3 text-[clamp(1.3rem,3.4vw,1.8rem)] leading-none tracking-[0.02em] text-[#2a1266] uppercase`}>
+          {log.n}. {log.file}
+        </h3>
+        <div
+          className="rounded-xl border border-gray-300 bg-white p-4"
+          style={{ boxShadow: "inset 2px 2px 6px rgba(0,0,0,0.14)" }}
+        >
+          {log.paragraphs.map((p, i) => (
+            <p key={i} className={`${MONO} text-[0.74rem] leading-[1.9] text-[#2b2b33] ${i > 0 ? "mt-3" : ""}`}>
+              {p}
+            </p>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SystemLogs() {
+  return (
+    <section>
+      <SectionLabel n="01–04" file="SYSTEM_LOGS.DIR" />
+      <div className="flex flex-col gap-0">
+        {LOGS.map((log, i) => (
+          <div key={log.n}>
+            {i > 0 && (
+              <div className="mx-auto h-7 w-0 border-l-2 border-dashed border-[#7147d4]/45" aria-hidden />
+            )}
+            <LogCard log={log} />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   CONCLUSION — SUCCESSFULLY_LOADED.SYS
+   ============================================================ */
+
+function Manifesto() {
+  return (
+    <section>
+      <SectionLabel n="SYS" file="SUCCESSFULLY_LOADED.SYS" />
+      <div
+        className="overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#eeecf6]"
+        style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.14), 0 10px 24px rgba(30,36,48,0.22)" }}
+      >
+        <div className="flex items-center justify-between gap-2 px-4 py-2.5" style={{ background: VIOLET_BAR }}>
+          <span className={`${MONO} text-[0.62rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}>
+            ✔ SUCCESSFULLY_LOADED.SYS
+          </span>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <WindowButton label="Réduire" glyph="_" />
+            <WindowButton label="Agrandir" glyph="🗖" />
+            <WindowButton label="Fermer" glyph="✖" />
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center gap-5 px-[clamp(18px,4vw,48px)] py-[clamp(28px,5vw,52px)] text-center" style={GRID_BG}>
+          <p className={`${MONO} text-[0.6rem] leading-relaxed text-emerald-700`}>
+            &gt; CHARGEMENT DU MANIFESTE... OK
+            <br />
+            &gt; STATUT : PRÊT.
+          </p>
+
+          <p className={`${SCRIPT} max-w-[26ch] text-[clamp(1.8rem,5.4vw,3rem)] leading-[1.15]`} style={{ color: "#3b1d8f" }}>
+            Style et seconde main ne s&apos;opposent pas.
+            <br />
+            <span style={{ color: PINK }}>Une pièce à la fois.</span>
+          </p>
+
+          <Link
+            href="/dressing-machine"
+            className={`${MONO} mt-2 inline-flex items-center gap-2 rounded-full border border-black/10 px-8 py-4 text-[0.76rem] font-bold tracking-[0.06em] text-white uppercase no-underline transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+            style={{ background: VIOLET_BAR }}
+          >
+            🛍️ DÉCOUVRIR_LA_SÉLECTION.EXE
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   Coque principale
+   ============================================================ */
+
+export function HistoireShell() {
+  return (
+    <PageShell>
+      <main className="relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(48px,8vw,100px)]">
+        <style>{JOURNAL_CSS}</style>
+
+        {/* Décor photo, calé sur le viewport (comme /contact, /durabilite). */}
+        <span
+          aria-hidden
+          className="pointer-events-none fixed inset-0 z-0"
+          style={{ backgroundImage: "url('/leo.jpeg')", backgroundSize: "cover", backgroundPosition: "center" }}
+        />
+        <span aria-hidden className="pointer-events-none fixed inset-0 z-0 bg-black/30" />
+
+        <div className="relative z-[1] mx-auto max-w-[1080px]">
+          {/* ---- Pastilles décoratives dans les angles ---- */}
+          <span aria-hidden className="pointer-events-none absolute inset-0 z-20">
+            <span
+              className="lj-sticker absolute -top-[18px] -left-[10px] h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)]"
+              style={{ ["--r" as string]: "-16deg" }}
+            >
+              <ChromeStar uid="lj-star-a" />
+            </span>
+            <span
+              className="lj-sticker absolute -top-[16px] -right-[10px] h-[clamp(30px,4.4vw,50px)] w-[clamp(30px,4.4vw,50px)]"
+              style={{ ["--r" as string]: "14deg", animationDelay: "-2.6s" }}
+            >
+              <HoloSmiley uid="lj-smiley-a" />
+            </span>
+            <span
+              className="lj-sticker absolute -bottom-[16px] -left-[8px] h-[clamp(28px,4vw,46px)] w-[clamp(28px,4vw,46px)]"
+              style={{ ["--r" as string]: "10deg", animationDelay: "-4.2s" }}
+            >
+              <GemSticker uid="lj-heart" shape="heart" hue={["#FFC0DF", "#EE4B96", "#B3155A"]} />
+            </span>
+            <span
+              className="lj-sticker absolute -right-[8px] -bottom-[18px] h-[clamp(28px,4vw,46px)] w-[clamp(28px,4vw,46px)]"
+              style={{ ["--r" as string]: "-12deg", animationDelay: "-1.1s" }}
+            >
+              <GemSticker uid="lj-star-b" shape="star" hue={["#CFE0FF", "#5C9BFF", "#1B48CE"]} />
+            </span>
+          </span>
+
+          {/* ================= FENÊTRE PRINCIPALE ================= */}
+          <div
+            className="relative z-[1] overflow-clip rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1]"
+            style={{
+              boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), 0 14px 30px rgba(30,36,48,0.28)",
+            }}
+          >
+            {/* ---- Barre de titre ---- */}
+            <div className="flex items-center justify-between gap-3 px-3 py-2" style={{ background: VIOLET_BAR }}>
+              <div className="flex min-w-0 items-center gap-2">
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-[4px] bg-white/90 text-[0.7rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
+                  📓
+                </span>
+                <h1
+                  className={`${MONO} truncate text-[clamp(0.66rem,2.2vw,0.95rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
+                >
+                  LOUNA_JOURNAL_2000.EXE
+                </h1>
+              </div>
+              <div className="flex shrink-0 items-center gap-1.5">
+                <WindowButton label="Réduire" glyph="_" />
+                <WindowButton label="Agrandir" glyph="🗖" />
+                <WindowButton label="Fermer" glyph="✖" />
+              </div>
+            </div>
+
+            {/* ---- Corps de la fenêtre : papier millimétré pastel ---- */}
+            <div className="p-[clamp(14px,3.4vw,34px)]" style={GRID_BG}>
+              {/* ---- Intro ---- */}
+              <header
+                className="mb-[clamp(24px,4vw,40px)] rounded-2xl border border-[#c6c2d8] bg-white/85 p-[clamp(14px,2.6vw,24px)] text-center backdrop-blur-[1px]"
+                style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)" }}
+              >
+                <p className={`${MONO} mb-1 text-[0.56rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
+                  C:\LILOG\HISTOIRE\ <span style={{ color: PINK }}>★</span> JOURNAL PERSONNEL
+                </p>
+                <h2 className={`${LCD} text-[clamp(1.9rem,6vw,3.2rem)] leading-[1.02] tracking-[0.02em] text-[#2a1266] uppercase`}>
+                  La mode autrement.
+                </h2>
+                <p className={`${MONO} mx-auto mt-2 max-w-[62ch] text-[clamp(0.68rem,1.6vw,0.78rem)] leading-relaxed text-[#4a4560]`}>
+                  De l&apos;Orne aux podiums, des plateaux de tournage à la seconde main : le journal de Louna,
+                  fondatrice de Lil&apos;OG.
+                </p>
+              </header>
+
+              <div className="flex flex-col gap-[clamp(30px,5vw,52px)]">
+                <CameraWidget />
+                <BackstagePass />
+                <SystemLogs />
+                <Manifesto />
+              </div>
+            </div>
+
+            {/* ---- Barre de statut ---- */}
+            <div className="flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
+              <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
+                <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com — SIRET 98014870400011
+              </span>
+              <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
+                4 log(s) chargé(s)
+              </span>
+            </div>
+          </div>
         </div>
       </main>
-      <Footer />
-    </>
+    </PageShell>
   );
 }
