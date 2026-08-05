@@ -27,7 +27,6 @@ const PLASTIC_PRESS =
 const MONO = "font-[family-name:var(--mono)]";
 const LCD = "font-[family-name:var(--font-lcd)]";
 const SCRIPT = "font-[family-name:var(--font-script)]";
-const HAND = "font-[family-name:var(--font-hand)]";
 
 const PINK = "#d3016d";
 
@@ -110,32 +109,44 @@ function Tape({ rotate = "-2deg", className = "" }: { rotate?: string; className
    WIDGET APPAREIL PHOTO — Canon digicam + polaroids scotchés
    ============================================================ */
 
-type Polaroid = { src: string; caption: string; rot: string };
+type Polaroid = { src: string; rot: string };
 
 const POLAROIDS: Polaroid[] = [
-  { src: "/histoire/look-04.jpg", caption: "dust & desire", rot: "-7deg" },
-  { src: "/histoire/look-06.jpg", caption: "paris edit, 6×7", rot: "5deg" },
-  { src: "/histoire/look-07.jpg", caption: "roll 1, frame 9", rot: "-4deg" },
-  { src: "/histoire/look-09.jpg", caption: "test, avril", rot: "6deg" },
+  { src: "/histoire/look-04.jpg", rot: "-7deg" },
+  { src: "/histoire/look-06.jpg", rot: "5deg" },
+  { src: "/histoire/look-07.jpg", rot: "-4deg" },
+  { src: "/histoire/look-09.jpg", rot: "6deg" },
+  { src: "/histoire/look-11.jpg", rot: "-6deg" },
+  { src: "/histoire/look-12.jpg", rot: "8deg" },
+  { src: "/histoire/look-13.jpg", rot: "-5deg" },
+  { src: "/histoire/look-14.jpeg", rot: "4deg" },
+  { src: "/histoire/look-15.jpeg", rot: "-7deg" },
+  { src: "/histoire/look-16.jpeg", rot: "6deg" },
 ];
 
-/* Coordonnées de dispersion desktop, en % du conteneur de l'appareil.
-   Volontairement modestes pour ne jamais toucher les bords arrondis
-   de la fenêtre principale (overflow-clip). */
+/* Coordonnées de dispersion desktop, en % du conteneur large (960px) —
+   un mur de polaroids sur toute la largeur, deux profondeurs par côté
+   pour combler l'espace jusqu'au boîtier, qui reste seul au centre. */
 const SCATTER: React.CSSProperties[] = [
-  { top: "-6%", left: "-20%" },
-  { top: "2%", right: "-22%" },
-  { bottom: "-8%", left: "-16%" },
-  { bottom: "0%", right: "-18%" },
+  { top: "-4%", left: "5%" },
+  { top: "16%", left: "-5%" },
+  { top: "35%", left: "17%" },
+  { top: "54%", left: "-3%" },
+  { top: "73%", left: "13%" },
+  { top: "-2%", right: "3%" },
+  { top: "18%", right: "-6%" },
+  { top: "37%", right: "16%" },
+  { top: "56%", right: "-4%" },
+  { top: "75%", right: "11%" },
 ];
 
 function PolaroidCard({ p, style, mobile = false }: { p: Polaroid; style?: React.CSSProperties; mobile?: boolean }) {
   return (
     <div
-      className={`lj-polaroid ${mobile ? "relative w-[108px] shrink-0" : "absolute w-[118px]"} bg-[#fafafa] p-1.5 pb-6`}
+      className={`lj-polaroid ${mobile ? "relative w-[100px] shrink-0" : "absolute w-[124px]"} bg-[#fafafa] p-1.5 pb-3`}
       style={{
         ...style,
-        transform: mobile ? `rotate(${p.rot})` : `rotate(${p.rot})`,
+        transform: `rotate(${p.rot})`,
         boxShadow: "0 4px 14px rgba(0,0,0,0.22)",
         border: "1px solid #e5e7eb",
       }}
@@ -144,7 +155,6 @@ function PolaroidCard({ p, style, mobile = false }: { p: Polaroid; style?: React
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#e7e5f1]">
         <Image src={p.src} alt="" fill sizes="120px" className="object-cover" />
       </div>
-      <p className={`${HAND} mt-1 text-center text-[0.85rem] leading-none text-[#4a4560]`}>{p.caption}</p>
     </div>
   );
 }
@@ -154,9 +164,9 @@ function CameraWidget() {
     <section>
       <SectionLabel n="00" file="CANON_DIGICAM.SYS" />
       <div className="relative mx-auto flex flex-col items-center py-[clamp(20px,4vw,36px)]">
-        {/* Scatter desktop : les polaroids flottent autour du boîtier — cantonnés
-            à la zone du portrait, jamais sur la plaque signalétique en dessous. */}
-        <div className="relative w-[clamp(220px,32vw,300px)]">
+        {/* Mur de polaroids desktop : couvre toute la largeur de la zone,
+            l'appareil reste seul et lisible au centre. */}
+        <div className="relative flex w-full max-w-[960px] items-center justify-center md:min-h-[clamp(420px,54vw,600px)]">
           <div aria-hidden className="pointer-events-none absolute inset-0 z-20 hidden md:block">
             {POLAROIDS.map((p, i) => (
               <PolaroidCard key={p.src} p={p} style={SCATTER[i]} />
@@ -165,7 +175,7 @@ function CameraWidget() {
 
           {/* ---- Boîtier plastique bombé 3D ---- */}
           <div
-            className={`relative z-10 rounded-[28px] border-2 border-[#b8b4cc] bg-[linear-gradient(160deg,#f4f3fa_0%,#dcd9ea_55%,#c3bfd8_100%)] p-3 ${PLASTIC}`}
+            className={`relative z-10 w-[clamp(220px,26vw,300px)] rounded-[28px] border-2 border-[#b8b4cc] bg-[linear-gradient(160deg,#f4f3fa_0%,#dcd9ea_55%,#c3bfd8_100%)] p-3 ${PLASTIC}`}
           >
             <div
               className="relative overflow-hidden rounded-2xl bg-white"
@@ -186,7 +196,7 @@ function CameraWidget() {
 
         {/* Plaque signalétique + LED — hors de la zone de dispersion des
             polaroids, jamais recouverte. */}
-        <div className="relative z-20 mt-3 flex w-[clamp(220px,32vw,300px)] items-center justify-between rounded-full border border-[#c6c2d8] bg-white/90 px-4 py-1.5 backdrop-blur-[1px]" style={{ boxShadow: "inset 0 1px 2px rgba(255,255,255,0.9), 0 3px 8px rgba(30,36,48,0.14)" }}>
+        <div className="relative z-20 mt-3 flex w-[clamp(220px,26vw,300px)] items-center justify-between rounded-full border border-[#c6c2d8] bg-white/90 px-4 py-1.5 backdrop-blur-[1px]" style={{ boxShadow: "inset 0 1px 2px rgba(255,255,255,0.9), 0 3px 8px rgba(30,36,48,0.14)" }}>
           <span className={`${LCD} text-[0.9rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}>
             LOUNA.RAW
           </span>
