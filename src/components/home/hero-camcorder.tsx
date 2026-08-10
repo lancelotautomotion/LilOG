@@ -45,7 +45,7 @@ const HERO_CSS = `
 /* Lignes de balayage du viseur. */
 .lhz-scan{
   background-image:repeating-linear-gradient(to bottom,rgba(0,0,0,.26) 0 1px,rgba(0,0,0,0) 1px 3px);
-  mix-blend-mode:multiply;opacity:.5
+  mix-blend-mode:multiply;opacity:.34
 }
 
 /* Défaut de piste : une bande claire descend de temps en temps. */
@@ -196,12 +196,14 @@ export function HeroCamcorder() {
         />
       </div>
 
-      {/* ---- Habillage optique : voile, balayage, défaut de piste ---- */}
-      <div aria-hidden className="absolute inset-0 bg-black/30" />
+      {/* ---- Habillage optique : voile, balayage, défaut de piste ----
+           Le voile reste léger : il ne sert qu'à décoller le texte de
+           l'image, la vidéo doit garder sa lumière. */}
+      <div aria-hidden className="absolute inset-0 bg-black/15" />
       <div
         aria-hidden
         className="absolute inset-0"
-        style={{ background: "radial-gradient(ellipse at center, transparent 42%, rgba(0,0,0,0.62) 100%)" }}
+        style={{ background: "radial-gradient(ellipse at center, transparent 52%, rgba(0,0,0,0.38) 100%)" }}
       />
       <div aria-hidden className="lhz-scan absolute inset-0" />
       <div
@@ -237,12 +239,23 @@ export function HeroCamcorder() {
       {/* ---- Texte de marque ---- */}
       <div className="relative z-30 w-full max-w-[min(92vw,1000px)] px-5 text-center">
         <h1 className={`${MONO} leading-[1.15] font-bold text-white`}>
-          <span className="block text-[clamp(0.72rem,2.2vw,1rem)] tracking-[0.28em] text-white/85 uppercase">
+          {/* Voile allégé oblige : la lisibilité tient au halo du texte
+              lui-même, pas à un fond assombri. */}
+          <span
+            className="block text-[clamp(0.72rem,2.2vw,1rem)] tracking-[0.28em] text-white uppercase"
+            style={{ textShadow: "0 2px 14px rgba(0,0,0,.85), 0 0 4px rgba(0,0,0,.6)" }}
+          >
             {t.hero.line}
           </span>
           <span
             className="mt-4 block text-[clamp(2rem,7.2vw,4.6rem)] tracking-[0.02em] uppercase"
-            style={{ color: NEON, textShadow: "0 0 12px rgba(255,94,196,.75), 0 0 38px rgba(255,94,196,.45)" }}
+            style={{
+              color: NEON,
+              /* Halo rose pour le néon, ombre sombre pour tenir aussi sur un
+                 plan clair — le voile ne fait plus le travail à sa place. */
+              textShadow:
+                "0 0 12px rgba(255,94,196,.75), 0 0 38px rgba(255,94,196,.45), 0 3px 18px rgba(0,0,0,.7)",
+            }}
           >
             <Typewriter
               text={t.hero.words}
@@ -257,7 +270,7 @@ export function HeroCamcorder() {
 
         <p
           className={`${MONO} mt-6 text-[0.58rem] tracking-[0.24em] text-[#5affa0] uppercase md:text-[0.66rem]`}
-          style={{ textShadow: "0 0 10px rgba(90,255,160,.5)" }}
+          style={{ textShadow: "0 0 10px rgba(90,255,160,.5), 0 2px 10px rgba(0,0,0,.8)" }}
         >
           ▸ LIL_OG_DESKTOP.EXE — {t.hero.avail}
         </p>
