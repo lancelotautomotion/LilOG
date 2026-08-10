@@ -130,6 +130,7 @@ export function WindowFrame({
   bodyClassName = "",
   bodyStyle,
   children,
+  clip = true,
 }: {
   title: string;
   icon?: React.ReactNode;
@@ -138,14 +139,25 @@ export function WindowFrame({
   bodyClassName?: string;
   bodyStyle?: React.CSSProperties;
   children: React.ReactNode;
+  /**
+   * `overflow-hidden` sur le cadre — nécessaire pour que la barre de titre
+   * (coins carrés) épouse les coins arrondis du cadre. Passe à `false`
+   * uniquement si un enfant a besoin d'échapper au cadrage, par exemple un
+   * panneau `sticky` : `position: sticky` ne fonctionne pas sous un ancêtre
+   * en overflow non-visible, quel qu'il soit. Dans ce cas, la barre de
+   * titre est arrondie explicitement (ci-dessous) pour garder le même
+   * rendu ; c'est alors à l'appelant d'arrondir de même le dernier bloc de
+   * son corps (`rounded-b-2xl`) pour que le bas du cadre reste net.
+   */
+  clip?: boolean;
 }) {
   return (
     <div
-      className={`overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#f0f0f5] ${HARD_SHADOW} ${className}`}
+      className={`${clip ? "overflow-hidden" : ""} rounded-2xl border-2 border-[#b8b4cc] bg-[#f0f0f5] ${HARD_SHADOW} ${className}`}
     >
       {/* Barre de titre */}
       <div
-        className="flex items-center gap-2 border-b-2 border-[#2a1370] px-2.5 py-2"
+        className={`flex items-center gap-2 border-b-2 border-[#2a1370] px-2.5 py-2 ${clip ? "" : "rounded-t-2xl"}`}
         style={{ background: bar }}
       >
         {icon && (

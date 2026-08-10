@@ -33,7 +33,6 @@ import {
   LCD,
   LeopardBackdrop,
   MONO,
-  PINK,
   PLASTIC,
   PLASTIC_FACE,
   PLASTIC_PRESS,
@@ -349,7 +348,10 @@ export function CategoryPage({
       <Nav onMenu={() => setMenu(true)} forceSolid />
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
-      <main className="relative overflow-hidden">
+      {/* Pas de overflow-hidden ici : FILTER_CONTROL.SYS a besoin d'un
+          panneau `sticky`, qui ne fonctionne sous aucun ancêtre en
+          overflow non-visible — voir la note sur `clip` de WindowFrame. */}
+      <main className="relative">
         <style>{EXPLORER_CSS}</style>
         <LeopardBackdrop />
 
@@ -357,10 +359,15 @@ export function CategoryPage({
             dessous, sinon elle mangerait sa barre de titre. */}
         <div className="relative z-[1] mx-auto w-full max-w-[1180px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(48px,8vw,96px)] sm:px-6">
           {/* ================= FENÊTRE UNIQUE ================= */}
+          {/* clip=false : FILTER_CONTROL.SYS doit rester figé au scroll
+              (position: sticky), ce qui ne fonctionne sous aucun ancêtre en
+              overflow-hidden. La barre d'état, dernier bloc du corps, reçoit
+              donc elle-même `rounded-b-2xl` pour garder le bas du cadre net. */}
           <WindowFrame
             title={`C:\\ LIL_OG \\ CATALOG \\ ${exeName(catKey, label)}`}
             icon={<Icon.folderOpen width={15} height={12} />}
             bodyStyle={{ backgroundColor: "#ffffff" }}
+            clip={false}
           >
             {/* Barre de menus */}
             <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
@@ -389,11 +396,12 @@ export function CategoryPage({
               </span>
             </div>
 
-            {/* En-tête : nom du rayon, en brutaliste, sur le corps blanc */}
-            <div className="border-b border-[#d8d5e6] px-4 pt-5 pb-4 sm:px-6">
+            {/* En-tête : nom du rayon, même typo/couleur que les titres de
+                /histoire, /durabilite et /faq (police LCD, encre #2a1266,
+                centré) plutôt qu'un style propre à cette page. */}
+            <div className="border-b border-[#d8d5e6] px-4 pt-5 pb-4 text-center sm:px-6">
               <h1
-                className={`${MONO} text-[clamp(1.6rem,5.4vw,3rem)] leading-[0.95] font-bold tracking-[-0.02em] text-[#1E2430] uppercase`}
-                style={{ filter: `drop-shadow(3px 3px 0px ${PINK})` }}
+                className={`${LCD} text-[clamp(1.9rem,6vw,3.2rem)] leading-[1.02] tracking-[0.02em] text-[#2a1266] uppercase`}
               >
                 {label}
               </h1>
@@ -404,7 +412,7 @@ export function CategoryPage({
               )}
 
               {vibe && (
-                <div className="mt-4 rounded-xl border border-[#d8d5e6] bg-[#f7f6fc] p-[clamp(12px,2.2vw,20px)]">
+                <div className="mt-4 rounded-xl border border-[#d8d5e6] bg-[#f7f6fc] p-[clamp(12px,2.2vw,20px)] text-left">
                   <p className={`${MONO} max-w-[70ch] text-[0.62rem] leading-[1.85] text-[#3b3550]`}>
                     {vibe.desc}
                   </p>
@@ -430,8 +438,12 @@ export function CategoryPage({
               <ViewToggle view={view} setView={setView} />
             </div>
 
-            {/* Corps : panneau de filtres + grille, dans le même bloc blanc */}
-            <div className="flex items-start gap-5 px-4 py-4 sm:px-6">
+            {/* Corps : panneau de filtres + grille, dans le même bloc blanc.
+                `items-start` retiré : un panneau `sticky` ne peut flotter que
+                dans la hauteur de son propre parent, qui doit donc être
+                étiré (par défaut, `items-stretch`) sur toute la hauteur de
+                la grille pour lui laisser la place de rester figé. */}
+            <div className="flex gap-5 px-4 py-4 sm:px-6">
               {/* FILTER_CONTROL.SYS — colonne collante à partir de lg, sans
                   chrome de fenêtre propre : elle vit dans ce même conteneur. */}
               <div className="hidden w-[270px] shrink-0 lg:block">
@@ -475,8 +487,10 @@ export function CategoryPage({
               </div>
             </div>
 
-            {/* Barre d'état + pagination, au pied de la fenêtre unique */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
+            {/* Barre d'état + pagination, au pied de la fenêtre unique —
+                rounded-b-2xl : clip=false oblige, c'est elle qui ferme
+                proprement le bas du cadre. */}
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
               <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
                 {filtered.length} objet(s) · {pageProducts.length} affiché(s)
               </span>
