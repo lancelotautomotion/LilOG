@@ -432,7 +432,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
         <style>{PDP_CSS}</style>
         <LeopardBackdrop />
 
-        <div className="relative z-[1] mx-auto w-full max-w-[1180px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(48px,8vw,96px)] sm:px-6">
+        <div className="relative z-[1] mx-auto w-full max-w-[1180px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(24px,4vw,48px)] sm:px-6">
           <button
             type="button"
             onClick={() => router.back()}
