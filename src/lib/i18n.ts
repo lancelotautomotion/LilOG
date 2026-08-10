@@ -20,6 +20,17 @@ export interface Dict {
   cat: Record<string, string>;
   foot: { selltous: string; tagline: string };
   hero: { kicker: string; line: string; words: string[]; shop: string; story: string; avail: string };
+  /** LIL_OG_DESKTOP.EXE — libellés propres à la page d'accueil Y2K OS. */
+  home: {
+    scroll: string;
+    slotSub: string;
+    slotCta: string;
+    slotCoin: string;
+    filesTitle: string;
+    filesSub: string;
+    filesObjects: string;
+    sysStats: string;
+  };
   drops: { eyebrow: string; title: string; shopAll: string };
   lb: { view: string; oneofone: string; newinKicker: string; ogdresses: string; shop: string };
   ed: {
@@ -67,6 +78,12 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Sell to us", tagline: "Pre-loved since the Y2K — London" },
     hero: { kicker: "Lil'OG — Vintage, Reborn", line: "We are born to",
       words: ["Shine.", "Conquer.", "Slay.", "Burn."], shop: "Shop the drop", story: "Our story", avail: "Next drop — June 3" },
+    home: {
+      scroll: "SCROLL", slotSub: "Three pieces pulled from the archive, one whole look. The machine picks — you approve.",
+      slotCta: "RUN DRESSING_MACHINE.EXE", slotCoin: "INSERT COIN — FREE PLAY",
+      filesTitle: "Rack explorer", filesSub: "Open a folder to dig through the archive.",
+      filesObjects: "objects", sysStats: "SYSTEM STATS",
+    },
     drops: { eyebrow: "This week's edit", title: "Featured Drops", shopAll: "Shop all" },
     lb: { view: "View collection", oneofone: "One of one — never restocked",
       newinKicker: "Spring Archive — Vol. 001", ogdresses: "OG's dresses", shop: "Shop" },
@@ -111,6 +128,12 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Vendez-nous", tagline: "Seconde main depuis le Y2K — Londres" },
     hero: { kicker: "Lil'OG — Vintage, Renaissance", line: "Nous sommes nés pour",
       words: ["Briller.", "Conquérir.", "Régner.", "Flamber."], shop: "Voir le drop", story: "Notre histoire", avail: "Prochain drop — 3 juin" },
+    home: {
+      scroll: "DÉFILER", slotSub: "Trois pièces tirées de l'archive, un look entier. La machine choisit — tu valides.",
+      slotCta: "LANCER LA DRESSING_MACHINE.EXE", slotCoin: "INSÉRER UN JETON — PARTIE OFFERTE",
+      filesTitle: "Explorateur de rayons", filesSub: "Ouvre un dossier pour fouiller l'archive.",
+      filesObjects: "objets", sysStats: "STATISTIQUES SYSTÈME",
+    },
     drops: { eyebrow: "La sélection de la semaine", title: "Nos derniers drops", shopAll: "Tout voir" },
     lb: { view: "Voir la collection", oneofone: "Pièce unique — jamais réassortie",
       newinKicker: "Archive Printemps — Vol. 001", ogdresses: "OG's dresses", shop: "Voir" },
@@ -155,6 +178,12 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Véndenos", tagline: "Segunda mano desde el Y2K — Londres" },
     hero: { kicker: "Lil'OG — Vintage, Renacido", line: "Nacimos para",
       words: ["Brillar.", "Conquistar.", "Reinar.", "Arder."], shop: "Ver el drop", story: "Nuestra historia", avail: "Próximo drop — 3 de junio" },
+    home: {
+      scroll: "DESLIZA", slotSub: "Tres piezas sacadas del archivo, un look entero. La máquina elige — tú apruebas.",
+      slotCta: "EJECUTAR DRESSING_MACHINE.EXE", slotCoin: "INSERTA UNA FICHA — PARTIDA GRATIS",
+      filesTitle: "Explorador de secciones", filesSub: "Abre una carpeta para rebuscar en el archivo.",
+      filesObjects: "objetos", sysStats: "ESTADÍSTICAS DEL SISTEMA",
+    },
     drops: { eyebrow: "La selección de la semana", title: "Drops destacados", shopAll: "Ver todo" },
     lb: { view: "Ver colección", oneofone: "Pieza única — nunca repuesta",
       newinKicker: "Archivo Primavera — Vol. 001", ogdresses: "OG's dresses", shop: "Comprar" },
@@ -199,6 +228,12 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Vendi a noi", tagline: "Seconda mano dal Y2K — Londra" },
     hero: { kicker: "Lil'OG — Vintage, Rinato", line: "Siamo nati per",
       words: ["Brillare.", "Conquistare.", "Regnare.", "Ardere."], shop: "Vedi il drop", story: "La nostra storia", avail: "Prossimo drop — 3 giugno" },
+    home: {
+      scroll: "SCORRI", slotSub: "Tre pezzi presi dall'archivio, un look intero. La macchina sceglie — tu approvi.",
+      slotCta: "AVVIA DRESSING_MACHINE.EXE", slotCoin: "INSERISCI UN GETTONE — PARTITA GRATIS",
+      filesTitle: "Esplora risorse", filesSub: "Apri una cartella per frugare nell'archivio.",
+      filesObjects: "oggetti", sysStats: "STATISTICHE DI SISTEMA",
+    },
     drops: { eyebrow: "La selezione della settimana", title: "Drop in evidenza", shopAll: "Vedi tutto" },
     lb: { view: "Vedi collezione", oneofone: "Pezzo unico — mai riassortito",
       newinKicker: "Archivio Primavera — Vol. 001", ogdresses: "OG's dresses", shop: "Acquista" },
@@ -243,6 +278,12 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Verkauf an uns", tagline: "Pre-loved seit dem Y2K — London" },
     hero: { kicker: "Lil'OG — Vintage, Wiedergeboren", line: "Wir sind geboren, um zu",
       words: ["Strahlen.", "Erobern.", "Herrschen.", "Brennen."], shop: "Zum Drop", story: "Unsere Geschichte", avail: "Nächster Drop — 3. Juni" },
+    home: {
+      scroll: "SCROLLEN", slotSub: "Drei Teile aus dem Archiv, ein ganzer Look. Die Maschine wählt — du bestätigst.",
+      slotCta: "DRESSING_MACHINE.EXE STARTEN", slotCoin: "MÜNZE EINWERFEN — FREISPIEL",
+      filesTitle: "Regal-Explorer", filesSub: "Öffne einen Ordner und wühle im Archiv.",
+      filesObjects: "Objekte", sysStats: "SYSTEMSTATISTIK",
+    },
     drops: { eyebrow: "Die Auswahl der Woche", title: "Aktuelle Drops", shopAll: "Alle ansehen" },
     lb: { view: "Kollektion ansehen", oneofone: "Einzelstück — nie nachbestellt",
       newinKicker: "Frühjahrs-Archiv — Vol. 001", ogdresses: "OG's dresses", shop: "Shoppen" },
@@ -287,6 +328,12 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Продать нам", tagline: "Секонд-хенд со времён Y2K — Лондон" },
     hero: { kicker: "Lil'OG — Винтаж, Возрождённый", line: "Мы рождены, чтобы",
       words: ["Сиять.", "Покорять.", "Править.", "Гореть."], shop: "Смотреть дроп", story: "Наша история", avail: "Следующий дроп — 3 июня" },
+    home: {
+      scroll: "ЛИСТАТЬ", slotSub: "Три вещи из архива — целый образ. Машина выбирает, вы одобряете.",
+      slotCta: "ЗАПУСТИТЬ DRESSING_MACHINE.EXE", slotCoin: "ВСТАВЬТЕ ЖЕТОН — ИГРА БЕСПЛАТНА",
+      filesTitle: "Проводник по разделам", filesSub: "Откройте папку и покопайтесь в архиве.",
+      filesObjects: "объектов", sysStats: "СИСТЕМНАЯ СТАТИСТИКА",
+    },
     drops: { eyebrow: "Подборка недели", title: "Актуальные дропы", shopAll: "Смотреть все" },
     lb: { view: "Смотреть коллекцию", oneofone: "Единственный экземпляр — без повтора",
       newinKicker: "Весенний архив — Vol. 001", ogdresses: "OG's dresses", shop: "Купить" },
@@ -331,6 +378,12 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "卖给我们", tagline: "自 Y2K 起的二手好物 — 伦敦" },
     hero: { kicker: "Lil'OG — 复古，重生", line: "我们生来",
       words: ["闪耀。", "征服。", "称王。", "燃烧。"], shop: "查看上新", story: "我们的故事", avail: "下次上新 — 6月3日" },
+    home: {
+      scroll: "向下滚动", slotSub: "从档案里抽三件，凑成一整套造型。机器来选，你来定。",
+      slotCta: "运行 DRESSING_MACHINE.EXE", slotCoin: "投币 — 免费游戏",
+      filesTitle: "货架资源管理器", filesSub: "打开文件夹，翻一翻档案。",
+      filesObjects: "个对象", sysStats: "系统统计",
+    },
     drops: { eyebrow: "本周精选", title: "热门上新", shopAll: "查看全部" },
     lb: { view: "查看系列", oneofone: "独一无二 — 绝不补货",
       newinKicker: "春季档案 — Vol. 001", ogdresses: "OG's dresses", shop: "选购" },
@@ -375,6 +428,12 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "買取", tagline: "Y2K以来の古着 — ロンドン" },
     hero: { kicker: "Lil'OG — ヴィンテージ、再生", line: "私たちは生まれた",
       words: ["輝くために。", "制すために。", "魅せるために。", "燃えるために。"], shop: "ドロップを見る", story: "私たちの物語", avail: "次のドロップ — 6月3日" },
+    home: {
+      scroll: "スクロール", slotSub: "アーカイブから3点、ひとつの完成された着こなしへ。選ぶのはマシン、決めるのはあなた。",
+      slotCta: "DRESSING_MACHINE.EXE を起動", slotCoin: "コインを入れる — フリープレイ",
+      filesTitle: "ラック エクスプローラー", filesSub: "フォルダを開いてアーカイブを掘る。",
+      filesObjects: "個のオブジェクト", sysStats: "システム統計",
+    },
     drops: { eyebrow: "今週のセレクト", title: "注目のドロップ", shopAll: "すべて見る" },
     lb: { view: "コレクションを見る", oneofone: "一点物 — 再入荷なし",
       newinKicker: "スプリングアーカイブ — Vol. 001", ogdresses: "OG's dresses", shop: "見る" },
@@ -419,6 +478,12 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "판매하기", tagline: "Y2K부터의 빈티지 — 런던" },
     hero: { kicker: "Lil'OG — 빈티지, 다시 태어나다", line: "우리는 태어났다",
       words: ["빛나기 위해.", "정복하기 위해.", "군림하기 위해.", "불태우기 위해."], shop: "드롭 보기", story: "우리의 이야기", avail: "다음 드롭 — 6월 3일" },
+    home: {
+      scroll: "스크롤", slotSub: "아카이브에서 세 피스, 하나의 완성된 룩. 고르는 건 머신, 정하는 건 당신.",
+      slotCta: "DRESSING_MACHINE.EXE 실행", slotCoin: "코인 투입 — 무료 플레이",
+      filesTitle: "랙 탐색기", filesSub: "폴더를 열어 아카이브를 뒤져보세요.",
+      filesObjects: "개 항목", sysStats: "시스템 통계",
+    },
     drops: { eyebrow: "이번 주 셀렉션", title: "피처드 드롭", shopAll: "전체 보기" },
     lb: { view: "컬렉션 보기", oneofone: "단 하나 — 재입고 없음",
       newinKicker: "스프링 아카이브 — Vol. 001", ogdresses: "OG's dresses", shop: "쇼핑" },
