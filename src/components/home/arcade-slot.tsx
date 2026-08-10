@@ -79,11 +79,11 @@ function Reel({ duration, offset }: { duration: string; offset: number }) {
 }
 
 /** Ampoule du fronton. */
-function Bulb({ delay }: { delay: string }) {
+function Bulb({ delay, className = "" }: { delay: string; className?: string }) {
   return (
     <span
       aria-hidden
-      className="lha-bulb h-2 w-2 shrink-0 rounded-full bg-[#fff0fa]"
+      className={`lha-bulb h-2 w-2 shrink-0 rounded-full bg-[#fff0fa] ${className}`}
       style={{ animationDelay: delay }}
     />
   );
@@ -113,18 +113,20 @@ export function ArcadeSlot() {
             className="mb-[clamp(12px,2vw,20px)] flex items-center gap-2 rounded-xl border-2 border-[#3b1d8f] px-3 py-2"
             style={{ background: "linear-gradient(90deg,#3b1d8f 0%,#7147d4 45%,#ff3fb0 100%)" }}
           >
+            {/* La 3e ampoule de chaque côté ne sort qu'à partir de sm :
+                en dessous, la place revient au nom de la borne. */}
             <span className="flex shrink-0 gap-1.5">
               <Bulb delay="0ms" />
               <Bulb delay="200ms" />
-              <Bulb delay="400ms" />
+              <Bulb delay="400ms" className="hidden sm:block" />
             </span>
             <span
-              className={`${MONO} min-w-0 flex-1 truncate text-center text-[0.58rem] font-bold tracking-[0.22em] text-white uppercase sm:text-[0.7rem]`}
+              className={`${MONO} min-w-0 flex-1 truncate text-center text-[0.46rem] font-bold tracking-[0.1em] text-white uppercase sm:text-[0.62rem] sm:tracking-[0.18em]`}
             >
-              ★ LIL&apos;OG ARCADE ★
+              ★ LIL&apos;OG DRESSING MACHINE ★
             </span>
             <span className="flex shrink-0 gap-1.5">
-              <Bulb delay="400ms" />
+              <Bulb delay="400ms" className="hidden sm:block" />
               <Bulb delay="200ms" />
               <Bulb delay="0ms" />
             </span>
