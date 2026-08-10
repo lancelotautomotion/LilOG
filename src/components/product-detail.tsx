@@ -175,7 +175,10 @@ function SystemLogs({
   }, [measure, active]);
 
   return (
-    <div className="mt-6">
+    /* `flex-1` : en grand écran, le bloc s'étire pour absorber la hauteur
+       laissée par le lecteur photo — les deux colonnes tombent d'aplomb
+       quelle que soit la taille du cadre photo, sans réglage à la main. */
+    <div className="mt-6 flex min-h-0 flex-1 flex-col">
       <div className={`${MONO} mb-2 text-[0.5rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
         ▶ SYSTEM_LOGS
       </div>
@@ -202,13 +205,18 @@ function SystemLogs({
       </div>
 
       {/* Fenêtre Notepad encastrée. Les fiches Shopify vont d'une ligne à
-          trois écrans de texte : la hauteur est donc plafonnée et le texte
-          défile dans sa fenêtre, plutôt que d'étirer la page sans fin. */}
-      <div className="relative">
+          trois écrans de texte : le texte défile dans sa fenêtre plutôt que
+          d'étirer la page sans fin.
+          Hauteur imposée, pas plafonnée : avec `max-h`, la fenêtre se
+          rétractait sur les onglets courts et le bloc sautait d'un onglet
+          à l'autre. Elle garde donc la même taille quel que soit l'onglet
+          — un cadre de fenêtre ne change pas de dimension parce qu'on
+          ouvre un autre fichier. */}
+      <div className="relative flex min-h-0 flex-1 flex-col">
         <div
           ref={bodyRef}
           onScroll={measure}
-          className={`lpi-scroll max-h-[clamp(220px,34vh,320px)] overflow-y-auto rounded-md rounded-tl-none border border-[#c6c2d8] bg-white p-3.5 ${BEVEL_IN}`}
+          className={`lpi-scroll h-[clamp(220px,38vh,300px)] overflow-y-auto rounded-md rounded-tl-none border border-[#c6c2d8] bg-white p-3.5 lg:h-auto lg:min-h-[200px] lg:flex-1 ${BEVEL_IN}`}
         >
           <div className={`${MONO} lpi-desc text-[0.64rem] leading-[1.75] text-[#3b3550]`}>{shown.body}</div>
         </div>
@@ -366,8 +374,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
               {/* LIL_OG_PHOTO_VIEWER */}
               <ProductGallery images={product.images} name={product.name} />
 
-              {/* ITEM_STATS.SYS */}
-              <div>
+              {/* ITEM_STATS.SYS — colonne en flex : c'est ce qui permet à
+                  SYSTEM_LOGS, en bas, de prendre toute la hauteur restante. */}
+              <div className="flex min-w-0 flex-col">
                 <div className={`${MONO} mb-2 text-[0.5rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
                   ▶ ITEM_STATS.SYS
                 </div>
