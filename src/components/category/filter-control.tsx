@@ -265,7 +265,19 @@ export interface FilterState {
   activeCount: number;
 }
 
-export function FilterControl({ state, onClose }: { state: FilterState; onClose?: () => void }) {
+export function FilterControl({
+  state,
+  onClose,
+  bare = false,
+}: {
+  state: FilterState;
+  onClose?: () => void;
+  /** Sans le chrome de fenêtre (barre de titre violette, bordure, ombre) —
+   * pour s'intégrer dans le conteneur unique du catalogue plutôt que d'y
+   * imbriquer une seconde fenêtre. Le tiroir mobile garde le chrome complet,
+   * lui reste un panneau autonome posé par-dessus la page. */
+  bare?: boolean;
+}) {
   const {
     products,
     globalMin,
@@ -300,8 +312,8 @@ export function FilterControl({ state, onClose }: { state: FilterState; onClose?
 
   const colors = useMemo(() => extractColors(products), [products]);
 
-  return (
-    <WindowFrame title="FILTER_CONTROL.SYS" icon="🎛️" className="w-full">
+  const body = (
+    <>
       {/* Barre d'état du panneau */}
       <div className="flex items-center justify-between gap-2 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
         <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
@@ -398,6 +410,16 @@ export function FilterControl({ state, onClose }: { state: FilterState; onClose?
           </div>
         </Section>
       )}
+    </>
+  );
+
+  if (bare) {
+    return <div className="overflow-hidden rounded-lg border border-[#d8d5e6] bg-white">{body}</div>;
+  }
+
+  return (
+    <WindowFrame title="FILTER_CONTROL.SYS" icon="🎛️" className="w-full">
+      {body}
     </WindowFrame>
   );
 }
