@@ -1,5 +1,25 @@
 "use client";
 
+/* ============================================================
+   ITEM_INSPECTOR_2000.EXE — /products/[handle]
+   ------------------------------------------------------------
+   La fiche produit vit dans une seule fenêtre applicative, comme
+   /category, /histoire et /faq : LIL_OG_PHOTO_VIEWER à gauche
+   (lecteur média + Polaroids), ITEM_STATS.SYS à droite (titre
+   brutaliste, écran LED, fiche de specs RPG, alerte stock
+   clignotante, bouton chunky 3D), puis SYSTEM_LOGS en pied de
+   fenêtre — trois fichiers système à onglets plutôt qu'une pile
+   d'accordéons plats.
+
+   RECOMMENDED_COMBO.EXE, le cross-sell, est un module séparé en
+   dessous, comme FILE_EXPLORER.SYS sur l'accueil.
+
+   ⚠ PAREFEU : Tailwind + feuille locale préfixée `lpi-`, servie
+   une seule fois pour toute la page. Aucune classe de
+   globals.css — les anciennes règles `.pdp-*` ne sont plus
+   utilisées par cette page.
+   ============================================================ */
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n-context";
@@ -10,7 +30,16 @@ import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { Icon } from "@/components/icons";
 import { ProductGallery } from "@/components/product-gallery";
-import { ProductCard } from "@/components/product-card";
+import { ProductWindow } from "@/components/category/product-window";
+import {
+  BEVEL_IN,
+  LeopardBackdrop,
+  MONO,
+  PLASTIC,
+  PLASTIC_FACE,
+  PLASTIC_PRESS,
+  WindowFrame,
+} from "@/components/y2k/kit";
 import type { Product, ProductDetail as ProductDetailType } from "@/lib/shopify/types";
 
 const INTERNAL_TAGS = new Set(["new", "one-of-one", "1-of-1"]);
@@ -48,6 +77,88 @@ function parseDescription(html: string): {
   };
 }
 
+const PDP_CSS = `
+@keyframes lpi-blink{0%,49%{opacity:1}50%,100%{opacity:.25}}
+.lpi-blink{animation:lpi-blink 1.15s step-end infinite}
+
+.lpi-desc p{margin:0 0 1.1em}
+.lpi-desc p:last-child{margin-bottom:0}
+.lpi-desc strong,.lpi-desc b{font-weight:700}
+.lpi-desc em,.lpi-desc i{font-style:italic}
+.lpi-desc ul,.lpi-desc ol{margin:0 0 1.1em;padding-left:1.3em}
+.lpi-desc li{margin-bottom:.35em}
+.lpi-desc a{text-decoration:underline;text-underline-offset:2px}
+.lpi-desc br+br{display:none}
+
+@media (prefers-reduced-motion: reduce){ .lpi-blink{animation:none} }
+`;
+
+/* ============================================================
+   ITEM_STATS.SYS — bloc RPG
+   ============================================================ */
+
+function StatCell({ icon, label, value }: { icon: string; label: string; value: string }) {
+  return (
+    <div
+      className={`flex min-w-0 flex-1 items-center gap-2 rounded-md border border-[#c6c2d8] bg-[#f7f6fc] px-2.5 py-2 ${BEVEL_IN}`}
+    >
+      <span aria-hidden className="shrink-0 text-[0.9rem] leading-none">{icon}</span>
+      <span className="min-w-0">
+        <span className={`${MONO} block truncate text-[0.46rem] font-bold tracking-[0.1em] text-[#6B7280] uppercase`}>
+          {label}
+        </span>
+        <span className={`${MONO} block truncate text-[0.62rem] font-bold text-[#1E2430] uppercase`}>{value}</span>
+      </span>
+    </div>
+  );
+}
+
+/* ============================================================
+   SYSTEM_LOGS — onglets fichiers système
+   ============================================================ */
+
+function SystemLogs({
+  tabs,
+}: {
+  tabs: { file: string; icon: string; body: React.ReactNode }[];
+}) {
+  const [active, setActive] = useState(0);
+  const shown = tabs[active] ?? tabs[0];
+
+  return (
+    <div className="border-t-2 border-[#c6c2d8]">
+      <div className={`${MONO} border-b border-[#d8d5e6] bg-[#e9e7f2] px-3 pt-2.5 text-[0.5rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase sm:px-6`}>
+        SYSTEM_LOGS
+      </div>
+      <div className="flex flex-wrap gap-1.5 border-b border-[#d8d5e6] bg-[#e9e7f2] px-3 pb-2.5 sm:px-6">
+        {tabs.map((tb, i) => (
+          <button
+            key={tb.file}
+            type="button"
+            onClick={() => setActive(i)}
+            aria-pressed={i === active}
+            className={`${MONO} flex items-center gap-1.5 rounded-t-md border border-b-0 px-2.5 py-1.5 text-[0.5rem] font-bold tracking-[0.04em] uppercase transition sm:text-[0.56rem] ${
+              i === active
+                ? "border-[#c6c2d8] bg-white text-[#1E2430]"
+                : "border-transparent bg-[#dcdaea] text-[#6B7280] hover:bg-[#eceafa]"
+            }`}
+          >
+            <span aria-hidden>{tb.icon}</span>
+            {tb.file}
+          </button>
+        ))}
+      </div>
+
+      {/* Fenêtre Notepad encastrée */}
+      <div className={`m-3 rounded-md border border-[#c6c2d8] bg-white p-4 ${BEVEL_IN} sm:m-6`}>
+        <div className={`${MONO} lpi-desc max-w-[62ch] text-[0.68rem] leading-[1.85] text-[#3b3550]`}>
+          {shown.body}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ProductDetail({ product, related }: { product: ProductDetailType; related: Product[] }) {
   const { t } = useLanguage();
   const { addItem } = useCart();
@@ -63,10 +174,11 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
 
   const sold = hasVariants ? !variant?.availableForSale : !product.available;
   const variantId = hasVariants ? (variant?.id ?? null) : product.defaultVariantId;
-  const displayTags = product.tags.filter((tg) => !INTERNAL_TAGS.has(tg.toLowerCase())).slice(0, 6);
   const discount = product.was ? Math.round((1 - product.price / product.was) * 100) : null;
 
-  const eyebrow = product.tag === "1 OF 1" ? t.pdp.unique : product.tag === "NEW" ? t.pdp.newIn : null;
+  const badge = product.tag === "1 OF 1" ? "💎 1 OF 1" : product.tag === "NEW" ? "🔥 NEW IN" : null;
+  const size = variant?.title ?? product.size ?? "UNIQUE";
+  const dept = product.collections[0] ? (t.cat[product.collections[0]] ?? product.collections[0]) : null;
 
   const add = async () => {
     if (sold || !variantId) return;
@@ -81,123 +193,254 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
     }
   };
 
+  const { sections } = product.descriptionHtml ? parseDescription(product.descriptionHtml) : { sections: [] };
+  const moodHtml = sections
+    .filter((s) => s.label !== "Info Mannequin & Fit")
+    .map((s) => s.content)
+    .join("");
+  const fitHtml = sections.find((s) => s.label === "Info Mannequin & Fit")?.content ?? "";
+
+  const logTabs = [
+    {
+      file: "DESCRIPTION_&_MOOD.TXT",
+      icon: "📂",
+      body: moodHtml ? (
+        <div dangerouslySetInnerHTML={{ __html: moodHtml }} />
+      ) : (
+        <p>Aucune description renseignée pour cette pièce.</p>
+      ),
+    },
+    {
+      file: "FIT_&_MEASUREMENTS.SYS",
+      icon: "📂",
+      body: (
+        <>
+          {fitHtml && <div dangerouslySetInnerHTML={{ __html: fitHtml }} />}
+          <p className={fitHtml ? "mt-4" : ""}>
+            <strong>{t.pdp.detailsH}</strong>
+            <br />
+            {t.pdp.detailsBody}
+          </p>
+        </>
+      ),
+    },
+    {
+      file: "SHIPPING_&_RETURNS.EXE",
+      icon: "📂",
+      body: (
+        <p>
+          <strong>{t.pdp.shippingH}</strong>
+          <br />
+          {t.pdp.shippingBody}
+        </p>
+      ),
+    },
+  ];
+
   return (
     <>
       <Nav onMenu={() => setMenu(true)} forceSolid />
       <Drawer open={menu} onClose={() => setMenu(false)} />
-      <main className="pdp">
-        <button className="pdp-back" onClick={() => router.back()}>
-          <Icon.arrowL /> {t.pdp.back}
-        </button>
 
-        <div className="pdp-win">
-          <div className="w95-bar">
-            <span className="w95-title">{product.name}</span>
-            <div className="w95-dots"><span /><span /><span /></div>
-          </div>
-        <div className="pdp-row">
-          <ProductGallery images={product.images} name={product.name} />
+      <main className="relative">
+        <style>{PDP_CSS}</style>
+        <LeopardBackdrop />
 
-          <div className="pdp-info">
-            {eyebrow && <div className="pdp-eyebrow">{eyebrow}</div>}
-            <h1 className="pdp-title">{product.name}</h1>
+        <div className="relative z-[1] mx-auto w-full max-w-[1180px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(48px,8vw,96px)] sm:px-6">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className={`${MONO} mb-4 inline-flex items-center gap-1.5 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.56rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
+          >
+            <Icon.arrowL width={13} height={13} className="[transform:scaleX(-1)]" /> {t.pdp.back}
+          </button>
 
-            <div className="pdp-price-row">
-              {product.was && <s>{product.was}€</s>}
-              <span className="pdp-price-now">{product.price}€</span>
-              {discount !== null && <span className="pdp-discount">-{discount}%</span>}
-            </div>
-
-            <div className="pdp-tags">
-              <span className="pdp-tag pdp-tag--etat">État : {product.etat ?? "Non renseigné"}</span>
-              {(product.size ?? (product.variants.length > 0 && variant?.title)) && (
-                <span className="pdp-tag pdp-tag--taille">
-                  Taille : {variant?.title ?? product.size}
+          <WindowFrame
+            title="C:\ LIL_OG \ ITEM_INSPECTOR_2000.EXE"
+            icon={<Icon.folderOpen width={15} height={12} />}
+            bodyStyle={{ backgroundColor: "#ffffff" }}
+          >
+            {/* Barre de menus */}
+            <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
+              {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
+                <span key={m} className={`${MONO} text-[0.54rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
+                  {m}
                 </span>
-              )}
-            </div>
-
-            {hasVariants && (
-              <div className="pdp-variants">
-                {product.variants.map((v) => (
-                  <button
-                    key={v.id}
-                    className={"pdp-variant" + (variant?.id === v.id ? " on" : "")}
-                    disabled={!v.availableForSale}
-                    onClick={() => setVariant(v)}
-                  >
-                    {v.title}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <div className="pdp-body">
-              <div className="pdp-add-row">
-                <button className={"pdp-add" + (added ? " added" : "")} onClick={add} disabled={sold || !variantId}>
-                  <span style={{ position: "relative", zIndex: 1 }}>
-                    {sold ? t.pdp.soldOut : added ? t.pdp.added : t.pdp.addToCart}
-                  </span>
-                </button>
-                <button
-                  className={"pdp-like" + (liked ? " on" : "")}
-                  onClick={() => toggle({ handle: product.handle, title: product.name, price: product.price, image: product.images[0], variantId })}
-                  aria-label="Ajouter aux favoris"
-                >
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                  </svg>
-                </button>
-              </div>
-              {addError && (
-                <p style={{ color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.68rem", marginTop: "8px" }}>
-                  ⚠ {addError}
-                </p>
-              )}
-
-              {product.descriptionHtml && (() => {
-                const { sections } = parseDescription(product.descriptionHtml);
-                const visible = sections.filter((s) => !s.accordion);
-                const accordions = sections.filter((s) => s.accordion);
-                return (
-                  <>
-                    {visible.map((s, i) => s.content && (
-                      <div key={i} className="pdp-desc" dangerouslySetInnerHTML={{ __html: s.content }} />
-                    ))}
-                    <div className="pdp-accordion">
-                      {accordions.map(({ label, content }) => (
-                        <details key={label} className="pdp-acc-item">
-                          <summary><span /><span>{label}</span><Icon.chevD className="chev" /></summary>
-                          <div className="pdp-acc-body pdp-desc" dangerouslySetInnerHTML={{ __html: content }} />
-                        </details>
-                      ))}
-                      <details className="pdp-acc-item">
-                        <summary><span /><span>{t.pdp.detailsH}</span><Icon.chevD className="chev" /></summary>
-                        <div className="pdp-acc-body">{t.pdp.detailsBody}</div>
-                      </details>
-                      <details className="pdp-acc-item">
-                        <summary><span /><span>{t.pdp.shippingH}</span><Icon.chevD className="chev" /></summary>
-                        <div className="pdp-acc-body">{t.pdp.shippingBody}</div>
-                      </details>
-                    </div>
-                  </>
-                );
-              })()}
-            </div>
-          </div>
-        </div>
-        </div>{/* .pdp-win */}
-
-        {related.length > 0 && (
-          <div className="pdp-cross">
-            <h3>{t.pdp.completeLook}</h3>
-            <div className="drops-grid">
-              {related.map((p, idx) => (
-                <ProductCard key={p.id} product={p} idx={idx} />
               ))}
             </div>
-          </div>
-        )}
+
+            {/* Barre d'adresse */}
+            <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-2">
+              <span className={`${MONO} shrink-0 text-[0.52rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
+                Adresse
+              </span>
+              <span
+                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.54rem] tracking-[0.04em] text-[#1E2430] ${BEVEL_IN}`}
+              >
+                <Icon.folder width={14} height={12} className="shrink-0" />
+                <span className="truncate">{`C:\\LIL_OG\\ITEMS\\${product.handle}`}</span>
+              </span>
+              <span
+                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.52rem] font-bold text-[#262626] ${PLASTIC}`}
+              >
+                [ OK ]
+              </span>
+            </div>
+
+            {/* ---- Corps : galerie + specs ---- */}
+            <div className="grid grid-cols-1 gap-6 p-4 lg:grid-cols-2 lg:gap-8 lg:p-6">
+              {/* LIL_OG_PHOTO_VIEWER */}
+              <ProductGallery images={product.images} name={product.name} />
+
+              {/* ITEM_STATS.SYS */}
+              <div>
+                <div className={`${MONO} mb-2 text-[0.5rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
+                  ▶ ITEM_STATS.SYS
+                </div>
+
+                {badge && (
+                  <span
+                    className={`${MONO} mb-2 inline-block rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.5rem] font-bold tracking-[0.06em] text-[#5b2fb8] uppercase ${PLASTIC}`}
+                  >
+                    {badge}
+                  </span>
+                )}
+
+                <h1
+                  className="font-[family-name:var(--serif)] text-[clamp(1.6rem,3.4vw,2.4rem)] leading-[1.05] font-black text-[#1E2430] uppercase"
+                  style={{ textShadow: "3px 3px 0 rgba(211,1,109,0.28)" }}
+                >
+                  {product.name}
+                </h1>
+
+                {/* Écran LED */}
+                <div className="mt-4 flex flex-wrap items-center gap-2.5">
+                  <div
+                    className={`rounded-md border-2 border-pink-500 bg-black p-2 font-mono text-2xl text-pink-500 ${BEVEL_IN}`}
+                    style={{ textShadow: "0 0 10px rgba(236,72,153,0.65)" }}
+                  >
+                    {product.price}€
+                  </div>
+                  {product.was && (
+                    <span className={`${MONO} text-[0.72rem] text-[#6B7280] line-through opacity-70`}>
+                      {product.was}€
+                    </span>
+                  )}
+                  {discount !== null && (
+                    <span
+                      className={`${MONO} rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.52rem] font-bold text-[#d3016d] uppercase ${PLASTIC}`}
+                    >
+                      -{discount}%
+                    </span>
+                  )}
+                </div>
+
+                {/* Fiche de caractéristiques RPG */}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <StatCell icon="📏" label="Taille" value={size} />
+                  <StatCell icon="💎" label="État" value={product.etat ?? "Non renseigné"} />
+                  {dept && <StatCell icon="🗂️" label="Rayon" value={dept} />}
+                </div>
+
+                {hasVariants && product.variants.length > 1 && (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {product.variants.map((v) => (
+                      <button
+                        key={v.id}
+                        type="button"
+                        disabled={!v.availableForSale}
+                        onClick={() => setVariant(v)}
+                        className={`${MONO} rounded-md border px-3 py-1.5 text-[0.58rem] font-bold uppercase transition disabled:cursor-not-allowed disabled:opacity-35 disabled:line-through ${
+                          variant?.id === v.id
+                            ? "border-[#1E2430] bg-[#1E2430] text-white"
+                            : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#262626] ${PLASTIC} ${PLASTIC_PRESS}`
+                        }`}
+                      >
+                        {v.title}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Alerte stock */}
+                {!sold && (
+                  <div
+                    className={`lpi-blink ${MONO} mt-4 inline-flex items-center gap-1.5 rounded-sm border border-amber-500 bg-amber-100 px-2.5 py-1.5 text-[0.5rem] font-bold tracking-[0.04em] text-amber-800 uppercase`}
+                  >
+                    ⚠️ WARNING : 1 SINGLE PIECE AVAILABLE
+                  </div>
+                )}
+
+                {/* Bouton chunky 3D + wishlist */}
+                <div className="mt-5 flex items-stretch gap-3">
+                  <button
+                    type="button"
+                    onClick={add}
+                    disabled={sold || !variantId}
+                    className={`${MONO} flex-1 rounded-lg border-b-4 border-[#7a0a52] px-4 py-3.5 text-[0.72rem] font-black tracking-[0.06em] text-white uppercase transition active:translate-y-1 active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${
+                      added
+                        ? "bg-gradient-to-b from-[#4fbe84] to-[#1B8A3C] border-[#0f5c26]"
+                        : "bg-gradient-to-b from-[#ff5ec4] to-[#c3128a]"
+                    }`}
+                    style={{ boxShadow: "0 5px 0 rgba(0,0,0,0.18)" }}
+                  >
+                    {sold ? "[ ✖ SOLD_OUT.SYS ]" : added ? "[ ✓ ADDED.OK ]" : "[ 🛒 ADD_TO_CART.EXE ]"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      toggle({ handle: product.handle, title: product.name, price: product.price, image: product.images[0], variantId })
+                    }
+                    aria-label="Ajouter aux favoris"
+                    aria-pressed={liked}
+                    className={`flex w-14 shrink-0 items-center justify-center rounded-lg border-b-4 transition active:translate-y-1 active:border-b-0 active:shadow-none ${
+                      liked
+                        ? "border-[#7a0a52] bg-gradient-to-b from-[#ff9ee4] to-[#d3016d] text-white"
+                        : `border-[#8b87a3] ${PLASTIC_FACE} text-[#6B7280]`
+                    }`}
+                    style={{ boxShadow: "0 5px 0 rgba(0,0,0,0.18)" }}
+                  >
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                  </button>
+                </div>
+
+                {addError && (
+                  <p className={`${MONO} mt-2.5 text-[0.6rem] text-[#d4006e]`}>⚠ {addError}</p>
+                )}
+              </div>
+            </div>
+
+            {/* SYSTEM_LOGS */}
+            <SystemLogs tabs={logTabs} />
+
+            {/* Barre d'état */}
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
+              <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+                1 objet · 100% one of one
+              </span>
+              <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
+                {t.pdp.ref} {product.handle}
+              </span>
+            </div>
+          </WindowFrame>
+
+          {/* RECOMMENDED_COMBO.EXE */}
+          {related.length > 0 && (
+            <div className="mt-[clamp(40px,6vw,72px)]">
+              <div className={`${MONO} mb-3 text-[0.58rem] font-bold tracking-[0.14em] text-white uppercase`} style={{ textShadow: "0 2px 6px rgba(0,0,0,0.85)" }}>
+                <span style={{ color: "#ff9ee4" }}>▶</span> 🎮 SUGGESTED_STYLE_COMBO.EXE
+              </div>
+              <div className="grid grid-cols-2 gap-[clamp(10px,1.6vw,16px)] md:grid-cols-4">
+                {related.map((p, idx) => (
+                  <ProductWindow key={p.id} product={p} idx={idx} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </main>
       <Footer />
     </>
