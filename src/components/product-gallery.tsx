@@ -83,17 +83,20 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
           <WindowControls />
         </div>
 
-        {/* `max-h` : en grand écran, une colonne au ratio 3/4 dépasse de loin
-            la hauteur des informations et creusait un vide à leur suite. Le
-            cadre est plafonné, l'image reste en `object-cover`. */}
+        {/* Cadre allongé (2/3) et image en `object-contain` : les photos de
+            la boutique sont chinées une à une et n'ont pas toutes le même
+            ratio — en `cover`, la plus haute se faisait couper la tête ou
+            l'ourlet. En `contain`, la pièce est toujours entière, et le
+            fond gris encastré tient lieu de passe-partout, comme dans un
+            vrai lecteur d'images. */}
         <div
-          className="relative aspect-[3/4] max-h-[clamp(420px,62vh,600px)] w-full touch-pan-y bg-[#d6d3e2] shadow-inner"
+          className="relative aspect-[2/3] max-h-[clamp(460px,72vh,760px)] w-full touch-pan-y bg-[#d6d3e2] shadow-inner"
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
           <SmartImg
             key={index}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-contain"
             src={pics[index]}
             alt={`${name} — vue ${index + 1}`}
             tone={index}
