@@ -36,11 +36,11 @@ import {
   BEVEL_OUT,
   HARD_SHADOW,
   LCD,
+  LeopardBackdrop,
   MONO,
   PLASTIC,
   PLASTIC_FACE,
   PLASTIC_PRESS,
-  WALLPAPER,
   WindowFrame,
 } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
@@ -393,12 +393,13 @@ export function CategoryPage({
       <Nav onMenu={() => setMenu(true)} forceSolid />
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
-      <main className="relative overflow-hidden" style={WALLPAPER}>
+      <main className="relative overflow-hidden">
         <style>{EXPLORER_CSS}</style>
+        <LeopardBackdrop />
 
         {/* La barre de navigation est fixe et opaque : le dossier commence en
             dessous, sinon elle mangerait la barre d'outils. */}
-        <div className="relative mx-auto w-full max-w-[1320px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(48px,8vw,96px)] sm:px-6">
+        <div className="relative z-[1] mx-auto w-full max-w-[1320px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(48px,8vw,96px)] sm:px-6">
           {/* ---- 01 · Barre d'en-tête ---- */}
           <DirectoryToolbar path={`C:\\LIL_OG\\CATALOG\\${exeName(catKey, label)}`} />
 

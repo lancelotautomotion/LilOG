@@ -25,7 +25,7 @@ import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
-import { WALLPAPER, WALLPAPER_GRID } from "@/components/y2k/kit";
+import { LeopardBackdrop } from "@/components/y2k/kit";
 import { HeroCamcorder } from "@/components/home/hero-camcorder";
 import { ArcadeSlot } from "@/components/home/arcade-slot";
 import { FileExplorer } from "@/components/home/file-explorer";
@@ -53,12 +53,12 @@ export function HomeShell() {
 
       <HeroCamcorder />
 
-      <main className="relative overflow-hidden" style={WALLPAPER}>
+      <main className="relative overflow-hidden">
         <style>{SHELL_CSS}</style>
-        <div aria-hidden className="pointer-events-none absolute inset-0" style={WALLPAPER_GRID} />
+        <LeopardBackdrop />
 
         {/* Pastilles du bureau — décoratives, jamais cliquables. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
+        <div aria-hidden className="pointer-events-none absolute inset-0 z-[1] hidden lg:block">
           <span
             className="lhs-sticker absolute top-[7%] left-[3%] h-12 w-12 opacity-80"
             style={{ "--r": "-12deg" } as React.CSSProperties}
@@ -79,7 +79,7 @@ export function HomeShell() {
           </span>
         </div>
 
-        <div className="relative">
+        <div className="relative z-[1]">
           <ArcadeSlot />
           <FileExplorer />
           <ReadmeWindow />
