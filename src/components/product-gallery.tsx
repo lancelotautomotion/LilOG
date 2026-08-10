@@ -123,9 +123,15 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
         </div>
       </div>
 
-      {/* ---- Miniatures : Polaroids de guingois ---- */}
+      {/* ---- Miniatures : Polaroids de guingois ----
+          Centrées et agrandies : le lecteur est plus haut qu'avant (cadre
+          2/3), et une rangée de petits timbres alignés à gauche laissait
+          un vide sous elle. Elles restent en `flex-wrap` plutôt qu'en
+          `overflow-x-auto` — les fiches n'ont jamais plus de 5-6 photos,
+          pas besoin de scroll horizontal, et le centrage ne marche que si
+          la rangée peut passer à la ligne plutôt que déborder. */}
       {pics.length > 1 && (
-        <div className="mt-3.5 flex gap-3 overflow-x-auto px-1 pt-1 pb-2">
+        <div className="mt-4 flex flex-wrap justify-center gap-4 px-1 pt-1 pb-2">
           {pics.map((src, i) => (
             <button
               key={i}
@@ -133,12 +139,12 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
               onClick={() => setIndex(i)}
               aria-label={`Voir photo ${i + 1}`}
               aria-pressed={i === index}
-              className={`lpi-thumb shrink-0 rounded-[2px] border border-black/10 bg-white p-1 pb-2.5 ${
+              className={`lpi-thumb shrink-0 rounded-[2px] border border-black/10 bg-white p-1.5 pb-3.5 ${
                 i === index ? "shadow-[0_0_0_2px_#1B48CE,3px_4px_0_rgba(24,12,58,0.4)]" : "shadow-[3px_4px_0_rgba(24,12,58,0.28)]"
               }`}
               style={{ transform: `rotate(${i === index ? 0 : (i % 2 ? 1 : -1) * (3 + (i % 3) * 2)}deg)` }}
             >
-              <span className="block h-12 w-12 overflow-hidden bg-[#e7e5f1] sm:h-14 sm:w-14">
+              <span className="block h-20 w-20 overflow-hidden bg-[#e7e5f1] sm:h-24 sm:w-24">
                 <SmartImg className="h-full w-full object-cover" src={src} alt="" tone={i} />
               </span>
             </button>
