@@ -3,18 +3,15 @@
 /* ============================================================
    DIRECTORY_EXPLORER.EXE — /category/[handle]
    ------------------------------------------------------------
-   Le catalogue n'est plus une page de boutique mais un dossier
-   ouvert sur le même bureau que l'accueil :
-
-     · une barre d'outils Win95 biseautée qui affiche le chemin
-       C:\LIL_OG\CATALOG\[NOM].EXE ;
-     · un titre brutaliste à ombre dure, flanqué des deux modes
-       d'affichage [ 🗔 GRILLE ] / [ ☰ LISTE ] ;
-     · FILTER_CONTROL.SYS en colonne, avec son égaliseur de prix ;
-     · MEDIA_GRID, où chaque pièce est une fenêtre d'application.
+   Le catalogue vit dans une seule fenêtre applicative, comme
+   /histoire, /durabilite et /faq : une barre de titre violette,
+   un corps blanc, et à l'intérieur — menus, barre d'adresse, nom
+   du rayon, FILTER_CONTROL.SYS et MEDIA_GRID empilés en sections,
+   plutôt que des cartes séparées flottant sur le décor.
 
    En mobile, la colonne de filtres devient un bouton flottant
-   [ 🎛️ FILTRES.EXE ] qui ouvre un tiroir.
+   [ 🎛️ FILTRES.EXE ] qui ouvre un tiroir (celui-là reste une
+   fenêtre autonome, posée par-dessus la page).
 
    ⚠ PAREFEU : Tailwind + la feuille locale `lde-` ci-dessous,
    servie une seule fois pour toute la page. Aucune classe de
@@ -33,11 +30,10 @@ import { FilterControl, type FilterState, type Sort } from "@/components/categor
 import { ProductWindow, type ViewMode } from "@/components/category/product-window";
 import {
   BEVEL_IN,
-  BEVEL_OUT,
-  HARD_SHADOW,
   LCD,
   LeopardBackdrop,
   MONO,
+  PINK,
   PLASTIC,
   PLASTIC_FACE,
   PLASTIC_PRESS,
@@ -46,14 +42,6 @@ import {
 import type { Product } from "@/lib/shopify/types";
 
 const PER_PAGE = 20;
-
-/** Fond du bloc MEDIA_GRID : le léopard rose de la maison, en tuile. */
-const MEDIA_BG: React.CSSProperties = {
-  backgroundColor: "#f0f0f5",
-  backgroundImage: "url('/leo.jpeg')",
-  backgroundRepeat: "repeat",
-  backgroundSize: "230px auto",
-};
 
 /* Identité éditoriale de chaque rayon — reprise telle quelle, seule la
    présentation change : elle vit désormais dans la fenêtre d'en-tête. */
@@ -198,38 +186,6 @@ function ViewToggle({ view, setView }: { view: ViewMode; setView: (v: ViewMode) 
           </button>
         );
       })}
-    </div>
-  );
-}
-
-/** Barre d'outils Win95 : menus, chemin d'accès, bouton OK. */
-function DirectoryToolbar({ path }: { path: string }) {
-  return (
-    <div className={`rounded-md border border-[#a9a5bd] ${PLASTIC_FACE} p-1.5 ${BEVEL_OUT} ${HARD_SHADOW}`}>
-      <div className="flex flex-wrap items-center gap-3 px-1.5 pb-1.5">
-        {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
-          <span key={m} className={`${MONO} text-[0.52rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
-            {m}
-          </span>
-        ))}
-      </div>
-
-      <div className="flex items-center gap-2">
-        <span className={`${MONO} shrink-0 pl-1.5 text-[0.5rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
-          Adresse
-        </span>
-        <span
-          className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-sm border border-[#8f8ba8] bg-white px-2 py-1.5 text-[0.54rem] tracking-[0.04em] text-[#1E2430] ${BEVEL_IN}`}
-        >
-          <Icon.folder width={13} height={11} className="shrink-0" />
-          <span className="truncate">{path}</span>
-        </span>
-        <span
-          className={`${MONO} shrink-0 rounded-sm border border-[#a9a5bd] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.5rem] font-bold text-[#262626] ${PLASTIC}`}
-        >
-          [ OK ]
-        </span>
-      </div>
     </div>
   );
 }
@@ -397,25 +353,58 @@ export function CategoryPage({
         <style>{EXPLORER_CSS}</style>
         <LeopardBackdrop />
 
-        {/* La barre de navigation est fixe et opaque : le dossier commence en
-            dessous, sinon elle mangerait la barre d'outils. */}
-        <div className="relative z-[1] mx-auto w-full max-w-[1320px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(48px,8vw,96px)] sm:px-6">
-          {/* ---- 01 · Barre d'en-tête ---- */}
-          <DirectoryToolbar path={`C:\\LIL_OG\\CATALOG\\${exeName(catKey, label)}`} />
+        {/* La barre de navigation est fixe et opaque : la fenêtre commence en
+            dessous, sinon elle mangerait sa barre de titre. */}
+        <div className="relative z-[1] mx-auto w-full max-w-[1180px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(48px,8vw,96px)] sm:px-6">
+          {/* ================= FENÊTRE UNIQUE ================= */}
+          <WindowFrame
+            title={`C:\\ LIL_OG \\ CATALOG \\ ${exeName(catKey, label)}`}
+            icon={<Icon.folderOpen width={15} height={12} />}
+            bodyStyle={{ backgroundColor: "#ffffff" }}
+          >
+            {/* Barre de menus */}
+            <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
+              {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
+                <span key={m} className={`${MONO} text-[0.54rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
+                  {m}
+                </span>
+              ))}
+            </div>
 
-          <div className="mt-[clamp(16px,2.6vw,26px)] flex flex-wrap items-end justify-between gap-4">
-            <h1
-              className={`${MONO} min-w-0 text-[clamp(1.9rem,6.5vw,4rem)] leading-[0.95] font-bold tracking-[-0.02em] text-white uppercase drop-shadow-[3px_3px_0px_rgba(0,0,0,1)]`}
-            >
-              {label}
-            </h1>
-            <ViewToggle view={view} setView={setView} />
-          </div>
+            {/* Barre d'adresse */}
+            <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-2">
+              <span className={`${MONO} shrink-0 text-[0.52rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
+                Adresse
+              </span>
+              <span
+                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.54rem] tracking-[0.04em] text-[#1E2430] ${BEVEL_IN}`}
+              >
+                <Icon.folder width={14} height={12} className="shrink-0" />
+                <span className="truncate">{`C:\\LIL_OG\\CATALOG\\${exeName(catKey, label)}`}</span>
+              </span>
+              <span
+                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.52rem] font-bold text-[#262626] ${PLASTIC}`}
+              >
+                [ OK ]
+              </span>
+            </div>
 
-          {vibe && (
-            <div className="mt-[clamp(14px,2.2vw,22px)]">
-              <WindowFrame title={`${vibe.tagline} ✦`} icon="💿">
-                <div className="px-4 py-3.5">
+            {/* En-tête : nom du rayon, en brutaliste, sur le corps blanc */}
+            <div className="border-b border-[#d8d5e6] px-4 pt-5 pb-4 sm:px-6">
+              <h1
+                className={`${MONO} text-[clamp(1.6rem,5.4vw,3rem)] leading-[0.95] font-bold tracking-[-0.02em] text-[#1E2430] uppercase`}
+                style={{ filter: `drop-shadow(3px 3px 0px ${PINK})` }}
+              >
+                {label}
+              </h1>
+              {vibe && (
+                <p className={`${MONO} mt-2 text-[0.6rem] tracking-[0.04em] text-[#5b2fb8] italic`}>
+                  {vibe.tagline}
+                </p>
+              )}
+
+              {vibe && (
+                <div className="mt-4 rounded-xl border border-[#d8d5e6] bg-[#f7f6fc] p-[clamp(12px,2.2vw,20px)]">
                   <p className={`${MONO} max-w-[70ch] text-[0.62rem] leading-[1.85] text-[#3b3550]`}>
                     {vibe.desc}
                   </p>
@@ -430,95 +419,96 @@ export function CategoryPage({
                     ))}
                   </div>
                 </div>
-              </WindowFrame>
+              )}
             </div>
-          )}
 
-          {/* ---- Corps : panneau + grille ---- */}
-          <div className="mt-[clamp(16px,2.6vw,26px)] flex items-start gap-5">
-            {/* 02 · FILTER_CONTROL.SYS — colonne collante à partir de lg */}
-            <div className="hidden w-[286px] shrink-0 lg:block">
-              <div className="sticky top-[86px]">
-                <FilterControl state={filterState} />
+            {/* Sous-en-tête : nom du bloc grille + bascule d'affichage */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d8d5e6] px-4 py-3 sm:px-6">
+              <h2 className={`${MONO} text-[0.66rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase`}>
+                MEDIA_GRID — {filtered.length} FICHIER(S)
+              </h2>
+              <ViewToggle view={view} setView={setView} />
+            </div>
+
+            {/* Corps : panneau de filtres + grille, dans le même bloc blanc */}
+            <div className="flex items-start gap-5 px-4 py-4 sm:px-6">
+              {/* FILTER_CONTROL.SYS — colonne collante à partir de lg, sans
+                  chrome de fenêtre propre : elle vit dans ce même conteneur. */}
+              <div className="hidden w-[270px] shrink-0 lg:block">
+                <div className="sticky top-[86px]">
+                  <FilterControl state={filterState} bare />
+                </div>
+              </div>
+
+              <div className="min-w-0 flex-1">
+                {filtered.length === 0 ? (
+                  <div
+                    className={`${MONO} mx-auto flex max-w-[420px] flex-col items-center gap-3 rounded-lg border-2 border-[#d8d5e6] bg-[#f7f6fc] px-4 py-16 text-center text-[0.62rem] text-[#3b3550]`}
+                  >
+                    <span aria-hidden className="text-[2rem]">
+                      🗑️
+                    </span>
+                    <p>{t.category.empty}</p>
+                    {activeCount > 0 && (
+                      <button
+                        type="button"
+                        onClick={reset}
+                        className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-2 text-[0.52rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
+                      >
+                        [ ⟲ RÉINITIALISER LES FILTRES ]
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    className={
+                      view === "grid"
+                        ? "grid grid-cols-2 gap-[clamp(8px,1.4vw,14px)] md:grid-cols-3 xl:grid-cols-4"
+                        : "flex flex-col gap-2.5"
+                    }
+                  >
+                    {pageProducts.map((p, idx) => (
+                      <ProductWindow key={p.id} product={p} idx={idx} view={view} />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* 03 · MEDIA_GRID */}
-            <div className="min-w-0 flex-1">
-              <WindowFrame
-                title={`MEDIA_GRID — ${filtered.length} FICHIER(S)`}
-                icon={<Icon.folderOpen width={15} height={12} />}
-              >
-                <div className="p-[clamp(10px,1.8vw,18px)]" style={MEDIA_BG}>
-                  {filtered.length === 0 ? (
-                    <div
-                      className={`${MONO} mx-auto flex max-w-[420px] flex-col items-center gap-3 rounded-lg border-2 border-[#b8b4cc] bg-[#f0f0f5] px-4 py-16 text-center text-[0.62rem] text-[#3b3550] shadow-[4px_4px_0_rgba(24,12,58,0.35)]`}
-                    >
-                      <span aria-hidden className="text-[2rem]">
-                        🗑️
-                      </span>
-                      <p>{t.category.empty}</p>
-                      {activeCount > 0 && (
-                        <button
-                          type="button"
-                          onClick={reset}
-                          className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-2 text-[0.52rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
-                        >
-                          [ ⟲ RÉINITIALISER LES FILTRES ]
-                        </button>
-                      )}
-                    </div>
-                  ) : (
-                    <div
-                      className={
-                        view === "grid"
-                          ? "grid grid-cols-2 gap-[clamp(8px,1.4vw,14px)] md:grid-cols-3 xl:grid-cols-4"
-                          : "flex flex-col gap-2.5"
-                      }
-                    >
-                      {pageProducts.map((p, idx) => (
-                        <ProductWindow key={p.id} product={p} idx={idx} view={view} />
-                      ))}
-                    </div>
-                  )}
-                </div>
+            {/* Barre d'état + pagination, au pied de la fenêtre unique */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
+              <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+                {filtered.length} objet(s) · {pageProducts.length} affiché(s)
+              </span>
 
-                {/* Barre d'état + pagination */}
-                <div className="flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
-                  <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
-                    {filtered.length} objet(s) · {pageProducts.length} affiché(s)
+              {totalPages > 1 && (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={safePage === 0}
+                    onClick={() => setPage(safePage - 1)}
+                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.5rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+                  >
+                    [ ◀ ]
+                  </button>
+                  <span
+                    className={`${LCD} rounded border-2 border-[#2b2b3d] bg-black px-2 py-0.5 text-[1.05rem] leading-none text-green-400 ${BEVEL_IN}`}
+                    style={{ textShadow: "0 0 8px rgba(74,222,128,.5)" }}
+                  >
+                    {safePage + 1}/{totalPages}
                   </span>
-
-                  {totalPages > 1 && (
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        disabled={safePage === 0}
-                        onClick={() => setPage(safePage - 1)}
-                        className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.5rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
-                      >
-                        [ ◀ ]
-                      </button>
-                      <span
-                        className={`${LCD} rounded border-2 border-[#2b2b3d] bg-black px-2 py-0.5 text-[1.05rem] leading-none text-green-400 ${BEVEL_IN}`}
-                        style={{ textShadow: "0 0 8px rgba(74,222,128,.5)" }}
-                      >
-                        {safePage + 1}/{totalPages}
-                      </span>
-                      <button
-                        type="button"
-                        disabled={safePage >= totalPages - 1}
-                        onClick={() => setPage(safePage + 1)}
-                        className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.5rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
-                      >
-                        [ ▶ ]
-                      </button>
-                    </div>
-                  )}
+                  <button
+                    type="button"
+                    disabled={safePage >= totalPages - 1}
+                    onClick={() => setPage(safePage + 1)}
+                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.5rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+                  >
+                    [ ▶ ]
+                  </button>
                 </div>
-              </WindowFrame>
+              )}
             </div>
-          </div>
+          </WindowFrame>
         </div>
       </main>
 
