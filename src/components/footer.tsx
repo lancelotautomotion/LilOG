@@ -66,6 +66,18 @@ const SOCIALS = {
   tiktok: "https://www.tiktok.com/",
 };
 
+/* Raccourcis « icônes de bureau » de la seconde ligne : ce sont les liens
+   pratiques que l'ancien footer portait dans sa colonne « Aide », plus le
+   panier et la wishlist, qui n'étaient joignables que depuis la nav. */
+const SHORTCUTS = [
+  { href: "/livraison", icon: "📦", label: "LIVRAISON.DOC", external: false },
+  { href: "/retours", icon: "↩️", label: "RETOURS.SYS", external: false },
+  { href: "/dressing-machine", icon: "👗", label: "DRESSING.EXE", external: false },
+  { href: "/wishlist", icon: "💖", label: "WISHLIST.LNK", external: false },
+  { href: "/cart", icon: "🛒", label: "PANIER.EXE", external: false },
+  { href: SOCIALS.instagram, icon: "📸", label: "INSTAGRAM.LNK", external: true },
+];
+
 /* Les mentions légales de la barre de statut réutilisent les libellés traduits. */
 const LEGAL_HREFS: Record<string, string> = {
   "CGV": "/cgv",
@@ -201,21 +213,31 @@ function Tray() {
   const [clock, setClock] = useState<string | null>(null);
 
   useEffect(() => {
-    const tick = () =>
-      setClock(
-        new Date().toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
-      );
-    tick();
-    const id = setInterval(tick, 15_000);
-    return () => clearInterval(id);
+    /* `undefined` en locale = celle du système : l'horloge affiche
+       exactement ce qu'affiche la barre des tâches du visiteur — 18:40 en
+       France, 06:40 PM aux États-Unis — dans son propre fuseau. */
+    const render = () =>
+      setClock(new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }));
+
+    render();
+
+    /* Recalage sur la minute pleine, puis une mise à jour par minute :
+       l'affichage change à la seconde près en même temps que l'horloge du
+       système, sans faire tourner un rendu chaque seconde. */
+    let interval: ReturnType<typeof setInterval> | undefined;
+    const timeout = setTimeout(() => {
+      render();
+      interval = setInterval(render, 60_000);
+    }, 60_000 - (Date.now() % 60_000));
+
+    return () => {
+      clearTimeout(timeout);
+      if (interval) clearInterval(interval);
+    };
   }, []);
 
   return (
-    <div className="flex shrink-0 items-center gap-1 rounded-xl border border-gray-300 bg-white px-2 py-1 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]">
+    <div className="flex h-[42px] shrink-0 items-center gap-1.5 rounded-xl border border-gray-300 bg-white px-2.5 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]">
       <TrayIcon href={SOCIALS.instagram} label="Instagram">
         <InstagramPixel />
       </TrayIcon>
@@ -223,17 +245,17 @@ function Tray() {
         <TiktokPixel />
       </TrayIcon>
 
-      <span aria-hidden title="Connecté — 56 Kbps" className="liltb-led text-[0.8rem] leading-none">
+      <span aria-hidden title="Connecté — 56 Kbps" className="liltb-led text-[0.9rem] leading-none">
         💻
       </span>
 
-      <span aria-hidden className="mx-0.5 h-4 w-px bg-[#d8d5e6]" />
+      <span aria-hidden className="mx-0.5 h-5 w-px bg-[#d8d5e6]" />
 
       <time
         suppressHydrationWarning
-        className={`${LCD} min-w-[64px] text-center text-[1.05rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}
+        className={`${LCD} min-w-[58px] text-center text-[1.2rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}
       >
-        {clock ?? "--:-- --"}
+        {clock ?? "--:--"}
       </time>
     </div>
   );
@@ -277,11 +299,11 @@ function Newsletter({ className = "" }: { className?: string }) {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="ENTER_EMAIL.EXE"
-        className={`${MONO} h-[34px] w-full min-w-0 rounded-xl border border-gray-300 bg-white px-3 text-[0.58rem] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 md:w-[176px]`}
+        className={`${MONO} h-[42px] w-full min-w-0 rounded-xl border border-gray-300 bg-white px-3.5 text-[0.6rem] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 md:w-[190px]`}
       />
       <button
         type="submit"
-        className={`${MONO} h-[34px] shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3.5 text-[0.58rem] font-bold tracking-[0.04em] text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+        className={`${MONO} h-[42px] shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-4 text-[0.6rem] font-bold tracking-[0.04em] text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
       >
         [ OK ]
       </button>
@@ -326,12 +348,14 @@ export function Footer() {
   }, [menu]);
 
   return (
-    <footer className="liltb relative z-30 px-[clamp(12px,4vw,48px)] pt-[clamp(26px,4vw,48px)] pb-[clamp(20px,3vw,36px)]">
+    <footer className="liltb relative z-30 px-[clamp(10px,1.6vw,22px)] pt-[clamp(26px,4vw,48px)] pb-[clamp(20px,3vw,36px)]">
       <style>{TASKBAR_CSS}</style>
 
       {/* Le conteneur relatif porte les pastilles : elles débordent de la
-          fenêtre, qui elle reste rognée. Même montage que /cgv et /faq. */}
-      <div className="relative mx-auto max-w-[1180px]">
+          fenêtre. Plus large que les fenêtres de contenu (1180 px) : une
+          barre des tâches court d'un bord à l'autre de l'écran. La borne
+          haute n'existe que pour les écrans très larges. */}
+      <div className="relative mx-auto max-w-[2200px]">
 
         {/* ---- Pastilles décoratives (mêmes bijoux que /contact) ---- */}
         <span aria-hidden className="pointer-events-none absolute inset-0 z-20">
@@ -386,7 +410,7 @@ export function Footer() {
           </div>
 
           {/* ---- Corps : papier millimétré + barre des tâches ---- */}
-          <div className="p-[clamp(10px,1.8vw,16px)]" style={GRID_BG}>
+          <div className="p-[clamp(12px,2vw,22px)]" style={GRID_BG}>
             <div className="flex flex-wrap items-center gap-2 md:flex-nowrap">
 
               {/* ---------- BOUTON START ---------- */}
@@ -396,16 +420,20 @@ export function Footer() {
                   onClick={() => setMenu((v) => !v)}
                   aria-expanded={menu}
                   aria-haspopup="menu"
-                  className={`flex h-[34px] items-center gap-2 rounded-xl border px-3 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
+                  className={`flex h-[42px] items-center gap-2.5 rounded-xl border py-1 pr-3.5 pl-1.5 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
                     menu ? `border-purple-700 ${PLASTIC_ON}` : `border-[#8f6ae0] hover:brightness-110 ${PLASTIC} ${PLASTIC_PRESS}`
                   }`}
                   style={{ background: VIOLET_BUMP }}
                 >
-                  {/* Le logo est noir : sur le violet, on l'éclaircit plutôt
-                      que d'introduire un second fichier blanc. */}
-                  <Image src={logoBlack} alt="" aria-hidden className="h-3.5 w-auto brightness-0 invert" />
+                  {/* Le logo est posé sur une plaque blanche, comme les
+                      pictogrammes des barres de titre du site : c'est ce qui
+                      le rend lisible sur le violet, bien mieux qu'un tirage
+                      blanc sur fond violet. */}
+                  <span className="grid h-[34px] shrink-0 place-items-center rounded-lg bg-white px-2.5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_3px_rgba(0,0,0,0.3)]">
+                    <Image src={logoBlack} alt="Lil'OG" className="h-[22px] w-auto" />
+                  </span>
                   <span
-                    className={`${MONO} text-[0.62rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.35)]`}
+                    className={`${MONO} text-[0.66rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.35)]`}
                   >
                     UPDATE
                   </span>
@@ -488,15 +516,51 @@ export function Footer() {
                   <Link
                     key={href}
                     href={href}
-                    className={`${MONO} flex h-[34px] min-w-0 items-center gap-1.5 rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 text-[0.55rem] font-bold tracking-[0.03em] text-[#4a4560] no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] md:max-w-[190px] md:flex-1 ${PLASTIC} ${PLASTIC_PRESS}`}
+                    className={`${MONO} flex h-[42px] min-w-0 items-center gap-2 rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-3 text-[0.58rem] font-bold tracking-[0.03em] text-[#4a4560] no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] md:max-w-[210px] md:flex-1 ${PLASTIC} ${PLASTIC_PRESS}`}
                   >
-                    <span aria-hidden className="shrink-0 text-[0.75rem] leading-none">
+                    <span aria-hidden className="shrink-0 text-[0.8rem] leading-none">
                       {icon}
                     </span>
                     <span className="truncate uppercase">{label}</span>
                   </Link>
                 ))}
               </nav>
+            </div>
+
+            {/* ---------- BANDE DE RACCOURCIS ---------- */}
+            {/* Elle donne à la barre sa vraie hauteur de pied de page et
+                récupère les liens pratiques que l'ancien footer portait
+                dans sa colonne « Aide ». Même bande que sur /contact. */}
+            <div className="mt-[clamp(14px,2.2vw,22px)] border-t border-dashed border-[#c6c2d8] pt-[clamp(14px,2.2vw,22px)]">
+              <div
+                className={`${MONO} mb-3 flex items-center gap-2 text-[0.55rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}
+              >
+                <span aria-hidden className="h-px flex-1 bg-[#5b2fb8]/20" />
+                🖱 RACCOURCIS
+                <span aria-hidden className="h-px flex-1 bg-[#5b2fb8]/20" />
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+                {SHORTCUTS.map(({ href, icon, label, external }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className={`flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-[clamp(10px,1.6vw,16px)] text-center no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                  >
+                    <span
+                      aria-hidden
+                      className="text-[clamp(1.2rem,2.6vw,1.6rem)] leading-none drop-shadow-[0_3px_3px_rgba(0,0,0,0.22)]"
+                    >
+                      {icon}
+                    </span>
+                    <span
+                      className={`${MONO} text-[clamp(0.48rem,1vw,0.56rem)] leading-tight font-bold tracking-[0.02em] text-[#4a4560]`}
+                    >
+                      {label}
+                    </span>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
 

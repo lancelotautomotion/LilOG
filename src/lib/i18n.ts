@@ -122,7 +122,7 @@ export const DICT: Record<LangCode, Dict> = {
       newsP: "La priorité sur chaque drop. Pas de spam — juste le meilleur, avant que tout parte.",
       email: "votre@email.com", join: "Rejoindre →", shop: "Boutique", help: "Aide", about: "À propos", legalH: "Légal",
       helpLinks: ["Livraison", "Retours", "Authenticité"],
-      aboutLinks: ["Notre histoire", "Durabilité"], legalLinks: ["CGV", "Mentions légales", "Confidentialité", "Cookies"],
+      aboutLinks: ["L'histoire", "Durabilité"], legalLinks: ["CGV", "Mentions légales", "Confidentialité", "Cookies"],
       copy: "© 2026 Lil'OG — Seconde main Y2K, Londres", legal: "Conditions · Confidentialité · Cookies" },
     pdp: {
       back: "Retour à la boutique", unique: "Pièce unique", newIn: "Nouveauté", soldOut: "Épuisé",
