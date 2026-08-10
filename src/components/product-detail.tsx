@@ -21,6 +21,7 @@
    ============================================================ */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n-context";
 import { useCart } from "@/lib/cart-context";
@@ -29,8 +30,8 @@ import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { Icon } from "@/components/icons";
+import { SmartImg } from "@/components/smart-img";
 import { ProductGallery } from "@/components/product-gallery";
-import { ProductWindow } from "@/components/category/product-window";
 import {
   BEVEL_IN,
   LCD,
@@ -241,6 +242,109 @@ function SystemLogs({
   );
 }
 
+/* ============================================================
+   SUGGESTED_STYLE_COMBO.EXE — carte d'inventaire
+   ------------------------------------------------------------
+   Une carte propre à cette page plutôt que la fenêtre Win98 dense
+   du catalogue (barre de titre, menus, chrome serré) : même famille
+   que ITEM_STATS.SYS — écran LED rose, bouton chunky 3D, typo LCD —
+   pour que le cross-sell parle la même langue que la fiche
+   au-dessus de lui, avec de l'air autour de la photo.
+   ============================================================ */
+
+function ComboCard({ product, idx }: { product: Product; idx: number }) {
+  const { addItem } = useCart();
+  const { has, toggle } = useWishlist();
+  const [added, setAdded] = useState(false);
+  const fav = has(product.handle);
+  const sold = product.tag === "SOLD" || !product.variantId;
+
+  const add = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (sold || !product.variantId) return;
+    setAdded(true);
+    await addItem(product.variantId, 1);
+    setTimeout(() => setAdded(false), 1400);
+  };
+
+  const toggleFav = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toggle({ handle: product.handle, title: product.name, price: product.price, image: product.imageA, variantId: product.variantId });
+  };
+
+  const badge = sold ? "✖ SOLD" : product.tag === "1 OF 1" ? "💎 1/1" : product.tag === "NEW" ? "🔥 NEW" : null;
+
+  return (
+    <Link
+      href={`/products/${product.handle}`}
+      className="group block overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-white shadow-[5px_5px_0_rgba(24,12,58,0.35)] transition hover:-translate-y-1 hover:shadow-[7px_9px_0_rgba(24,12,58,0.42)]"
+    >
+      {/* Photo encadrée, avec de l'air autour plutôt que collée aux bords. */}
+      <div className="p-2.5 pb-0">
+        <div className={`relative aspect-[3/4] overflow-hidden rounded-lg bg-[#e7e5f1] ${BEVEL_IN}`}>
+          <SmartImg
+            className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.06]"
+            src={product.imageA}
+            alt={product.name}
+            tone={idx}
+          />
+          {badge && (
+            <span
+              className={`${MONO} absolute top-1.5 left-1.5 rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-1.5 py-1 text-[0.44rem] font-bold tracking-[0.04em] text-[#5b2fb8] uppercase ${PLASTIC}`}
+            >
+              {badge}
+            </span>
+          )}
+          {sold && <span aria-hidden className="absolute inset-0 bg-white/50" />}
+        </div>
+      </div>
+
+      <div className="p-3">
+        <h3 className={`${MONO} truncate text-[0.66rem] font-bold text-[#1E2430]`}>{product.name}</h3>
+        <p className={`${MONO} mt-0.5 truncate text-[0.48rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
+          {product.productType || product.meta || "Pièce unique"}
+        </p>
+
+        {/* Mini écran LED — même famille que PRICE_TAG.SYS au-dessus. */}
+        <div className={`lpi-crt relative mt-2 w-fit overflow-hidden rounded-md border-2 border-[#2b2b3d] bg-black px-2 py-1 ${BEVEL_IN}`}>
+          <span className="relative z-[2] flex items-baseline gap-1.5">
+            <span className={`${LCD} text-[1.15rem] leading-none tracking-[0.02em]`} style={{ color: NEON, textShadow: `0 0 8px ${NEON}b3` }}>
+              {product.price}€
+            </span>
+            {product.was && <s className={`${MONO} text-[0.5rem] text-white/35`}>{product.was}€</s>}
+          </span>
+        </div>
+
+        <div className="mt-2.5 flex items-stretch gap-1.5">
+          <button
+            type="button"
+            onClick={add}
+            disabled={sold}
+            className={`${MONO} flex-1 rounded-md border-b-[3px] px-2 py-1.5 text-[0.5rem] font-black tracking-[0.04em] text-white uppercase transition active:translate-y-[3px] active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${
+              added ? "border-[#0f5c26] bg-gradient-to-b from-[#4fbe84] to-[#1B8A3C]" : "border-[#7a0a52] bg-gradient-to-b from-[#ff5ec4] to-[#c3128a]"
+            }`}
+            style={{ boxShadow: "0 3px 0 rgba(0,0,0,0.18)" }}
+          >
+            {sold ? "[ SOLD ]" : added ? "[ ✓ OK ]" : "[ + CART ]"}
+          </button>
+          <button
+            type="button"
+            onClick={toggleFav}
+            aria-label={fav ? "Retirer de la wishlist" : "Ajouter à la wishlist"}
+            aria-pressed={fav}
+            className={`flex w-9 shrink-0 items-center justify-center rounded-md border-b-[3px] transition active:translate-y-[3px] active:border-b-0 active:shadow-none ${
+              fav ? "border-[#7a0a52] bg-gradient-to-b from-[#ff9ee4] to-[#d3016d] text-white" : `border-[#8b87a3] ${PLASTIC_FACE} text-[#6B7280]`
+            }`}
+            style={{ boxShadow: "0 3px 0 rgba(0,0,0,0.18)" }}
+          >
+            {fav ? <Icon.heart width={13} height={13} /> : <Icon.heartO width={13} height={13} />}
+          </button>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export function ProductDetail({ product, related }: { product: ProductDetailType; related: Product[] }) {
   const { t } = useLanguage();
   const { addItem } = useCart();
@@ -409,8 +513,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   <div className="relative z-[2] flex flex-wrap items-end gap-x-5 gap-y-1.5">
                     <div className="min-w-0">
                       <span
-                        className={`${MONO} block text-[0.42rem] font-bold tracking-[0.22em] uppercase`}
-                        style={{ color: "rgba(255,94,196,0.55)" }}
+                        className={`${MONO} block text-[0.42rem] font-bold tracking-[0.22em] text-white/70 uppercase`}
                       >
                         PRICE_TAG.SYS
                       </span>
@@ -543,9 +646,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
               <div className={`${MONO} mb-3 text-[0.58rem] font-bold tracking-[0.14em] text-white uppercase`} style={{ textShadow: "0 2px 6px rgba(0,0,0,0.85)" }}>
                 <span style={{ color: "#ff9ee4" }}>▶</span> 🎮 SUGGESTED_STYLE_COMBO.EXE
               </div>
-              <div className="grid grid-cols-2 gap-[clamp(10px,1.6vw,16px)] md:grid-cols-4">
+              <div className="grid grid-cols-2 gap-[clamp(12px,2vw,20px)] md:grid-cols-4">
                 {related.map((p, idx) => (
-                  <ProductWindow key={p.id} product={p} idx={idx} />
+                  <ComboCard key={p.id} product={p} idx={idx} />
                 ))}
               </div>
             </div>
