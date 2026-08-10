@@ -644,7 +644,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
               et repris en LCD géant avec le même halo néon que le prix, pour
               qu'il porte sur le décor léopard plutôt que de s'y fondre. */}
           {related.length > 0 && (
-            <div className="mt-[clamp(48px,7vw,84px)]">
+            <div className="mt-[clamp(20px,3vw,32px)]">
               <div className="mb-5 text-center sm:mb-7">
                 <p
                   className={`${MONO} text-[0.5rem] font-bold tracking-[0.28em] text-white/75 uppercase`}
