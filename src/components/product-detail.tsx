@@ -389,9 +389,12 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   </span>
                 )}
 
+                {/* Même typo LCD que les titres de /category, /histoire,
+                    /faq et /durabilite — le nom de la pièce parle le même
+                    langage que le reste du site plutôt qu'une typo
+                    brutaliste propre à cette page. */}
                 <h1
-                  className="font-[family-name:var(--serif)] text-[clamp(1.6rem,3.4vw,2.4rem)] leading-[1.05] font-black text-[#1E2430] uppercase"
-                  style={{ textShadow: "3px 3px 0 rgba(211,1,109,0.28)" }}
+                  className={`${LCD} text-[clamp(1.6rem,3.6vw,2.6rem)] leading-[1.05] tracking-[0.02em] text-[#2a1266] uppercase`}
                 >
                   {product.name}
                 </h1>
