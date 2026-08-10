@@ -93,7 +93,7 @@ export function WindowFrame({
   children,
 }: {
   title: string;
-  icon?: string;
+  icon?: React.ReactNode;
   bar?: string;
   className?: string;
   bodyClassName?: string;
@@ -110,7 +110,7 @@ export function WindowFrame({
         style={{ background: bar }}
       >
         {icon && (
-          <span aria-hidden className="text-[0.9rem] leading-none">
+          <span aria-hidden className="flex shrink-0 items-center text-[0.9rem] leading-none">
             {icon}
           </span>
         )}
@@ -155,23 +155,28 @@ export function Tape({
   );
 }
 
-/** Étiquette de module — cohérente avec /durabilite et /histoire. */
+/**
+ * Étiquette de module — cohérente avec /durabilite et /histoire.
+ * `paper` : posée sur une surface claire (papier millimétré, fenêtre).
+ * `wallpaper` : posée à même le fond d'écran violet du bureau.
+ */
 export function SectionLabel({
   n,
   file,
-  tone = "dark",
+  tone = "paper",
 }: {
   n: string;
   file: string;
-  tone?: "dark" | "light";
+  tone?: "paper" | "wallpaper";
 }) {
+  const wall = tone === "wallpaper";
   return (
     <p
       className={`${MONO} mb-3 text-[0.58rem] font-bold tracking-[0.14em] uppercase ${
-        tone === "light" ? "text-[#d9cffb]" : "text-[#5b2fb8]"
+        wall ? "text-[#2b0f6b]" : "text-[#5b2fb8]"
       }`}
     >
-      <span style={{ color: tone === "light" ? NEON : PINK }}>▶</span> {n} — {file}
+      <span style={{ color: wall ? "#ffffff" : PINK }}>▶</span> {n} — {file}
     </p>
   );
 }

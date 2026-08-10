@@ -24,6 +24,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PageShell } from "@/components/page-shell";
 import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
+import { Icon } from "@/components/icons";
 
 /* ---- Jetons « chunky plastic » — identiques à /contact ---- */
 const PLASTIC =
@@ -490,9 +491,10 @@ export function DocCenter({
                       style={{ background: "linear-gradient(90deg, #5b2fb8 0%, #7147d4 60%, #b184ee 100%)" }}
                     >
                       <h3
-                        className={`${MONO} text-[0.66rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}
+                        className={`${MONO} flex items-center gap-1.5 text-[0.66rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}
                       >
-                        📂 SOMMAIRE.DIR ★
+                        <Icon.folderOpen className="h-[1.15em] w-auto shrink-0" />
+                        SOMMAIRE.DIR ★
                       </h3>
                     </div>
 
@@ -534,7 +536,9 @@ export function DocCenter({
                               <span className={`shrink-0 opacity-60 ${on ? "text-white" : "text-[#8b86a3]"}`}>
                                 {last ? "└─" : "├─"}
                               </span>
-                              <span className="shrink-0 text-[0.8rem] leading-none">{on ? "📂" : "📁"}</span>
+                              <span className="flex shrink-0 items-center text-[0.8rem] leading-none">
+                                {on ? <Icon.folderOpen className="h-[1.05em] w-auto" /> : <Icon.folder className="h-[1.05em] w-auto" />}
+                              </span>
                               <span className="truncate">{file}</span>
                             </button>
                           );

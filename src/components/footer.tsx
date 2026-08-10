@@ -27,6 +27,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
+import { Icon } from "@/components/icons";
 import logoBlack from "../../public/logo-black.png";
 
 /* ---- Jetons « chunky plastic » — identiques à /contact et /faq ---- */
@@ -452,9 +453,10 @@ export function Footer() {
                   >
                     <div className="px-2.5 py-1.5" style={{ background: VIOLET_BAR_SOFT }}>
                       <span
-                        className={`${MONO} text-[0.55rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}
+                        className={`${MONO} flex items-center gap-1.5 text-[0.55rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}
                       >
-                        📂 MENU_DÉMARRER.DIR <span style={{ color: "#ffd7ea" }}>★</span>
+                        <Icon.folderOpen className="h-[1.2em] w-auto shrink-0" />
+                        MENU_DÉMARRER.DIR <span style={{ color: "#ffd7ea" }}>★</span>
                       </span>
                     </div>
 

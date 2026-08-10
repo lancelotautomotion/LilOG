@@ -15,6 +15,7 @@ import { useState, useTransition } from "react";
 import { PageShell } from "@/components/page-shell";
 import Y2KPhone from "@/components/contact/Y2KPhone";
 import { Floppy, FloppyStyles } from "@/components/contact/floppy";
+import { Icon } from "@/components/icons";
 
 /* ---- Jetons « chunky plastic » ----------------------------
    Gardés en constantes pour rester cohérents d'un élément à
@@ -61,8 +62,16 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
    avec une couche de zones cliquables invisibles.
    ============================================================ */
 
-const SHORTCUTS = [
-  { icon: "📁", label: "FAQ.DOC", href: "/faq", external: false },
+const SHORTCUTS: {
+  icon: React.ReactNode;
+  label: string;
+  href: string;
+  external: boolean;
+}[] = [
+  /* Le dossier est l'icône partagée du site (components/icons), pas un 📁 :
+     le rendu de l'emoji change d'une plateforme à l'autre et ne collerait
+     plus au dossier du menu latéral ni à celui de l'accueil. */
+  { icon: <Icon.folder className="h-[1.1em] w-auto" />, label: "FAQ.DOC", href: "/faq", external: false },
   { icon: "📦", label: "SUIVI_COLIS.EXE", href: "/livraison", external: false },
   {
     icon: "📸",
@@ -108,7 +117,7 @@ function Shortcuts() {
             {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
             className={`flex flex-col items-center justify-center gap-2.5 rounded-2xl border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#eeecf6_48%,#d8d5e6_100%)] px-2 py-[clamp(16px,2.6vw,26px)] text-center no-underline transition sm:px-4 ${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
           >
-            <span className="text-[clamp(1.7rem,4vw,2.6rem)] leading-none drop-shadow-[0_3px_3px_rgba(0,0,0,0.25)]">
+            <span className="flex h-[clamp(1.7rem,4vw,2.6rem)] items-center justify-center text-[clamp(1.7rem,4vw,2.6rem)] leading-none drop-shadow-[0_3px_3px_rgba(0,0,0,0.25)]">
               {icon}
             </span>
             <span className={`${MONO} text-[clamp(0.5rem,1.1vw,0.72rem)] leading-tight font-bold break-all tracking-[0.02em] text-[#262626]`}>

@@ -95,7 +95,7 @@ export function ArcadeSlot() {
   return (
     <section id="slot" className="px-4 py-[clamp(48px,8vw,96px)] sm:px-6">
       <div className="mx-auto w-full max-w-[880px]">
-        <SectionLabel n="02" file="ARCADE_SLOT.EXE" tone="light" />
+        <SectionLabel n="02" file="ARCADE_SLOT.EXE" tone="wallpaper" />
 
         <style>{ARCADE_CSS}</style>
 

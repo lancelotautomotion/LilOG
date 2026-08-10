@@ -25,6 +25,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
 import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
+import { Icon } from "@/components/icons";
 
 /* ---- Jetons « chunky plastic » — identiques à /contact ---- */
 const PLASTIC =
@@ -374,8 +375,11 @@ function FaqCard({
         aria-controls={panelId}
         className="flex w-full cursor-pointer items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#7147d4]"
       >
-        <span aria-hidden className="shrink-0 text-[clamp(1.1rem,3vw,1.4rem)] leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.18)]">
-          {open ? "📂" : "📁"}
+        <span
+          aria-hidden
+          className="flex shrink-0 items-center text-[clamp(1.1rem,3vw,1.4rem)] leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.18)]"
+        >
+          {open ? <Icon.folderOpen className="h-[1.05em] w-auto" /> : <Icon.folder className="h-[1.05em] w-auto" />}
         </span>
         <span className="min-w-0 flex-1">
           <span

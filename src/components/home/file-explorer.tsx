@@ -17,6 +17,7 @@
 
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
+import { Icon } from "@/components/icons";
 import { CATEGORIES } from "@/lib/categories";
 import { GRID_BG, MONO, PLASTIC, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/home/kit";
 
@@ -35,15 +36,6 @@ const FILENAMES: Record<string, string> = {
   accessories: "ACCESSORIES.ZIP",
 };
 
-/** Teintes des dossiers : [clair, médian, foncé]. */
-const HUES: [string, string, string][] = [
-  ["#ffe9a8", "#ffd166", "#b8862a"], // manille
-  ["#ffd0ec", "#ff8ed4", "#b02278"], // rose
-  ["#d6c9ff", "#a98bf0", "#4b2a9e"], // violet
-  ["#c9f0ff", "#7fd4f5", "#1b6a94"], // cyan
-  ["#c9f7d8", "#79e2a4", "#1d7a4a"], // vert
-];
-
 const EXPLORER_CSS = `
 .lhf-tile .lhf-icon{transition:transform 200ms cubic-bezier(.2,1.2,.4,1), filter 200ms ease}
 .lhf-tile:hover .lhf-icon,
@@ -61,59 +53,32 @@ const EXPLORER_CSS = `
 
 /* ---- Icônes ---- */
 
-function FolderIcon({ uid, hue }: { uid: string; hue: [string, string, string] }) {
-  const g = `${uid}-fold`;
-  return (
-    <svg viewBox="0 0 100 84" className="h-full w-full" aria-hidden>
-      <defs>
-        <linearGradient id={g} x1="0.1" y1="0" x2="0.5" y2="1">
-          <stop offset="0%" stopColor={hue[0]} />
-          <stop offset="52%" stopColor={hue[1]} />
-          <stop offset="100%" stopColor={hue[2]} />
-        </linearGradient>
-      </defs>
-      {/* Dos du dossier, avec l'onglet */}
-      <path
-        d="M5 14 H36 L45 24 H91 A4 4 0 0 1 95 28 V44 H5 Z"
-        fill={hue[2]}
-        stroke={hue[2]}
-        strokeWidth="3"
-        strokeLinejoin="round"
-      />
-      {/* Pochette avant, en perspective */}
-      <path
-        d="M5 32 H95 L86 76 H14 Z"
-        fill={`url(#${g})`}
-        stroke={hue[2]}
-        strokeWidth="3"
-        strokeLinejoin="round"
-      />
-      {/* Liseré clair : c'est lui qui donne le relief plastique */}
-      <path d="M12 38 H88 L86.6 45 H13.4 Z" fill="#fff" opacity="0.4" />
-    </svg>
-  );
-}
-
+/**
+ * Disquette au format icône. Le grand boîtier de /contact
+ * (components/contact/floppy) ne descend pas à 70 px : on reprend donc sa
+ * peau rose — coque F781B4→E24B85, volet clair, étiquette papier — plutôt
+ * que d'inventer une troisième couleur de disquette.
+ */
 function FloppyIcon({ uid }: { uid: string }) {
   const g = `${uid}-flop`;
   return (
     <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden>
       <defs>
         <linearGradient id={g} x1="0.1" y1="0" x2="0.6" y2="1">
-          <stop offset="0%" stopColor="#4d4a63" />
-          <stop offset="45%" stopColor="#2b2838" />
-          <stop offset="100%" stopColor="#16141f" />
+          <stop offset="0%" stopColor="#F781B4" />
+          <stop offset="45%" stopColor="#ED5D93" />
+          <stop offset="100%" stopColor="#E24B85" />
         </linearGradient>
       </defs>
-      <rect x="6" y="8" width="88" height="84" rx="6" fill={`url(#${g})`} stroke="#0d0c14" strokeWidth="3" />
+      <rect x="6" y="8" width="88" height="84" rx="6" fill={`url(#${g})`} stroke="#8c1247" strokeWidth="3" />
       {/* Volet métallique */}
-      <rect x="28" y="8" width="44" height="32" rx="2" fill="#d5d8e6" stroke="#0d0c14" strokeWidth="2.5" />
-      <rect x="52" y="12" width="14" height="24" rx="1.5" fill="#8b8fa6" />
-      {/* Étiquette griffonnée */}
-      <rect x="18" y="52" width="64" height="34" rx="2" fill="#fdfdf3" stroke="#0d0c14" strokeWidth="2.5" />
-      <rect x="25" y="60" width="42" height="4" rx="2" fill="#d3016d" />
-      <rect x="25" y="69" width="50" height="3" rx="1.5" fill="#c9c6da" />
-      <rect x="25" y="76" width="34" height="3" rx="1.5" fill="#c9c6da" />
+      <rect x="28" y="8" width="44" height="32" rx="2" fill="#EBDCDF" stroke="#8c1247" strokeWidth="2.5" />
+      <rect x="52" y="12" width="14" height="24" rx="1.5" fill="#c69aa8" />
+      {/* Étiquette papier */}
+      <rect x="18" y="52" width="64" height="34" rx="2" fill="#EDECEC" stroke="#8c1247" strokeWidth="2.5" />
+      <rect x="25" y="60" width="42" height="4" rx="2" fill="#FF3D8E" />
+      <rect x="25" y="69" width="50" height="3" rx="1.5" fill="#c4bfc4" />
+      <rect x="25" y="76" width="34" height="3" rx="1.5" fill="#c4bfc4" />
     </svg>
   );
 }
@@ -153,12 +118,10 @@ function Tile({
 export function FileExplorer() {
   const { t } = useLanguage();
 
-  const folders = CATEGORIES.map((c, i) => ({
+  const folders = CATEGORIES.map((c) => ({
     href: `/category/${c.handle}`,
     filename: FILENAMES[c.catKey] ?? `${c.catKey.toUpperCase()}.EXE`,
     caption: t.cat[c.catKey] ?? c.catKey,
-    hue: HUES[i % HUES.length],
-    uid: `lhf-${c.catKey}`,
   }));
 
   const count = folders.length + 1;
@@ -169,11 +132,11 @@ export function FileExplorer() {
        ici — l'explorateur de rayons a remplacé la grille de produits. */
     <section id="drops" className="px-4 pb-[clamp(48px,8vw,96px)] sm:px-6">
       <div className="mx-auto w-full max-w-[980px]">
-        <SectionLabel n="03" file="FILE_EXPLORER.SYS" tone="light" />
+        <SectionLabel n="03" file="FILE_EXPLORER.SYS" tone="wallpaper" />
 
         <style>{EXPLORER_CSS}</style>
 
-        <WindowFrame title="C:\\ LIL_OG \\ CATEGORIES" icon="🗂️">
+        <WindowFrame title="C:\\ LIL_OG \\ CATEGORIES" icon={<Icon.folderOpen width={16} height={13} />}>
           {/* Barre de menus */}
           <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
             {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
@@ -194,7 +157,7 @@ export function FileExplorer() {
             <span
               className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.54rem] tracking-[0.04em] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.18)]`}
             >
-              <span aria-hidden>📁</span>
+              <Icon.folder width={14} height={12} className="shrink-0" />
               <span className="truncate">C:\LIL_OG\CATEGORIES\</span>
             </span>
             <span
@@ -221,7 +184,9 @@ export function FileExplorer() {
           >
             {folders.map((f) => (
               <Tile key={f.href} href={f.href} filename={f.filename} caption={f.caption}>
-                <FolderIcon uid={f.uid} hue={f.hue} />
+                {/* Le dossier du site, agrandi — jamais un dessin propre à
+                    cette page : c'est celui du menu latéral et de /contact. */}
+                <Icon.folder className="h-full w-full drop-shadow-[0_3px_3px_rgba(30,20,70,0.28)]" />
               </Tile>
             ))}
 
