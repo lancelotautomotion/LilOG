@@ -34,7 +34,6 @@ import { ProductWindow, type ViewMode } from "@/components/category/product-wind
 import {
   BEVEL_IN,
   BEVEL_OUT,
-  GRID_BG,
   HARD_SHADOW,
   LCD,
   MONO,
@@ -42,12 +41,19 @@ import {
   PLASTIC_FACE,
   PLASTIC_PRESS,
   WALLPAPER,
-  WALLPAPER_GRID,
   WindowFrame,
 } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
 
 const PER_PAGE = 20;
+
+/** Fond du bloc MEDIA_GRID : le léopard rose de la maison, en tuile. */
+const MEDIA_BG: React.CSSProperties = {
+  backgroundColor: "#f0f0f5",
+  backgroundImage: "url('/leo.jpeg')",
+  backgroundRepeat: "repeat",
+  backgroundSize: "230px auto",
+};
 
 /* Identité éditoriale de chaque rayon — reprise telle quelle, seule la
    présentation change : elle vit désormais dans la fenêtre d'en-tête. */
@@ -389,7 +395,6 @@ export function CategoryPage({
 
       <main className="relative overflow-hidden" style={WALLPAPER}>
         <style>{EXPLORER_CSS}</style>
-        <div aria-hidden className="pointer-events-none absolute inset-0" style={WALLPAPER_GRID} />
 
         {/* La barre de navigation est fixe et opaque : le dossier commence en
             dessous, sinon elle mangerait la barre d'outils. */}
@@ -409,7 +414,7 @@ export function CategoryPage({
           {vibe && (
             <div className="mt-[clamp(14px,2.2vw,22px)]">
               <WindowFrame title={`${vibe.tagline} ✦`} icon="💿">
-                <div className="px-4 py-3.5" style={GRID_BG}>
+                <div className="px-4 py-3.5">
                   <p className={`${MONO} max-w-[70ch] text-[0.62rem] leading-[1.85] text-[#3b3550]`}>
                     {vibe.desc}
                   </p>
@@ -443,10 +448,10 @@ export function CategoryPage({
                 title={`MEDIA_GRID — ${filtered.length} FICHIER(S)`}
                 icon={<Icon.folderOpen width={15} height={12} />}
               >
-                <div className="p-[clamp(10px,1.8vw,18px)]" style={GRID_BG}>
+                <div className="p-[clamp(10px,1.8vw,18px)]" style={MEDIA_BG}>
                   {filtered.length === 0 ? (
                     <div
-                      className={`${MONO} flex flex-col items-center gap-3 px-4 py-16 text-center text-[0.62rem] text-[#3b3550]`}
+                      className={`${MONO} mx-auto flex max-w-[420px] flex-col items-center gap-3 rounded-lg border-2 border-[#b8b4cc] bg-[#f0f0f5] px-4 py-16 text-center text-[0.62rem] text-[#3b3550] shadow-[4px_4px_0_rgba(24,12,58,0.35)]`}
                     >
                       <span aria-hidden className="text-[2rem]">
                         🗑️

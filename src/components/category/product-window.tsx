@@ -30,12 +30,22 @@ export type ViewMode = "grid" | "list";
 
 /* ---- Stickers d'état ---- */
 
-type Sticker = { label: string; from: string; to: string; ink: string };
+type Sticker = { label: React.ReactNode; from: string; to: string; ink: string };
 
 const HOT: Sticker = { label: "🔥 HOT", from: "#ffb03b", to: "#e8541b", ink: "#3d1400" };
 const RARE: Sticker = { label: "💎 RARE", from: "#bfe9ff", to: "#4aa8e0", ink: "#06304d" };
-const Y2K: Sticker = { label: "⚡ 100% Y2K", from: "#ffd0ec", to: "#ff45b4", ink: "#4d0029" };
 const SOLD: Sticker = { label: "✖ SOLD", from: "#d8d5e6", to: "#8b87a3", ink: "#1e1a2e" };
+const LOUNA_PICK: Sticker = {
+  label: (
+    <>
+      ♡ COUP DE CŒUR
+      <br />— LOUNA
+    </>
+  ),
+  from: "#ffd0ec",
+  to: "#ff45b4",
+  ink: "#4d0029",
+};
 
 /** Le sticker du coin haut : l'état de la pièce prime sur tout le reste. */
 function primarySticker(product: Product, sold: boolean): Sticker | null {
@@ -45,9 +55,21 @@ function primarySticker(product: Product, sold: boolean): Sticker | null {
   return null;
 }
 
-/** Le sticker du coin bas ne sort que si la fiche est réellement taguée Y2K. */
-function y2kSticker(product: Product): Sticker | null {
-  return product.tags.some((tag) => /y2k|2000|00s/i.test(tag)) ? Y2K : null;
+/**
+ * Le sticker du coin bas est un choix éditorial, pas un état automatique :
+ * Louna tague la fiche "coup de cœur" (ou "louna-pick") dans l'admin
+ * Shopify, insensible aux accents/à la casse/aux tirets, et le badge sort
+ * tout seul — aucun outil supplémentaire à construire pour elle.
+ */
+function isLounaPick(product: Product): boolean {
+  return product.tags.some((tag) => {
+    const n = tag.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z]/g, "");
+    return n === "coupdecoeur" || n === "coupdecoeurdelouna" || n === "lounapick";
+  });
+}
+
+function lounaPickSticker(product: Product): Sticker | null {
+  return isLounaPick(product) ? LOUNA_PICK : null;
 }
 
 function StickerChip({ sticker, className = "" }: { sticker: Sticker; className?: string }) {
@@ -101,7 +123,7 @@ export function ProductWindow({
   const sold = product.tag === "SOLD" || !product.variantId;
   const href = `/products/${product.handle}`;
   const badge = primarySticker(product, sold);
-  const y2k = y2kSticker(product);
+  const pick = lounaPickSticker(product);
   const list = view === "list";
 
   const add = async (e: React.MouseEvent) => {
@@ -136,7 +158,7 @@ export function ProductWindow({
       <SmartImg className="lde-img lde-img-b" src={product.imageB} alt={product.name} tone={idx + 1} />
 
       {badge && <StickerChip sticker={badge} className="top-1.5 left-1.5 -rotate-3" />}
-      {!list && y2k && <StickerChip sticker={y2k} className="right-1.5 bottom-1.5 rotate-2" />}
+      {!list && pick && <StickerChip sticker={pick} className="right-1.5 bottom-1.5 rotate-2 text-center" />}
       {sold && <span className="pointer-events-none absolute inset-0 z-10 bg-white/45" />}
     </Link>
   );
@@ -213,9 +235,9 @@ export function ProductWindow({
                   .filter(Boolean)
                   .join("  ·  ") || "PIÈCE UNIQUE"}
               </p>
-              {y2k && (
+              {pick && (
                 <span className="relative mt-2 hidden sm:inline-block">
-                  <StickerChip sticker={y2k} className="relative top-0 left-0 rotate-0" />
+                  <StickerChip sticker={pick} className="relative top-0 left-0 rotate-0 text-center" />
                 </span>
               )}
             </Link>
