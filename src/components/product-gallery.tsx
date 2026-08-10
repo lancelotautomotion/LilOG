@@ -83,8 +83,11 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
           <WindowControls />
         </div>
 
+        {/* `max-h` : en grand écran, une colonne au ratio 3/4 dépasse de loin
+            la hauteur des informations et creusait un vide à leur suite. Le
+            cadre est plafonné, l'image reste en `object-cover`. */}
         <div
-          className="relative aspect-[3/4] w-full touch-pan-y bg-[#d6d3e2] shadow-inner"
+          className="relative aspect-[3/4] max-h-[clamp(420px,62vh,600px)] w-full touch-pan-y bg-[#d6d3e2] shadow-inner"
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >

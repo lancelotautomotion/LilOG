@@ -20,7 +20,7 @@
    utilisées par cette page.
    ============================================================ */
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n-context";
 import { useCart } from "@/lib/cart-context";
@@ -33,8 +33,11 @@ import { ProductGallery } from "@/components/product-gallery";
 import { ProductWindow } from "@/components/category/product-window";
 import {
   BEVEL_IN,
+  LCD,
   LeopardBackdrop,
+  MATRIX,
   MONO,
+  NEON,
   PLASTIC,
   PLASTIC_FACE,
   PLASTIC_PRESS,
@@ -81,6 +84,26 @@ const PDP_CSS = `
 @keyframes lpi-blink{0%,49%{opacity:1}50%,100%{opacity:.25}}
 .lpi-blink{animation:lpi-blink 1.15s step-end infinite}
 
+/* Lignes de balayage de l'afficheur de prix — l'écran a l'air allumé,
+   pas imprimé. Purement décoratif, sous le texte. */
+.lpi-crt::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.32) 0 1px,rgba(0,0,0,0) 1px 3px)}
+
+/* Ascenseur du Notepad, façon Windows : gouttière grise, poignée en
+   plastique biseauté.
+   scrollbar-gutter:stable réserve la place en permanence — sans elle
+   Chrome dessine un ascenseur flottant qui n'apparaît qu'au survol, et
+   rien n'indique que le texte continue. On ne déclare surtout pas
+   scrollbar-width / scrollbar-color : ces propriétés standard, une
+   fois posées, désactivent les pseudo-éléments -webkit- ci-dessous.
+   Firefox, lui, garde son ascenseur natif. */
+.lpi-scroll{scrollbar-gutter:stable}
+.lpi-scroll::-webkit-scrollbar{width:14px}
+.lpi-scroll::-webkit-scrollbar-track{background:#eceafa;border-left:1px solid #d8d5e6}
+.lpi-scroll::-webkit-scrollbar-thumb{border:1px solid #a5a1bd;
+  background:linear-gradient(180deg,#fdfdff 0%,#ebe9f4 48%,#c9c6da 100%);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,86,120,.55)}
+
 .lpi-desc p{margin:0 0 1.1em}
 .lpi-desc p:last-child{margin-bottom:0}
 .lpi-desc strong,.lpi-desc b{font-weight:700}
@@ -125,21 +148,50 @@ function SystemLogs({
   const [active, setActive] = useState(0);
   const shown = tabs[active] ?? tabs[0];
 
+  /* Le texte est plafonné en hauteur : reste à le dire. L'ascenseur ne
+     suffit pas — Chrome le dessine en flottant, invisible tant qu'on ne
+     survole pas le cadre. On mesure donc le débordement pour n'afficher
+     le dégradé et la mention [ ▼ SUITE ] que lorsqu'il reste à lire. */
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [more, setMore] = useState(false);
+
+  const measure = useCallback(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    setMore(el.scrollHeight - el.scrollTop - el.clientHeight > 8);
+  }, []);
+
+  useEffect(() => {
+    measure();
+    const el = bodyRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [measure, active]);
+
   return (
-    <div className="border-t-2 border-[#c6c2d8]">
-      <div className={`${MONO} border-b border-[#d8d5e6] bg-[#e9e7f2] px-3 pt-2.5 text-[0.5rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase sm:px-6`}>
-        SYSTEM_LOGS
+    <div className="mt-6">
+      <div className={`${MONO} mb-2 text-[0.5rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
+        ▶ SYSTEM_LOGS
       </div>
-      <div className="flex flex-wrap gap-1.5 border-b border-[#d8d5e6] bg-[#e9e7f2] px-3 pb-2.5 sm:px-6">
+
+      {/* Onglets posés sur le bord haut du Notepad : l'actif partage son
+          blanc et perd sa bordure basse, donc les deux ne font qu'un. */}
+      <div className="flex flex-wrap gap-1">
         {tabs.map((tb, i) => (
           <button
             key={tb.file}
             type="button"
             onClick={() => setActive(i)}
             aria-pressed={i === active}
-            className={`${MONO} flex items-center gap-1.5 rounded-t-md border border-b-0 px-2.5 py-1.5 text-[0.5rem] font-bold tracking-[0.04em] uppercase transition sm:text-[0.56rem] ${
+            className={`${MONO} flex items-center gap-1 rounded-t-md border border-b-0 px-2 py-1.5 text-[0.46rem] font-bold tracking-[0.02em] uppercase transition sm:text-[0.5rem] ${
               i === active
-                ? "border-[#c6c2d8] bg-white text-[#1E2430]"
+                ? "relative z-[1] -mb-px border-[#c6c2d8] bg-white text-[#1E2430]"
                 : "border-transparent bg-[#dcdaea] text-[#6B7280] hover:bg-[#eceafa]"
             }`}
           >
@@ -149,11 +201,33 @@ function SystemLogs({
         ))}
       </div>
 
-      {/* Fenêtre Notepad encastrée */}
-      <div className={`m-3 rounded-md border border-[#c6c2d8] bg-white p-4 ${BEVEL_IN} sm:m-6`}>
-        <div className={`${MONO} lpi-desc max-w-[62ch] text-[0.68rem] leading-[1.85] text-[#3b3550]`}>
-          {shown.body}
+      {/* Fenêtre Notepad encastrée. Les fiches Shopify vont d'une ligne à
+          trois écrans de texte : la hauteur est donc plafonnée et le texte
+          défile dans sa fenêtre, plutôt que d'étirer la page sans fin. */}
+      <div className="relative">
+        <div
+          ref={bodyRef}
+          onScroll={measure}
+          className={`lpi-scroll max-h-[clamp(220px,34vh,320px)] overflow-y-auto rounded-md rounded-tl-none border border-[#c6c2d8] bg-white p-3.5 ${BEVEL_IN}`}
+        >
+          <div className={`${MONO} lpi-desc text-[0.64rem] leading-[1.75] text-[#3b3550]`}>{shown.body}</div>
         </div>
+
+        {more && (
+          <>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-x-px bottom-px h-12 rounded-b-md"
+              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.96) 78%)" }}
+            />
+            <span
+              aria-hidden
+              className={`${MONO} pointer-events-none absolute right-4 bottom-1.5 rounded-sm border border-[#c6c2d8] bg-[#eceafa] px-1.5 py-0.5 text-[0.44rem] font-bold tracking-[0.08em] text-[#5b2fb8] uppercase`}
+            >
+              ▼ SUITE
+            </span>
+          </>
+        )}
       </div>
     </div>
   );
@@ -313,26 +387,47 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   {product.name}
                 </h1>
 
-                {/* Écran LED */}
-                <div className="mt-4 flex flex-wrap items-center gap-2.5">
-                  <div
-                    className={`rounded-md border-2 border-pink-500 bg-black p-2 font-mono text-2xl text-pink-500 ${BEVEL_IN}`}
-                    style={{ textShadow: "0 0 10px rgba(236,72,153,0.65)" }}
-                  >
-                    {product.price}€
+                {/* Écran LED — un vrai afficheur d'appareil : boîtier noir
+                    encastré, libellé gravé, chiffres néon en typo LCD, prix
+                    barré et remise logés dans le même bandeau plutôt que
+                    dispersés à côté. */}
+                <div
+                  className={`lpi-crt relative mt-4 w-fit max-w-full overflow-hidden rounded-lg border-2 border-[#2b2b3d] bg-black px-4 py-2.5 ${BEVEL_IN}`}
+                >
+                  <div className="relative z-[2] flex flex-wrap items-end gap-x-5 gap-y-1.5">
+                    <div className="min-w-0">
+                      <span
+                        className={`${MONO} block text-[0.42rem] font-bold tracking-[0.22em] uppercase`}
+                        style={{ color: "rgba(255,94,196,0.55)" }}
+                      >
+                        PRICE_TAG.SYS
+                      </span>
+                      <span className="flex items-baseline gap-2.5">
+                        <span
+                          className={`${LCD} text-[2.6rem] leading-[0.9] tracking-[0.02em]`}
+                          style={{ color: NEON, textShadow: `0 0 14px ${NEON}b3, 0 0 34px ${NEON}59` }}
+                        >
+                          {product.price}€
+                        </span>
+                        {product.was && (
+                          <s className={`${MONO} text-[0.72rem] text-white/35`}>{product.was}€</s>
+                        )}
+                      </span>
+                    </div>
+
+                    {discount !== null && (
+                      <span
+                        className={`${LCD} shrink-0 rounded border border-[#5affa0]/50 px-2 py-0.5 text-[1.15rem] leading-none`}
+                        style={{
+                          color: MATRIX,
+                          textShadow: `0 0 10px ${MATRIX}8c`,
+                          background: "rgba(90,255,160,0.08)",
+                        }}
+                      >
+                        -{discount}%
+                      </span>
+                    )}
                   </div>
-                  {product.was && (
-                    <span className={`${MONO} text-[0.72rem] text-[#6B7280] line-through opacity-70`}>
-                      {product.was}€
-                    </span>
-                  )}
-                  {discount !== null && (
-                    <span
-                      className={`${MONO} rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.52rem] font-bold text-[#d3016d] uppercase ${PLASTIC}`}
-                    >
-                      -{discount}%
-                    </span>
-                  )}
                 </div>
 
                 {/* Fiche de caractéristiques RPG */}
@@ -410,11 +505,14 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                 {addError && (
                   <p className={`${MONO} mt-2.5 text-[0.6rem] text-[#d4006e]`}>⚠ {addError}</p>
                 )}
+
+                {/* SYSTEM_LOGS — dans la colonne de droite, sous l'achat :
+                    c'est lui qui occupe la hauteur laissée libre par le
+                    lecteur photo, au lieu de s'étaler en pleine largeur
+                    sous un grand vide. */}
+                <SystemLogs tabs={logTabs} />
               </div>
             </div>
-
-            {/* SYSTEM_LOGS */}
-            <SystemLogs tabs={logTabs} />
 
             {/* Barre d'état */}
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
