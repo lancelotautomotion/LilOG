@@ -346,13 +346,14 @@ export function DocCenter({
         <div className="relative z-[1] mx-auto max-w-[1180px]">
 
           {/* ---- Pastilles décoratives (mêmes bijoux que /contact) ---- */}
-          {/* z-0 : sous la fenêtre (z-[1]), qui les recouvre partout où elles
-              chevaucheraient la barre de titre — seul le coin qui dépasse
-              du cadre reste visible, jamais les boutons/icônes. */}
-          <span aria-hidden className="lildoc-noprint pointer-events-none absolute inset-0 z-0">
+          {/* Au premier plan (z-20), mais décalées assez loin verticalement
+              pour dégager toute la hauteur de la barre de titre / barre de
+              statut : elles chevauchent le bord de la fenêtre, jamais son
+              icône ni ses boutons [_][🗖][✖]. */}
+          <span aria-hidden className="lildoc-noprint pointer-events-none absolute inset-0 z-20">
             <span
-              className="lildoc-sticker absolute h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)] -left-[10px] -top-[18px]"
-              style={{ ["--r" as string]: "-16deg" }}
+              className="lildoc-sticker absolute h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)] -left-[10px]"
+              style={{ ["--r" as string]: "-16deg", top: "calc(-1 * clamp(34px, 5vw, 58px))" }}
             >
               <ChromeStar uid="lc-star-a" />
             </span>
@@ -365,14 +366,14 @@ export function DocCenter({
               <GemSticker uid="lc-star-b" shape="star" hue={["#FFB3D6", "#F0509A", "#B7175C"]} />
             </span>
             <span
-              className="lildoc-sticker lildoc-s3 absolute h-[clamp(30px,4.2vw,50px)] w-[clamp(30px,4.2vw,50px)] -bottom-[16px] -left-[6px]"
-              style={{ ["--r" as string]: "10deg" }}
+              className="lildoc-sticker lildoc-s3 absolute h-[clamp(30px,4.2vw,50px)] w-[clamp(30px,4.2vw,50px)] -left-[6px]"
+              style={{ ["--r" as string]: "10deg", bottom: "calc(-1 * clamp(30px, 4.2vw, 50px))" }}
             >
               <HoloSmiley uid="lc-smiley" />
             </span>
             <span
-              className="lildoc-sticker lildoc-s4 absolute h-[clamp(26px,3.6vw,42px)] w-[clamp(26px,3.6vw,42px)] -right-[6px] -bottom-[18px]"
-              style={{ ["--r" as string]: "-12deg" }}
+              className="lildoc-sticker lildoc-s4 absolute h-[clamp(26px,3.6vw,42px)] w-[clamp(26px,3.6vw,42px)] -right-[6px]"
+              style={{ ["--r" as string]: "-12deg", bottom: "calc(-1 * clamp(26px, 3.6vw, 42px))" }}
             >
               <GemSticker uid="lc-heart" shape="heart" hue={["#FFC0DF", "#EE4B96", "#B3155A"]} />
             </span>

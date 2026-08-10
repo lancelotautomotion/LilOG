@@ -463,31 +463,32 @@ export function HistoireShell() {
 
         <div className="relative z-[1] mx-auto max-w-[1080px]">
           {/* ---- Pastilles décoratives dans les angles ---- */}
-          {/* z-0 : sous la fenêtre (z-[1]), qui les recouvre partout où elles
-              chevaucheraient la barre de titre — seul le coin qui dépasse
-              du cadre reste visible, jamais les boutons/icônes. */}
-          <span aria-hidden className="pointer-events-none absolute inset-0 z-0">
+          {/* Au premier plan (z-20), mais décalées assez loin verticalement
+              pour dégager toute la hauteur de la barre de titre / barre de
+              statut : elles chevauchent le bord de la fenêtre, jamais son
+              icône ni ses boutons [_][🗖][✖]. */}
+          <span aria-hidden className="pointer-events-none absolute inset-0 z-20">
             <span
-              className="lj-sticker absolute -top-[18px] -left-[10px] h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)]"
-              style={{ ["--r" as string]: "-16deg" }}
+              className="lj-sticker absolute -left-[10px] h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)]"
+              style={{ ["--r" as string]: "-16deg", top: "calc(-1 * clamp(34px, 5vw, 58px))" }}
             >
               <ChromeStar uid="lj-star-a" />
             </span>
             <span
-              className="lj-sticker absolute -top-[16px] -right-[10px] h-[clamp(30px,4.4vw,50px)] w-[clamp(30px,4.4vw,50px)]"
-              style={{ ["--r" as string]: "14deg", animationDelay: "-2.6s" }}
+              className="lj-sticker absolute -right-[10px] h-[clamp(30px,4.4vw,50px)] w-[clamp(30px,4.4vw,50px)]"
+              style={{ ["--r" as string]: "14deg", animationDelay: "-2.6s", top: "calc(-1 * clamp(30px, 4.4vw, 50px))" }}
             >
               <HoloSmiley uid="lj-smiley-a" />
             </span>
             <span
-              className="lj-sticker absolute -bottom-[16px] -left-[8px] h-[clamp(28px,4vw,46px)] w-[clamp(28px,4vw,46px)]"
-              style={{ ["--r" as string]: "10deg", animationDelay: "-4.2s" }}
+              className="lj-sticker absolute -left-[8px] h-[clamp(28px,4vw,46px)] w-[clamp(28px,4vw,46px)]"
+              style={{ ["--r" as string]: "10deg", animationDelay: "-4.2s", bottom: "calc(-1 * clamp(28px, 4vw, 46px))" }}
             >
               <GemSticker uid="lj-heart" shape="heart" hue={["#FFC0DF", "#EE4B96", "#B3155A"]} />
             </span>
             <span
-              className="lj-sticker absolute -right-[8px] -bottom-[18px] h-[clamp(28px,4vw,46px)] w-[clamp(28px,4vw,46px)]"
-              style={{ ["--r" as string]: "-12deg", animationDelay: "-1.1s" }}
+              className="lj-sticker absolute -right-[8px] h-[clamp(28px,4vw,46px)] w-[clamp(28px,4vw,46px)]"
+              style={{ ["--r" as string]: "-12deg", animationDelay: "-1.1s", bottom: "calc(-1 * clamp(28px, 4vw, 46px))" }}
             >
               <GemSticker uid="lj-star-b" shape="star" hue={["#CFE0FF", "#5C9BFF", "#1B48CE"]} />
             </span>
