@@ -480,7 +480,7 @@ function RecycleBin() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-5 p-4 sm:flex-row sm:items-start sm:p-6" style={GRID_BG}>
+        <div className="flex flex-col gap-5 p-4 sm:flex-row sm:items-center sm:p-6" style={GRID_BG}>
           {/* Icône : corbeille Win95 d'où sortent des vêtements étincelants */}
           <div className="relative mx-auto h-28 w-28 shrink-0 sm:mx-0" aria-hidden>
             <span className="absolute inset-0 grid place-items-center">
@@ -636,7 +636,10 @@ export function DurabiliteShell() {
 
         <div className="relative z-[1] mx-auto max-w-[1180px]">
           {/* ---- Pastilles décoratives dans les angles ---- */}
-          <span aria-hidden className="pointer-events-none absolute inset-0 z-20">
+          {/* z-0 : sous la fenêtre (z-[1]), qui les recouvre partout où elles
+              chevaucheraient la barre de titre — seul le coin qui dépasse
+              du cadre reste visible, jamais les boutons/icônes. */}
+          <span aria-hidden className="pointer-events-none absolute inset-0 z-0">
             <span
               className="durab-sticker absolute -top-[18px] -left-[10px] h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)]"
               style={{ ["--r" as string]: "-16deg" }}

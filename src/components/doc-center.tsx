@@ -346,7 +346,10 @@ export function DocCenter({
         <div className="relative z-[1] mx-auto max-w-[1180px]">
 
           {/* ---- Pastilles décoratives (mêmes bijoux que /contact) ---- */}
-          <span aria-hidden className="lildoc-noprint pointer-events-none absolute inset-0 z-20">
+          {/* z-0 : sous la fenêtre (z-[1]), qui les recouvre partout où elles
+              chevaucheraient la barre de titre — seul le coin qui dépasse
+              du cadre reste visible, jamais les boutons/icônes. */}
+          <span aria-hidden className="lildoc-noprint pointer-events-none absolute inset-0 z-0">
             <span
               className="lildoc-sticker absolute h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)] -left-[10px] -top-[18px]"
               style={{ ["--r" as string]: "-16deg" }}
