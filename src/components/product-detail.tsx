@@ -640,11 +640,24 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
             </div>
           </WindowFrame>
 
-          {/* RECOMMENDED_COMBO.EXE */}
+          {/* RECOMMENDED_COMBO.EXE — titre de module, pas une légende : centré
+              et repris en LCD géant avec le même halo néon que le prix, pour
+              qu'il porte sur le décor léopard plutôt que de s'y fondre. */}
           {related.length > 0 && (
-            <div className="mt-[clamp(40px,6vw,72px)]">
-              <div className={`${MONO} mb-3 text-[0.58rem] font-bold tracking-[0.14em] text-white uppercase`} style={{ textShadow: "0 2px 6px rgba(0,0,0,0.85)" }}>
-                <span style={{ color: "#ff9ee4" }}>▶</span> 🎮 SUGGESTED_STYLE_COMBO.EXE
+            <div className="mt-[clamp(48px,7vw,84px)]">
+              <div className="mb-5 text-center sm:mb-7">
+                <p
+                  className={`${MONO} text-[0.5rem] font-bold tracking-[0.28em] text-white/75 uppercase`}
+                  style={{ textShadow: "0 2px 6px rgba(0,0,0,0.85)" }}
+                >
+                  ▶ RECOMMENDED_COMBO.EXE
+                </p>
+                <h2
+                  className={`${LCD} mt-1.5 text-[clamp(1.8rem,5.6vw,2.8rem)] leading-none tracking-[0.03em] text-white uppercase`}
+                  style={{ textShadow: `0 0 14px ${NEON}b3, 0 0 38px ${NEON}59, 0 3px 16px rgba(0,0,0,.8)` }}
+                >
+                  🎮 SUGGESTED_STYLE_COMBO.EXE
+                </h2>
               </div>
               <div className="grid grid-cols-2 gap-[clamp(12px,2vw,20px)] md:grid-cols-4">
                 {related.map((p, idx) => (
