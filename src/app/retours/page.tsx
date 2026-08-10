@@ -12,7 +12,6 @@ const SECTIONS: DocSection[] = [
     num: "01",
     file: "01_RETRACTATION.DOC",
     title: "Ton droit de rétractation",
-    image: { src: "/retours-hero-img.png" },
     content: (
       <>
         <Tldr>14 jours calendaires après réception pour changer d&apos;avis, sans avoir à te justifier.</Tldr>
@@ -33,7 +32,6 @@ const SECTIONS: DocSection[] = [
     num: "02",
     file: "02_CONDITIONS.SYS",
     title: "Conditions de retour",
-    image: { src: "/metalik-sticker.png" },
     content: (
       <>
         <P>
@@ -102,7 +100,6 @@ const SECTIONS: DocSection[] = [
     num: "05",
     file: "05_EXCEPTIONS.INI",
     title: "Exceptions",
-    image: { src: "/exceptions-img.png" },
     content: (
       <>
         <P>

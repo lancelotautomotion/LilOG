@@ -12,7 +12,6 @@ const SECTIONS: DocSection[] = [
     num: "01",
     file: "01_DELAIS.SYS",
     title: "Délais de livraison",
-    image: { src: "/livraison-hero-img.png" },
     content: (
       <>
         <Tldr>2 à 5 jours ouvrés de préparation, plus le délai du transporteur.</Tldr>
@@ -33,7 +32,6 @@ const SECTIONS: DocSection[] = [
     num: "02",
     file: "02_MODES.EXE",
     title: "Modes de livraison",
-    image: { src: "/modes-livraison-img.png" },
     content: (
       <>
         <P>Deux transporteurs, un numéro de suivi transmis par e-mail dès l&apos;expédition :</P>
@@ -92,7 +90,6 @@ const SECTIONS: DocSection[] = [
     num: "05",
     file: "05_COLIS_ENDOMMAGE.DLG",
     title: "Colis endommagé ou manquant",
-    image: { src: "/colis-img.png" },
     content: (
       <>
         <Notice title="COLIS_ENDOMMAGE.DLG">
