@@ -35,17 +35,10 @@ type Sticker = { label: React.ReactNode; from: string; to: string; ink: string }
 const HOT: Sticker = { label: "🔥 HOT", from: "#ffb03b", to: "#e8541b", ink: "#3d1400" };
 const RARE: Sticker = { label: "💎 RARE", from: "#bfe9ff", to: "#4aa8e0", ink: "#06304d" };
 const SOLD: Sticker = { label: "✖ SOLD", from: "#d8d5e6", to: "#8b87a3", ink: "#1e1a2e" };
-const LOUNA_PICK: Sticker = {
-  label: (
-    <>
-      ♡ COUP DE CŒUR
-      <br />— LOUNA
-    </>
-  ),
-  from: "#ffd0ec",
-  to: "#ff45b4",
-  ink: "#4d0029",
-};
+/* Même gris « chunky plastic » que les boutons [ _ ] [ ✖ ] du header de
+   fiche : un badge éditorial n'a pas besoin de crier plus fort qu'un état
+   du produit (HOT, RARE, SOLD), qui gardent eux leurs couleurs vives. */
+const LOUNA_PICK: Sticker = { label: "💗 Coup de cœur", from: "#fdfdff", to: "#d3d0e1", ink: "#262626" };
 
 /** Le sticker du coin haut : l'état de la pièce prime sur tout le reste. */
 function primarySticker(product: Product, sold: boolean): Sticker | null {
@@ -158,7 +151,7 @@ export function ProductWindow({
       <SmartImg className="lde-img lde-img-b" src={product.imageB} alt={product.name} tone={idx + 1} />
 
       {badge && <StickerChip sticker={badge} className="top-1.5 left-1.5 -rotate-3" />}
-      {!list && pick && <StickerChip sticker={pick} className="right-1.5 bottom-1.5 rotate-2 text-center" />}
+      {!list && pick && <StickerChip sticker={pick} className="right-1.5 bottom-1.5 rotate-2" />}
       {sold && <span className="pointer-events-none absolute inset-0 z-10 bg-white/45" />}
     </Link>
   );
@@ -237,7 +230,7 @@ export function ProductWindow({
               </p>
               {pick && (
                 <span className="relative mt-2 hidden sm:inline-block">
-                  <StickerChip sticker={pick} className="relative top-0 left-0 rotate-0 text-center" />
+                  <StickerChip sticker={pick} className="relative top-0 left-0 rotate-0" />
                 </span>
               )}
             </Link>
