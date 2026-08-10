@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/lib/i18n-context";
 import { Typewriter } from "@/components/typewriter";
-import { MONO, NEON } from "@/components/home/kit";
+import { MONO, NEON } from "@/components/y2k/kit";
 
 /**
  * Vidéo de fond. Le fichier n'est pas versionné (poids) : dépose

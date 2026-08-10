@@ -30,7 +30,7 @@ import {
   SectionLabel,
   Tape,
   WindowFrame,
-} from "@/components/home/kit";
+} from "@/components/y2k/kit";
 
 /** Photographie maison — la même campagne que /histoire. */
 const POLAROID_SRC = "/histoire/look-07.jpg";

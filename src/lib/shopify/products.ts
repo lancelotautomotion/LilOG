@@ -1,4 +1,5 @@
 import { shopifyFetch } from "./client";
+import { compareSizes, normalizeSize } from "@/lib/sizes";
 import { COLLECTION_BY_HANDLE_QUERY, FEATURED_PRODUCTS_QUERY, PRODUCT_BY_HANDLE_QUERY } from "./queries";
 import type {
   CollectionByHandleResponse,
@@ -47,6 +48,23 @@ function extractColorValues(node: ShopifyProductNode): string[] {
       "options:", node.options?.map((o) => o.name));
   }
   return [];
+}
+
+/**
+ * Tailles d'une fiche, telles que le catalogue les filtre. La requête de
+ * collection remonte déjà `options { name values }` : la taille sort donc de
+ * l'option « Taille » / « Size », passée par le même normaliseur que le
+ * dressing (« Small » → « S », « 38 / 40 » → « 38/40 », « TU » → rien).
+ */
+function extractSizeValues(node: ShopifyProductNode): string[] {
+  const sizeOption = node.options?.find((o) => /taille|size/i.test(o.name));
+  const raw = sizeOption?.values ?? sizeOption?.optionValues?.map((v) => v.name) ?? [];
+  const seen = new Set<string>();
+  for (const value of raw) {
+    const size = normalizeSize(value);
+    if (size) seen.add(size);
+  }
+  return [...seen].sort(compareSizes);
 }
 
 function stripEmoji(str: string): string {
@@ -126,6 +144,7 @@ function mapProduct(node: ShopifyProductNode): Product {
     imageB,
     tags: node.tags,
     colors: extractColorValues(node),
+    sizes: extractSizeValues(node),
     variantId: variant?.id ?? null,
   };
 }

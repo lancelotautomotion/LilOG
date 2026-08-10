@@ -19,7 +19,7 @@ import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { Icon } from "@/components/icons";
 import { CATEGORIES } from "@/lib/categories";
-import { GRID_BG, MONO, PLASTIC, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/home/kit";
+import { GRID_BG, MONO, PLASTIC, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
 
 /** Nom de fichier affiché sous chaque dossier, par clé de catégorie. */
 const FILENAMES: Record<string, string> = {

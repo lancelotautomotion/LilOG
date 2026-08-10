@@ -25,31 +25,11 @@ import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
+import { WALLPAPER, WALLPAPER_GRID } from "@/components/y2k/kit";
 import { HeroCamcorder } from "@/components/home/hero-camcorder";
 import { ArcadeSlot } from "@/components/home/arcade-slot";
 import { FileExplorer } from "@/components/home/file-explorer";
 import { ReadmeWindow } from "@/components/home/readme-window";
-
-/**
- * Le fond d'écran du bureau, sur lequel les fenêtres sont posées. Il est
- * calé sur `#a86fe8`, le violet clair qui termine le dégradé des barres de
- * titre : le bureau et ses fenêtres parlent donc la même couleur.
- */
-const WALLPAPER: React.CSSProperties = {
-  background:
-    "radial-gradient(ellipse at 16% -8%, rgba(255,150,222,0.42) 0%, transparent 52%)," +
-    "radial-gradient(ellipse at 88% 20%, rgba(255,255,255,0.20) 0%, transparent 46%)," +
-    "radial-gradient(ellipse at 50% 106%, rgba(59,29,143,0.30) 0%, transparent 62%)," +
-    "linear-gradient(180deg, #9a63e4 0%, #a86fe8 38%, #b98cef 72%, #9d68e6 100%)",
-};
-
-/** Quadrillage du fond d'écran — le même pas que le papier millimétré. */
-const WALLPAPER_GRID: React.CSSProperties = {
-  backgroundImage:
-    "linear-gradient(rgba(59,29,143,0.10) 1px, transparent 1px)," +
-    "linear-gradient(90deg, rgba(59,29,143,0.10) 1px, transparent 1px)",
-  backgroundSize: "44px 44px",
-};
 
 const SHELL_CSS = `
 @keyframes lhsBob{

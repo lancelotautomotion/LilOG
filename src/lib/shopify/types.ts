@@ -110,6 +110,8 @@ export interface Product {
   tag: "NEW" | "1 OF 1" | "SOLD" | null;
   tags: string[];
   colors: string[];
+  /** Tailles normalisées ("S", "38", …) — alimente le filtre du catalogue. */
+  sizes: string[];
   imageA: string;
   imageB: string;
   variantId: string | null;

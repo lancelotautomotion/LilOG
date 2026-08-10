@@ -14,7 +14,7 @@
 
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
-import { LCD, MONO, PLASTIC, SectionLabel } from "@/components/home/kit";
+import { LCD, MONO, PLASTIC, SectionLabel } from "@/components/y2k/kit";
 
 /** Les symboles qui défilent dans les rouleaux. */
 const REEL = ["👗", "👠", "👜", "🕶️", "💍", "👖", "🎀", "💄"];

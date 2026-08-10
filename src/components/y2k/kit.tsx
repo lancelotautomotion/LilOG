@@ -1,9 +1,10 @@
 /* ============================================================
-   LIL_OG_DESKTOP.EXE — vocabulaire commun de la page d'accueil
+   Vocabulaire Y2K commun — fenêtres, plastique, scotch
    ------------------------------------------------------------
-   Les jetons et briques de fenêtre partagés par les quatre
-   modules de l'accueil (CAMCORDER_OS, ARCADE_SLOT,
-   FILE_EXPLORER.SYS, README.TXT). Ce sont exactement les mêmes
+   Les jetons et briques de fenêtre partagés par les modules de
+   l'accueil (CAMCORDER_OS, ARCADE_SLOT, FILE_EXPLORER.SYS,
+   README.TXT) et par le catalogue (DIRECTORY_EXPLORER.EXE). Ce
+   sont exactement les mêmes
    valeurs que /contact, /faq, /histoire et le pied de page :
    fenêtres bordées #b8b4cc, barre de titre violette avec
    [ _ ] [ 🗖 ] [ ✖ ], jetons « chunky plastic », papier
@@ -47,8 +48,40 @@ export const GRID_BG: React.CSSProperties = {
   backgroundSize: "22px 22px",
 };
 
-/** Ombre dure Y2K / web brutalism portée par toutes les fenêtres de l'accueil. */
+/** Ombre dure Y2K / web brutalism portée par toutes les fenêtres du site. */
 export const HARD_SHADOW = "shadow-[6px_6px_0_rgba(24,12,58,0.55)] md:shadow-[10px_10px_0_rgba(24,12,58,0.55)]";
+
+/**
+ * Le fond d'écran du bureau, partagé par l'accueil et le catalogue : les deux
+ * pages sont des fenêtres du même OS. Calé sur `#a86fe8`, le violet clair qui
+ * termine le dégradé des barres de titre.
+ */
+export const WALLPAPER: React.CSSProperties = {
+  background:
+    "radial-gradient(ellipse at 16% -8%, rgba(255,150,222,0.42) 0%, transparent 52%)," +
+    "radial-gradient(ellipse at 88% 20%, rgba(255,255,255,0.20) 0%, transparent 46%)," +
+    "radial-gradient(ellipse at 50% 106%, rgba(59,29,143,0.30) 0%, transparent 62%)," +
+    "linear-gradient(180deg, #9a63e4 0%, #a86fe8 38%, #b98cef 72%, #9d68e6 100%)",
+};
+
+/** Quadrillage du fond d'écran — le même pas que le papier millimétré. */
+export const WALLPAPER_GRID: React.CSSProperties = {
+  backgroundImage:
+    "linear-gradient(rgba(59,29,143,0.10) 1px, transparent 1px)," +
+    "linear-gradient(90deg, rgba(59,29,143,0.10) 1px, transparent 1px)",
+  backgroundSize: "44px 44px",
+};
+
+/**
+ * Biseau 3D façon Windows 95 : arête claire en haut à gauche, arête sombre en
+ * bas à droite. C'est ce liseré qui fait la barre d'outils « en relief ».
+ */
+export const BEVEL_OUT =
+  "shadow-[inset_1px_1px_0_rgba(255,255,255,0.95),inset_-1px_-1px_0_rgba(90,86,120,0.75),inset_2px_2px_0_rgba(255,255,255,0.55),inset_-2px_-2px_0_rgba(140,136,170,0.5)]";
+
+/** Le même biseau, creusé — pour les zones encastrées (champs, écrans). */
+export const BEVEL_IN =
+  "shadow-[inset_1px_1px_0_rgba(90,86,120,0.75),inset_-1px_-1px_0_rgba(255,255,255,0.9),inset_2px_2px_4px_rgba(0,0,0,0.18)]";
 
 /* ============================================================
    Briques d'interface
