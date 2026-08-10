@@ -92,7 +92,10 @@ export function ReadmeWindow() {
 
             {/* Feuille */}
             <div className="flex bg-[#FFFEF2]">
-              <div className="min-w-0 flex-1 px-[clamp(16px,3.4vw,38px)] py-[clamp(20px,3.6vw,40px)]">
+              {/* En desktop, la colonne s'arrête avant la zone que le polaroid
+                  recouvre : la photo mord sur le cadre de la fenêtre, jamais
+                  sur une fin de ligne. */}
+              <div className="min-w-0 flex-1 px-[clamp(16px,3.4vw,38px)] py-[clamp(20px,3.6vw,40px)] md:pr-[96px]">
                 <p className={`${MONO} text-[0.52rem] tracking-[0.16em] text-[#9a94b5] uppercase`}>
                   — {t.ed.eyebrow} —
                 </p>

@@ -50,7 +50,7 @@ const hand = Caveat({
 
 export const metadata: Metadata = {
   title: "Lil'OG — Pre-loved Y2K",
-  description: "Vintage Y2K de seconde main, une pièce à la fois — Londres.",
+  description: "Vintage Y2K de seconde main, une pièce à la fois — Paris.",
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

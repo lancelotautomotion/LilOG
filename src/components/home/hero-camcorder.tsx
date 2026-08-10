@@ -111,11 +111,24 @@ function Battery() {
   );
 }
 
-/** Repères de cadre du viseur, aux quatre coins. */
+/**
+ * Repères de cadre du viseur, aux quatre coins.
+ *
+ * Deux pièges, qui coupaient les repères dans la première version :
+ * — en haut, la barre de navigation est opaque et recouvre les 72 premiers
+ *   pixels du hero, donc le cadre démarre en dessous ;
+ * — les pastilles d'habillage (REC, batterie, date, PLAY) partageaient la
+ *   même marge latérale que les repères et passaient par-dessus leurs
+ *   traits. Elles sont désormais rentrées plus au centre (`inset-x` des
+ *   deux rangées), de sorte qu'aucune ne croise un coin.
+ */
 function Brackets() {
-  const base = "pointer-events-none absolute h-9 w-9 border-white/70 md:h-12 md:w-12";
+  const base = "pointer-events-none absolute h-6 w-6 border-white/70 md:h-12 md:w-12";
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-[18px] z-20 md:inset-9">
+    <div
+      aria-hidden
+      className="pointer-events-none absolute top-[76px] right-2 bottom-2 left-2 z-20 md:top-[96px] md:right-6 md:bottom-6 md:left-6"
+    >
       <span className={`${base} top-0 left-0 border-t-2 border-l-2`} />
       <span className={`${base} top-0 right-0 border-t-2 border-r-2`} />
       <span className={`${base} bottom-0 left-0 border-b-2 border-l-2`} />
@@ -217,7 +230,7 @@ export function HeroCamcorder() {
       <Brackets />
 
       {/* ---- Ligne haute : témoin d'enregistrement / batterie ---- */}
-      <div className="absolute inset-x-[18px] top-[calc(72px+env(safe-area-inset-top))] z-30 flex items-start justify-between gap-3 md:inset-x-10 md:top-28">
+      <div className="absolute inset-x-10 top-[calc(84px+env(safe-area-inset-top))] z-30 flex items-start justify-between gap-3 md:inset-x-24 md:top-28">
         <div className="flex flex-col items-start gap-1.5">
           <span className={chip}>
             <span className="lhz-rec inline-block h-2.5 w-2.5 rounded-full bg-[#ff2d2d] shadow-[0_0_10px_#ff2d2d]" />
@@ -277,14 +290,15 @@ export function HeroCamcorder() {
       </div>
 
       {/* ---- Ligne basse : date, mode, invite de défilement ---- */}
-      <div className="absolute inset-x-[18px] bottom-6 z-30 flex items-end justify-between gap-3 md:inset-x-10 md:bottom-9">
+      <div className="absolute inset-x-10 bottom-4 z-30 flex items-end justify-between gap-3 md:inset-x-24 md:bottom-9">
         <span className={chip} suppressHydrationWarning>
           <span aria-hidden>📅</span> {date ?? "--- -- ----"}
         </span>
 
         <a
           href="#slot"
-          className={`${MONO} lhz-bounce hidden text-[0.58rem] font-bold tracking-[0.22em] text-white/90 uppercase transition hover:text-white sm:block`}
+          className={`${MONO} lhz-bounce hidden text-[0.58rem] font-bold tracking-[0.22em] text-white uppercase transition hover:text-white sm:block`}
+          style={{ textShadow: "0 2px 12px rgba(0,0,0,.85)" }}
         >
           {t.home.scroll} ▼
         </a>
