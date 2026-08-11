@@ -151,19 +151,27 @@ export function FileExplorer() {
           reste du site à gauche. Même gouttière posée des deux côtés,
           `gap` entre les deux colonnes pour ne pas les souder au milieu. */}
       <div className="grid gap-4 px-4 sm:gap-6 sm:px-6 lg:grid-cols-2 lg:items-stretch">
-        <div className="relative order-1 min-h-[240px] overflow-hidden rounded-xl sm:min-h-[320px] lg:order-2 lg:min-h-0">
-          <Image
-            src="/histoire/look-16.jpeg"
-            alt="Portant de vêtements de l'archive Lil'OG"
-            fill
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            className="object-cover"
-          />
-          <span
-            className={`${MONO} absolute bottom-3 left-3 rounded-sm border border-black/30 bg-black/55 px-2 py-1 text-[0.48rem] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-[2px]`}
-          >
-            ▶ VINTAGE_RACK.JPG
-          </span>
+        {/* Même retrait vertical que la colonne fenêtre — sans lui, l'image
+            remplissait toute la cellule de grille pendant que la fenêtre,
+            elle, était rentrée de son `py`, et dépassait donc en haut comme
+            en bas. Le cadre photo est un enfant du bloc rembourré (et non
+            le bloc lui-même) : `fill` se positionne sur l'ancêtre `relative`
+            le plus proche et ignorerait un padding posé au même niveau. */}
+        <div className="order-1 py-5 lg:order-2 lg:py-8">
+          <div className="relative h-full min-h-[240px] overflow-hidden rounded-xl sm:min-h-[320px] lg:min-h-0">
+            <Image
+              src="/histoire/look-16.jpeg"
+              alt="Portant de vêtements de l'archive Lil'OG"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
+            <span
+              className={`${MONO} absolute bottom-3 left-3 rounded-sm border border-black/30 bg-black/55 px-2 py-1 text-[0.48rem] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-[2px]`}
+            >
+              ▶ VINTAGE_RACK.JPG
+            </span>
+          </div>
         </div>
 
         <div className="order-2 flex py-5 lg:order-1 lg:items-center lg:py-8">
