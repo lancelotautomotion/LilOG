@@ -52,13 +52,36 @@ export const GRID_BG: React.CSSProperties = {
 export const HARD_SHADOW = "shadow-[6px_6px_0_rgba(24,12,58,0.55)] md:shadow-[10px_10px_0_rgba(24,12,58,0.55)]";
 
 /**
- * Le décor de fond commun à tout le site — /histoire, /durabilite, /faq,
- * /contact : le léopard rose de la maison en plein cadre, assombri d'un
- * voile noir pour que les fenêtres qui se posent dessus restent lisibles.
- * `fixed` : le décor ne défile pas avec la page, comme sur ces mêmes pages.
+ * Le fond d'écran du bureau — page d'accueil uniquement. Calé sur
+ * `#a86fe8`, le violet clair qui termine le dégradé des barres de titre.
  *
- * L'accueil et le catalogue reprennent ce même décor plutôt qu'un fond
- * propre, pour que toutes les pages du site parlent le même langage.
+ * Posé en `style` inline sur `<main>` plutôt qu'en décor `fixed` plein
+ * viewport : un décor `fixed` couvrant tout l'écran peint par-dessus le
+ * hero plein écran qui précède `<main>` dans le DOM et masque ses
+ * propres visuels — c'est justement ce que ce fond évite.
+ */
+export const WALLPAPER: React.CSSProperties = {
+  background:
+    "radial-gradient(ellipse at 16% -8%, rgba(255,150,222,0.42) 0%, transparent 52%)," +
+    "radial-gradient(ellipse at 88% 20%, rgba(255,255,255,0.20) 0%, transparent 46%)," +
+    "radial-gradient(ellipse at 50% 106%, rgba(59,29,143,0.30) 0%, transparent 62%)," +
+    "linear-gradient(180deg, #9a63e4 0%, #a86fe8 38%, #b98cef 72%, #9d68e6 100%)",
+};
+
+/** Quadrillage du fond d'écran — le même pas que le papier millimétré. */
+export const WALLPAPER_GRID: React.CSSProperties = {
+  backgroundImage:
+    "linear-gradient(rgba(59,29,143,0.10) 1px, transparent 1px)," +
+    "linear-gradient(90deg, rgba(59,29,143,0.10) 1px, transparent 1px)",
+  backgroundSize: "44px 44px",
+};
+
+/**
+ * Le décor de fond commun à /histoire, /durabilite, /faq, /contact,
+ * /category et à la fiche produit : le léopard rose de la maison en
+ * plein cadre, assombri d'un voile noir pour que les fenêtres qui se
+ * posent dessus restent lisibles. `fixed` : le décor ne défile pas avec
+ * la page, comme sur ces mêmes pages.
  */
 export function LeopardBackdrop() {
   return (
@@ -209,8 +232,8 @@ export function Tape({
 /**
  * Étiquette de module — cohérente avec /durabilite et /histoire.
  * `paper` : posée sur une surface claire (papier millimétré, fenêtre).
- * `wallpaper` : posée à même le décor léopard du bureau — texte blanc et
- * ombre dure, comme les titres qui flottent sur les photos du hero.
+ * `wallpaper` : posée à même le fond d'écran violet du bureau (accueil
+ * uniquement) — indigo foncé, pensé pour ce violet clair uni.
  */
 export function SectionLabel({
   n,
@@ -225,11 +248,10 @@ export function SectionLabel({
   return (
     <p
       className={`${MONO} mb-3 text-[0.58rem] font-bold tracking-[0.14em] uppercase ${
-        wall ? "text-white" : "text-[#5b2fb8]"
+        wall ? "text-[#2b0f6b]" : "text-[#5b2fb8]"
       }`}
-      style={wall ? { textShadow: "0 2px 6px rgba(0,0,0,0.85)" } : undefined}
     >
-      <span style={{ color: wall ? "#ff9ee4" : PINK }}>▶</span> {n} — {file}
+      <span style={{ color: wall ? "#ffffff" : PINK }}>▶</span> {n} — {file}
     </p>
   );
 }
