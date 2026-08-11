@@ -325,7 +325,7 @@ export function DocCenter({
 
   return (
     <PageShell>
-      <main className="lildoc-main relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(48px,8vw,100px)]">
+      <main className="lildoc-main relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(24px,4vw,48px)]">
         <style>{CGV_CSS}</style>
 
         {/* Décor photo, comme /contact et le panier : calé sur le viewport

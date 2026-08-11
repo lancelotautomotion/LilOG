@@ -505,7 +505,7 @@ export function FaqShell() {
 
   return (
     <PageShell>
-      <main className="relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(48px,8vw,100px)]">
+      <main className="relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(24px,4vw,48px)]">
         <style>{FAQ_CSS}</style>
 
         {/* Décor photo, comme /contact et les pages légales : calé sur le
