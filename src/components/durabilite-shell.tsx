@@ -439,22 +439,81 @@ function ImpactCounters() {
    SECTION 3 — RECYCLE_BIN.EXE
    ============================================================ */
 
-/** Corbeille grillagée dessinée en SVG — un glyphe emoji n'est pas garanti
+/** Corbeille métallique dessinée en SVG — un glyphe emoji n'est pas garanti
  *  centré dans sa boîte de caractère selon la police/plateforme du lecteur ;
- *  un viewBox local rend le centrage exact partout. */
+ *  un viewBox local rend le centrage exact partout.
+ *
+ *  Volume plutôt qu'aplat : ouverture elliptique qui laisse voir l'intérieur,
+ *  corps tronconique en métal brossé, couvercle soulevé de biais — la version
+ *  précédente était un tracé plat vu de face, sans perspective, qui se lisait
+ *  plus comme un seau que comme une poubelle. Le couvercle ôté raconte au
+ *  passage la section : ce qui est dedans en ressort. */
 function RecycleBinIcon({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 64 64" className={className} aria-hidden>
       <defs>
-        <linearGradient id="durab-bin-grad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#eaf6fb" />
-          <stop offset="100%" stopColor="#8fd0e0" />
+        {/* Dégradés horizontaux : c'est la bande claire décalée à gauche qui
+            fait lire le métal, un dégradé vertical donnerait du plastique. */}
+        <linearGradient id="durab-bin-body" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#78829a" />
+          <stop offset="13%" stopColor="#d9e0eb" />
+          <stop offset="33%" stopColor="#f3f6fb" />
+          <stop offset="57%" stopColor="#bcc5d6" />
+          <stop offset="82%" stopColor="#8b95ab" />
+          <stop offset="100%" stopColor="#69738a" />
+        </linearGradient>
+        <linearGradient id="durab-bin-lid" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#8a94ab" />
+          <stop offset="22%" stopColor="#eff3f9" />
+          <stop offset="55%" stopColor="#c6cfdd" />
+          <stop offset="100%" stopColor="#767f95" />
+        </linearGradient>
+        <linearGradient id="durab-bin-rim" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#9aa4b8" />
+          <stop offset="26%" stopColor="#f6f8fc" />
+          <stop offset="60%" stopColor="#c9d2e0" />
+          <stop offset="100%" stopColor="#7c8699" />
         </linearGradient>
       </defs>
-      <path d="M23 9 V6.5 A2.5 2.5 0 0 1 25.5 4 h13 A2.5 2.5 0 0 1 41 6.5 V9" fill="none" stroke="#3d7f92" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-      <rect x="9" y="9" width="46" height="6" rx="3" fill="#4a90a4" />
-      <path d="M14 17 H50 L45.5 55 A4 4 0 0 1 41.5 58 H22.5 A4 4 0 0 1 18.5 55 Z" fill="url(#durab-bin-grad)" stroke="#3d7f92" strokeWidth="2.5" strokeLinejoin="round" />
-      <path d="M21 21 L23.5 54 M28.5 21 L29.5 56 M35.5 21 L34.5 56 M43 21 L40.5 54" stroke="#3d7f92" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
+
+      {/* Ombre portée au sol */}
+      <ellipse cx="32" cy="58.6" rx="17.5" ry="2.9" fill="#1e1446" opacity="0.16" />
+
+      {/* Corps tronconique, fond arrondi */}
+      <path
+        d="M15 23.5 L19 53.4 Q32 58.5 45 53.4 L49 23.5 Z"
+        fill="url(#durab-bin-body)"
+        stroke="#5b6478"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      {/* Nervures verticales + reflet franc sur l'arête gauche */}
+      <path
+        d="M23 26.5 L25.3 54.9 M32 27 L32 56.2 M41 26.5 L38.7 54.9"
+        stroke="#7b8497"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        opacity="0.45"
+      />
+      <path d="M18.3 26 L21.3 48" stroke="#ffffff" strokeWidth="1.7" strokeLinecap="round" opacity="0.55" />
+
+      {/* Rebord puis intérieur sombre : c'est ce creux qui donne le volume */}
+      <ellipse cx="32" cy="23.5" rx="17" ry="4.6" fill="url(#durab-bin-rim)" stroke="#5b6478" strokeWidth="1.6" />
+      <ellipse cx="32" cy="23.9" rx="13.1" ry="3.3" fill="#3a4150" />
+      <ellipse cx="32" cy="23.6" rx="13.1" ry="3.3" fill="#1f242e" />
+
+      {/* Couvercle ôté, posé de biais */}
+      <g transform="rotate(-14 32 12)">
+        <ellipse cx="32" cy="12.4" rx="17.8" ry="4.8" fill="url(#durab-bin-lid)" stroke="#5b6478" strokeWidth="1.6" />
+        <path
+          d="M30.5 11.6 v-2.2 a1.5 1.5 0 0 1 3 0 v2.2"
+          fill="url(#durab-bin-lid)"
+          stroke="#5b6478"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        <ellipse cx="32" cy="9.2" rx="2.7" ry="1.2" fill="url(#durab-bin-rim)" stroke="#5b6478" strokeWidth="1.3" />
+      </g>
     </svg>
   );
 }
