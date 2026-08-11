@@ -22,12 +22,11 @@
    fenêtre.
    ============================================================ */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
-import { Icon } from "@/components/icons";
 import logoBlack from "../../public/logo-black.png";
 
 /* ---- Jetons « chunky plastic » — identiques à /contact et /faq ---- */
@@ -35,8 +34,6 @@ const PLASTIC =
   "shadow-[inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_5px_rgba(0,0,0,0.25),0_2px_3px_rgba(30,36,48,0.18)]";
 const PLASTIC_PRESS =
   "active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.32),inset_0_-1px_0_rgba(255,255,255,0.7)] active:scale-95";
-const PLASTIC_ON =
-  "shadow-[inset_0_3px_7px_rgba(0,0,0,0.3),inset_0_-1px_0_rgba(255,255,255,0.45),0_2px_4px_rgba(80,30,140,0.35)]";
 
 /** Surface plastique claire des boutons, reprise telle quelle du reste du site. */
 const PLASTIC_FACE = "bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)]";
@@ -48,8 +45,6 @@ const LCD = "font-[family-name:var(--font-lcd)]";
 const PINK = "#d3016d";
 
 const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 55%, #a86fe8 100%)";
-const VIOLET_BAR_SOFT = "linear-gradient(90deg, #5b2fb8 0%, #7147d4 60%, #b184ee 100%)";
-const VIOLET_BUMP = "linear-gradient(180deg, #b58cf5 0%, #7147d4 55%, #5b2fb8 100%)";
 
 /* Quadrillage « papier millimétré » pastel du fond de fenêtre. */
 const GRID_BG = {
@@ -320,8 +315,6 @@ type Tab = { href: string; icon: string; label: string };
 
 export function Footer() {
   const { t } = useLanguage();
-  const [menu, setMenu] = useState(false);
-  const startRef = useRef<HTMLDivElement | null>(null);
 
   /* Les onglets reprennent les libellés déjà traduits du site : la barre
      des tâches suit la langue choisie dans le sélecteur de la nav. */
@@ -332,21 +325,6 @@ export function Footer() {
     { href: "/faq", icon: "❓", label: "FAQ" },
     { href: "/contact", icon: "☎", label: "Contact" },
   ];
-
-  /* Menu démarrer : fermé au clic à l'extérieur et à la touche Échap. */
-  useEffect(() => {
-    if (!menu) return;
-    const onDown = (e: PointerEvent) => {
-      if (!startRef.current?.contains(e.target as Node)) setMenu(false);
-    };
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenu(false);
-    document.addEventListener("pointerdown", onDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", onDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [menu]);
 
   return (
     <footer className="liltb relative z-30 px-[clamp(10px,1.6vw,22px)] pt-[clamp(26px,4vw,48px)] pb-[clamp(20px,3vw,36px)]">
@@ -412,157 +390,79 @@ export function Footer() {
 
           {/* ---- Corps : papier millimétré + barre des tâches ---- */}
           <div className="p-[clamp(12px,2vw,22px)]" style={GRID_BG}>
-            <div className="flex flex-wrap items-center gap-2 md:flex-nowrap">
 
-              {/* ---------- BOUTON START ---------- */}
-              <div ref={startRef} className="relative order-1 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setMenu((v) => !v)}
-                  aria-expanded={menu}
-                  aria-haspopup="menu"
-                  className={`flex h-[42px] items-center gap-2.5 rounded-xl border py-1 pr-3.5 pl-1.5 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
-                    menu ? `border-purple-700 ${PLASTIC_ON}` : `border-[#8f6ae0] hover:brightness-110 ${PLASTIC} ${PLASTIC_PRESS}`
-                  }`}
-                  style={{ background: VIOLET_BUMP }}
-                >
-                  {/* Le logo est posé sur une plaque blanche, comme les
-                      pictogrammes des barres de titre du site : c'est ce qui
-                      le rend lisible sur le violet, bien mieux qu'un tirage
-                      blanc sur fond violet. */}
-                  <span className="grid h-[34px] shrink-0 place-items-center rounded-lg bg-white px-2.5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_3px_rgba(0,0,0,0.3)]">
-                    <Image src={logoBlack} alt="Lil'OG" className="h-[22px] w-auto" />
+            {/* ---------- LIGNE 1 : marque, newsletter, notifications ----------
+                Le logo n'est plus enfermé dans un bouton : il a sa propre
+                plaque blanche, à la taille d'une enseigne, et renvoie à
+                l'accueil. C'est le premier élément de la barre. */}
+            <div className="flex flex-wrap items-center gap-2.5 md:flex-nowrap">
+              <Link
+                href="/"
+                aria-label="Lil'OG — accueil"
+                className={`order-1 flex shrink-0 items-center gap-3 rounded-xl border border-[#c6c2d8] bg-white px-[clamp(12px,1.8vw,20px)] py-[clamp(8px,1.2vw,13px)] no-underline transition hover:brightness-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+              >
+                <Image src={logoBlack} alt="Lil'OG" className="h-[clamp(30px,4vw,42px)] w-auto" />
+                <span className="hidden lg:block">
+                  <span className={`${MONO} block text-[0.52rem] font-bold tracking-[0.14em] text-[#3b1d8f] uppercase`}>
+                    Lil&apos;OG Vintage
                   </span>
-                  <span
-                    className={`${MONO} text-[0.66rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.35)]`}
-                  >
-                    UPDATE
+                  <span className={`${MONO} mt-0.5 block text-[0.48rem] tracking-[0.03em] text-[#6b6480]`}>
+                    {t.foot.tagline}
                   </span>
-                </button>
+                </span>
+              </Link>
 
-                {/* ---- Menu démarrer ---- */}
-                {menu && (
-                  <div
-                    role="menu"
-                    aria-label="Menu Lil'OG"
-                    className="liltb-menu absolute bottom-full left-0 z-50 mb-2 w-[252px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#eeecf6]"
-                    style={{
-                      boxShadow:
-                        "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.14), 0 10px 22px rgba(30,36,48,0.28)",
-                    }}
-                  >
-                    <div className="px-2.5 py-1.5" style={{ background: VIOLET_BAR_SOFT }}>
-                      <span
-                        className={`${MONO} flex items-center gap-1.5 text-[0.55rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}
-                      >
-                        <Icon.folderOpen className="h-[1.2em] w-auto shrink-0" />
-                        MENU_DÉMARRER.DIR <span style={{ color: "#ffd7ea" }}>★</span>
-                      </span>
-                    </div>
-
-                    <div className="flex flex-col gap-1 p-2">
-                      {TABS.map(({ href, icon, label }) => (
-                        <Link
-                          key={href}
-                          href={href}
-                          role="menuitem"
-                          onClick={() => setMenu(false)}
-                          className={`${MONO} flex items-center gap-2 rounded-xl border border-[#c6c2d8] bg-white/80 px-2.5 py-2 text-[0.58rem] font-bold tracking-[0.02em] text-[#3a3550] no-underline transition hover:bg-purple-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
-                        >
-                          <span aria-hidden className="shrink-0 text-[0.85rem] leading-none">
-                            {icon}
-                          </span>
-                          <span className="truncate uppercase">{label}</span>
-                        </Link>
-                      ))}
-
-                      <span aria-hidden className="my-1 block h-px bg-[#d8d5e6]" />
-
-                      {t.footer.legalLinks.map((l) => (
-                        <Link
-                          key={l}
-                          href={LEGAL_HREFS[l] ?? "#"}
-                          role="menuitem"
-                          onClick={() => setMenu(false)}
-                          className={`${MONO} flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[0.52rem] tracking-[0.04em] text-[#6b6480] no-underline transition hover:bg-purple-100 hover:text-[#3b1d8f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
-                        >
-                          <span aria-hidden className="shrink-0 text-[0.7rem] leading-none">
-                            📄
-                          </span>
-                          <span className="truncate uppercase">{l}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* ---------- ZONE DE NOTIFICATION ---------- */}
-              {/* En mobile elle remonte sur la première ligne, à côté du
-                  bouton START ; en desktop elle reprend sa place à droite. */}
+              {/* En mobile la zone de notification remonte à côté du logo ;
+                  en desktop elle reprend sa place tout à droite. */}
               <div className="order-2 ml-auto md:order-4 md:ml-0">
                 <Tray />
               </div>
 
-              {/* ---------- NEWSLETTER ---------- */}
-              <Newsletter className="order-3 w-full md:order-2 md:w-auto md:shrink-0" />
+              <Newsletter className="order-3 w-full md:order-2 md:w-auto md:min-w-0 md:flex-1" />
 
-              <span aria-hidden className="order-2 hidden h-7 w-px bg-[#c6c2d8] md:block" />
-
-              {/* ---------- ONGLETS DES FENÊTRES MINIMISÉES ---------- */}
-              <nav
-                aria-label="Navigation du site"
-                className="order-4 grid w-full grid-cols-2 gap-1.5 md:order-3 md:flex md:w-auto md:min-w-0 md:flex-1"
-              >
-                {TABS.map(({ href, icon, label }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={`${MONO} flex h-[42px] min-w-0 items-center gap-2 rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-3 text-[0.58rem] font-bold tracking-[0.03em] text-[#4a4560] no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] md:max-w-[210px] md:flex-1 ${PLASTIC} ${PLASTIC_PRESS}`}
-                  >
-                    <span aria-hidden className="shrink-0 text-[0.8rem] leading-none">
-                      {icon}
-                    </span>
-                    <span className="truncate uppercase">{label}</span>
-                  </Link>
-                ))}
-              </nav>
+              <span aria-hidden className="order-2 hidden h-7 w-px bg-[#c6c2d8] md:order-3 md:block" />
             </div>
 
-            {/* ---------- BANDE DE RACCOURCIS ---------- */}
-            {/* Elle donne à la barre sa vraie hauteur de pied de page et
-                récupère les liens pratiques que l'ancien footer portait
-                dans sa colonne « Aide ». Même bande que sur /contact. */}
-            <div className="mt-[clamp(14px,2.2vw,22px)] border-t border-dashed border-[#c6c2d8] pt-[clamp(14px,2.2vw,22px)]">
-              <div
-                className={`${MONO} mb-3 flex items-center gap-2 text-[0.55rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}
-              >
-                <span aria-hidden className="h-px flex-1 bg-[#5b2fb8]/20" />
-                🖱 RACCOURCIS
-                <span aria-hidden className="h-px flex-1 bg-[#5b2fb8]/20" />
-              </div>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-                {SHORTCUTS.map(({ href, icon, label, external }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className={`flex flex-col items-center justify-center gap-2 rounded-2xl border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-[clamp(10px,1.6vw,16px)] text-center no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
-                  >
-                    <span
-                      aria-hidden
-                      className="text-[clamp(1.2rem,2.6vw,1.6rem)] leading-none drop-shadow-[0_3px_3px_rgba(0,0,0,0.22)]"
-                    >
-                      {icon}
-                    </span>
-                    <span
-                      className={`${MONO} text-[clamp(0.48rem,1vw,0.56rem)] leading-tight font-bold tracking-[0.02em] text-[#4a4560]`}
-                    >
-                      {label}
-                    </span>
-                  </Link>
-                ))}
-              </div>
+            {/* ---------- LIGNE 2 : navigation principale ----------
+                Les vraies destinations du site : ce sont elles qui portent
+                les gros jetons, pas les raccourcis pratiques en dessous. */}
+            <nav
+              aria-label="Navigation du site"
+              className="mt-[clamp(12px,1.8vw,18px)] grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5"
+            >
+              {TABS.map(({ href, icon, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`${MONO} flex h-[clamp(44px,5vw,52px)] min-w-0 items-center justify-center gap-2 rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-3 text-[clamp(0.58rem,1.2vw,0.66rem)] font-bold tracking-[0.04em] text-[#3a3550] no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                >
+                  <span aria-hidden className="shrink-0 text-[0.95rem] leading-none">
+                    {icon}
+                  </span>
+                  <span className="truncate uppercase">{label}</span>
+                </Link>
+              ))}
+            </nav>
+
+            {/* ---------- LIGNE 3 : raccourcis pratiques ----------
+                Volontairement plus petits que la navigation ci-dessus : ce
+                sont des liens de service, pas les rayons de la boutique.
+                Plus de filet en pointillés ni d'intertitre — la différence
+                de taille suffit à les distinguer. */}
+            <div className="mt-[clamp(10px,1.6vw,14px)] flex flex-wrap items-center gap-1.5">
+              {SHORTCUTS.map(({ href, icon, label, external }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className={`${MONO} flex h-[30px] items-center gap-1.5 rounded-lg border border-[#c6c2d8] bg-white/70 px-2.5 text-[0.5rem] font-bold tracking-[0.03em] text-[#6b6480] no-underline transition hover:bg-purple-100 hover:text-[#3b1d8f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                >
+                  <span aria-hidden className="shrink-0 text-[0.72rem] leading-none">
+                    {icon}
+                  </span>
+                  <span className="uppercase">{label}</span>
+                </Link>
+              ))}
             </div>
           </div>
 
