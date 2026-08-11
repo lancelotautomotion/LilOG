@@ -279,24 +279,24 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
       href={`/products/${product.handle}`}
       className="group block overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-white shadow-[5px_5px_0_rgba(24,12,58,0.35)] transition hover:-translate-y-1 hover:shadow-[7px_9px_0_rgba(24,12,58,0.42)]"
     >
-      {/* Photo encadrée, avec de l'air autour plutôt que collée aux bords. */}
-      <div className="p-2.5 pb-0">
-        <div className={`relative aspect-[3/4] overflow-hidden rounded-lg bg-[#e7e5f1] ${BEVEL_IN}`}>
-          <SmartImg
-            className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.06]"
-            src={product.imageA}
-            alt={product.name}
-            tone={idx}
-          />
-          {badge && (
-            <span
-              className={`${MONO} absolute top-1.5 left-1.5 rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-1.5 py-1 text-[0.44rem] font-bold tracking-[0.04em] text-[#5b2fb8] uppercase ${PLASTIC}`}
-            >
-              {badge}
-            </span>
-          )}
-          {sold && <span aria-hidden className="absolute inset-0 bg-white/50" />}
-        </div>
+      {/* Photo posée à même la carte, sur un carré blanc plein — l'encadrement
+          précédent (padding + fond lavande + biseau) creusait un cadre
+          visible tout autour de chaque photo. */}
+      <div className="relative aspect-[3/4] overflow-hidden rounded-t-2xl bg-white">
+        <SmartImg
+          className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.06]"
+          src={product.imageA}
+          alt={product.name}
+          tone={idx}
+        />
+        {badge && (
+          <span
+            className={`${MONO} absolute top-1.5 left-1.5 rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-1.5 py-1 text-[0.44rem] font-bold tracking-[0.04em] text-[#5b2fb8] uppercase ${PLASTIC}`}
+          >
+            {badge}
+          </span>
+        )}
+        {sold && <span aria-hidden className="absolute inset-0 bg-white/50" />}
       </div>
 
       <div className="p-3">
