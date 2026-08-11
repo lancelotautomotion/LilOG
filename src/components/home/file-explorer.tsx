@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { Icon } from "@/components/icons";
 import { CATEGORIES } from "@/lib/categories";
-import { GRID_BG, MONO, PLASTIC, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
+import { GRID_BG, HARD_SHADOW, MONO, PLASTIC, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
 
 /** Nom de fichier affiché sous chaque dossier, par clé de catégorie. */
 const FILENAMES: Record<string, string> = {
@@ -138,10 +138,13 @@ export function FileExplorer() {
        de l'autre. Sur mobile, la photo passe en bandeau au-dessus (`order`)
        plutôt que serrée entre deux blocs de texte. */
     <section id="drops" className="pb-[clamp(48px,8vw,96px)]">
+      {/* Étiquette calée sur la gouttière de la ligne ci-dessous, donc sur
+          le bord gauche de la fenêtre — comme ARCADE_SLOT et README.TXT qui
+          posent la leur au-dessus de leur propre bloc. Le conteneur centré
+          `max-w` d'origine la laissait flotter au milieu de l'écran depuis
+          que le module s'étire d'un bord à l'autre. */}
       <div className="px-4 sm:px-6">
-        <div className="mx-auto w-full max-w-[980px]">
-          <SectionLabel n="03" file="FILE_EXPLORER.SYS" tone="wallpaper" />
-        </div>
+        <SectionLabel n="03" file="FILE_EXPLORER.SYS" tone="wallpaper" />
       </div>
 
       <style>{EXPLORER_CSS}</style>
@@ -158,7 +161,13 @@ export function FileExplorer() {
             le bloc lui-même) : `fill` se positionne sur l'ancêtre `relative`
             le plus proche et ignorerait un padding posé au même niveau. */}
         <div className="order-1 py-5 lg:order-2 lg:py-8">
-          <div className="relative h-full min-h-[240px] overflow-hidden rounded-xl sm:min-h-[320px] lg:min-h-0">
+          {/* Même ombre dure que la fenêtre d'à côté : sans elle, les deux
+              boîtes avaient bien la même hauteur mais la fenêtre, seule à
+              porter son ombre décalée de 10px vers le bas, semblait
+              descendre plus bas que la photo. */}
+          <div
+            className={`relative h-full min-h-[240px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] sm:min-h-[320px] lg:min-h-0 ${HARD_SHADOW}`}
+          >
             <Image
               src="/histoire/look-16.jpeg"
               alt="Portant de vêtements de l'archive Lil'OG"
