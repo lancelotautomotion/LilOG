@@ -71,7 +71,7 @@ export function ReadmeWindow() {
   const { t } = useLanguage();
 
   return (
-    <section id="story" className="px-4 pb-[clamp(56px,9vw,110px)] sm:px-6">
+    <section id="story" className="px-4 pb-[clamp(24px,4vw,48px)] sm:px-6">
       <div className="mx-auto w-full max-w-[980px]">
         <SectionLabel n="04" file="README.TXT" tone="wallpaper" />
 

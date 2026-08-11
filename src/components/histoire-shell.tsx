@@ -450,7 +450,7 @@ function SystemLogs() {
 export function HistoireShell() {
   return (
     <PageShell>
-      <main className="relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(48px,8vw,100px)]">
+      <main className="relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(24px,4vw,48px)]">
         <style>{JOURNAL_CSS}</style>
 
         {/* Décor photo, calé sur le viewport (comme /contact, /durabilite). */}

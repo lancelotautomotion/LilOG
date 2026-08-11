@@ -174,7 +174,7 @@ export default function ContactPage() {
           sur toute la hauteur du document (~3600 px ici), la photo se
           retrouverait grossie à l'extrême, donc floue. Calée sur le
           viewport, elle reste nette et le décor ne défile pas. */}
-      <main className="relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(48px,8vw,100px)]">
+      <main className="relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(24px,4vw,48px)]">
         <span
           aria-hidden
           className="pointer-events-none fixed inset-0 z-0"
