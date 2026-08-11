@@ -1,6 +1,11 @@
 import { shopifyFetch } from "./client";
 import { compareSizes, normalizeSize } from "@/lib/sizes";
-import { COLLECTION_BY_HANDLE_QUERY, FEATURED_PRODUCTS_QUERY, PRODUCT_BY_HANDLE_QUERY } from "./queries";
+import {
+  COLLECTION_BY_HANDLE_QUERY,
+  FEATURED_PRODUCTS_QUERY,
+  PRODUCT_BY_HANDLE_QUERY,
+  SEARCH_PRODUCTS_QUERY,
+} from "./queries";
 import type {
   CollectionByHandleResponse,
   FeaturedProductsResponse,
@@ -151,6 +156,21 @@ function mapProduct(node: ShopifyProductNode): Product {
 
 export async function getFeaturedProducts(count = 8): Promise<Product[]> {
   const data = await shopifyFetch<FeaturedProductsResponse>(FEATURED_PRODUCTS_QUERY, { first: count });
+  return data.products.edges.map((e) => mapProduct(e.node));
+}
+
+/**
+ * Recherche texte libre dans le catalogue. Une chaîne vide renvoie tout de
+ * suite un tableau vide — inutile d'aller demander à Shopify de « trouver »
+ * une chaîne vide, qui renverrait tout le catalogue.
+ */
+export async function searchProducts(query: string, count = 60): Promise<Product[]> {
+  const trimmed = query.trim();
+  if (!trimmed) return [];
+  const data = await shopifyFetch<FeaturedProductsResponse>(SEARCH_PRODUCTS_QUERY, {
+    query: trimmed,
+    first: count,
+  });
   return data.products.edges.map((e) => mapProduct(e.node));
 }
 

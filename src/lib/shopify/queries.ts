@@ -103,6 +103,62 @@ const SIZE_METAFIELD_FRAGMENT = /* GraphQL */ `
 
 // Whole-catalogue sweep for the Virtual Closet: needs the collection handles
 // (to slot a piece into Hauts / Bas / module) and every source of sizing.
+// Recherche texte libre : `query` accepte la syntaxe de recherche standard
+// Storefront et, laissé en texte brut (sans préfixe de champ), fait déjà une
+// recherche plein texte sur le titre, le type de produit, le vendeur et les
+// tags — pas besoin de construire un filtre `title:*...*` à la main. Même
+// sélection de champs que FEATURED_PRODUCTS_QUERY : le résultat passe par le
+// même mapProduct() et rend avec les mêmes ProductWindow que le catalogue.
+export const SEARCH_PRODUCTS_QUERY = /* GraphQL */ `
+  query SearchProducts($query: String!, $first: Int!) {
+    products(first: $first, query: $query, sortKey: RELEVANCE) {
+      edges {
+        node {
+          id
+          handle
+          title
+          productType
+          tags
+          availableForSale
+          featuredImage {
+            url
+            altText
+          }
+          images(first: 2) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          compareAtPriceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          variants(first: 1) {
+            edges {
+              node {
+                id
+                title
+                availableForSale
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const ALL_PRODUCTS_QUERY = /* GraphQL */ `
   ${SIZE_METAFIELD_FRAGMENT}
   query AllProducts($first: Int!, $after: String) {
