@@ -160,7 +160,12 @@ export function FileExplorer() {
             en bas. Le cadre photo est un enfant du bloc rembourré (et non
             le bloc lui-même) : `fill` se positionne sur l'ancêtre `relative`
             le plus proche et ignorerait un padding posé au même niveau. */}
-        <div className="order-1 py-5 lg:order-2 lg:py-8">
+        {/* Pas de padding haut : il s'ajoutait au `mb-3` de l'étiquette et
+            la laissait flotter à 44px du bloc, là où ARCADE_SLOT et
+            README.TXT collent la leur à 12px. Le padding bas reste, et
+            reste identique sur les deux colonnes — c'est lui qui garde la
+            photo et la fenêtre alignées. */}
+        <div className="order-1 pb-5 lg:order-2 lg:pb-8">
           {/* Même ombre dure que la fenêtre d'à côté : sans elle, les deux
               boîtes avaient bien la même hauteur mais la fenêtre, seule à
               porter son ombre décalée de 10px vers le bas, semblait
@@ -183,7 +188,7 @@ export function FileExplorer() {
           </div>
         </div>
 
-        <div className="order-2 flex py-5 lg:order-1 lg:items-center lg:py-8">
+        <div className="order-2 flex pb-5 lg:order-1 lg:items-center lg:pb-8">
           <WindowFrame
             title="C:\\ LIL_OG \\ CATEGORIES"
             icon={<Icon.folderOpen width={16} height={13} />}
