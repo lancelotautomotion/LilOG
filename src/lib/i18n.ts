@@ -23,6 +23,8 @@ export interface Dict {
   /** LIL_OG_DESKTOP.EXE — libellés propres à la page d'accueil Y2K OS. */
   home: {
     scroll: string;
+    slotIntroTitle: string;
+    slotIntroBody: string;
     slotSub: string;
     slotCta: string;
     slotCoin: string;
@@ -79,7 +81,10 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG — Vintage, Reborn", line: "We are born to",
       words: ["Shine.", "Conquer.", "Slay.", "Burn."], shop: "Shop the drop", story: "Our story", avail: "Next drop — June 3" },
     home: {
-      scroll: "SCROLL", slotSub: "Three pieces pulled from the archive, one whole look. The machine picks — you approve.",
+      scroll: "SCROLL",
+      slotIntroTitle: "What's the Dressing Machine?",
+      slotIntroBody: "A style vending machine, no candy involved. Hit the button and it pulls three one-of-a-kind pieces from our vintage archive to build you a complete look in three seconds. Every piece exists only once — like the look, and it's gone for good.",
+      slotSub: "Three pieces pulled from the archive, one whole look. The machine picks — you approve.",
       slotCta: "RUN DRESSING_MACHINE.EXE", slotCoin: "INSERT COIN — FREE PLAY",
       filesTitle: "Rack explorer", filesSub: "Open a folder to dig through the archive.",
       filesObjects: "objects", sysStats: "SYSTEM STATS",
@@ -129,7 +134,10 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG — Vintage, Renaissance", line: "Nous sommes nés pour",
       words: ["Briller.", "Conquérir.", "Régner.", "Flamber."], shop: "Voir le drop", story: "Notre histoire", avail: "Prochain drop — 3 juin" },
     home: {
-      scroll: "DÉFILER", slotSub: "Trois pièces tirées de l'archive, un look entier. La machine choisit — tu valides.",
+      scroll: "DÉFILER",
+      slotIntroTitle: "C'est quoi la Dressing Machine ?",
+      slotIntroBody: "Un distributeur de style, pas de bonbons. Appuie sur le bouton : la machine pioche trois pièces uniques dans notre archive vintage et te compose un look complet en trois secondes. Chaque pièce n'existe qu'en un seul exemplaire — si le look te plaît, il ne reviendra pas.",
+      slotSub: "Trois pièces tirées de l'archive, un look entier. La machine choisit — tu valides.",
       slotCta: "LANCER LA DRESSING_MACHINE.EXE", slotCoin: "INSÉRER UN JETON — PARTIE OFFERTE",
       filesTitle: "Explorateur de rayons", filesSub: "Ouvre un dossier pour fouiller l'archive.",
       filesObjects: "objets", sysStats: "STATISTIQUES SYSTÈME",
@@ -179,7 +187,10 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG — Vintage, Renacido", line: "Nacimos para",
       words: ["Brillar.", "Conquistar.", "Reinar.", "Arder."], shop: "Ver el drop", story: "Nuestra historia", avail: "Próximo drop — 3 de junio" },
     home: {
-      scroll: "DESLIZA", slotSub: "Tres piezas sacadas del archivo, un look entero. La máquina elige — tú apruebas.",
+      scroll: "DESLIZA",
+      slotIntroTitle: "¿Qué es la Dressing Machine?",
+      slotIntroBody: "Una máquina expendedora de estilo, sin caramelos. Pulsa el botón: elige tres piezas únicas de nuestro archivo vintage y te compone un look completo en tres segundos. Cada pieza existe en un solo ejemplar — si el look te gusta, no volverá.",
+      slotSub: "Tres piezas sacadas del archivo, un look entero. La máquina elige — tú apruebas.",
       slotCta: "EJECUTAR DRESSING_MACHINE.EXE", slotCoin: "INSERTA UNA FICHA — PARTIDA GRATIS",
       filesTitle: "Explorador de secciones", filesSub: "Abre una carpeta para rebuscar en el archivo.",
       filesObjects: "objetos", sysStats: "ESTADÍSTICAS DEL SISTEMA",
@@ -229,7 +240,10 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG — Vintage, Rinato", line: "Siamo nati per",
       words: ["Brillare.", "Conquistare.", "Regnare.", "Ardere."], shop: "Vedi il drop", story: "La nostra storia", avail: "Prossimo drop — 3 giugno" },
     home: {
-      scroll: "SCORRI", slotSub: "Tre pezzi presi dall'archivio, un look intero. La macchina sceglie — tu approvi.",
+      scroll: "SCORRI",
+      slotIntroTitle: "Cos'è la Dressing Machine?",
+      slotIntroBody: "Un distributore di stile, niente caramelle. Premi il pulsante: la macchina pesca tre pezzi unici dal nostro archivio vintage e ti compone un look completo in tre secondi. Ogni pezzo esiste in un solo esemplare — se il look ti piace, non tornerà.",
+      slotSub: "Tre pezzi presi dall'archivio, un look intero. La macchina sceglie — tu approvi.",
       slotCta: "AVVIA DRESSING_MACHINE.EXE", slotCoin: "INSERISCI UN GETTONE — PARTITA GRATIS",
       filesTitle: "Esplora risorse", filesSub: "Apri una cartella per frugare nell'archivio.",
       filesObjects: "oggetti", sysStats: "STATISTICHE DI SISTEMA",
@@ -279,7 +293,10 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG — Vintage, Wiedergeboren", line: "Wir sind geboren, um zu",
       words: ["Strahlen.", "Erobern.", "Herrschen.", "Brennen."], shop: "Zum Drop", story: "Unsere Geschichte", avail: "Nächster Drop — 3. Juni" },
     home: {
-      scroll: "SCROLLEN", slotSub: "Drei Teile aus dem Archiv, ein ganzer Look. Die Maschine wählt — du bestätigst.",
+      scroll: "SCROLLEN",
+      slotIntroTitle: "Was ist die Dressing Machine?",
+      slotIntroBody: "Ein Style-Automat, ganz ohne Süßigkeiten. Drück den Knopf: Die Maschine zieht drei Einzelstücke aus unserem Vintage-Archiv und stellt dir in drei Sekunden ein komplettes Outfit zusammen. Jedes Teil gibt es nur einmal — gefällt dir der Look, kommt er nicht zurück.",
+      slotSub: "Drei Teile aus dem Archiv, ein ganzer Look. Die Maschine wählt — du bestätigst.",
       slotCta: "DRESSING_MACHINE.EXE STARTEN", slotCoin: "MÜNZE EINWERFEN — FREISPIEL",
       filesTitle: "Regal-Explorer", filesSub: "Öffne einen Ordner und wühle im Archiv.",
       filesObjects: "Objekte", sysStats: "SYSTEMSTATISTIK",
@@ -329,7 +346,10 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG — Винтаж, Возрождённый", line: "Мы рождены, чтобы",
       words: ["Сиять.", "Покорять.", "Править.", "Гореть."], shop: "Смотреть дроп", story: "Наша история", avail: "Следующий дроп — 3 июня" },
     home: {
-      scroll: "ЛИСТАТЬ", slotSub: "Три вещи из архива — целый образ. Машина выбирает, вы одобряете.",
+      scroll: "ЛИСТАТЬ",
+      slotIntroTitle: "Что такое Dressing Machine?",
+      slotIntroBody: "Автомат стиля — только без конфет. Нажмите кнопку: машина достанет три уникальные вещи из нашего винтажного архива и соберёт для вас цельный образ за три секунды. Каждая вещь существует в единственном экземпляре — если образ понравится, второго шанса не будет.",
+      slotSub: "Три вещи из архива — целый образ. Машина выбирает, вы одобряете.",
       slotCta: "ЗАПУСТИТЬ DRESSING_MACHINE.EXE", slotCoin: "ВСТАВЬТЕ ЖЕТОН — ИГРА БЕСПЛАТНА",
       filesTitle: "Проводник по разделам", filesSub: "Откройте папку и покопайтесь в архиве.",
       filesObjects: "объектов", sysStats: "СИСТЕМНАЯ СТАТИСТИКА",
@@ -379,7 +399,10 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG — 复古，重生", line: "我们生来",
       words: ["闪耀。", "征服。", "称王。", "燃烧。"], shop: "查看上新", story: "我们的故事", avail: "下次上新 — 6月3日" },
     home: {
-      scroll: "向下滚动", slotSub: "从档案里抽三件，凑成一整套造型。机器来选，你来定。",
+      scroll: "向下滚动",
+      slotIntroTitle: "DRESSING MACHINE 是什么？",
+      slotIntroBody: "一台造型自动贩卖机，不卖糖果。按下按钮，机器会从我们的复古档案中抽取三件独一无二的单品，三秒为你搭配出一整套造型。每件单品都只有一件——如果你喜欢这套造型，它不会再来第二次。",
+      slotSub: "从档案里抽三件，凑成一整套造型。机器来选，你来定。",
       slotCta: "运行 DRESSING_MACHINE.EXE", slotCoin: "投币 — 免费游戏",
       filesTitle: "货架资源管理器", filesSub: "打开文件夹，翻一翻档案。",
       filesObjects: "个对象", sysStats: "系统统计",
@@ -429,7 +452,10 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG — ヴィンテージ、再生", line: "私たちは生まれた",
       words: ["輝くために。", "制すために。", "魅せるために。", "燃えるために。"], shop: "ドロップを見る", story: "私たちの物語", avail: "次のドロップ — 6月3日" },
     home: {
-      scroll: "スクロール", slotSub: "アーカイブから3点、ひとつの完成された着こなしへ。選ぶのはマシン、決めるのはあなた。",
+      scroll: "スクロール",
+      slotIntroTitle: "ドレッシングマシンって何？",
+      slotIntroBody: "お菓子の代わりにスタイルが出てくる自販機。ボタンを押せば、ヴィンテージアーカイブから一点物のアイテムを3つ選び、3秒でひとつの着こなしを完成させます。どのアイテムも世界に一つだけ——気に入ったら、二度と同じルックには出会えません。",
+      slotSub: "アーカイブから3点、ひとつの完成された着こなしへ。選ぶのはマシン、決めるのはあなた。",
       slotCta: "DRESSING_MACHINE.EXE を起動", slotCoin: "コインを入れる — フリープレイ",
       filesTitle: "ラック エクスプローラー", filesSub: "フォルダを開いてアーカイブを掘る。",
       filesObjects: "個のオブジェクト", sysStats: "システム統計",
@@ -479,7 +505,10 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG — 빈티지, 다시 태어나다", line: "우리는 태어났다",
       words: ["빛나기 위해.", "정복하기 위해.", "군림하기 위해.", "불태우기 위해."], shop: "드롭 보기", story: "우리의 이야기", avail: "다음 드롭 — 6월 3일" },
     home: {
-      scroll: "스크롤", slotSub: "아카이브에서 세 피스, 하나의 완성된 룩. 고르는 건 머신, 정하는 건 당신.",
+      scroll: "스크롤",
+      slotIntroTitle: "드레싱 머신이 뭐예요?",
+      slotIntroBody: "사탕 대신 스타일이 나오는 자판기예요. 버튼을 누르면 빈티지 아카이브에서 단 하나뿐인 피스 세 개를 골라 3초 만에 완성된 룩을 만들어줘요. 모든 피스는 세상에 단 하나뿐 — 마음에 든 룩은 다시 만날 수 없어요.",
+      slotSub: "아카이브에서 세 피스, 하나의 완성된 룩. 고르는 건 머신, 정하는 건 당신.",
       slotCta: "DRESSING_MACHINE.EXE 실행", slotCoin: "코인 투입 — 무료 플레이",
       filesTitle: "랙 탐색기", filesSub: "폴더를 열어 아카이브를 뒤져보세요.",
       filesObjects: "개 항목", sysStats: "시스템 통계",
