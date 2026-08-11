@@ -520,3 +520,22 @@ export const CART_LINES_REMOVE_MUTATION = /* GraphQL */ `
     }
   }
 `;
+
+export const ALL_COLLECTIONS_QUERY = /* GraphQL */ `
+  query AllCollections($first: Int!, $after: String) {
+    collections(first: $first, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          id
+          handle
+          title
+          updatedAt
+        }
+      }
+    }
+  }
+`;
