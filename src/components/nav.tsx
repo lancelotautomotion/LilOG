@@ -42,9 +42,9 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
       </a>
       <div className="nav-right">
         <div className="nav-account">
-          <a className="nav-icon-btn" href="#drops" aria-label={t.nav.search}>
+          <Link className="nav-icon-btn" href="/search" aria-label={t.nav.search}>
             <Icon.search width={18} height={18} />
-          </a>
+          </Link>
           <Link className="nav-link nav-login-text" href={session ? "/account" : "/login"}>
             {session ? (session.user?.name?.split(" ")[0] ?? "Mon compte") : t.nav.login}
           </Link>
