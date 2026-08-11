@@ -37,14 +37,27 @@ export const Icon = {
       <path d="M8 7h9v9" />
     </svg>
   ),
+  /* Cœur symétrique : le creux entre les lobes et la pointe sont tous deux
+     sur l'axe x=12, et les deux moitiés sont des courbes miroir. L'ancien
+     tracé plaçait le creux à x=10 pour une pointe à x=12 — le lobe gauche
+     était plus large que le droit, ce qui donnait un cœur de travers. */
   heart: (p: SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" {...p}>
-      <path d="M12 21s-7-4.6-9.3-9C1 8.6 2.6 5 6 5c2 0 3.2 1.2 4 2.3C10.8 6.2 12 5 14 5c3.4 0 5 3.6 3.3 7C19 16.4 12 21 12 21Z" />
+      <path d="M12 20.7 3.9 12.6a5.15 5.15 0 0 1 0-7.3 5.15 5.15 0 0 1 7.3 0l.8.8.8-.8a5.15 5.15 0 0 1 7.3 0 5.15 5.15 0 0 1 0 7.3Z" />
     </svg>
   ),
   heartO: (p: SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" {...p}>
-      <path d="M12 20s-6.5-4.2-8.6-8.2C1.7 8.4 3.2 5.5 6 5.5c1.9 0 3.1 1.2 4 2.3.9-1.1 2.1-2.3 4-2.3 2.8 0 4.3 2.9 2.6 6.3C18.5 15.8 12 20 12 20Z" />
+    <svg
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinejoin="round"
+      {...p}
+    >
+      <path d="M12 20.7 3.9 12.6a5.15 5.15 0 0 1 0-7.3 5.15 5.15 0 0 1 7.3 0l.8.8.8-.8a5.15 5.15 0 0 1 7.3 0 5.15 5.15 0 0 1 0 7.3Z" />
     </svg>
   ),
   x: (p: SVGProps<SVGSVGElement>) => (
