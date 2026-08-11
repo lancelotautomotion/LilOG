@@ -7,10 +7,23 @@ export const Icon = {
       <path d="m21 21-4.3-4.3" />
     </svg>
   ),
+  /* Le sac occupait 12 unités de large sur les 24 du cadre, quand le cœur
+     voisin dans la nav en remplit 19 : à taille de rendu égale, il
+     paraissait deux fois plus petit. Corps élargi et fond arrondi pour
+     qu'ils pèsent pareil côte à côte. */
   bag: (p: SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" {...p}>
-      <path d="M6 8h12l-1 12H7L6 8Z" />
-      <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+    <svg
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinejoin="round"
+      {...p}
+    >
+      <path d="M4 7.2h16l-1.1 11.9a1.9 1.9 0 0 1-1.9 1.7H7a1.9 1.9 0 0 1-1.9-1.7Z" />
+      <path d="M8.6 7.2V5.5a3.4 3.4 0 0 1 6.8 0v1.7" />
     </svg>
   ),
   user: (p: SVGProps<SVGSVGElement>) => (
