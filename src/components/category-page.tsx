@@ -224,6 +224,7 @@ export function CategoryPage({
   const [activeColors, setActiveColors] = useState<Set<string>>(new Set());
   const [activeTypes, setActiveTypes] = useState<Set<string>>(new Set());
   const [activeSizes, setActiveSizes] = useState<Set<string>>(new Set());
+  const [activeMaterials, setActiveMaterials] = useState<Set<string>>(new Set());
 
   /* Toucher un filtre renvoie à la première page : le paramètre `?page`
      devenu caduc quitte l'URL. C'est fait dans le gestionnaire d'événement,
@@ -263,6 +264,7 @@ export function CategoryPage({
   const toggleColor = toggleIn(setActiveColors);
   const toggleType = toggleIn(setActiveTypes);
   const toggleSize = toggleIn(setActiveSizes);
+  const toggleMaterial = toggleIn(setActiveMaterials);
 
   const reset = useCallback(() => {
     setSortRaw("default");
@@ -271,6 +273,7 @@ export function CategoryPage({
     setActiveColors(new Set());
     setActiveTypes(new Set());
     setActiveSizes(new Set());
+    setActiveMaterials(new Set());
     clearPage();
   }, [globalMin, globalMax, clearPage]);
 
@@ -279,7 +282,8 @@ export function CategoryPage({
     (priceMin > globalMin || priceMax < globalMax ? 1 : 0) +
     activeColors.size +
     activeTypes.size +
-    activeSizes.size;
+    activeSizes.size +
+    activeMaterials.size;
 
   /* ---- Application des filtres ---- */
   const filtered = useMemo(() => {
@@ -291,12 +295,13 @@ export function CategoryPage({
     if (activeColors.size > 0) list = list.filter((p) => p.colors.some((c) => activeColors.has(c)));
     if (activeTypes.size > 0) list = list.filter((p) => activeTypes.has(p.productType));
     if (activeSizes.size > 0) list = list.filter((p) => p.sizes.some((s) => activeSizes.has(s)));
+    if (activeMaterials.size > 0) list = list.filter((p) => p.materials.some((m) => activeMaterials.has(m)));
 
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
 
     return list;
-  }, [products, sub, sort, priceMin, priceMax, activeColors, activeTypes, activeSizes]);
+  }, [products, sub, sort, priceMin, priceMax, activeColors, activeTypes, activeSizes, activeMaterials]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const pageFromUrl = Math.max(0, parseInt(searchParams.get("page") ?? "1", 10) - 1);
@@ -339,6 +344,8 @@ export function CategoryPage({
     toggleType,
     activeSizes,
     toggleSize,
+    activeMaterials,
+    toggleMaterial,
     reset,
     activeCount,
   };

@@ -25,10 +25,22 @@ export interface ShopifyProductNode {
   tags: string[];
   availableForSale: boolean;
   options?: { name: string; values?: string[]; optionValues?: { name: string }[] }[];
-  colorMeta?: { value: string } | null;
-  colorMeta2?: { value: string } | null;
-  colorMeta3?: { value: string } | null;
-  colorMeta4?: { value: string } | null;
+  // Couleur, taille, matière : chacune interrogée sur plusieurs espaces de
+  // noms candidats (le champ standard Shopify d'abord, puis les champs
+  // méta maison) — les boutiques ne rangent pas toutes ces informations
+  // au même endroit. `RichMetafield` couvre les deux formes possibles :
+  // texte simple ou référence à un metaobject de taxonomie.
+  colorMeta?: RichMetafield | null;
+  colorMeta2?: RichMetafield | null;
+  colorMeta3?: RichMetafield | null;
+  colorMeta4?: RichMetafield | null;
+  sizeMeta?: RichMetafield | null;
+  sizeMeta2?: RichMetafield | null;
+  sizeMeta3?: RichMetafield | null;
+  sizeMeta4?: RichMetafield | null;
+  materialMeta?: RichMetafield | null;
+  materialMeta2?: RichMetafield | null;
+  materialMeta3?: RichMetafield | null;
   featuredImage: ShopifyImage | null;
   images: { edges: { node: ShopifyImage }[] };
   priceRange: { minVariantPrice: ShopifyMoney };
@@ -112,6 +124,8 @@ export interface Product {
   colors: string[];
   /** Tailles normalisées ("S", "38", …) — alimente le filtre du catalogue. */
   sizes: string[];
+  /** Matières (« Coton », « Polyester »…) — alimente le filtre du catalogue. */
+  materials: string[];
   imageA: string;
   imageB: string;
   variantId: string | null;
