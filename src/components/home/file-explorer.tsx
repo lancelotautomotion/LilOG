@@ -146,8 +146,12 @@ export function FileExplorer() {
 
       <style>{EXPLORER_CSS}</style>
 
-      <div className="grid lg:grid-cols-2 lg:items-stretch">
-        <div className="relative order-1 min-h-[240px] sm:min-h-[320px] lg:order-2 lg:min-h-0">
+      {/* `px-4 sm:px-6` sur la ligne elle-même : la photo touchait le bord
+          droit de l'écran à zéro alors que la fenêtre gardait la marge du
+          reste du site à gauche. Même gouttière posée des deux côtés,
+          `gap` entre les deux colonnes pour ne pas les souder au milieu. */}
+      <div className="grid gap-4 px-4 sm:gap-6 sm:px-6 lg:grid-cols-2 lg:items-stretch">
+        <div className="relative order-1 min-h-[240px] overflow-hidden rounded-xl sm:min-h-[320px] lg:order-2 lg:min-h-0">
           <Image
             src="/histoire/look-16.jpeg"
             alt="Portant de vêtements de l'archive Lil'OG"
@@ -162,7 +166,7 @@ export function FileExplorer() {
           </span>
         </div>
 
-        <div className="order-2 flex px-4 py-5 sm:px-6 lg:order-1 lg:items-center lg:py-8">
+        <div className="order-2 flex py-5 lg:order-1 lg:items-center lg:py-8">
           <WindowFrame
             title="C:\\ LIL_OG \\ CATEGORIES"
             icon={<Icon.folderOpen width={16} height={13} />}
