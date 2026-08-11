@@ -15,6 +15,7 @@
    ⚠ PAREFEU : Tailwind + feuille locale préfixée `lhf-`.
    ============================================================ */
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { Icon } from "@/components/icons";
@@ -129,82 +130,113 @@ export function FileExplorer() {
   return (
     /* `#drops` : ancre historique de la boutique, gardée pour que les liens
        du pied de page, de la nav et de l'espace client continuent d'atterrir
-       ici — l'explorateur de rayons a remplacé la grille de produits. */
-    <section id="drops" className="px-4 pb-[clamp(48px,8vw,96px)] sm:px-6">
-      <div className="mx-auto w-full max-w-[980px]">
-        <SectionLabel n="03" file="FILE_EXPLORER.SYS" tone="wallpaper" />
+       ici — l'explorateur de rayons a remplacé la grille de produits.
 
-        <style>{EXPLORER_CSS}</style>
+       Bloc plein viewport comme CAMCORDER_OS au-dessus : plus de conteneur
+       `max-w` centré, la ligne s'étire d'un bord à l'autre de l'écran et se
+       coupe en deux — l'explorateur d'un côté, une photo de la marchandise
+       de l'autre. Sur mobile, la photo passe en bandeau au-dessus (`order`)
+       plutôt que serrée entre deux blocs de texte. */
+    <section id="drops" className="pb-[clamp(48px,8vw,96px)]">
+      <div className="px-4 sm:px-6">
+        <div className="mx-auto w-full max-w-[980px]">
+          <SectionLabel n="03" file="FILE_EXPLORER.SYS" tone="wallpaper" />
+        </div>
+      </div>
 
-        <WindowFrame title="C:\\ LIL_OG \\ CATEGORIES" icon={<Icon.folderOpen width={16} height={13} />}>
-          {/* Barre de menus */}
-          <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
-            {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
-              <span
-                key={m}
-                className={`${MONO} text-[0.54rem] tracking-[0.06em] text-[#3b3550] uppercase`}
-              >
-                {m}
-              </span>
-            ))}
-          </div>
+      <style>{EXPLORER_CSS}</style>
 
-          {/* Barre d'adresse */}
-          <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-2">
-            <span className={`${MONO} shrink-0 text-[0.52rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
-              Adresse
-            </span>
-            <span
-              className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.54rem] tracking-[0.04em] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.18)]`}
-            >
-              <Icon.folder width={14} height={12} className="shrink-0" />
-              <span className="truncate">C:\LIL_OG\CATEGORIES\</span>
-            </span>
-            <span
-              className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.52rem] font-bold text-[#262626] ${PLASTIC}`}
-            >
-              [ OK ]
-            </span>
-          </div>
-
-          {/* En-tête de contenu */}
-          <div className="border-b border-[#d8d5e6] px-4 pt-4 pb-3" style={GRID_BG}>
-            <h2 className={`${MONO} text-[0.86rem] font-bold tracking-[0.1em] text-[#3b1d8f] uppercase`}>
-              {t.home.filesTitle}
-            </h2>
-            <p className={`${MONO} mt-1 text-[0.56rem] tracking-[0.04em] text-[#6B7280]`}>
-              {t.home.filesSub}
-            </p>
-          </div>
-
-          {/* Le bureau : dossiers + disquette */}
-          <div
-            className="grid grid-cols-2 gap-x-3 gap-y-6 p-[clamp(16px,3vw,30px)] sm:grid-cols-3 sm:gap-y-8 lg:grid-cols-4"
-            style={GRID_BG}
+      <div className="grid lg:grid-cols-2 lg:items-stretch">
+        <div className="relative order-1 min-h-[240px] sm:min-h-[320px] lg:order-2 lg:min-h-0">
+          <Image
+            src="/histoire/look-16.jpeg"
+            alt="Portant de vêtements de l'archive Lil'OG"
+            fill
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-cover"
+          />
+          <span
+            className={`${MONO} absolute bottom-3 left-3 rounded-sm border border-black/30 bg-black/55 px-2 py-1 text-[0.48rem] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-[2px]`}
           >
-            {folders.map((f) => (
-              <Tile key={f.href} href={f.href} filename={f.filename} caption={f.caption}>
-                {/* Le dossier du site, agrandi — jamais un dessin propre à
-                    cette page : c'est celui du menu latéral et de /contact. */}
-                <Icon.folder className="h-full w-full drop-shadow-[0_3px_3px_rgba(30,20,70,0.28)]" />
+            ▶ VINTAGE_RACK.JPG
+          </span>
+        </div>
+
+        <div className="order-2 flex px-4 py-5 sm:px-6 lg:order-1 lg:items-center lg:py-8">
+          <WindowFrame
+            title="C:\\ LIL_OG \\ CATEGORIES"
+            icon={<Icon.folderOpen width={16} height={13} />}
+            className="w-full"
+          >
+            {/* Barre de menus */}
+            <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
+              {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
+                <span
+                  key={m}
+                  className={`${MONO} text-[0.54rem] tracking-[0.06em] text-[#3b3550] uppercase`}
+                >
+                  {m}
+                </span>
+              ))}
+            </div>
+
+            {/* Barre d'adresse */}
+            <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-2">
+              <span className={`${MONO} shrink-0 text-[0.52rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
+                Adresse
+              </span>
+              <span
+                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.54rem] tracking-[0.04em] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.18)]`}
+              >
+                <Icon.folder width={14} height={12} className="shrink-0" />
+                <span className="truncate">C:\LIL_OG\CATEGORIES\</span>
+              </span>
+              <span
+                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.52rem] font-bold text-[#262626] ${PLASTIC}`}
+              >
+                [ OK ]
+              </span>
+            </div>
+
+            {/* En-tête de contenu */}
+            <div className="border-b border-[#d8d5e6] px-4 pt-4 pb-3" style={GRID_BG}>
+              <h2 className={`${MONO} text-[0.86rem] font-bold tracking-[0.1em] text-[#3b1d8f] uppercase`}>
+                {t.home.filesTitle}
+              </h2>
+              <p className={`${MONO} mt-1 text-[0.56rem] tracking-[0.04em] text-[#6B7280]`}>
+                {t.home.filesSub}
+              </p>
+            </div>
+
+            {/* Le bureau : dossiers + disquette */}
+            <div
+              className="grid grid-cols-2 gap-x-3 gap-y-6 p-[clamp(16px,3vw,30px)] sm:grid-cols-3 sm:gap-y-8 xl:grid-cols-4"
+              style={GRID_BG}
+            >
+              {folders.map((f) => (
+                <Tile key={f.href} href={f.href} filename={f.filename} caption={f.caption}>
+                  {/* Le dossier du site, agrandi — jamais un dessin propre à
+                      cette page : c'est celui du menu latéral et de /contact. */}
+                  <Icon.folder className="h-full w-full drop-shadow-[0_3px_3px_rgba(30,20,70,0.28)]" />
+                </Tile>
+              ))}
+
+              <Tile href="/wishlist" filename="WISHLIST.LNK" caption="♡">
+                <FloppyIcon uid="lhf-wish" />
               </Tile>
-            ))}
+            </div>
 
-            <Tile href="/wishlist" filename="WISHLIST.LNK" caption="♡">
-              <FloppyIcon uid="lhf-wish" />
-            </Tile>
-          </div>
-
-          {/* Barre d'état */}
-          <div className="flex flex-wrap items-center justify-between gap-2 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
-            <span className={`${MONO} text-[0.52rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
-              {count} {t.home.filesObjects}
-            </span>
-            <span className={`${MONO} text-[0.52rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
-              2,3 Go — 100% one of one
-            </span>
-          </div>
-        </WindowFrame>
+            {/* Barre d'état */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
+              <span className={`${MONO} text-[0.52rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+                {count} {t.home.filesObjects}
+              </span>
+              <span className={`${MONO} text-[0.52rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
+                2,3 Go — 100% one of one
+              </span>
+            </div>
+          </WindowFrame>
+        </div>
       </div>
     </section>
   );
