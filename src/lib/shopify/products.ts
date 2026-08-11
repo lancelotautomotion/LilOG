@@ -27,27 +27,46 @@ function computeTag(tags: string[], availableForSale: boolean): Product["tag"] {
         : null;
 }
 
-function parseMetaColors(raw: string): string[] {
-  try {
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return parsed.map(String).filter(Boolean);
-  } catch { /* not JSON */ }
-  if (raw.trim()) return raw.split(/[,;|]/).map((s) => s.trim()).filter(Boolean);
+/**
+ * Toutes les valeurs lisibles portées par un champ méta Catégorie — texte
+ * simple ou référence (unique ou en liste) à un ou plusieurs metaobjects de
+ * taxonomie. Les GID non résolus (`gid://...`) sont écartés : mieux vaut un
+ * filtre incomplet qu'une pastille "gid://shopify/Metaobject/123".
+ */
+function resolveRichMetafieldList(meta: RichMetafield | null | undefined): string[] {
+  if (!meta) return [];
+
+  const fromNodes = meta.references?.nodes
+    ?.map((n) => n.field?.value)
+    .filter((v): v is string => Boolean(v));
+  if (fromNodes?.length) return fromNodes;
+
+  if (meta.reference?.field?.value) return [meta.reference.field.value];
+
+  if (meta.value && !meta.value.startsWith("gid://") && !meta.value.startsWith('["gid://')) {
+    try {
+      const parsed = JSON.parse(meta.value);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((v): v is string => typeof v === "string" && !v.startsWith("gid://"));
+      }
+    } catch { /* pas du JSON — valeur texte simple */ }
+    return [meta.value];
+  }
+
   return [];
 }
 
 function extractColorValues(node: ShopifyProductNode): string[] {
-  // Try all metafield candidates in order
+  // Essaie chaque champ méta candidat, dans l'ordre.
   for (const meta of [node.colorMeta, node.colorMeta2, node.colorMeta3, node.colorMeta4]) {
-    if (meta?.value) {
-      const vals = parseMetaColors(meta.value);
-      if (vals.length) return vals;
-    }
+    const vals = resolveRichMetafieldList(meta);
+    if (vals.length) return vals;
   }
-  // Fallback: product option named "Couleur" / "Color"
+  // Repli : option de variante « Couleur » / « Color ».
   const colorOption = node.options?.find((o) => /cou?le?ur|colou?r/i.test(o.name));
   if (colorOption?.values?.length) return colorOption.values;
-  // Last resort: log what options/metafields are available for diagnosis
+  // Dernier recours : trace de diagnostic, pour vérifier en prod quel champ
+  // méta porte réellement la couleur sur ce catalogue.
   if (process.env.NODE_ENV !== "production") {
     console.log("[colors] no color found for", node.handle,
       "options:", node.options?.map((o) => o.name));
@@ -56,12 +75,23 @@ function extractColorValues(node: ShopifyProductNode): string[] {
 }
 
 /**
- * Tailles d'une fiche, telles que le catalogue les filtre. La requête de
- * collection remonte déjà `options { name values }` : la taille sort donc de
- * l'option « Taille » / « Size », passée par le même normaliseur que le
- * dressing (« Small » → « S », « 38 / 40 » → « 38/40 », « TU » → rien).
+ * Tailles d'une fiche, telles que le catalogue les filtre. La taille des
+ * pièces vintage vend souvent sans variante ("Default Title") : elle vit
+ * alors dans le champ méta Catégorie « Taille » (shopify.size et ses
+ * repères), pas dans une option de variante — même source que la PDP et le
+ * dressing. On ne retombe sur l'option « Taille » / « Size » qu'à défaut.
  */
 function extractSizeValues(node: ShopifyProductNode): string[] {
+  const fromMeta = new Set<string>();
+  for (const meta of [node.sizeMeta, node.sizeMeta2, node.sizeMeta3, node.sizeMeta4]) {
+    for (const raw of resolveRichMetafieldList(meta)) {
+      const size = normalizeSize(raw);
+      if (size) fromMeta.add(size);
+    }
+    if (fromMeta.size > 0) break;
+  }
+  if (fromMeta.size > 0) return [...fromMeta].sort(compareSizes);
+
   const sizeOption = node.options?.find((o) => /taille|size/i.test(o.name));
   const raw = sizeOption?.values ?? sizeOption?.optionValues?.map((v) => v.name) ?? [];
   const seen = new Set<string>();
@@ -69,7 +99,30 @@ function extractSizeValues(node: ShopifyProductNode): string[] {
     const size = normalizeSize(value);
     if (size) seen.add(size);
   }
-  return [...seen].sort(compareSizes);
+  if (seen.size > 0) return [...seen].sort(compareSizes);
+
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[sizes] no size found for", node.handle,
+      "options:", node.options?.map((o) => o.name));
+  }
+  return [];
+}
+
+/**
+ * Matières d'une fiche (« Coton », « Polyester »…) — champ méta Catégorie
+ * uniquement, il n'existe pas d'équivalent en option de variante à
+ * interroger en repli. Une pièce sans matière renseignée reste simplement
+ * absente du filtre MATIÈRE, plutôt que d'y afficher une valeur inventée.
+ */
+function extractMaterialValues(node: ShopifyProductNode): string[] {
+  for (const meta of [node.materialMeta, node.materialMeta2, node.materialMeta3]) {
+    const vals = resolveRichMetafieldList(meta);
+    if (vals.length) return vals;
+  }
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[materials] no material found for", node.handle);
+  }
+  return [];
 }
 
 function stripEmoji(str: string): string {
@@ -79,24 +132,12 @@ function stripEmoji(str: string): string {
 // Un champ méta Catégorie Shopify (namespace "shopify") peut être du texte
 // simple OU référencer un/des metaobject(s) de taxonomie — la vraie valeur
 // affichable vit alors dans le champ "label" du/des metaobject(s) référencé(s).
+// Fine couche au-dessus de resolveRichMetafieldList : la PDP et le panier
+// affichent une chaîne unique ("38, 40"), là où le filtre du catalogue a
+// besoin du tableau pour construire une pastille par valeur.
 function resolveRichMetafield(meta: RichMetafield | null | undefined): string | null {
-  if (!meta) return null;
-  const fromNodes = meta.references?.nodes
-    ?.map((n) => n.field?.value)
-    .filter((v): v is string => Boolean(v));
-  if (fromNodes?.length) return fromNodes.join(", ");
-  if (meta.reference?.field?.value) return meta.reference.field.value;
-  if (meta.value && !meta.value.startsWith("gid://") && !meta.value.startsWith('["gid://')) {
-    try {
-      const parsed = JSON.parse(meta.value);
-      if (Array.isArray(parsed)) {
-        const strs = parsed.filter((v): v is string => typeof v === "string" && !v.startsWith("gid://"));
-        return strs.length ? strs.join(", ") : null;
-      }
-    } catch { /* pas du JSON — valeur texte simple */ }
-    return meta.value;
-  }
-  return null;
+  const vals = resolveRichMetafieldList(meta);
+  return vals.length ? vals.join(", ") : null;
 }
 
 // Ces pièces vintage sont uniques : la taille vit dans le champ méta Catégorie
@@ -150,6 +191,7 @@ function mapProduct(node: ShopifyProductNode): Product {
     tags: node.tags,
     colors: extractColorValues(node),
     sizes: extractSizeValues(node),
+    materials: extractMaterialValues(node),
     variantId: variant?.id ?? null,
   };
 }

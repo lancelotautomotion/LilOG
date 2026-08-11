@@ -3,7 +3,12 @@
 // ("label") plutôt que de stocker directement du texte. On récupère la
 // référence (valeur unique) et les références (valeur liste) en plus de la
 // valeur brute, pour couvrir les deux formes possibles.
-const SIZE_META_FIELDS = /* GraphQL */ `
+// Sélection de champs partagée par toute donnée pouvant être soit du texte
+// simple soit une référence (ou liste de références) à un metaobject de
+// taxonomie Shopify — c'est la forme exacte des champs méta Catégorie
+// (Taille, Couleur, Matière…). Un seul jeu de champs pour les trois plutôt
+// que trois fragments identiques.
+const RICH_METAFIELD_FIELDS = /* GraphQL */ `
   value
   type
   reference {
@@ -276,7 +281,7 @@ export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
         value
       }
       sizeMeta: metafield(namespace: "shopify", key: "size") {
-        ${SIZE_META_FIELDS}
+        ${RICH_METAFIELD_FIELDS}
       }
       collections(first: 10) {
         edges {
@@ -350,10 +355,17 @@ export const COLLECTION_BY_HANDLE_QUERY = /* GraphQL */ `
               name
               values
             }
-            colorMeta: metafield(namespace: "shopify", key: "color-pattern") { value }
-            colorMeta2: metafield(namespace: "custom", key: "couleur") { value }
-            colorMeta3: metafield(namespace: "shopify", key: "colors") { value }
-            colorMeta4: metafield(namespace: "descriptors", key: "color") { value }
+            colorMeta: metafield(namespace: "shopify", key: "color-pattern") { ${RICH_METAFIELD_FIELDS} }
+            colorMeta2: metafield(namespace: "custom", key: "couleur") { ${RICH_METAFIELD_FIELDS} }
+            colorMeta3: metafield(namespace: "shopify", key: "colors") { ${RICH_METAFIELD_FIELDS} }
+            colorMeta4: metafield(namespace: "descriptors", key: "color") { ${RICH_METAFIELD_FIELDS} }
+            sizeMeta: metafield(namespace: "shopify", key: "size") { ${RICH_METAFIELD_FIELDS} }
+            sizeMeta2: metafield(namespace: "custom", key: "taille") { ${RICH_METAFIELD_FIELDS} }
+            sizeMeta3: metafield(namespace: "shopify", key: "clothing-size") { ${RICH_METAFIELD_FIELDS} }
+            sizeMeta4: metafield(namespace: "shopify", key: "shoe-size") { ${RICH_METAFIELD_FIELDS} }
+            materialMeta: metafield(namespace: "shopify", key: "fabric") { ${RICH_METAFIELD_FIELDS} }
+            materialMeta2: metafield(namespace: "custom", key: "matiere") { ${RICH_METAFIELD_FIELDS} }
+            materialMeta3: metafield(namespace: "custom", key: "composition") { ${RICH_METAFIELD_FIELDS} }
             variants(first: 1) {
               edges {
                 node {
@@ -413,7 +425,7 @@ const CART_FRAGMENT = /* GraphQL */ `
                   value
                 }
                 sizeMeta: metafield(namespace: "shopify", key: "size") {
-                  ${SIZE_META_FIELDS}
+                  ${RICH_METAFIELD_FIELDS}
                 }
                 options {
                   name

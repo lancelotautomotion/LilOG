@@ -36,14 +36,26 @@ const SORT_LABELS: Record<Sort, string> = {
 };
 
 /* Palette des pastilles de couleur — liste blanche : une teinte inconnue est
-   ignorée plutôt qu'affichée en gris sans signification. */
+   ignorée plutôt qu'affichée en gris sans signification.
+   Élargie au-delà des couleurs de base : la résolution des champs méta
+   Catégorie (metaobjects de taxonomie) remonte désormais les libellés
+   officiels Shopify ("Multicolore", "Écru", "Doré"…), pas seulement les
+   noms de couleur les plus simples déjà couverts. */
 const COLOR_SWATCH: Record<string, string> = {
   rose: "#f7a3c8",
+  fuchsia: "#e0359b",
   rouge: "#c0392b",
+  corail: "#e8836a",
   vert: "#2d7a4f",
   bleu: "#2c5f9e",
+  turquoise: "#2ba9a0",
   noir: "#111111",
   blanc: "#f5f5f5",
+  ecru: "#efe6d5",
+  ivoire: "#f2ead9",
+  beige: "#d9c7a8",
+  camel: "#b8895f",
+  taupe: "#8c7c6e",
   violet: "#6c3d8f",
   orange: "#e07b2a",
   jaune: "#f2c94c",
@@ -51,6 +63,11 @@ const COLOR_SWATCH: Record<string, string> = {
   kaki: "#6b6b3a",
   bordeaux: "#6b1a2b",
   gris: "#888888",
+  argente: "#c7c9cc",
+  dore: "#c9a15a",
+  or: "#c9a15a",
+  multicolore: "linear-gradient(135deg,#f7a3c8 0%,#f2c94c 25%,#2d7a4f 50%,#2c5f9e 75%,#6c3d8f 100%)",
+  imprime: "linear-gradient(135deg,#f7a3c8 0%,#f2c94c 25%,#2d7a4f 50%,#2c5f9e 75%,#6c3d8f 100%)",
 };
 
 function norm(s: string) {
@@ -261,6 +278,8 @@ export interface FilterState {
   toggleType: (t: string) => void;
   activeSizes: Set<string>;
   toggleSize: (s: string) => void;
+  activeMaterials: Set<string>;
+  toggleMaterial: (m: string) => void;
   reset: () => void;
   activeCount: number;
 }
@@ -294,6 +313,8 @@ export function FilterControl({
     toggleType,
     activeSizes,
     toggleSize,
+    activeMaterials,
+    toggleMaterial,
     reset,
     activeCount,
   } = state;
@@ -311,6 +332,19 @@ export function FilterControl({
   }, [products]);
 
   const colors = useMemo(() => extractColors(products), [products]);
+
+  const materials = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of products) for (const m of p.materials) set.add(m);
+    return [...set].sort();
+  }, [products]);
+
+  /* Numérotation des rubriques : un compteur plutôt que des indices écrits
+     en dur, parce que TAILLE, TYPE, COULEUR et MATIÈRE n'apparaissent que si
+     la collection en a — un numéro figé (« 04 » pour TYPE) se serait décalé
+     à chaque fois qu'une rubrique au-dessus se vide ou s'ajoute. */
+  let sectionN = 2;
+  const nextN = () => String(++sectionN).padStart(2, "0");
 
   const body = (
     <>
@@ -364,7 +398,7 @@ export function FilterControl({
       </Section>
 
       {sizes.length > 0 && (
-        <Section n="03" label="TAILLE">
+        <Section n={nextN()} label="TAILLE">
           <div className="flex flex-wrap gap-1.5">
             {sizes.map((s) => (
               <Chip key={s} on={activeSizes.has(s)} onClick={() => toggleSize(s)}>
@@ -375,20 +409,8 @@ export function FilterControl({
         </Section>
       )}
 
-      {types.length > 0 && (
-        <Section n={sizes.length > 0 ? "04" : "03"} label="TYPE">
-          <div className="flex flex-wrap gap-1.5">
-            {types.map((type) => (
-              <Chip key={type} on={activeTypes.has(type)} onClick={() => toggleType(type)}>
-                {type}
-              </Chip>
-            ))}
-          </div>
-        </Section>
-      )}
-
       {colors.length > 0 && (
-        <Section n={sizes.length > 0 ? "05" : "04"} label="COULEUR">
+        <Section n={nextN()} label="COULEUR">
           <div className="flex flex-wrap gap-2">
             {colors.map((c) => {
               const on = activeColors.has(c.key);
@@ -407,6 +429,30 @@ export function FilterControl({
                 />
               );
             })}
+          </div>
+        </Section>
+      )}
+
+      {materials.length > 0 && (
+        <Section n={nextN()} label="MATIÈRE">
+          <div className="flex flex-wrap gap-1.5">
+            {materials.map((m) => (
+              <Chip key={m} on={activeMaterials.has(m)} onClick={() => toggleMaterial(m)}>
+                {m}
+              </Chip>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {types.length > 0 && (
+        <Section n={nextN()} label="TYPE">
+          <div className="flex flex-wrap gap-1.5">
+            {types.map((type) => (
+              <Chip key={type} on={activeTypes.has(type)} onClick={() => toggleType(type)}>
+                {type}
+              </Chip>
+            ))}
           </div>
         </Section>
       )}
