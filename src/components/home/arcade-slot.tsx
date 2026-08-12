@@ -15,7 +15,7 @@
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { GemSticker } from "@/components/contact/stickers";
-import { LCD, MONO, PLASTIC, SectionLabel } from "@/components/y2k/kit";
+import { LCD, MONO, NAVY_BAR, PLASTIC, SectionLabel, WindowFrame } from "@/components/y2k/kit";
 
 /** Les symboles qui défilent dans les rouleaux. */
 const REEL = ["👗", "👠", "👜", "🕶️", "💍", "👖", "🎀", "💄"];
@@ -151,30 +151,38 @@ export function ArcadeSlot() {
 
         <style>{ARCADE_CSS}</style>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,300px)_minmax(0,700px)] lg:items-center lg:justify-between xl:gap-16">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,360px)_minmax(0,700px)] lg:items-center lg:justify-between xl:gap-14">
           {/* ---- Texte de présentation, pour qui arrive sur le site ----
               Sur mobile, il suit la borne plutôt que de la précéder — la
               vitrine visuelle accroche d'abord, l'explication vient ensuite,
               comme le reste du site (hero, puis légende). */}
+          {/* Le texte vit dans une fenêtre, pas à même le fond : posé
+              directement sur le violet du bureau, il se lisait mal. Les
+              strass restent au-dessus (z-20) et débordent du cadre, comme
+              les pastilles collées sur les fenêtres de /contact. */}
           <div className="relative order-2 lg:order-1">
-            <Rhinestone uid="lha-rs1" size={30} hue={["#ffd7ee", "#ff5ec4", "#a6106b"]} delay="0s" className="-top-4 -left-3" />
-            <Rhinestone uid="lha-rs2" size={18} hue={["#e3d9ff", "#8f6ae0", "#3b1d8f"]} delay="0.6s" className="top-1/2 -right-2" />
-            <Rhinestone uid="lha-rs3" size={14} hue={["#d3fff0", "#5affa0", "#12703f"]} delay="1.2s" className="-bottom-3 left-6" />
-            <span aria-hidden className="absolute -right-4 -bottom-6 h-9 w-9 opacity-90">
+            <Rhinestone uid="lha-rs1" size={30} hue={["#ffd7ee", "#ff5ec4", "#a6106b"]} delay="0s" className="z-20 -top-4 -left-3" />
+            <Rhinestone uid="lha-rs2" size={18} hue={["#e3d9ff", "#8f6ae0", "#3b1d8f"]} delay="0.6s" className="z-20 top-1/2 -right-2.5" />
+            <Rhinestone uid="lha-rs3" size={14} hue={["#d3fff0", "#5affa0", "#12703f"]} delay="1.2s" className="z-20 -bottom-2.5 left-8" />
+            <span aria-hidden className="absolute -right-4 -bottom-6 z-20 h-9 w-9 opacity-90">
               <GemSticker uid="lha-gem" shape="star" hue={["#fff0fa", "#ff9ee4", "#c3128a"]} />
             </span>
 
-            <p className={`${MONO} text-[0.5rem] font-bold tracking-[0.16em] text-[#5b2fb8] uppercase`}>
-              <span style={{ color: "#d3016d" }}>▶</span> Machine à looks
-            </p>
-            <h3
-              className={`${LCD} mt-1.5 text-[clamp(1.5rem,3.4vw,2.1rem)] leading-[1.05] text-[#2a1266] uppercase`}
-            >
-              {t.home.slotIntroTitle}
-            </h3>
-            <p className={`${MONO} mt-3 max-w-[42ch] text-[0.66rem] leading-[1.85] text-[#3b3550]`}>
-              {t.home.slotIntroBody}
-            </p>
+            <WindowFrame title="HOW_TO_PLAY.TXT" icon="❓" bar={NAVY_BAR}>
+              <div className="bg-white px-[clamp(16px,2.6vw,24px)] py-[clamp(16px,2.6vw,22px)]">
+                <p className={`${MONO} text-[0.5rem] font-bold tracking-[0.16em] text-[#5b2fb8] uppercase`}>
+                  <span style={{ color: "#d3016d" }}>▶</span> Machine à looks
+                </p>
+                <h3
+                  className={`${LCD} mt-1.5 text-[clamp(1.4rem,3.2vw,1.95rem)] leading-[1.05] text-[#2a1266] uppercase`}
+                >
+                  {t.home.slotIntroTitle}
+                </h3>
+                <p className={`${MONO} mt-3 text-[0.64rem] leading-[1.85] text-[#3b3550]`}>
+                  {t.home.slotIntroBody}
+                </p>
+              </div>
+            </WindowFrame>
           </div>
 
           {/* ---- Coque de la borne ---- */}
