@@ -503,53 +503,60 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   {product.name}
                 </h1>
 
-                {/* Écran LED — un vrai afficheur d'appareil : boîtier noir
-                    encastré, libellé gravé, chiffres néon en typo LCD, prix
-                    barré et remise logés dans le même bandeau plutôt que
-                    dispersés à côté. */}
-                <div
-                  className={`lpi-crt relative mt-4 w-fit max-w-full overflow-hidden rounded-lg border-2 border-[#2b2b3d] bg-black px-4 py-2.5 ${BEVEL_IN}`}
-                >
-                  <div className="relative z-[2] flex flex-wrap items-end gap-x-5 gap-y-1.5">
-                    <div className="min-w-0">
-                      <span
-                        className={`${MONO} block text-[0.42rem] font-bold tracking-[0.22em] text-white/70 uppercase`}
-                      >
-                        PRICE_TAG.SYS
-                      </span>
-                      <span className="flex items-baseline gap-2.5">
+                {/* Prix et caractéristiques sur une même rangée : l'afficheur
+                    garde sa largeur naturelle (shrink-0), les trois pastilles
+                    se partagent le reste. `items-stretch` les met à la hauteur
+                    de l'afficheur. Sous 320px de place pour le groupe — colonne
+                    étroite ou affichage en une colonne — il repasse dessous. */}
+                <div className="mt-4 flex flex-wrap items-stretch gap-2">
+                  {/* Écran LED — un vrai afficheur d'appareil : boîtier noir
+                      encastré, libellé gravé, chiffres néon en typo LCD, prix
+                      barré et remise logés dans le même bandeau plutôt que
+                      dispersés à côté. */}
+                  <div
+                    className={`lpi-crt relative max-w-full shrink-0 overflow-hidden rounded-lg border-2 border-[#2b2b3d] bg-black px-4 py-2.5 ${BEVEL_IN}`}
+                  >
+                    <div className="relative z-[2] flex flex-wrap items-end gap-x-5 gap-y-1.5">
+                      <div className="min-w-0">
                         <span
-                          className={`${LCD} text-[2.6rem] leading-[0.9] tracking-[0.02em]`}
-                          style={{ color: NEON, textShadow: `0 0 14px ${NEON}b3, 0 0 34px ${NEON}59` }}
+                          className={`${MONO} block text-[0.42rem] font-bold tracking-[0.22em] text-white/70 uppercase`}
                         >
-                          {product.price}€
+                          PRICE_TAG.SYS
                         </span>
-                        {product.was && (
-                          <s className={`${MONO} text-[0.72rem] text-white/35`}>{product.was}€</s>
-                        )}
-                      </span>
+                        <span className="flex items-baseline gap-2.5">
+                          <span
+                            className={`${LCD} text-[2.6rem] leading-[0.9] tracking-[0.02em]`}
+                            style={{ color: NEON, textShadow: `0 0 14px ${NEON}b3, 0 0 34px ${NEON}59` }}
+                          >
+                            {product.price}€
+                          </span>
+                          {product.was && (
+                            <s className={`${MONO} text-[0.72rem] text-white/35`}>{product.was}€</s>
+                          )}
+                        </span>
+                      </div>
+
+                      {discount !== null && (
+                        <span
+                          className={`${LCD} shrink-0 rounded border border-[#5affa0]/50 px-2 py-0.5 text-[1.15rem] leading-none`}
+                          style={{
+                            color: MATRIX,
+                            textShadow: `0 0 10px ${MATRIX}8c`,
+                            background: "rgba(90,255,160,0.08)",
+                          }}
+                        >
+                          -{discount}%
+                        </span>
+                      )}
                     </div>
-
-                    {discount !== null && (
-                      <span
-                        className={`${LCD} shrink-0 rounded border border-[#5affa0]/50 px-2 py-0.5 text-[1.15rem] leading-none`}
-                        style={{
-                          color: MATRIX,
-                          textShadow: `0 0 10px ${MATRIX}8c`,
-                          background: "rgba(90,255,160,0.08)",
-                        }}
-                      >
-                        -{discount}%
-                      </span>
-                    )}
                   </div>
-                </div>
 
-                {/* Fiche de caractéristiques RPG */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <StatCell icon="📏" label="Taille" value={size} />
-                  <StatCell icon="💎" label="État" value={product.etat ?? "Non renseigné"} />
-                  {dept && <StatCell icon="🗂️" label="Rayon" value={dept} />}
+                  {/* Fiche de caractéristiques RPG */}
+                  <div className="flex min-w-[320px] flex-1 flex-wrap items-stretch gap-2">
+                    <StatCell icon="📏" label="Taille" value={size} />
+                    <StatCell icon="💎" label="État" value={product.etat ?? "Non renseigné"} />
+                    {dept && <StatCell icon="🗂️" label="Rayon" value={dept} />}
+                  </div>
                 </div>
 
                 {hasVariants && product.variants.length > 1 && (
