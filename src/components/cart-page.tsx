@@ -201,7 +201,13 @@ export function CartPage() {
 
               <div className="oc-summary-body">
                 {total === 0 ? (
-                  <p className="oc-summary-empty">Panier vide.</p>
+                  <div className="oc-summary-empty">
+                    <p className="oc-summary-empty-text">Panier vide.</p>
+                    {/* Un panier vide ne proposait rien : la fenêtre s'arrêtait
+                        sur le constat. Le libellé existait déjà, traduit dans
+                        les neuf langues, et n'était utilisé nulle part. */}
+                    <Link href="/#drops" className="oc-cta">🛍 {t.pdp.completeLook} →</Link>
+                  </div>
                 ) : (
                   <ul className="oc-summary-list">
                     {lines.map((line, i) => (
@@ -242,6 +248,11 @@ export function CartPage() {
                       {t.cart.checkout} →
                     </button>
                   )}
+                  {/* Retour au catalogue sans quitter le panier : une pièce
+                      seule n'est pas un look. */}
+                  <Link href="/#drops" className="oc-complete-link">
+                    🛍 {t.pdp.completeLook} →
+                  </Link>
                 </div>
               )}
             </div>
