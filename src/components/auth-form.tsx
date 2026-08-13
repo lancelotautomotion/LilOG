@@ -1,23 +1,72 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { actionSignup } from "@/lib/actions/auth-actions";
+import {
+  LS_AVATAR_KEY,
+  LS_STATUS_KEY,
+  MSN_AVATARS,
+  MSN_STATUSES,
+  useStored,
+  writeStored,
+} from "@/lib/msn";
 
 type Mode = "login" | "register";
 
+const LS_REMEMBER_KEY = "lilog_login_remember";
+
+/* Biseaux Windows : relief sortant (fenêtre, boutons, onglet actif),
+   relief rentrant (cadre photo, zones encastrées). */
+const BEVEL_OUT = "border-2 border-t-white border-l-white border-r-gray-800 border-b-gray-800";
+const BEVEL_IN  = "border-2 border-t-gray-500 border-l-gray-500 border-r-white border-b-white";
+
 export function AuthForm() {
   const [mode, setMode] = useState<Mode>("login");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  /* Chrome de la fenêtre : réduire l'enroule, agrandir l'élargit,
+     fermer renvoie à la boutique. */
+  const [shaded, setShaded] = useState(false);
+  const [maximized, setMaximized] = useState(false);
+  const [wizz, setWizz] = useState(false);
+
+  const avatar = useStored(LS_AVATAR_KEY);
+  const storedStatus = useStored(LS_STATUS_KEY);
+  const statusId = MSN_STATUSES.some(s => s.id === storedStatus)
+    ? (storedStatus as string)
+    : MSN_STATUSES[0].id;
+  const avatarSrc = MSN_AVATARS.some(a => a.src === avatar)
+    ? (avatar as string)
+    : MSN_AVATARS[0].src;
+
+  /* « Se souvenir de moi » : l'email revient pré-rempli à la visite
+     suivante. La valeur stockée vaut null au premier passage (case
+     cochée par défaut), "" si la cliente avait décoché, l'email sinon.
+     Elle sert de valeur initiale tant que rien n'a été saisi — pas
+     d'effet ni de setState au montage, donc pas de rendu en cascade. */
+  const savedLogin = useStored(LS_REMEMBER_KEY);
+  const [emailEdit, setEmailEdit] = useState<string | null>(null);
+  const [rememberEdit, setRememberEdit] = useState<boolean | null>(null);
+  const email = emailEdit ?? savedLogin ?? "";
+  const remember = rememberEdit ?? savedLogin !== "";
+
+  function cycleAvatar() {
+    const i = MSN_AVATARS.findIndex(a => a.src === avatarSrc);
+    writeStored(LS_AVATAR_KEY, MSN_AVATARS[(i + 1) % MSN_AVATARS.length].src);
+  }
+
   const handleCredentials = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    writeStored(LS_REMEMBER_KEY, remember ? email : "");
+
     startTransition(async () => {
       if (mode === "register") {
         const { error: createError } = await actionSignup(email, password, firstName, lastName);
@@ -26,6 +75,7 @@ export function AuthForm() {
       const res = await signIn("credentials", { email, password, redirect: false });
       if (res?.error) {
         setError("Email ou mot de passe incorrect.");
+        setWizz(true);
       } else {
         window.location.href = "/account";
       }
@@ -36,105 +86,284 @@ export function AuthForm() {
     signIn("google", { callbackUrl: "/account" });
   };
 
+  const status = isPending
+    ? "AUTHENTIFICATION..."
+    : error
+      ? "ERREUR_401_ACCESS_DENIED"
+      : "READY_TO_LOGIN";
+
   return (
-    <div className="auth-win95">
-      {/* Title bar — Lil'OG fuchsia */}
-      <div className="auth-win95-bar">
-        <span className="auth-win95-title-text">♛ Lil&apos;OG — Espace Cliente</span>
-        <div className="auth-win95-chrome">
-          <span className="auth-win95-btn">_</span>
-          <span className="auth-win95-btn">□</span>
-          <span className="auth-win95-btn">×</span>
-        </div>
-      </div>
+    <div
+      className={
+        "relative w-full transition-[max-width] duration-300 " +
+        (maximized ? "max-w-[680px]" : "max-w-[480px]") +
+        (wizz ? " login-wizz" : "")
+      }
+      onAnimationEnd={e => { if (e.target === e.currentTarget) setWizz(false); }}
+    >
+      <div className={`login-mono overflow-hidden rounded-xl bg-[#ece9d8] shadow-2xl ${BEVEL_OUT}`}>
 
-      {/* Menu bar */}
-      <div className="auth-win95-menu">
-        <span className="auth-win95-menu-item">Fichier</span>
-        <span className="auth-win95-menu-item">Aide</span>
-      </div>
-
-      {/* Tabs + panel */}
-      <div className="auth-win95-inner">
-        <div className="auth-win95-tabs">
-          <button
-            className={"auth-win95-tab" + (mode === "login" ? " active" : "")}
-            onClick={() => { setMode("login"); setError(null); }}
-          >
-            Connexion
-          </button>
-          <button
-            className={"auth-win95-tab" + (mode === "register" ? " active" : "")}
-            onClick={() => { setMode("register"); setError(null); }}
-          >
-            Créer un compte
-          </button>
+        {/* ── Barre de titre ── */}
+        <div
+          className="flex items-center gap-2 px-2.5 py-1.5 select-none"
+          style={{ backgroundImage: "var(--y2k-titlebar)" }}
+        >
+          <span className="flex-1 truncate text-[0.66rem] font-bold tracking-[0.08em] text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">
+            🔐 LIL_OG_MESSENGER_V2.0.EXE
+          </span>
+          <div className="flex shrink-0 items-center gap-1">
+            <ChromeButton label="Réduire la fenêtre" onClick={() => setShaded(v => !v)}>_</ChromeButton>
+            <ChromeButton label="Agrandir la fenêtre" onClick={() => setMaximized(v => !v)}>🗖</ChromeButton>
+            <ChromeButton label="Fermer et retourner à la boutique" href="/">✖</ChromeButton>
+          </div>
         </div>
 
-        <div className="auth-win95-panel">
-          <form className="auth-form" onSubmit={handleCredentials}>
-            {mode === "register" && (
-              <div className="auth-row">
-                <input
-                  className="auth-input"
-                  type="text"
-                  placeholder="Prénom"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                />
-                <input
-                  className="auth-input"
-                  type="text"
-                  placeholder="Nom"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                />
-              </div>
-            )}
-            <input
-              className="auth-input"
-              type="email"
-              placeholder="Adresse email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-            />
-            <input
-              className="auth-input"
-              type="password"
-              placeholder="Mot de passe"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
-              minLength={mode === "register" ? 8 : undefined}
-            />
+        {/* ── Barre de menus ── */}
+        <div className="flex border-b border-gray-400 bg-[#ece9d8] px-1.5 py-0.5">
+          {["Fichier", "Contacts", "Aide"].map(item => (
+            <span
+              key={item}
+              className="cursor-default rounded px-2.5 py-0.5 text-[0.6rem] uppercase tracking-[0.06em] text-[#3d3550] hover:bg-[#7147d4] hover:text-white"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
 
-            {error && <p className="auth-error">{error}</p>}
+        {/* Corps — enroulé quand la fenêtre est réduite */}
+        <div className={shaded ? "hidden" : "block"}>
 
-            <button className="auth-submit" type="submit" disabled={isPending}>
-              {isPending ? "…" : mode === "login" ? "Se connecter" : "Créer mon compte"}
+          {/* ── Bloc avatar + statut ── */}
+          <div className="flex items-center gap-3 border-b border-gray-400 bg-gradient-to-b from-[#f6f2ff] to-[#e4ddf7] p-3">
+            <button
+              type="button"
+              onClick={cycleAvatar}
+              title="Changer d'avatar"
+              className={`shrink-0 rounded-md bg-white p-1 shadow-inner ${BEVEL_IN}`}
+            >
+              <span className="relative block h-16 w-16 overflow-hidden rounded-sm">
+                <Image
+                  src={avatarSrc}
+                  alt="Avatar"
+                  fill
+                  sizes="64px"
+                  className="object-cover"
+                  unoptimized
+                />
+              </span>
             </button>
-          </form>
 
-          <div className="auth-divider"><span>ou</span></div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[0.72rem] font-bold text-[#2b2340]">
+                Invitée_LilOG <span className="text-[0.58rem] font-normal text-[#6B7280]">(clique la photo ✎)</span>
+              </p>
 
-          <button className="auth-google" onClick={handleGoogle} type="button">
-            <GoogleIcon />
-            Continuer avec Google
+              <div className="relative mt-1.5">
+                <select
+                  aria-label="Statut"
+                  value={statusId}
+                  onChange={e => writeStored(LS_STATUS_KEY, e.target.value)}
+                  className={`w-full cursor-pointer appearance-none rounded-md bg-white py-1.5 pl-2 pr-7 text-[0.6rem] tracking-[0.04em] text-[#2b2340] shadow-inner outline-none ${BEVEL_IN}`}
+                >
+                  {MSN_STATUSES.map(s => (
+                    <option key={s.id} value={s.id}>{s.emoji}  {s.loginLabel}</option>
+                  ))}
+                </select>
+                <span aria-hidden className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[0.6rem] text-[#6B7280]">▾</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Onglets ── */}
+          <div className="flex gap-1 px-3 pt-3">
+            <Tab active={mode === "login"} onClick={() => { setMode("login"); setError(null); }}>
+              🔑 Connexion
+            </Tab>
+            <Tab active={mode === "register"} onClick={() => { setMode("register"); setError(null); }}>
+              ✨ Rejoindre le club
+            </Tab>
+          </div>
+
+          {/* ── Panneau ── */}
+          <div className="mx-3 mb-3 rounded-b-lg rounded-tr-lg border border-gray-400 bg-[#f7f6fb] p-4 shadow-inner">
+            <form className="flex flex-col gap-3" onSubmit={handleCredentials}>
+              {mode === "register" && (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Field label="PRENOM.TXT">
+                    <input
+                      className={INPUT}
+                      type="text"
+                      value={firstName}
+                      onChange={e => setFirstName(e.target.value)}
+                      required
+                      autoComplete="given-name"
+                    />
+                  </Field>
+                  <Field label="NOM.TXT">
+                    <input
+                      className={INPUT}
+                      type="text"
+                      value={lastName}
+                      onChange={e => setLastName(e.target.value)}
+                      required
+                      autoComplete="family-name"
+                    />
+                  </Field>
+                </div>
+              )}
+
+              <Field label="ADRESSE_EMAIL.SYS">
+                <input
+                  className={INPUT}
+                  type="email"
+                  placeholder="cherie@lilog.shop"
+                  value={email}
+                  onChange={e => setEmailEdit(e.target.value)}
+                  required
+                  autoComplete="email"
+                />
+              </Field>
+
+              <Field label="PASSWORD.RAW">
+                <input
+                  className={INPUT}
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
+                  minLength={mode === "register" ? 8 : undefined}
+                />
+              </Field>
+
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="flex cursor-pointer items-center gap-2 text-[0.62rem] text-[#3d3550]">
+                  <input
+                    type="checkbox"
+                    checked={remember}
+                    onChange={e => setRememberEdit(e.target.checked)}
+                    className="h-3.5 w-3.5 cursor-pointer accent-[#c93fe0]"
+                  />
+                  Se souvenir de moi sur cet ordinateur
+                </label>
+                <Link
+                  href="/contact"
+                  className="text-[0.58rem] text-[#5b3fa8] underline decoration-dotted underline-offset-2 hover:text-[#ff3fb0]"
+                >
+                  Mot de passe oublié ?
+                </Link>
+              </div>
+
+              {error && (
+                <p className={`flex items-start gap-2 rounded-md bg-[#fff0f4] p-2 text-[0.62rem] text-[#b3005e] ${BEVEL_IN}`}>
+                  <span aria-hidden>⚠️</span>{error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={isPending}
+                className="mt-1 w-full rounded-xl border-2 border-t-[#ffa6e4] border-l-[#ffa6e4] border-r-[#5b1a9e] border-b-[#5b1a9e] bg-gradient-to-b from-[#ff5cc8] via-[#d63fdd] to-[#7b2ff7] px-4 py-3.5 text-[0.74rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_4px_0_#4c1d95,0_10px_20px_rgba(76,29,149,0.35)] transition-[transform,box-shadow] active:translate-y-[4px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isPending
+                  ? "⏳ CHARGEMENT..."
+                  : mode === "login"
+                    ? "🔓 S'AUTHENTIFIER.EXE"
+                    : "✨ CRÉER MON COMPTE.EXE"}
+              </button>
+            </form>
+
+            {/* ── Séparateur ── */}
+            <div className="my-3 flex items-center gap-2 text-[0.58rem] uppercase tracking-[0.14em] text-[#6B7280]">
+              <span className="h-px flex-1 bg-gray-300" />ou<span className="h-px flex-1 bg-gray-300" />
+            </div>
+
+            {/* ── Google, en bouton d'application rétro ── */}
+            <button
+              type="button"
+              onClick={handleGoogle}
+              className={`flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-white to-[#e9e6f5] px-4 py-3 text-[0.66rem] font-bold uppercase tracking-[0.08em] text-[#2b2340] shadow-[0_3px_0_rgba(120,100,170,0.45)] transition-[transform,box-shadow] hover:from-white hover:to-[#f4f1ff] active:translate-y-[3px] active:shadow-none ${BEVEL_OUT}`}
+            >
+              <GoogleIcon />
+              Continuer avec Google
+            </button>
+          </div>
+        </div>
+
+        {/* ── Barre de statut ── */}
+        <div className="flex items-center gap-2 border-t border-gray-400 bg-[#d9d5c8] px-2.5 py-1">
+          <span className="login-led inline-block h-2 w-2 shrink-0 rounded-full bg-[#22c55e]" />
+          <span className="min-w-0 flex-1 truncate text-[0.56rem] uppercase tracking-[0.06em] text-[#4b4536]">
+            STATUS: {status}
+          </span>
+          <button
+            type="button"
+            onClick={() => setWizz(true)}
+            title="Envoyer un wizz"
+            className={`shrink-0 rounded bg-[#ece9d8] px-1.5 py-0.5 text-[0.56rem] tracking-[0.04em] text-[#4b4536] active:translate-y-[1px] ${BEVEL_OUT}`}
+          >
+            🔔 WIZZ
           </button>
         </div>
-      </div>
-
-      {/* Status bar */}
-      <div className="auth-win95-statusbar">
-        <div className="auth-win95-status-cell">Connexion sécurisée</div>
-        <div className="auth-win95-status-cell">Lil&apos;OG © 2025</div>
       </div>
     </div>
+  );
+}
+
+/* Champ encastré + étiquette rétro */
+const INPUT =
+  "w-full rounded-xl border border-gray-400 bg-white p-3 text-sm text-[#1E2430] shadow-inner outline-none transition-[border-color,box-shadow] placeholder:text-gray-400 focus:border-[#7147d4] focus:shadow-[inset_0_1px_3px_rgba(0,0,0,0.12),0_0_0_3px_rgba(255,63,176,0.18)]";
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-[0.56rem] font-bold uppercase tracking-[0.14em] text-[#5b3fa8]">
+        {label}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        "relative -mb-px rounded-t-lg border border-b-0 border-gray-400 px-3 py-1.5 text-[0.6rem] uppercase tracking-[0.08em] transition-colors " +
+        (active
+          ? "z-10 bg-[#f7f6fb] font-bold text-[#7b2ff7]"
+          : "bg-[#ddd9ea] text-[#6B7280] hover:bg-[#e9e6f5] hover:text-[#2b2340]")
+      }
+    >
+      [ {children} ]
+    </button>
+  );
+}
+
+function ChromeButton({
+  children,
+  label,
+  onClick,
+  href,
+}: {
+  children: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+  href?: string;
+}) {
+  const className =
+    "flex h-5 w-7 items-center justify-center rounded border border-white/55 bg-white/15 text-[10px] leading-none text-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_1px_2px_rgba(0,0,0,0.2)] transition-colors hover:bg-white/30 active:translate-y-[1px]";
+
+  if (href) {
+    return <Link href={href} aria-label={label} title={label} className={className}>{children}</Link>;
+  }
+  return (
+    <button type="button" aria-label={label} title={label} onClick={onClick} className={className}>
+      {children}
+    </button>
   );
 }
 
