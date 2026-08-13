@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { SmartImg } from "@/components/smart-img";
+import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { compareSizes, STANDARD_SHOE_SIZES, STANDARD_SIZES } from "@/lib/sizes";
@@ -43,6 +44,12 @@ const STYLE_PHRASES = [
   "WAY EXISTENTIAL",
   "SUPER CUTE",
 ] as const;
+
+/* Strass de la maison — mêmes pastilles et mêmes teintes que /faq,
+ * /contact, /login et le bas de page. Elles décorent l'arête centrale
+ * de part et d'autre de la bulle STYLE_ME. */
+const STRASS_STAR: [string, string, string] = ["#FFB3D6", "#F0509A", "#B7175C"];
+const STRASS_HEART: [string, string, string] = ["#FFC0DF", "#EE4B96", "#B3155A"];
 
 /* ================================================================== *
  * Helpers
@@ -1039,11 +1046,25 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
             <div className="dm-divider" aria-hidden />
 
             <div className="dm-style-cell">
-              <span className="dm-bling dm-bling-star dm-bling-1" aria-hidden>✦</span>
-              <span className="dm-bling dm-bling-heart dm-bling-2" aria-hidden>♥</span>
-              <span className="dm-bling dm-bling-heart dm-bling-3" aria-hidden>♥</span>
-              <span className="dm-bling dm-bling-star dm-bling-4" aria-hidden>✦</span>
-              <span className="dm-style-arrow" aria-hidden>▼</span>
+              <span className="dm-strass dm-strass-rail dm-strass-1" aria-hidden>
+                <ChromeStar uid="dm-strass-1" />
+              </span>
+              <span className="dm-strass dm-strass-rail dm-strass-2" aria-hidden>
+                <GemSticker uid="dm-strass-2" shape="heart" hue={STRASS_HEART} />
+              </span>
+              <span className="dm-strass dm-strass-rail dm-strass-3" aria-hidden>
+                <GemSticker uid="dm-strass-3" shape="heart" hue={STRASS_HEART} />
+              </span>
+              <span className="dm-strass dm-strass-rail dm-strass-4" aria-hidden>
+                <ChromeStar uid="dm-strass-4" />
+              </span>
+
+              {/* Les deux qui encadrent la bulle restent dans le flux :
+                  elles tiennent la place des anciens chevrons, y compris
+                  en pile sur mobile où l'arête devient horizontale. */}
+              <span className="dm-strass dm-strass-cap dm-strass-cap-up" aria-hidden>
+                <GemSticker uid="dm-strass-up" shape="star" hue={STRASS_STAR} />
+              </span>
               <button
                 type="button"
                 className="dm-style-me"
@@ -1052,7 +1073,9 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               >
                 <span className="dm-style-me-label">STYLE_ME</span>
               </button>
-              <span className="dm-style-arrow" aria-hidden>▲</span>
+              <span className="dm-strass dm-strass-cap dm-strass-cap-down" aria-hidden>
+                <GemSticker uid="dm-strass-down" shape="star" hue={STRASS_STAR} />
+              </span>
             </div>
 
             <Bay
