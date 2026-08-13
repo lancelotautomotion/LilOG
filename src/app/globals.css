@@ -5379,13 +5379,24 @@ html, body {
 
 :root {
   --dm-nav-h: 52px;            /* hauteur de .nav (globals) */
-  --dm-chassis: #d4d0c8;       /* gris boîtier Win95, plus chaud que #c0c0c0 */
-  --dm-chassis-2: #c3bfb7;
+  /* Plastique de la borne d'arcade de l'accueil (ARCADE_SLOT.EXE) : le
+     boîtier beige Win95 laisse place au lavande nacré, les arêtes passent
+     du gris-brun au violet. Le catalogue n'a pas bougé — c'est la même
+     machine, dans la matière du reste du site. */
+  --dm-chassis: #e6e3f2;       /* plastique lavande, corps du cabinet */
+  --dm-chassis-2: #c6c2d8;
   --dm-hi: #ffffff;            /* arête éclairée du bevel */
-  --dm-lo: #55555f;            /* arête ombrée du bevel */
-  --dm-mid: #8f8f9a;
-  --dm-well: #0d1017;          /* fond des écrans encastrés */
-  --dm-lcd: #7cffb2;           /* vert LCD */
+  --dm-lo: #9b97b3;            /* arête ombrée du bevel */
+  --dm-mid: #a9a5bd;
+  --dm-well: #1b0f3a;          /* fond des écrans encastrés, violet nuit */
+  --dm-lcd: #5affa0;           /* vert d'écran, celui de la borne */
+  --dm-neon: #ff5ec4;          /* néon rose de la borne */
+  --dm-deep: #3b1d8f;
+  /* Fronton lumineux : le dégradé de la borne, violet → fuchsia. */
+  --dm-fronton: linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%);
+  /* Plastique bombé des boutons (jeton PLASTIC_FACE du kit y2k). */
+  --dm-plastic: linear-gradient(180deg, #fdfdff 0%, #ebe9f4 46%, #c9c6da 100%);
+  --dm-plastic-edge: #a5a1bd;
 }
 
 .dm-desktop {
@@ -5397,12 +5408,19 @@ html, body {
   padding: calc(var(--dm-nav-h) + 16px) clamp(8px, 1.5vw, 16px) 16px;
 }
 
-/* ---- Châssis extérieur : DA /account ---- */
+/* ---- Châssis extérieur : la coque de la borne d'arcade ----
+   Coque de plastique biseautée et ombre portée dure, comme sur l'accueil.
+   Le rembourrage de 10px est la tranche du cabinet : l'écran n'affleure
+   plus le bord, il est encastré dedans. */
 .dm-win {
-  background: var(--ldl-surface);
-  border: 1px solid var(--ldl-border);
-  border-radius: 12px;
-  box-shadow: var(--ldl-shadow-window);
+  background: linear-gradient(180deg, #f6f5fb 0%, #e2e0ee 34%, #c6c2d8 72%, #a9a5bd 100%);
+  border: 2px solid #9b97b3;
+  border-radius: 22px;
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -6px 14px rgba(60, 40, 110, 0.28),
+    10px 10px 0 rgba(24, 12, 58, 0.45);
+  padding: 10px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -5414,14 +5432,38 @@ html, body {
   height: calc(100dvh - var(--dm-nav-h) - 32px);
 }
 
+/* Fronton de la borne : dégradé violet → fuchsia et trois ampoules qui
+   clignotent en décalé, posées en pseudo-élément (aucun balisage ajouté). */
 .dm-titlebar {
-  background: var(--acct-titlebar);
+  background: var(--dm-fronton);
+  border: 2px solid var(--dm-deep);
+  border-radius: 12px 12px 0 0;
   padding: 6px 14px;
   display: flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
   user-select: none;
+}
+.dm-titlebar::before {
+  content: "";
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  margin-right: 34px;
+  border-radius: 999px;
+  background: #fff0fa;
+  box-shadow:
+    0 0 8px rgba(255, 215, 240, 0.95),
+    13px 0 0 0 #fff0fa, 13px 0 8px 0 rgba(255, 215, 240, 0.7),
+    26px 0 0 0 #fff0fa, 26px 0 8px 0 rgba(255, 215, 240, 0.7);
+  animation: dmFrontonBulb 1.6s ease-in-out infinite;
+}
+/* N'anime que l'opacité : dmTileBulb, elle, anime box-shadow et effacerait
+   les deux ampoules dessinées par la pile d'ombres ci-dessus. */
+@keyframes dmFrontonBulb {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.32; }
 }
 .dm-titlebar-text {
   flex: 1;
@@ -5529,8 +5571,8 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   justify-content: space-between;
   gap: 8px;
   padding: 4px 10px;
-  background: linear-gradient(180deg, #2b3550 0%, #171d2e 100%);
-  border-bottom: 2px solid var(--dm-lo);
+  background: linear-gradient(180deg, #4b2a9e 0%, #2a1266 100%);
+  border-bottom: 2px solid var(--dm-deep);
   font-family: var(--mono);
 }
 .dm-bay-label {
@@ -5555,7 +5597,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   min-height: 0;
   position: relative;
   overflow: hidden;
-  background: #101521;
+  background: #1b0f3a;
   border-top: 2px solid var(--dm-lo);
   border-bottom: 2px solid var(--dm-hi);
 }
@@ -5572,14 +5614,14 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   width: 112%;
   height: 112%;
   object-fit: cover;
-  filter: blur(30px) saturate(1.25) brightness(0.6);
+  filter: blur(30px) saturate(1.3) brightness(0.82);
   transform: scale(1.05);
 }
 .dm-reel-shade {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(72% 90% at 50% 45%, transparent 45%, rgba(6, 9, 16, 0.72) 100%),
+    radial-gradient(76% 92% at 50% 45%, transparent 52%, rgba(32, 14, 74, 0.5) 100%),
     repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 3px);
   pointer-events: none;
 }
@@ -5676,7 +5718,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   font-family: var(--font-lcd), monospace;
   font-size: 1.35rem;
   line-height: 1;
-  color: #0f2a86;
+  color: #2a1266;
 }
 
 /* ---- Bouton casino : plastique épais bombé, coins pleinement arrondis ----
@@ -5699,12 +5741,12 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   padding: 10px 12px;
   border: 1px solid rgba(24, 22, 30, 0.34);
   border-radius: 999px;
-  background: linear-gradient(180deg, #fdfcfa 0%, #eeeae2 44%, #d2cdc4 100%);
+  background: var(--dm-plastic);
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.98),
     inset 0 1px 0 1px rgba(255, 255, 255, 0.72),
-    inset 0 -9px 14px rgba(86, 84, 96, 0.34),
-    0 4px 0 #a29d93,
+    inset 0 -9px 14px rgba(90, 86, 120, 0.34),
+    0 4px 0 var(--dm-plastic-edge),
     0 8px 14px rgba(0, 0, 0, 0.24);
   font-family: var(--mono);
   font-size: 0.9rem;
@@ -5724,16 +5766,16 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-spin:active:not(:disabled) {
   transform: translateY(4px);
   box-shadow:
-    inset 0 4px 9px rgba(86, 84, 96, 0.5),
+    inset 0 4px 9px rgba(90, 86, 120, 0.5),
     inset 0 -1px 0 rgba(255, 255, 255, 0.5),
-    0 0 0 #a29d93,
+    0 0 0 var(--dm-plastic-edge),
     0 2px 5px rgba(0, 0, 0, 0.2);
 }
 .dm-spin:focus-visible { outline: 2px dotted #14161d; outline-offset: 3px; }
 .dm-spin:disabled {
   color: #9a97a2;
   cursor: default;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.7), inset 0 -6px 10px rgba(86, 84, 96, 0.22), 0 2px 0 #b5b1a8;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.7), inset 0 -6px 10px rgba(90, 86, 120, 0.22), 0 2px 0 #b3afc7;
 }
 .dm-spin-emoji { font-size: 1rem; line-height: 1; }
 
@@ -5748,12 +5790,12 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   justify-content: center;
   border: 1px solid rgba(24, 22, 30, 0.34);
   border-radius: 999px;
-  background: linear-gradient(180deg, #fdfcfa 0%, #eeeae2 44%, #d2cdc4 100%);
+  background: var(--dm-plastic);
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.98),
     inset 0 1px 0 1px rgba(255, 255, 255, 0.72),
-    inset 0 -9px 14px rgba(86, 84, 96, 0.34),
-    0 4px 0 #a29d93,
+    inset 0 -9px 14px rgba(90, 86, 120, 0.34),
+    0 4px 0 var(--dm-plastic-edge),
     0 8px 14px rgba(0, 0, 0, 0.24);
   font-family: var(--mono);
   font-size: 1.4rem;
@@ -5767,9 +5809,9 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-heart:active:not(:disabled) {
   transform: translateY(4px);
   box-shadow:
-    inset 0 4px 9px rgba(86, 84, 96, 0.5),
+    inset 0 4px 9px rgba(90, 86, 120, 0.5),
     inset 0 -1px 0 rgba(255, 255, 255, 0.5),
-    0 0 0 #a29d93,
+    0 0 0 var(--dm-plastic-edge),
     0 2px 5px rgba(0, 0, 0, 0.2);
 }
 .dm-heart:focus-visible { outline: 2px dotted #14161d; outline-offset: 3px; }
@@ -5790,8 +5832,8 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   grid-column: 2;
   grid-row: 1 / -1;
   position: relative;
-  background: linear-gradient(180deg, #14161d 0%, #262b38 50%, #14161d 100%);
-  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.18), inset -1px 0 0 rgba(0, 0, 0, 0.6);
+  background: linear-gradient(180deg, #2a1266 0%, #7147d4 50%, #2a1266 100%);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.3), inset -1px 0 0 rgba(20, 6, 50, 0.6);
 }
 
 /* Bling 2000s, dosé : deux breloques au-dessus, deux en dessous. Étoiles
@@ -5930,7 +5972,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   gap: 10px;
   align-items: stretch;
   padding: 6px 12px;
-  background: linear-gradient(180deg, #e2ded6 0%, var(--dm-chassis) 100%);
+  background: linear-gradient(180deg, #f2f0fa 0%, var(--dm-chassis) 100%);
   border-top: 4px solid var(--dm-hi);
 }
 
@@ -6069,12 +6111,12 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   padding: 10px 20px;
   border: 1px solid rgba(24, 22, 30, 0.32);
   border-radius: 999px;
-  background: linear-gradient(180deg, #fdfcfa 0%, #eeeae2 44%, #d2cdc4 100%);
+  background: var(--dm-plastic);
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.98),
     inset 0 1px 0 1px rgba(255, 255, 255, 0.7),
-    inset 0 -7px 12px rgba(86, 84, 96, 0.32),
-    0 3px 0 #a29d93,
+    inset 0 -7px 12px rgba(90, 86, 120, 0.32),
+    0 3px 0 var(--dm-plastic-edge),
     0 6px 12px rgba(0, 0, 0, 0.22);
   font-family: var(--mono);
   font-size: 0.66rem;
@@ -6092,15 +6134,15 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-w95:active:not(:disabled), .dm-w95.pressed {
   transform: translateY(3px);
   box-shadow:
-    inset 0 4px 9px rgba(86, 84, 96, 0.48),
+    inset 0 4px 9px rgba(90, 86, 120, 0.48),
     inset 0 -1px 0 rgba(255, 255, 255, 0.5),
-    0 0 0 #a29d93,
+    0 0 0 var(--dm-plastic-edge),
     0 2px 5px rgba(0, 0, 0, 0.2);
 }
 .dm-w95:disabled {
   color: #9a97a2;
   cursor: default;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.7), inset 0 -5px 9px rgba(86, 84, 96, 0.2), 0 2px 0 #b5b1a8;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.7), inset 0 -5px 9px rgba(90, 86, 120, 0.2), 0 2px 0 #b3afc7;
 }
 .dm-w95:focus-visible { outline: 2px dotted #14161d; outline-offset: 3px; }
 
@@ -6145,24 +6187,25 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   text-shadow: 0 0 8px rgba(255, 119, 200, 0.5);
 }
 .dm-cop-btn {
-  border-color: rgba(6, 16, 56, 0.5);
-  background: linear-gradient(180deg, #8fb0ff 0%, #2f60f0 42%, #1637a8 100%);
+  /* Le grand bouton de la borne, à l'identique de l'accueil. */
+  border-color: rgba(93, 11, 70, 0.55);
+  background: linear-gradient(180deg, #ff9ee4 0%, #ff45b4 42%, #d61f8f 74%, #a6106b 100%);
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.62),
-    inset 0 -8px 14px rgba(4, 14, 58, 0.55),
-    0 3px 0 #0d2570,
-    0 6px 12px rgba(0, 0, 0, 0.3);
+    inset 0 2px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -8px 14px rgba(120, 0, 80, 0.45),
+    0 3px 0 #7d0f56,
+    0 6px 12px rgba(20, 6, 40, 0.35);
   color: #fff;
-  text-shadow: 0 1px 2px rgba(6, 16, 56, 0.7);
+  text-shadow: 0 2px 0 rgba(90, 0, 60, 0.55);
   font-size: 0.7rem;
   padding: 10px 22px;
 }
 .dm-cop-btn:hover:not(:disabled) { filter: brightness(1.08); }
 .dm-cop-btn:disabled {
-  background: linear-gradient(180deg, #dedad2 0%, #bab6ae 100%);
+  background: linear-gradient(180deg, #e6e3f2 0%, #c1bdd4 100%);
   color: #8b8b95;
   text-shadow: none;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.6), inset 0 -5px 9px rgba(86, 84, 96, 0.2), 0 2px 0 #b5b1a8;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.6), inset 0 -5px 9px rgba(90, 86, 120, 0.2), 0 2px 0 #b3afc7;
 }
 
 /* ---- Barre d'état : DA /account ---- */
@@ -6201,16 +6244,20 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   top: 50%;
   width: 236px;
   z-index: 60;
-  border-radius: 8px;
-  background: var(--dm-chassis);
-  border: 1px solid var(--ldl-border);
-  box-shadow: var(--ldl-shadow-window);
+  border-radius: 14px;
+  padding: 6px;
+  background: linear-gradient(180deg, #f6f5fb 0%, #e2e0ee 40%, #c6c2d8 100%);
+  border: 2px solid #9b97b3;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.95),
+    6px 6px 0 rgba(24, 12, 58, 0.4);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 .dm-float-bar {
-  background: var(--acct-titlebar);
+  background: var(--dm-fronton);
+  border-radius: 8px 8px 0 0;
   padding: 7px 10px;
   display: flex;
   align-items: center;
@@ -6238,7 +6285,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-float-img {
   display: block;
   height: 168px;
-  background: #101521;
+  background: #1b0f3a;
   border-top: 3px solid var(--dm-lo);
   border-left: 3px solid var(--dm-lo);
   border-right: 3px solid var(--dm-hi);
@@ -6264,7 +6311,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.dm-float-price { font-family: var(--font-lcd), monospace; font-size: 1.05rem; color: #0f2a86; }
+.dm-float-price { font-family: var(--font-lcd), monospace; font-size: 1.05rem; color: #2a1266; }
 .dm-float-actions { display: flex; align-items: stretch; gap: 6px; }
 .dm-float-spin { flex: 1; min-width: 0; min-height: 38px; padding: 8px; font-size: 0.7rem; letter-spacing: 0.1em; }
 .dm-float-spin .dm-spin-emoji { font-size: 0.85rem; }
@@ -6288,19 +6335,12 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(13, 16, 23, 0.66);
+  background: rgba(36, 18, 70, 0.6);
   backdrop-filter: blur(3px);
 }
-.dm-gate-win {
-  width: min(460px, 100%);
-  background: var(--dm-chassis);
-  border: 1px solid var(--ldl-border);
-  border-radius: 12px;
-  box-shadow: var(--ldl-shadow-window);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+/* Elle porte déjà .dm-win : la coque du cabinet vient de là, on ne fait
+   que la rétrécir. */
+.dm-gate-win { width: min(460px, 100%); }
 .dm-gate-body { padding: 16px; display: flex; flex-direction: column; gap: 13px; }
 .dm-gate-intro {
   display: flex;
@@ -6360,11 +6400,11 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   text-align: center;
   border: 1px solid rgba(24, 22, 30, 0.32);
   border-radius: 14px;
-  background: linear-gradient(180deg, #fdfcfa 0%, #eeeae2 44%, #d2cdc4 100%);
+  background: var(--dm-plastic);
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.98),
-    inset 0 -6px 10px rgba(86, 84, 96, 0.3),
-    0 3px 0 #a29d93,
+    inset 0 -6px 10px rgba(90, 86, 120, 0.3),
+    0 3px 0 var(--dm-plastic-edge),
     0 5px 10px rgba(0, 0, 0, 0.18);
   font-family: var(--mono);
   font-size: 0.66rem;
@@ -6385,7 +6425,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   box-shadow:
     inset 0 4px 10px rgba(0, 0, 0, 0.75),
     inset 0 -1px 0 rgba(255, 255, 255, 0.12),
-    0 0 0 #a29d93;
+    0 0 0 var(--dm-plastic-edge);
   color: var(--dm-lcd);
   text-shadow: 0 0 7px rgba(124, 255, 178, 0.7);
 }
@@ -6448,8 +6488,8 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     top: 50%;
     height: 4px;
     margin-top: -2px;
-    background: #14161d;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+    background: linear-gradient(90deg, #2a1266 0%, #7147d4 50%, #2a1266 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(20, 6, 50, 0.6);
   }
   .dm-bling { display: none; }
   .dm-style-me { width: 104px; }
@@ -6463,6 +6503,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .dm-reel.spin-a, .dm-reel.spin-b { animation: none; }
   .dm-caret, .dm-term-opt.in:hover .dm-term-cursor { animation: none; }
+  .dm-titlebar::before { animation: none; }
 }
 
 /* ============================================================
