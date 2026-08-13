@@ -151,7 +151,13 @@ export function ArcadeSlot() {
 
         <style>{ARCADE_CSS}</style>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,360px)_minmax(0,700px)] lg:items-center lg:justify-between xl:gap-14">
+        {/* `justify-between` collait chaque colonne à un bord du conteneur :
+            avec 360 + 700px de contenu dans 1400, il restait 340px de vide
+            entre le mode d'emploi et la borne, qui n'avaient plus l'air de se
+            parler. Les colonnes s'élargissent un peu et la paire est centrée :
+            l'écart redevient celui de `gap`, la marge se répartit aux deux
+            bords. */}
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,420px)_minmax(0,780px)] lg:items-center lg:justify-center xl:gap-14">
           {/* ---- Texte de présentation, pour qui arrive sur le site ----
               Sur mobile, il suit la borne plutôt que de la précéder — la
               vitrine visuelle accroche d'abord, l'explication vient ensuite,
