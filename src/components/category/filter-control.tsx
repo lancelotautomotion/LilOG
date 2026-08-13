@@ -38,38 +38,22 @@ const SORT_LABELS: Record<Sort, string> = {
 /* ============================================================
    Les pastilles de couleur : des strass, pas des ronds
    ------------------------------------------------------------
-   Chaque teinte du catalogue reçoit une forme taillée — étoile,
-   cœur, losange, fleur, goutte — et une rampe de trois tons :
-   éclat, teinte, tranche. La palette est franchement Y2K (bonbon,
-   néon, givré, chrome) plutôt que les aplats sourds d'origine.
+   Chaque teinte du catalogue est une étoile taillée — le même
+   tracé que les strass de /contact — dans une rampe de trois
+   tons : éclat, teinte, tranche. La palette est franchement Y2K
+   (bonbon, néon, givré, chrome) plutôt que les aplats sourds
+   d'origine.
 
-   La forme n'est pas que décorative : elle sert de second repère.
-   Deux beiges voisins ne se distinguent pas d'un coup d'œil, une
-   fleur et une goutte si — et c'est aussi ce qui rend la rubrique
-   lisible pour une cliente qui distingue mal les couleurs.
-
-   Les tracés sont dans une boîte 100 × 100 comme les strass de
-   /contact, avec la même recette : aplat en dégradé, voile de
-   relief, liseré clair et deux éclats spéculaires.
+   Même recette de taille que les strass de la maison : aplat en
+   dégradé, facettes par branche, voile de relief, liseré clair et
+   éclat spéculaire.
    ============================================================ */
 
-type GemShape = "star" | "heart" | "diamond" | "flower" | "drop";
-
-const GEM_PATH: Record<GemShape, string> = {
-  star: "M50 3 L62.3 33 L94.7 35.5 L70 56.5 L77.6 88 L50 71 L22.4 88 L30 56.5 L5.3 35.5 L37.7 33 Z",
-  heart:
-    "M50 90 C18 68 6 49 6 33 C6 17 18 8 31 8 C40 8 47 13 50 20 C53 13 60 8 69 8 C82 8 94 17 94 33 C94 49 82 68 50 90 Z",
-  diamond: "M50 4 L94 50 L50 96 L6 50 Z",
-  /* Cinq pétales : cinq arcs majeurs tendus entre les creux d'un
-     pentagone régulier — un seul tracé, donc un seul liseré. */
-  flower:
-    "M34.7 29 A17 17 0 1 1 65.3 29 A17 17 0 1 1 74.7 58 A17 17 0 1 1 50 76 A17 17 0 1 1 25.3 58 A17 17 0 1 1 34.7 29 Z",
-  drop: "M50 4 C64 26 88 42 88 62 C88 82 71 96 50 96 C29 96 12 82 12 62 C12 42 36 26 50 4 Z",
-};
+const STAR_PATH =
+  "M50 3 L62.3 33 L94.7 35.5 L70 56.5 L77.6 88 L50 71 L22.4 88 L30 56.5 L5.3 35.5 L37.7 33 Z";
 
 /** Éclat, teinte, tranche. `holo` remplace l'aplat par le nuancier irisé. */
 interface Gem {
-  shape: GemShape;
   tones: [string, string, string];
   holo?: boolean;
 }
@@ -87,39 +71,34 @@ const HOLO_STOPS: [string, string][] = [
 /* Liste blanche : une teinte inconnue est ignorée plutôt qu'affichée en gris
    sans signification. Elle couvre les libellés officiels Shopify remontés par
    les champs méta Catégorie ("Multicolore", "Écru", "Doré"…), pas seulement
-   les noms de couleur les plus simples.
-
-   Les formes sont réparties pour que deux teintes voisines dans l'ordre
-   alphabétique — celui de la rubrique — ne portent pas la même. */
+   les noms de couleur les plus simples. */
 const COLOR_GEM: Record<string, Gem> = {
-  rose:      { shape: "heart",   tones: ["#FFE1F2", "#FF8FD2", "#C42E8E"] },
-  fuchsia:   { shape: "star",    tones: ["#FFD1F0", "#FF3DAF", "#9E0F6C"] },
-  rouge:     { shape: "diamond", tones: ["#FFC9C4", "#FF3B4E", "#9E0E28"] },
-  corail:    { shape: "heart",   tones: ["#FFDCC8", "#FF7857", "#BA3418"] },
-  vert:      { shape: "heart",   tones: ["#D9FFE7", "#2FE07C", "#0B7A44"] },
-  kaki:      { shape: "heart",   tones: ["#EEF2C0", "#9AA33F", "#4C5117"] },
-  bleu:      { shape: "diamond", tones: ["#D6E9FF", "#3E8BFF", "#0F3DA6"] },
-  marine:    { shape: "diamond", tones: ["#C2CFF2", "#2B3F8C", "#0A1745"] },
-  turquoise: { shape: "star",    tones: ["#D2FFF7", "#25DCCE", "#067C78"] },
-  violet:    { shape: "star",    tones: ["#EBDBFF", "#9B5CFF", "#4A1FA6"] },
-  noir:      { shape: "diamond", tones: ["#9FA0BC", "#33333F", "#050509"] },
-  blanc:     { shape: "star",    tones: ["#FFFFFF", "#EEF1FB", "#B9BFD6"] },
-  ecru:      { shape: "drop",    tones: ["#FFFCF2", "#F0E5CC", "#BCA886"] },
-  ivoire:    { shape: "flower",  tones: ["#FFFDF7", "#F5EDD8", "#C6B68F"] },
-  /* beige / ivoire / écru se ressemblent forcément : c'est la forme qui
-     les sépare, jamais deux identiques côte à côte dans l'ordre alpha. */
-  beige:     { shape: "flower",  tones: ["#FFF1DD", "#E7CFA6", "#A5825A"] },
-  camel:     { shape: "drop",    tones: ["#FFDDBA", "#D59253", "#87501F"] },
-  taupe:     { shape: "drop",    tones: ["#EADFD8", "#A08D80", "#5B4940"] },
-  orange:    { shape: "flower",  tones: ["#FFE3C2", "#FF8A22", "#B24A02"] },
-  jaune:     { shape: "star",    tones: ["#FFFAC8", "#FFD429", "#B08400"] },
-  bordeaux:  { shape: "heart",   tones: ["#F5BECB", "#8C1F3D", "#49091C"] },
-  gris:      { shape: "diamond", tones: ["#F2F3FA", "#A9ACC0", "#5C5F75"] },
-  argente:   { shape: "star",    tones: ["#FFFFFF", "#D6DCEE", "#878DA6"] },
-  dore:      { shape: "star",    tones: ["#FFF4C6", "#E9B93A", "#94670E"] },
-  or:        { shape: "star",    tones: ["#FFF4C6", "#E9B93A", "#94670E"] },
-  multicolore: { shape: "flower", tones: ["#EAF2FF", "#FFE1F5", "#A9A6CF"], holo: true },
-  imprime:     { shape: "flower", tones: ["#EAF2FF", "#FFE1F5", "#A9A6CF"], holo: true },
+  rose:      { tones: ["#FFE1F2", "#FF8FD2", "#C42E8E"] },
+  fuchsia:   { tones: ["#FFD1F0", "#FF3DAF", "#9E0F6C"] },
+  rouge:     { tones: ["#FFC9C4", "#FF3B4E", "#9E0E28"] },
+  corail:    { tones: ["#FFDCC8", "#FF7857", "#BA3418"] },
+  vert:      { tones: ["#D9FFE7", "#2FE07C", "#0B7A44"] },
+  kaki:      { tones: ["#EEF2C0", "#9AA33F", "#4C5117"] },
+  bleu:      { tones: ["#D6E9FF", "#3E8BFF", "#0F3DA6"] },
+  marine:    { tones: ["#C2CFF2", "#2B3F8C", "#0A1745"] },
+  turquoise: { tones: ["#D2FFF7", "#25DCCE", "#067C78"] },
+  violet:    { tones: ["#EBDBFF", "#9B5CFF", "#4A1FA6"] },
+  noir:      { tones: ["#9FA0BC", "#33333F", "#050509"] },
+  blanc:     { tones: ["#FFFFFF", "#EEF1FB", "#98A0BC"] },
+  ecru:      { tones: ["#FFFCF2", "#F0E5CC", "#A08B63"] },
+  ivoire:    { tones: ["#FFFDF7", "#F5EDD8", "#AD9A6D"] },
+  beige:     { tones: ["#FFF1DD", "#E7CFA6", "#A5825A"] },
+  camel:     { tones: ["#FFDDBA", "#D59253", "#87501F"] },
+  taupe:     { tones: ["#EADFD8", "#A08D80", "#5B4940"] },
+  orange:    { tones: ["#FFE3C2", "#FF8A22", "#B24A02"] },
+  jaune:     { tones: ["#FFFAC8", "#FFD429", "#B08400"] },
+  bordeaux:  { tones: ["#F5BECB", "#8C1F3D", "#49091C"] },
+  gris:      { tones: ["#F2F3FA", "#A9ACC0", "#5C5F75"] },
+  argente:   { tones: ["#FFFFFF", "#D6DCEE", "#878DA6"] },
+  dore:      { tones: ["#FFF4C6", "#E9B93A", "#94670E"] },
+  or:        { tones: ["#FFF4C6", "#E9B93A", "#94670E"] },
+  multicolore: { tones: ["#EAF2FF", "#FFE1F5", "#8E8ABE"], holo: true },
+  imprime:     { tones: ["#EAF2FF", "#FFE1F5", "#8E8ABE"], holo: true },
 };
 
 function norm(s: string) {
@@ -135,13 +114,32 @@ export function extractColors(products: Product[]): { key: string; gem: Gem }[] 
   });
 }
 
+/* Facettes de la taille : pour chaque branche, une moitié éclairée et une
+   moitié à l'ombre partant du centre — le même découpage que les strass de
+   /contact, mais en blanc et noir translucides plutôt qu'en rose, pour que
+   la même taille tienne sur toutes les teintes, du blanc au noir. */
+const STAR_TIPS: [number, number][] = [
+  [50, 3],
+  [94.7, 35.5],
+  [77.6, 88],
+  [22.4, 88],
+  [5.3, 35.5],
+];
+const STAR_NOTCHES: [number, number][] = [
+  [62.3, 33],
+  [70, 56.5],
+  [50, 71],
+  [30, 56.5],
+  [37.7, 33],
+];
+
 /** Un strass taillé. `uid` isole les dégradés — deux pastilles sur la même
  *  page ne peuvent pas se voler leur `id`. La boîte déborde de 6 unités de
  *  chaque côté pour que le liseré des pointes ne soit jamais rogné. */
 function ColorGem({ uid, gem }: { uid: string; gem: Gem }) {
-  const d = GEM_PATH[gem.shape];
   const face = `${uid}-face`;
   const relief = `${uid}-relief`;
+  const clip = `${uid}-clip`;
   return (
     <svg viewBox="-6 -6 112 112" className="h-full w-full">
       <defs>
@@ -158,20 +156,42 @@ function ColorGem({ uid, gem }: { uid: string; gem: Gem }) {
             </>
           )}
         </linearGradient>
-        {/* Voile de relief : lumière en haut à gauche, ombre en bas à droite.
-            Neutre, donc valable pour toutes les teintes — du blanc au noir. */}
+        {/* Voile de relief : lumière en haut à gauche, ombre en bas à droite. */}
         <linearGradient id={relief} x1="0.2" y1="0" x2="0.8" y2="1">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.34" />
           <stop offset="52%" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="100%" stopColor="#000000" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="#000000" stopOpacity="0.24" />
         </linearGradient>
+        {/* L'éclat spéculaire chevauche un creux entre deux branches : sans
+            cette découpe, il déborde de la pierre en éclat flottant. */}
+        <clipPath id={clip}>
+          <path d={STAR_PATH} />
+        </clipPath>
       </defs>
-      <path d={d} fill={`url(#${face})`} stroke={gem.tones[2]} strokeWidth="6" strokeLinejoin="round" />
-      <path d={d} fill={`url(#${relief})`} />
+      <path d={STAR_PATH} fill={`url(#${face})`} stroke={gem.tones[2]} strokeWidth="6" strokeLinejoin="round" />
+      {STAR_TIPS.map(([tx, ty], i) => {
+        const [ax, ay] = STAR_NOTCHES[(i + 4) % 5];
+        const [bx, by] = STAR_NOTCHES[i];
+        return (
+          <g key={i}>
+            <path d={`M50 50 L${ax} ${ay} L${tx} ${ty} Z`} fill="#ffffff" opacity={0.42 - i * 0.06} />
+            <path d={`M50 50 L${tx} ${ty} L${bx} ${by} Z`} fill="#000000" opacity={0.08 + i * 0.035} />
+          </g>
+        );
+      })}
+      <path d={STAR_PATH} fill={`url(#${relief})`} />
       {/* Liseré clair : l'effet « plastique bombé » des strass de /contact. */}
-      <path d={d} fill="none" stroke="#ffffff" strokeWidth="2.4" strokeLinejoin="round" opacity="0.55" />
-      <ellipse cx="36" cy="30" rx="8" ry="3.6" fill="#fff" opacity="0.7" transform="rotate(-34 36 30)" />
-      <ellipse cx="66" cy="64" rx="4.6" ry="2" fill="#fff" opacity="0.35" transform="rotate(-34 66 64)" />
+      <path d={STAR_PATH} fill="none" stroke="#ffffff" strokeWidth="2.4" strokeLinejoin="round" opacity="0.55" />
+      <ellipse
+        cx="38"
+        cy="29"
+        rx="8"
+        ry="3.6"
+        fill="#fff"
+        opacity="0.75"
+        transform="rotate(-36 38 29)"
+        clipPath={`url(#${clip})`}
+      />
     </svg>
   );
 }
