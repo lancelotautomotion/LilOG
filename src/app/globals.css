@@ -5230,6 +5230,11 @@ html, body {
    matériau — les onze rayons sont en papier, celle-ci est allumée — et
    à peine à la taille : seize pixels de plus que les autres lignes,
    pris par la ligne d'attente du bas. */
+/* Respiration sous la borne : elle n'est pas le premier des rayons mais
+   un raccourci à part, et la pile de douze cartes le disait mal quand
+   l'écart valait celui de deux dossiers voisins. */
+.drawer-item-closet { margin-bottom: 12px; }
+
 .drawer-link-closet,
 .drawer-link-closet:hover {
   position: relative;

@@ -96,7 +96,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               de l'accueil, réduite à une ligne de menu. Le dossier jaune laisse
               donc place au joystick, et la ligne d'attente reprend le jeton
               d'ARCADE_SLOT.EXE — déjà traduit dans les neuf langues. */}
-          <div className="drawer-item">
+          <div className="drawer-item drawer-item-closet">
             <a className="drawer-link drawer-link-closet" href="/dressing-machine" onClick={onClose}>
               <span className="dm-tile-marquee" aria-hidden="true">
                 <span className="dm-tile-bulb" />
