@@ -96,7 +96,7 @@ export function AuthForm() {
     <div
       className={
         "relative w-full transition-[max-width] duration-300 " +
-        (maximized ? "max-w-[680px]" : "max-w-[480px]") +
+        (maximized ? "max-w-[780px]" : "max-w-[560px]") +
         (wizz ? " login-wizz" : "")
       }
       onAnimationEnd={e => { if (e.target === e.currentTarget) setWizz(false); }}
@@ -105,10 +105,10 @@ export function AuthForm() {
 
         {/* ── Barre de titre ── */}
         <div
-          className="flex items-center gap-2 px-2.5 py-1.5 select-none"
+          className="flex items-center gap-2 px-3 py-2 select-none"
           style={{ backgroundImage: "var(--y2k-titlebar)" }}
         >
-          <span className="flex-1 truncate text-[0.66rem] font-bold tracking-[0.08em] text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">
+          <span className="flex-1 truncate text-[0.68rem] font-bold tracking-[0.08em] text-white sm:text-[0.8rem] drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">
             🔐 LIL_OG_MESSENGER_V2.0.EXE
           </span>
           <div className="flex shrink-0 items-center gap-1">
@@ -123,7 +123,7 @@ export function AuthForm() {
           {["Fichier", "Contacts", "Aide"].map(item => (
             <span
               key={item}
-              className="cursor-default rounded px-2.5 py-0.5 text-[0.6rem] uppercase tracking-[0.06em] text-[#3d3550] hover:bg-[#7147d4] hover:text-white"
+              className="cursor-default rounded px-3 py-1 text-[0.72rem] uppercase tracking-[0.06em] text-[#3d3550] hover:bg-[#7147d4] hover:text-white"
             >
               {item}
             </span>
@@ -134,19 +134,19 @@ export function AuthForm() {
         <div className={shaded ? "hidden" : "block"}>
 
           {/* ── Bloc avatar + statut ── */}
-          <div className="flex items-center gap-3 border-b border-gray-400 bg-gradient-to-b from-[#f6f2ff] to-[#e4ddf7] p-3">
+          <div className="flex items-center gap-3 border-b border-gray-400 bg-gradient-to-b from-[#f6f2ff] to-[#e4ddf7] p-4">
             <button
               type="button"
               onClick={cycleAvatar}
               title="Changer d'avatar"
               className={`shrink-0 rounded-md bg-white p-1 shadow-inner ${BEVEL_IN}`}
             >
-              <span className="relative block h-16 w-16 overflow-hidden rounded-sm">
+              <span className="relative block h-20 w-20 overflow-hidden rounded-sm">
                 <Image
                   src={avatarSrc}
                   alt="Avatar"
                   fill
-                  sizes="64px"
+                  sizes="80px"
                   className="object-cover"
                   unoptimized
                 />
@@ -154,8 +154,8 @@ export function AuthForm() {
             </button>
 
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[0.72rem] font-bold text-[#2b2340]">
-                Invitée_LilOG <span className="text-[0.58rem] font-normal text-[#6B7280]">(clique la photo ✎)</span>
+              <p className="truncate text-[0.9rem] font-bold text-[#2b2340]">
+                Invitée_LilOG <span className="hidden text-[0.7rem] font-normal text-[#6B7280] sm:inline">(clique la photo ✎)</span>
               </p>
 
               <div className="relative mt-1.5">
@@ -163,29 +163,29 @@ export function AuthForm() {
                   aria-label="Statut"
                   value={statusId}
                   onChange={e => writeStored(LS_STATUS_KEY, e.target.value)}
-                  className={`w-full cursor-pointer appearance-none rounded-md bg-white py-1.5 pl-2 pr-7 text-[0.6rem] tracking-[0.04em] text-[#2b2340] shadow-inner outline-none ${BEVEL_IN}`}
+                  className={`w-full cursor-pointer appearance-none rounded-md bg-white py-2 pl-2.5 pr-8 text-[0.66rem] tracking-[0.04em] sm:text-[0.74rem] text-[#2b2340] shadow-inner outline-none ${BEVEL_IN}`}
                 >
                   {MSN_STATUSES.map(s => (
                     <option key={s.id} value={s.id}>{s.emoji}  {s.loginLabel}</option>
                   ))}
                 </select>
-                <span aria-hidden className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[0.6rem] text-[#6B7280]">▾</span>
+                <span aria-hidden className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[0.74rem] text-[#6B7280]">▾</span>
               </div>
             </div>
           </div>
 
           {/* ── Onglets ── */}
-          <div className="flex gap-1 px-3 pt-3">
+          <div className="flex gap-1 px-2 pt-2.5">
             <Tab active={mode === "login"} onClick={() => { setMode("login"); setError(null); }}>
               🔑 Connexion
             </Tab>
             <Tab active={mode === "register"} onClick={() => { setMode("register"); setError(null); }}>
-              ✨ Rejoindre le club
+              ✨ Créer un compte
             </Tab>
           </div>
 
           {/* ── Panneau ── */}
-          <div className="mx-3 mb-3 rounded-b-lg rounded-tr-lg border border-gray-400 bg-[#f7f6fb] p-4 shadow-inner">
+          <div className="mx-2 mb-2 rounded-b-lg rounded-tr-lg border border-gray-400 bg-[#f7f6fb] px-4 py-5 shadow-inner">
             <form className="flex flex-col gap-3" onSubmit={handleCredentials}>
               {mode === "register" && (
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -238,25 +238,25 @@ export function AuthForm() {
               </Field>
 
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <label className="flex cursor-pointer items-center gap-2 text-[0.62rem] text-[#3d3550]">
+                <label className="flex cursor-pointer items-center gap-2 text-[0.68rem] text-[#3d3550] sm:text-[0.74rem]">
                   <input
                     type="checkbox"
                     checked={remember}
                     onChange={e => setRememberEdit(e.target.checked)}
-                    className="h-3.5 w-3.5 cursor-pointer accent-[#c93fe0]"
+                    className="h-4 w-4 cursor-pointer accent-[#c93fe0]"
                   />
                   Se souvenir de moi sur cet ordinateur
                 </label>
                 <Link
                   href="/contact"
-                  className="text-[0.58rem] text-[#5b3fa8] underline decoration-dotted underline-offset-2 hover:text-[#ff3fb0]"
+                  className="text-[0.7rem] text-[#5b3fa8] underline decoration-dotted underline-offset-2 hover:text-[#ff3fb0]"
                 >
                   Mot de passe oublié ?
                 </Link>
               </div>
 
               {error && (
-                <p className={`flex items-start gap-2 rounded-md bg-[#fff0f4] p-2 text-[0.62rem] text-[#b3005e] ${BEVEL_IN}`}>
+                <p className={`flex items-start gap-2 rounded-md bg-[#fff0f4] p-2.5 text-[0.74rem] text-[#b3005e] ${BEVEL_IN}`}>
                   <span aria-hidden>⚠️</span>{error}
                 </p>
               )}
@@ -264,7 +264,7 @@ export function AuthForm() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="mt-1 w-full rounded-xl border-2 border-t-[#ffa6e4] border-l-[#ffa6e4] border-r-[#5b1a9e] border-b-[#5b1a9e] bg-gradient-to-b from-[#ff5cc8] via-[#d63fdd] to-[#7b2ff7] px-4 py-3.5 text-[0.74rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_4px_0_#4c1d95,0_10px_20px_rgba(76,29,149,0.35)] transition-[transform,box-shadow] active:translate-y-[4px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-1 w-full rounded-xl border-2 border-t-[#ffa6e4] border-l-[#ffa6e4] border-r-[#5b1a9e] border-b-[#5b1a9e] bg-gradient-to-b from-[#ff5cc8] via-[#d63fdd] to-[#7b2ff7] px-4 py-4 text-[0.8rem] font-bold uppercase tracking-[0.12em] text-white sm:text-[0.9rem] shadow-[0_4px_0_#4c1d95,0_10px_20px_rgba(76,29,149,0.35)] transition-[transform,box-shadow] active:translate-y-[4px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isPending
                   ? "⏳ CHARGEMENT..."
@@ -275,7 +275,7 @@ export function AuthForm() {
             </form>
 
             {/* ── Séparateur ── */}
-            <div className="my-3 flex items-center gap-2 text-[0.58rem] uppercase tracking-[0.14em] text-[#6B7280]">
+            <div className="my-4 flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.14em] text-[#6B7280]">
               <span className="h-px flex-1 bg-gray-300" />ou<span className="h-px flex-1 bg-gray-300" />
             </div>
 
@@ -283,7 +283,7 @@ export function AuthForm() {
             <button
               type="button"
               onClick={handleGoogle}
-              className={`flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-white to-[#e9e6f5] px-4 py-3 text-[0.66rem] font-bold uppercase tracking-[0.08em] text-[#2b2340] shadow-[0_3px_0_rgba(120,100,170,0.45)] transition-[transform,box-shadow] hover:from-white hover:to-[#f4f1ff] active:translate-y-[3px] active:shadow-none ${BEVEL_OUT}`}
+              className={`flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-white to-[#e9e6f5] px-4 py-3.5 text-[0.72rem] font-bold uppercase tracking-[0.08em] text-[#2b2340] sm:text-[0.8rem] shadow-[0_3px_0_rgba(120,100,170,0.45)] transition-[transform,box-shadow] hover:from-white hover:to-[#f4f1ff] active:translate-y-[3px] active:shadow-none ${BEVEL_OUT}`}
             >
               <GoogleIcon />
               Continuer avec Google
@@ -292,16 +292,16 @@ export function AuthForm() {
         </div>
 
         {/* ── Barre de statut ── */}
-        <div className="flex items-center gap-2 border-t border-gray-400 bg-[#d9d5c8] px-2.5 py-1">
+        <div className="flex items-center gap-2 border-t border-gray-400 bg-[#d9d5c8] px-3 py-1.5">
           <span className="login-led inline-block h-2 w-2 shrink-0 rounded-full bg-[#22c55e]" />
-          <span className="min-w-0 flex-1 truncate text-[0.56rem] uppercase tracking-[0.06em] text-[#4b4536]">
+          <span className="min-w-0 flex-1 truncate text-[0.68rem] uppercase tracking-[0.06em] text-[#4b4536]">
             STATUS: {status}
           </span>
           <button
             type="button"
             onClick={() => setWizz(true)}
             title="Envoyer un wizz"
-            className={`shrink-0 rounded bg-[#ece9d8] px-1.5 py-0.5 text-[0.56rem] tracking-[0.04em] text-[#4b4536] active:translate-y-[1px] ${BEVEL_OUT}`}
+            className={`shrink-0 rounded bg-[#ece9d8] px-2 py-1 text-[0.68rem] tracking-[0.04em] text-[#4b4536] active:translate-y-[1px] ${BEVEL_OUT}`}
           >
             🔔 WIZZ
           </button>
@@ -313,12 +313,12 @@ export function AuthForm() {
 
 /* Champ encastré + étiquette rétro */
 const INPUT =
-  "w-full rounded-xl border border-gray-400 bg-white p-3 text-sm text-[#1E2430] shadow-inner outline-none transition-[border-color,box-shadow] placeholder:text-gray-400 focus:border-[#7147d4] focus:shadow-[inset_0_1px_3px_rgba(0,0,0,0.12),0_0_0_3px_rgba(255,63,176,0.18)]";
+  "w-full rounded-xl border border-gray-400 bg-white p-3.5 text-base text-[#1E2430] shadow-inner outline-none transition-[border-color,box-shadow] placeholder:text-gray-400 focus:border-[#7147d4] focus:shadow-[inset_0_1px_3px_rgba(0,0,0,0.12),0_0_0_3px_rgba(255,63,176,0.18)]";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[0.56rem] font-bold uppercase tracking-[0.14em] text-[#5b3fa8]">
+      <span className="mb-1.5 block text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#5b3fa8]">
         {label}
       </span>
       {children}
@@ -332,7 +332,7 @@ function Tab({ active, onClick, children }: { active: boolean; onClick: () => vo
       type="button"
       onClick={onClick}
       className={
-        "relative -mb-px rounded-t-lg border border-b-0 border-gray-400 px-3 py-1.5 text-[0.6rem] uppercase tracking-[0.08em] transition-colors " +
+        "relative -mb-px rounded-t-lg border border-b-0 whitespace-nowrap border-gray-400 px-2.5 py-2 text-[0.62rem] uppercase tracking-[0.08em] transition-colors sm:px-3.5 sm:text-[0.74rem] " +
         (active
           ? "z-10 bg-[#f7f6fb] font-bold text-[#7b2ff7]"
           : "bg-[#ddd9ea] text-[#6B7280] hover:bg-[#e9e6f5] hover:text-[#2b2340]")
@@ -355,7 +355,7 @@ function ChromeButton({
   href?: string;
 }) {
   const className =
-    "flex h-5 w-7 items-center justify-center rounded border border-white/55 bg-white/15 text-[10px] leading-none text-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_1px_2px_rgba(0,0,0,0.2)] transition-colors hover:bg-white/30 active:translate-y-[1px]";
+    "flex h-6 w-8 items-center justify-center rounded border border-white/55 bg-white/15 text-[12px] leading-none text-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_1px_2px_rgba(0,0,0,0.2)] transition-colors hover:bg-white/30 active:translate-y-[1px]";
 
   if (href) {
     return <Link href={href} aria-label={label} title={label} className={className}>{children}</Link>;

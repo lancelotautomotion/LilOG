@@ -64,7 +64,7 @@ export default function LoginPage() {
       {/* ── Contenu ── */}
       <Link
         href="/"
-        className="login-mono absolute left-4 top-4 z-10 text-[0.62rem] uppercase tracking-[0.1em] text-[#5b3fa8] opacity-70 transition-opacity hover:opacity-100"
+        className="login-mono absolute left-4 top-4 z-10 text-[0.74rem] uppercase tracking-[0.1em] text-[#5b3fa8] opacity-70 transition-opacity hover:opacity-100"
       >
         ← Retour
       </Link>
