@@ -5234,10 +5234,14 @@ html, body {
 .drawer-link-closet:hover {
   position: relative;
   overflow: hidden;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 5px;
-  padding: 15px 14px 11px;
+  /* En rang comme les autres entrées : le titre et sa ligne d'attente
+     s'empilent dans leur propre colonne, ce qui laisse le bouton se
+     centrer sur toute la hauteur du cabinet plutôt que de se caler sur
+     la ligne du titre. Rembourrage symétrique — le bloc de texte tombe
+     alors au milieu de l'écran. */
+  align-items: center;
+  gap: 11px;
+  padding: 13px 14px;
   background: linear-gradient(180deg, #2a1352 0%, #150b2e 55%, #0d0d15 100%);
   border: 2px solid #ff5ec4;
   color: #fff;
@@ -5262,8 +5266,9 @@ html, body {
 }
 
 .dm-tile-marquee,
-.dm-tile-row,
-.dm-tile-sub { position: relative; z-index: 1; }
+.dm-tile-icon,
+.dm-tile-text,
+.dm-tile-play { position: relative; z-index: 1; }
 
 /* Fronton : trois ampoules qui clignotent en décalé. */
 .dm-tile-marquee {
@@ -5288,10 +5293,11 @@ html, body {
   50%      { opacity: 0.28; box-shadow: none; }
 }
 
-.dm-tile-row {
+.dm-tile-text {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
 }
 .dm-tile-icon {
   font-size: 1rem;
@@ -5316,6 +5322,8 @@ html, body {
 /* Bouton du cabinet, en plastique épais : course de 3px à l'appui. */
 .dm-tile-play {
   margin-left: auto;
+  align-self: center;
+  white-space: nowrap;
   font-family: var(--mono);
   font-size: 0.56rem;
   font-weight: 900;
