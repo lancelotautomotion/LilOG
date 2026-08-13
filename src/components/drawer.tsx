@@ -103,12 +103,12 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
                 <span className="dm-tile-bulb" />
                 <span className="dm-tile-bulb" />
               </span>
-              <span className="dm-tile-row">
-                <span className="dm-tile-icon" aria-hidden="true">🕹️</span>
+              <span className="dm-tile-icon" aria-hidden="true">🕹️</span>
+              <span className="dm-tile-text">
                 <span className="dm-tile-title">00. Dressing Machine</span>
-                <span className="dm-tile-play" aria-hidden="true">▶ PLAY</span>
+                <span className="dm-tile-sub">{t.home.slotCoin}</span>
               </span>
-              <span className="dm-tile-sub">{t.home.slotCoin}</span>
+              <span className="dm-tile-play" aria-hidden="true">▶ PLAY</span>
             </a>
           </div>
           {LINKS.map((l, i) => (
