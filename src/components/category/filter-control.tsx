@@ -35,52 +35,145 @@ const SORT_LABELS: Record<Sort, string> = {
   "price-desc": "PRIX ↓",
 };
 
-/* Palette des pastilles de couleur — liste blanche : une teinte inconnue est
-   ignorée plutôt qu'affichée en gris sans signification.
-   Élargie au-delà des couleurs de base : la résolution des champs méta
-   Catégorie (metaobjects de taxonomie) remonte désormais les libellés
-   officiels Shopify ("Multicolore", "Écru", "Doré"…), pas seulement les
-   noms de couleur les plus simples déjà couverts. */
-const COLOR_SWATCH: Record<string, string> = {
-  rose: "#f7a3c8",
-  fuchsia: "#e0359b",
-  rouge: "#c0392b",
-  corail: "#e8836a",
-  vert: "#2d7a4f",
-  bleu: "#2c5f9e",
-  turquoise: "#2ba9a0",
-  noir: "#111111",
-  blanc: "#f5f5f5",
-  ecru: "#efe6d5",
-  ivoire: "#f2ead9",
-  beige: "#d9c7a8",
-  camel: "#b8895f",
-  taupe: "#8c7c6e",
-  violet: "#6c3d8f",
-  orange: "#e07b2a",
-  jaune: "#f2c94c",
-  marine: "#1a2e5a",
-  kaki: "#6b6b3a",
-  bordeaux: "#6b1a2b",
-  gris: "#888888",
-  argente: "#c7c9cc",
-  dore: "#c9a15a",
-  or: "#c9a15a",
-  multicolore: "linear-gradient(135deg,#f7a3c8 0%,#f2c94c 25%,#2d7a4f 50%,#2c5f9e 75%,#6c3d8f 100%)",
-  imprime: "linear-gradient(135deg,#f7a3c8 0%,#f2c94c 25%,#2d7a4f 50%,#2c5f9e 75%,#6c3d8f 100%)",
+/* ============================================================
+   Les pastilles de couleur : des strass, pas des ronds
+   ------------------------------------------------------------
+   Chaque teinte du catalogue reçoit une forme taillée — étoile,
+   cœur, losange, fleur, goutte — et une rampe de trois tons :
+   éclat, teinte, tranche. La palette est franchement Y2K (bonbon,
+   néon, givré, chrome) plutôt que les aplats sourds d'origine.
+
+   La forme n'est pas que décorative : elle sert de second repère.
+   Deux beiges voisins ne se distinguent pas d'un coup d'œil, une
+   fleur et une goutte si — et c'est aussi ce qui rend la rubrique
+   lisible pour une cliente qui distingue mal les couleurs.
+
+   Les tracés sont dans une boîte 100 × 100 comme les strass de
+   /contact, avec la même recette : aplat en dégradé, voile de
+   relief, liseré clair et deux éclats spéculaires.
+   ============================================================ */
+
+type GemShape = "star" | "heart" | "diamond" | "flower" | "drop";
+
+const GEM_PATH: Record<GemShape, string> = {
+  star: "M50 3 L62.3 33 L94.7 35.5 L70 56.5 L77.6 88 L50 71 L22.4 88 L30 56.5 L5.3 35.5 L37.7 33 Z",
+  heart:
+    "M50 90 C18 68 6 49 6 33 C6 17 18 8 31 8 C40 8 47 13 50 20 C53 13 60 8 69 8 C82 8 94 17 94 33 C94 49 82 68 50 90 Z",
+  diamond: "M50 4 L94 50 L50 96 L6 50 Z",
+  /* Cinq pétales : cinq arcs majeurs tendus entre les creux d'un
+     pentagone régulier — un seul tracé, donc un seul liseré. */
+  flower:
+    "M34.7 29 A17 17 0 1 1 65.3 29 A17 17 0 1 1 74.7 58 A17 17 0 1 1 50 76 A17 17 0 1 1 25.3 58 A17 17 0 1 1 34.7 29 Z",
+  drop: "M50 4 C64 26 88 42 88 62 C88 82 71 96 50 96 C29 96 12 82 12 62 C12 42 36 26 50 4 Z",
+};
+
+/** Éclat, teinte, tranche. `holo` remplace l'aplat par le nuancier irisé. */
+interface Gem {
+  shape: GemShape;
+  tones: [string, string, string];
+  holo?: boolean;
+}
+
+const HOLO_STOPS: [string, string][] = [
+  ["0%", "#cfe0ff"],
+  ["18%", "#e8d6ff"],
+  ["36%", "#ffdff0"],
+  ["54%", "#fdf7dd"],
+  ["72%", "#d6fbef"],
+  ["88%", "#d8e2ff"],
+  ["100%", "#efe4ff"],
+];
+
+/* Liste blanche : une teinte inconnue est ignorée plutôt qu'affichée en gris
+   sans signification. Elle couvre les libellés officiels Shopify remontés par
+   les champs méta Catégorie ("Multicolore", "Écru", "Doré"…), pas seulement
+   les noms de couleur les plus simples.
+
+   Les formes sont réparties pour que deux teintes voisines dans l'ordre
+   alphabétique — celui de la rubrique — ne portent pas la même. */
+const COLOR_GEM: Record<string, Gem> = {
+  rose:      { shape: "heart",   tones: ["#FFE1F2", "#FF8FD2", "#C42E8E"] },
+  fuchsia:   { shape: "star",    tones: ["#FFD1F0", "#FF3DAF", "#9E0F6C"] },
+  rouge:     { shape: "diamond", tones: ["#FFC9C4", "#FF3B4E", "#9E0E28"] },
+  corail:    { shape: "heart",   tones: ["#FFDCC8", "#FF7857", "#BA3418"] },
+  vert:      { shape: "heart",   tones: ["#D9FFE7", "#2FE07C", "#0B7A44"] },
+  kaki:      { shape: "heart",   tones: ["#EEF2C0", "#9AA33F", "#4C5117"] },
+  bleu:      { shape: "diamond", tones: ["#D6E9FF", "#3E8BFF", "#0F3DA6"] },
+  marine:    { shape: "diamond", tones: ["#C2CFF2", "#2B3F8C", "#0A1745"] },
+  turquoise: { shape: "star",    tones: ["#D2FFF7", "#25DCCE", "#067C78"] },
+  violet:    { shape: "star",    tones: ["#EBDBFF", "#9B5CFF", "#4A1FA6"] },
+  noir:      { shape: "diamond", tones: ["#9FA0BC", "#33333F", "#050509"] },
+  blanc:     { shape: "star",    tones: ["#FFFFFF", "#EEF1FB", "#B9BFD6"] },
+  ecru:      { shape: "drop",    tones: ["#FFFCF2", "#F0E5CC", "#BCA886"] },
+  ivoire:    { shape: "flower",  tones: ["#FFFDF7", "#F5EDD8", "#C6B68F"] },
+  /* beige / ivoire / écru se ressemblent forcément : c'est la forme qui
+     les sépare, jamais deux identiques côte à côte dans l'ordre alpha. */
+  beige:     { shape: "flower",  tones: ["#FFF1DD", "#E7CFA6", "#A5825A"] },
+  camel:     { shape: "drop",    tones: ["#FFDDBA", "#D59253", "#87501F"] },
+  taupe:     { shape: "drop",    tones: ["#EADFD8", "#A08D80", "#5B4940"] },
+  orange:    { shape: "flower",  tones: ["#FFE3C2", "#FF8A22", "#B24A02"] },
+  jaune:     { shape: "star",    tones: ["#FFFAC8", "#FFD429", "#B08400"] },
+  bordeaux:  { shape: "heart",   tones: ["#F5BECB", "#8C1F3D", "#49091C"] },
+  gris:      { shape: "diamond", tones: ["#F2F3FA", "#A9ACC0", "#5C5F75"] },
+  argente:   { shape: "star",    tones: ["#FFFFFF", "#D6DCEE", "#878DA6"] },
+  dore:      { shape: "star",    tones: ["#FFF4C6", "#E9B93A", "#94670E"] },
+  or:        { shape: "star",    tones: ["#FFF4C6", "#E9B93A", "#94670E"] },
+  multicolore: { shape: "flower", tones: ["#EAF2FF", "#FFE1F5", "#A9A6CF"], holo: true },
+  imprime:     { shape: "flower", tones: ["#EAF2FF", "#FFE1F5", "#A9A6CF"], holo: true },
 };
 
 function norm(s: string) {
   return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
-export function extractColors(products: Product[]): { key: string; css: string }[] {
+export function extractColors(products: Product[]): { key: string; gem: Gem }[] {
   const seen = new Set<string>();
   for (const p of products) for (const c of p.colors) seen.add(c);
   return [...seen].sort().flatMap((key) => {
-    const css = COLOR_SWATCH[norm(key)];
-    return css ? [{ key, css }] : [];
+    const gem = COLOR_GEM[norm(key)];
+    return gem ? [{ key, gem }] : [];
   });
+}
+
+/** Un strass taillé. `uid` isole les dégradés — deux pastilles sur la même
+ *  page ne peuvent pas se voler leur `id`. La boîte déborde de 6 unités de
+ *  chaque côté pour que le liseré des pointes ne soit jamais rogné. */
+function ColorGem({ uid, gem }: { uid: string; gem: Gem }) {
+  const d = GEM_PATH[gem.shape];
+  const face = `${uid}-face`;
+  const relief = `${uid}-relief`;
+  return (
+    <svg viewBox="-6 -6 112 112" className="h-full w-full">
+      <defs>
+        <linearGradient id={face} x1="0.15" y1="0" x2="0.85" y2="1">
+          {gem.holo ? (
+            HOLO_STOPS.map(([offset, color]) => (
+              <stop key={offset} offset={offset} stopColor={color} />
+            ))
+          ) : (
+            <>
+              <stop offset="0%" stopColor={gem.tones[0]} />
+              <stop offset="46%" stopColor={gem.tones[1]} />
+              <stop offset="100%" stopColor={gem.tones[2]} />
+            </>
+          )}
+        </linearGradient>
+        {/* Voile de relief : lumière en haut à gauche, ombre en bas à droite.
+            Neutre, donc valable pour toutes les teintes — du blanc au noir. */}
+        <linearGradient id={relief} x1="0.2" y1="0" x2="0.8" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
+          <stop offset="52%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="100%" stopColor="#000000" stopOpacity="0.3" />
+        </linearGradient>
+      </defs>
+      <path d={d} fill={`url(#${face})`} stroke={gem.tones[2]} strokeWidth="6" strokeLinejoin="round" />
+      <path d={d} fill={`url(#${relief})`} />
+      {/* Liseré clair : l'effet « plastique bombé » des strass de /contact. */}
+      <path d={d} fill="none" stroke="#ffffff" strokeWidth="2.4" strokeLinejoin="round" opacity="0.55" />
+      <ellipse cx="36" cy="30" rx="8" ry="3.6" fill="#fff" opacity="0.7" transform="rotate(-34 36 30)" />
+      <ellipse cx="66" cy="64" rx="4.6" ry="2" fill="#fff" opacity="0.35" transform="rotate(-34 66 64)" />
+    </svg>
+  );
 }
 
 /* ============================================================
@@ -415,7 +508,9 @@ export function FilterControl({
 
       {colors.length > 0 && (
         <Section n={nextN()} label="COULEUR">
-          <div className="flex flex-wrap gap-2">
+          {/* Dès qu'un strass est retenu, les autres s'estompent : le choix
+              actif se lit sans avoir à comparer les halos un par un. */}
+          <div className={`flex flex-wrap gap-1.5${activeColors.size > 0 ? " lde-gems-narrowed" : ""}`}>
             {colors.map((c) => {
               const on = activeColors.has(c.key);
               return (
@@ -426,11 +521,10 @@ export function FilterControl({
                   aria-pressed={on}
                   aria-label={c.key}
                   title={c.key}
-                  className={`h-7 w-7 rounded-full border-2 transition active:translate-y-0.5 ${PLASTIC} ${
-                    on ? "border-[#3b1d8f] ring-2 ring-[#ff45b4] ring-offset-1" : "border-white/70 hover:brightness-110"
-                  }`}
-                  style={{ background: c.css }}
-                />
+                  className={`lde-gem h-8 w-8${on ? " lde-gem-on" : ""}`}
+                >
+                  <ColorGem uid={`lde-gem-${norm(c.key)}`} gem={c.gem} />
+                </button>
               );
             })}
           </div>
