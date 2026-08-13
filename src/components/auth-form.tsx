@@ -193,8 +193,21 @@ export function AuthForm() {
           className="flex items-center gap-2 px-3 py-1.5 select-none"
           style={{ backgroundImage: "var(--y2k-titlebar)" }}
         >
+          {/* Le lys de la maison en guise d'icône d'application. C'est la
+              silhouette pleine et non le trait : à 18px, le trait fin du
+              dessin d'origine se brouille. Le fichier est noir sur fond
+              transparent, le filtre le passe en blanc pour la barre de
+              titre — une seule version du visuel à maintenir. */}
+          <Image
+            src="/lilog-flower-solid.png"
+            alt=""
+            aria-hidden
+            width={18}
+            height={18}
+            className="h-[18px] w-[18px] shrink-0 [filter:brightness(0)_invert(1)_drop-shadow(0_1px_1px_rgba(0,0,0,0.35))]"
+          />
           <span className="flex-1 truncate text-[0.68rem] font-bold tracking-[0.08em] text-white sm:text-[0.8rem] drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">
-            🔐 LIL_OG_MESSENGER_V2.0.EXE
+            LIL_OG_MESSENGER_V2.0.EXE
           </span>
           <div className="flex shrink-0 items-center gap-1">
             <ChromeButton label="Réduire" onClick={() => setShaded(v => !v)}>_</ChromeButton>
