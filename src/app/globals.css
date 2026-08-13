@@ -5649,49 +5649,78 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.3), inset -1px 0 0 rgba(20, 6, 50, 0.6);
 }
 
-/* Bling 2000s, dosé : deux breloques au-dessus, deux en dessous. Étoiles
-   chromées et cœurs violets assortis à la bulle, en dégradé sur le texte
-   plutôt qu'en emoji — le rendu ne dépend alors d'aucune police système.
-   Portées par .dm-style-cell, donc cantonnées à la rangée du hublot : elles
-   restent sur l'écran sombre et ne débordent pas sur le châssis clair. */
-.dm-bling {
+/* Strass de la maison le long de l'arête : les mêmes pastilles vectorielles
+   (ChromeStar / GemSticker) que /faq, /contact, /login et le bas de page,
+   à la place des anciens chevrons et breloques en glyphe — le rendu ne
+   dépend ainsi d'aucune police système. Deux étoiles chromées aux
+   extrémités, deux cœurs roses, et deux étoiles roses qui encadrent la
+   bulle. Portées par .dm-style-cell, donc cantonnées à la rangée du
+   hublot : elles restent sur l'écran sombre et ne débordent pas sur le
+   châssis clair.
+
+   Le flottement reprend celui de /login, avec des durées décalées pour
+   éviter le battement synchrone ; `--r` porte l'angle de pose. */
+@keyframes dm-strass-bob {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--r, 0deg)) scale(1); }
+  50%      { transform: translate3d(0, -9%, 0) rotate(calc(var(--r, 0deg) + 6deg)) scale(1.06); }
+}
+.dm-strass {
+  display: block;
+  line-height: 0;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 2px 4px rgba(12, 4, 34, 0.55));
+  animation: dm-strass-bob 7s ease-in-out infinite;
+}
+
+/* Les quatre du rail. La cellule ne fait que 4px de large : le recentrage
+   passe par la propriété `translate`, et non par `transform` — que
+   l'animation occupe déjà — et reste correct pour des pastilles bien plus
+   larges que leur conteneur. */
+.dm-strass-rail {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
-  font-size: 14px;
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
+  translate: -50% 0;
 }
-.dm-bling-star {
-  background: linear-gradient(180deg, #ffffff 0%, #dce8fa 28%, #8ea7c9 50%, #ffffff 58%, #b8c8de 78%, #7b8ea9 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.45));
+.dm-strass-1 {
+  top: 7%;
+  width: clamp(20px, 1.9vw, 28px);
+  height: clamp(20px, 1.9vw, 28px);
+  --r: -12deg;
 }
-.dm-bling-heart {
-  background: linear-gradient(180deg, #e6d8ff 0%, #a98cff 45%, #7147d4 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 6px rgba(113, 71, 212, 0.7));
+.dm-strass-2 {
+  top: 22%;
+  width: clamp(15px, 1.4vw, 21px);
+  height: clamp(15px, 1.4vw, 21px);
+  --r: 11deg;
+  animation-duration: 8.4s;
+  animation-delay: -2.2s;
 }
-.dm-bling-1 { top: 9%; }
-.dm-bling-2 { top: 23%; font-size: 11px; }
-.dm-bling-3 { bottom: 23%; font-size: 11px; }
-.dm-bling-4 { bottom: 9%; }
+.dm-strass-3 {
+  bottom: 22%;
+  width: clamp(15px, 1.4vw, 21px);
+  height: clamp(15px, 1.4vw, 21px);
+  --r: -9deg;
+  animation-duration: 6.2s;
+  animation-delay: -3.7s;
+}
+.dm-strass-4 {
+  bottom: 7%;
+  width: clamp(20px, 1.9vw, 28px);
+  height: clamp(20px, 1.9vw, 28px);
+  --r: 13deg;
+  animation-duration: 9s;
+  animation-delay: -5.1s;
+}
 
-/* Chevrons encadrant la bulle, alignés dans l'axe de l'arête */
-.dm-style-arrow {
+/* Les deux qui encadrent la bulle, dans le flux de la colonne. */
+.dm-strass-cap {
   flex: 0 0 auto;
-  font-size: 13px;
-  line-height: 1;
-  color: #d3dcec;
-  text-shadow: 0 0 7px rgba(211, 220, 236, 0.7);
-  pointer-events: none;
-  user-select: none;
+  width: clamp(17px, 1.6vw, 23px);
+  height: clamp(17px, 1.6vw, 23px);
 }
+.dm-strass-cap-up   { --r: 9deg;  animation-duration: 7.6s; animation-delay: -1.4s; }
+.dm-strass-cap-down { --r: -9deg; animation-duration: 6.8s; animation-delay: -4.3s; }
 
 /* Cellule large de 4px : la bulle y est centrée et déborde à parts égales
    des deux côtés, pile au milieu du hublot. */
@@ -6304,7 +6333,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     background: linear-gradient(90deg, #2a1266 0%, #7147d4 50%, #2a1266 100%);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(20, 6, 50, 0.6);
   }
-  .dm-bling { display: none; }
+  .dm-strass-rail { display: none; }
   .dm-style-me { width: 104px; }
   .dm-style-me:active { transform: translateY(4px); }
   .dm-console { grid-template-columns: 1fr; }
@@ -6317,6 +6346,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-reel.spin-a, .dm-reel.spin-b { animation: none; }
   .dm-caret, .dm-term-opt.in:hover .dm-term-cursor { animation: none; }
   .dm-titlebar::before { animation: none; }
+  .dm-strass { animation: none; transform: rotate(var(--r, 0deg)); }
 }
 
 /* ============================================================
