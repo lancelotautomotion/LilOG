@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Montserrat, Space_Mono, Great_Vibes, VT323, Grenze_Gotisch, Caveat } from "next/font/google";
+import { IBM_Plex_Mono, Montserrat, Space_Mono, Great_Vibes, VT323, Caveat } from "next/font/google";
+import localFont from "next/font/local";
 import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
@@ -36,10 +37,20 @@ const lcd = VT323({
   weight: ["400"],
 });
 
-const gothic = Grenze_Gotisch({
+/* Grenze Gotisch est servie depuis le dépôt, pas depuis Google.
+   Le déploiement du 13 août est tombé dessus : le cache de build de Vercel
+   avait gardé une feuille de style Google pointant vers un fichier que
+   Google avait entre-temps supprimé, et la compilation s'arrêtait sur six
+   « Module not found » (404 sur fonts.gstatic.com). Le fichier vit
+   désormais dans le dépôt : plus rien à demander à Google au moment du
+   build, donc plus de déploiement à la merci de son CDN.
+   Fichier variable couvrant les graisses 500 à 700, sous-ensemble latin —
+   le seul usage est .msn-display-name, un prénom. */
+const gothic = localFont({
+  src: "./fonts/grenze-gotisch-latin.woff2",
   variable: "--font-gothic",
-  subsets: ["latin"],
-  weight: ["500", "700"],
+  weight: "500 700",
+  display: "swap",
 });
 
 const hand = Caveat({
