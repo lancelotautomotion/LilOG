@@ -134,9 +134,13 @@ function Shortcuts() {
    Page
    ============================================================ */
 
+/* Les identifiants sont repris tels quels par /api/contact, qui les
+   traduit en objet de mail : toute pastille ajoutée ici doit l'être
+   aussi dans SUBJECT_LABELS côté route, sinon l'envoi est refusé. */
 const SUBJECTS = [
   { id: "commande", label: "🎰 Commande" },
   { id: "taille", label: "📏 Conseil Taille" },
+  { id: "partenariat", label: "🤝 Partenariat" },
   { id: "papotage", label: "💌 Papotage" },
 ];
 
@@ -149,6 +153,12 @@ export default function ContactPage() {
   const [isPending, startTransition] = useTransition();
 
   const [subjectError, setSubjectError] = useState(false);
+  const [sendError, setSendError] = useState("");
+
+  /* Pot de miel anti-robots : invisible et hors du parcours clavier,
+     un humain ne peut pas le remplir. /api/contact jette en silence
+     tout message qui arrive avec ce champ rempli. */
+  const [website, setWebsite] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,9 +170,30 @@ export default function ContactPage() {
       return;
     }
     setSubjectError(false);
+    setSendError("");
     startTransition(async () => {
-      await new Promise((r) => setTimeout(r, 600));
-      setSent(true);
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, subject, message, website }),
+        });
+        const data = (await res.json().catch(() => null)) as { ok?: boolean } | null;
+        if (!res.ok || !data?.ok) {
+          /* Pas de faux « message transmis » : si la boîte de la
+             boutique n'a rien reçu, on le dit, et on laisse le
+             message dans le formulaire pour ne pas le perdre. */
+          setSendError(
+            "La transmission a échoué. Réessaie dans un moment, ou écris directement à lilog.shop@gmail.com.",
+          );
+          return;
+        }
+        setSent(true);
+      } catch {
+        setSendError(
+          "La transmission a échoué. Réessaie dans un moment, ou écris directement à lilog.shop@gmail.com.",
+        );
+      }
     });
   };
 
@@ -281,6 +312,21 @@ export default function ContactPage() {
                     </div>
                   ) : (
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                      {/* Pot de miel : hors écran plutôt qu'en `hidden`, que
+                          certains robots savent détecter. tabIndex={-1} et
+                          aria-hidden le retirent du clavier et des lecteurs
+                          d'écran, autocomplete="off" du remplissage auto. */}
+                      <input
+                        type="text"
+                        name="website"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                        tabIndex={-1}
+                        autoComplete="off"
+                        aria-hidden
+                        className="pointer-events-none absolute -left-[9999px] h-0 w-0 opacity-0"
+                      />
+
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div className="flex flex-col gap-1.5">
                           <label
@@ -386,6 +432,15 @@ export default function ContactPage() {
                           ? "[ ⏳ TRANSMISSION_EN_COURS… ]"
                           : "[ ✉️ TRANSMETTRE_LE_MESSAGE.EXE ]"}
                       </button>
+
+                      {sendError && (
+                        <p
+                          role="alert"
+                          className={`${MONO} rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-[0.6rem] leading-relaxed font-bold text-rose-700`}
+                        >
+                          ⚠ {sendError}
+                        </p>
+                      )}
                     </form>
                   )}
                 </div>
@@ -426,7 +481,7 @@ export default function ContactPage() {
           {/* ---- Barre de statut ---- */}
           <div className="flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
             <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
-              ✦ hellolilG@gmail.com — Lun-Ven 10h/18h
+              ✦ lilog.shop@gmail.com — Lun-Ven 10h/18h
             </span>
             <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
               3 objet(s) — 1.44 Mo
