@@ -141,7 +141,18 @@ function StatCell({ icon, label, value }: { icon: string; label: string; value: 
 }
 
 /* ============================================================
-   SYSTEM_LOGS — onglets fichiers système
+   SYSTEM_LOGS — fichiers système en menus déroulants
+   ------------------------------------------------------------
+   Un seul fichier ouvert à la fois : cliquer sur un en-tête ferme
+   le précédent. Le premier (DESCRIPTION_&_MOOD.TXT) est ouvert au
+   chargement.
+
+   Ce bloc était en onglets, au-dessus d'une fenêtre de hauteur
+   imposée. Deux des trois fiches tiennent en quelques lignes : la
+   fenêtre restait alors aux trois quarts vide. Chaque panneau prend
+   désormais la hauteur de son texte, et ne se met à défiler qu'une
+   fois passé le plafond — le cas des longues descriptions Shopify,
+   qui feraient sinon une page à rallonge.
    ============================================================ */
 
 function SystemLogs({
@@ -149,8 +160,7 @@ function SystemLogs({
 }: {
   tabs: { file: string; icon: string; body: React.ReactNode }[];
 }) {
-  const [active, setActive] = useState(0);
-  const shown = tabs[active] ?? tabs[0];
+  const [open, setOpen] = useState(0);
 
   /* Le texte est plafonné en hauteur : reste à le dire. L'ascenseur ne
      suffit pas — Chrome le dessine en flottant, invisible tant qu'on ne
@@ -176,72 +186,93 @@ function SystemLogs({
       ro.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [measure, active]);
+  }, [measure, open]);
 
   return (
-    /* `flex-1` : en grand écran, le bloc s'étire pour absorber la hauteur
-       laissée par le lecteur photo — les deux colonnes tombent d'aplomb
-       quelle que soit la taille du cadre photo, sans réglage à la main. */
-    <div className="mt-6 flex min-h-0 flex-1 flex-col">
+    /* Plus de `flex-1` : la pile de menus prend la hauteur de son
+       contenu. C'est tout l'objet du changement — la colonne ne
+       s'étire plus pour rejoindre le bas du lecteur photo, elle
+       s'arrête où le texte s'arrête. */
+    <div className="mt-6 flex flex-col">
       <div className={`${MONO} mb-2 text-[0.5rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
         ▶ SYSTEM_LOGS
       </div>
 
-      {/* Onglets posés sur le bord haut du Notepad : l'actif partage son
-          blanc et perd sa bordure basse, donc les deux ne font qu'un. */}
-      <div className="flex flex-wrap gap-1">
-        {tabs.map((tb, i) => (
-          <button
-            key={tb.file}
-            type="button"
-            onClick={() => setActive(i)}
-            aria-pressed={i === active}
-            className={`${MONO} flex items-center gap-1 rounded-t-md border border-b-0 px-2.5 py-1.5 text-[0.52rem] font-bold tracking-[0.02em] uppercase transition sm:text-[0.58rem] ${
-              i === active
-                ? "relative z-[1] -mb-px border-[#c6c2d8] bg-white text-[#1E2430]"
-                : "border-transparent bg-[#dcdaea] text-[#6B7280] hover:bg-[#eceafa]"
-            }`}
-          >
-            <span aria-hidden>{tb.icon}</span>
-            {tb.file}
-          </button>
-        ))}
-      </div>
-
-      {/* Fenêtre Notepad encastrée. Les fiches Shopify vont d'une ligne à
-          trois écrans de texte : le texte défile dans sa fenêtre plutôt que
-          d'étirer la page sans fin.
-          Hauteur imposée, pas plafonnée : avec `max-h`, la fenêtre se
-          rétractait sur les onglets courts et le bloc sautait d'un onglet
-          à l'autre. Elle garde donc la même taille quel que soit l'onglet
-          — un cadre de fenêtre ne change pas de dimension parce qu'on
-          ouvre un autre fichier. */}
-      <div className="relative flex min-h-0 flex-1 flex-col">
-        <div
-          ref={bodyRef}
-          onScroll={measure}
-          className={`lpi-scroll h-[clamp(220px,38vh,300px)] overflow-y-auto rounded-md rounded-tl-none border border-[#c6c2d8] bg-white p-3.5 lg:h-auto lg:min-h-[200px] lg:flex-1 ${BEVEL_IN}`}
-        >
-          {/* Même corps de texte que le bloc de description des catalogues
-              (0.76rem / 1.85) : les deux se lisent de la même façon. */}
-          <div className={`${MONO} lpi-desc text-[0.76rem] leading-[1.85] text-[#3b3550]`}>{shown.body}</div>
-        </div>
-
-        {more && (
-          <>
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-x-px bottom-px h-12 rounded-b-md"
-              style={{ background: "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.96) 78%)" }}
-            />
-            <span
-              aria-hidden
-              className={`${MONO} pointer-events-none absolute right-4 bottom-1.5 rounded-sm border border-[#c6c2d8] bg-[#eceafa] px-1.5 py-0.5 text-[0.44rem] font-bold tracking-[0.08em] text-[#5b2fb8] uppercase`}
+      <div className="flex flex-col gap-1.5">
+        {tabs.map((tb, i) => {
+          const isOpen = i === open;
+          const panelId = `syslog-panel-${i}`;
+          const headerId = `syslog-header-${i}`;
+          return (
+            <div
+              key={tb.file}
+              className="overflow-hidden rounded-md border border-[#c6c2d8]"
             >
-              ▼ SUITE
-            </span>
-          </>
-        )}
+              {/* En-tête : une ligne de fenêtre, pas un onglet. Le
+                  fichier ouvert prend l'encre foncée et le [ − ]. */}
+              <button
+                type="button"
+                id={headerId}
+                onClick={() => {
+                  /* Remis à zéro avec l'ouverture : sans ça, passer d'un
+                     texte long à un texte court laisserait le [ ▼ SUITE ]
+                     affiché le temps que la mesure se refasse. */
+                  setMore(false);
+                  setOpen(i);
+                }}
+                aria-expanded={isOpen}
+                aria-controls={panelId}
+                className={`${MONO} flex w-full items-center gap-2 px-3 py-2.5 text-left text-[0.52rem] font-bold tracking-[0.02em] uppercase transition sm:text-[0.58rem] ${
+                  isOpen
+                    ? "border-b border-[#c6c2d8] bg-[#e9e7f2] text-[#1E2430]"
+                    : `${PLASTIC_FACE} text-[#3b3550] hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`
+                }`}
+              >
+                <span aria-hidden className="shrink-0">{tb.icon}</span>
+                <span className="min-w-0 flex-1 truncate">{tb.file}</span>
+                <span aria-hidden className="shrink-0 text-[#5b2fb8]">
+                  {isOpen ? "[ − ]" : "[ + ]"}
+                </span>
+              </button>
+
+              {isOpen && (
+                <div className="relative">
+                  <div
+                    ref={bodyRef}
+                    onScroll={measure}
+                    id={panelId}
+                    role="region"
+                    aria-labelledby={headerId}
+                    className={`lpi-scroll max-h-[clamp(240px,52vh,560px)] overflow-y-auto bg-white p-3.5 ${BEVEL_IN}`}
+                  >
+                    {/* Même corps de texte que le bloc de description des
+                        catalogues (0.76rem / 1.85) : les deux se lisent de
+                        la même façon. */}
+                    <div className={`${MONO} lpi-desc text-[0.76rem] leading-[1.85] text-[#3b3550]`}>
+                      {tb.body}
+                    </div>
+                  </div>
+
+                  {more && (
+                    <>
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute inset-x-px bottom-0 h-12"
+                        style={{ background: "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.96) 78%)" }}
+                      />
+                      <span
+                        aria-hidden
+                        className={`${MONO} pointer-events-none absolute right-4 bottom-1.5 rounded-sm border border-[#c6c2d8] bg-[#eceafa] px-1.5 py-0.5 text-[0.44rem] font-bold tracking-[0.08em] text-[#5b2fb8] uppercase`}
+                      >
+                        ▼ SUITE
+                      </span>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -483,8 +514,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
               {/* LIL_OG_PHOTO_VIEWER */}
               <ProductGallery images={product.images} name={product.name} />
 
-              {/* ITEM_STATS.SYS — colonne en flex : c'est ce qui permet à
-                  SYSTEM_LOGS, en bas, de prendre toute la hauteur restante. */}
+              {/* ITEM_STATS.SYS — colonne en flex, empilement simple : depuis
+                  que SYSTEM_LOGS est une pile de menus déroulants, plus rien
+                  ne s'étire pour rejoindre le bas du lecteur photo. */}
               <div className="flex min-w-0 flex-col">
                 <div className={`${MONO} mb-2 text-[0.5rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
                   ▶ ITEM_STATS.SYS
