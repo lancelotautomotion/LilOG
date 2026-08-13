@@ -41,7 +41,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
       <main className="relative">
         <LeopardBackdrop />
 
-        <div className="relative z-[1] mx-auto w-full max-w-[1180px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(24px,4vw,48px)] sm:px-6">
+        <div className="relative z-[1] mx-auto w-full max-w-[1400px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(24px,4vw,48px)] sm:px-6">
           <WindowFrame
             title="C:\ LIL_OG \ SEARCH_RESULTS.EXE"
             icon={<Icon.search width={13} height={13} />}

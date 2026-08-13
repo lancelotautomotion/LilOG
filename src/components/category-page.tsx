@@ -364,7 +364,7 @@ export function CategoryPage({
 
         {/* La barre de navigation est fixe et opaque : la fenêtre commence en
             dessous, sinon elle mangerait sa barre de titre. */}
-        <div className="relative z-[1] mx-auto w-full max-w-[1180px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(24px,4vw,48px)] sm:px-6">
+        <div className="relative z-[1] mx-auto w-full max-w-[1400px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(24px,4vw,48px)] sm:px-6">
           {/* ================= FENÊTRE UNIQUE ================= */}
           {/* clip=false : FILTER_CONTROL.SYS doit rester figé au scroll
               (position: sticky), ce qui ne fonctionne sous aucun ancêtre en
@@ -413,21 +413,21 @@ export function CategoryPage({
                 {label}
               </h1>
               {vibe && (
-                <p className={`${MONO} mt-2 text-[0.6rem] tracking-[0.04em] text-[#5b2fb8] italic`}>
+                <p className={`${MONO} mt-2 text-[0.74rem] tracking-[0.04em] text-[#5b2fb8] italic`}>
                   {vibe.tagline}
                 </p>
               )}
 
               {vibe && (
                 <div className="mt-4 rounded-xl border border-[#d8d5e6] bg-[#f7f6fc] p-[clamp(12px,2.2vw,20px)] text-left">
-                  <p className={`${MONO} max-w-[70ch] text-[0.62rem] leading-[1.85] text-[#3b3550]`}>
+                  <p className={`${MONO} max-w-[88ch] text-[0.76rem] leading-[1.85] text-[#3b3550]`}>
                     {vibe.desc}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {vibe.tags.map((tag) => (
                       <span
                         key={tag}
-                        className={`${MONO} rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.48rem] font-bold tracking-[0.04em] text-[#5b2fb8] uppercase ${PLASTIC}`}
+                        className={`${MONO} rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1 text-[0.58rem] font-bold tracking-[0.04em] text-[#5b2fb8] uppercase ${PLASTIC}`}
                       >
                         #{tag}
                       </span>

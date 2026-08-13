@@ -142,11 +142,11 @@ export function ArcadeSlot() {
 
   return (
     <section id="slot" className="px-4 py-[clamp(48px,8vw,96px)] sm:px-6">
-      {/* Conteneur élargi (980px → 1180px, la largeur des autres fenêtres du
+      {/* Conteneur élargi (980px → 1400px, la largeur des autres fenêtres du
           site) : la borne garde sa taille propre mais n'est plus seule au
           centre — un texte de présentation prend la colonne de gauche, elle
           se retrouve décalée à droite. */}
-      <div className="mx-auto w-full max-w-[1180px]">
+      <div className="mx-auto w-full max-w-[1400px]">
         <SectionLabel n="02" file="ARCADE_SLOT.EXE" tone="wallpaper" />
 
         <style>{ARCADE_CSS}</style>

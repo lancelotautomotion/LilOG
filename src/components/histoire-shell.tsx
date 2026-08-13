@@ -461,7 +461,7 @@ export function HistoireShell() {
         />
         <span aria-hidden className="pointer-events-none fixed inset-0 z-0 bg-black/30" />
 
-        <div className="relative z-[1] mx-auto max-w-[1080px]">
+        <div className="relative z-[1] mx-auto max-w-[1280px]">
           {/* ---- Pastilles décoratives dans les angles ---- */}
           {/* Au premier plan (z-20), mais décalées assez loin verticalement
               pour dégager toute la hauteur de la barre de titre / barre de
