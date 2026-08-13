@@ -30,8 +30,12 @@
   --ldl-muted: #6B7280;
   --ldl-radius: 0px;
   --ldl-titlebar: #1B48CE;
-  /* Barres de titre /account : navy Win95 plus fidèle à gauche, glisse vers le violet existant */
-  --acct-titlebar: linear-gradient(90deg, #000080 0%, #1B48CE 55%, #7147D4 100%);
+  /* Barre de titre unique du site : le fronton de la borne d'arcade,
+     violet profond → violet → fuchsia. Toutes les fenêtres la portent —
+     menu, catalogue, fiches, compte, panier, wishlist, Dressing Machine.
+     Six dégradés différents cohabitaient avant, du navy Win95 au rose. */
+  --y2k-titlebar: linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%);
+  --acct-titlebar: var(--y2k-titlebar);
   --ldl-shadow: 0 2px 8px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
   --ldl-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.11), 0 2px 4px rgba(0, 0, 0, 0.06);
   --ldl-shadow-window: 4px 4px 0 rgba(0, 0, 0, 0.85);
@@ -336,7 +340,7 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #061987 0%, #1D35D9 70%, #6852F6 100%);
+  background: var(--y2k-titlebar);
   padding: 10px 12px;
   gap: 10px;
   flex-shrink: 0;
@@ -1657,7 +1661,7 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(90deg, #061987 0%, #1D35D9 70%, #6852F6 100%);
+  background: var(--y2k-titlebar);
   padding: 9px 12px;
   gap: 10px;
 }
@@ -5066,7 +5070,7 @@ html, body {
 }
 
 /* ── Wishlist "Burn Book" (Mean Girls / Y2K scrapbook) ── */
-.burnbook-bar { background: linear-gradient(90deg, #061987 0%, #1D35D9 70%, #6852F6 100%); }
+.burnbook-bar { background: var(--y2k-titlebar); }
 .burnbook-body {
   background: #fff;
   flex: 1;
@@ -5393,7 +5397,7 @@ html, body {
   --dm-neon: #ff5ec4;          /* néon rose de la borne */
   --dm-deep: #3b1d8f;
   /* Fronton lumineux : le dégradé de la borne, violet → fuchsia. */
-  --dm-fronton: linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%);
+  --dm-fronton: var(--y2k-titlebar);
   /* Plastique bombé des boutons (jeton PLASTIC_FACE du kit y2k). */
   --dm-plastic: linear-gradient(180deg, #fdfdff 0%, #ebe9f4 46%, #c9c6da 100%);
   --dm-plastic-edge: #a5a1bd;

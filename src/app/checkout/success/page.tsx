@@ -30,7 +30,7 @@ export default async function CheckoutSuccessPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          background: "linear-gradient(90deg, #d4006e 0%, #f7a3e3 100%)",
+          background: "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)",
           padding: "4px 6px",
           gap: "8px",
         }}>

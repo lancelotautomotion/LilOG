@@ -200,7 +200,7 @@ export function Notice({
     >
       <div
         className="flex items-center justify-between gap-2 px-2.5 py-1.5"
-        style={{ background: "linear-gradient(90deg, #3b1d8f 0%, #7147d4 60%, #a86fe8 100%)" }}
+        style={{ background: "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)" }}
       >
         <span
           className={`${MONO} truncate text-[0.55rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
@@ -394,7 +394,7 @@ export function DocCenter({
             {/* ---- Barre de titre ---- */}
             <div
               className="flex items-center justify-between gap-3 px-3 py-2"
-              style={{ background: "linear-gradient(90deg, #3b1d8f 0%, #7147d4 55%, #a86fe8 100%)" }}
+              style={{ background: "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)" }}
             >
               <div className="flex min-w-0 items-center gap-2">
                 <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] bg-white/85 text-[0.65rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
@@ -488,7 +488,7 @@ export function DocCenter({
                   >
                     <div
                       className="px-3 py-2"
-                      style={{ background: "linear-gradient(90deg, #5b2fb8 0%, #7147d4 60%, #b184ee 100%)" }}
+                      style={{ background: "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)" }}
                     >
                       <h3
                         className={`${MONO} flex items-center gap-1.5 text-[0.66rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}
