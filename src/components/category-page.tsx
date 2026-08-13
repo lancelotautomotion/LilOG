@@ -146,6 +146,23 @@ const EXPLORER_CSS = `
 .lde-fader:focus-visible::-webkit-slider-thumb{outline:2px solid #3b1d8f;outline-offset:2px}
 .lde-fader:focus-visible::-moz-range-thumb{outline:2px solid #3b1d8f;outline-offset:2px}
 
+/* ---- Strass de la rubrique COULEUR ----
+   Les pastilles rondes sont devenues des pierres taillées (voir
+   filter-control.tsx). Le bouton ne porte plus ni fond ni bordure : c'est
+   la pierre qui est la cible, elle se soulève au survol et brille une fois
+   retenue. Les non-retenues s'effacent dès qu'un choix est fait. */
+.lde-gem{padding:0;border:none;background:none;cursor:pointer;line-height:0;
+  filter:drop-shadow(0 2px 2px rgba(30,20,60,.35));
+  transition:transform 150ms ease, filter 150ms ease, opacity 150ms ease}
+.lde-gem:hover{transform:translateY(-2px) rotate(-5deg) scale(1.1)}
+.lde-gem:active{transform:translateY(1px) scale(1.02)}
+.lde-gem:focus-visible{outline:2px solid #3b1d8f;outline-offset:3px;border-radius:6px}
+.lde-gem-on{transform:scale(1.16);
+  filter:drop-shadow(0 0 5px rgba(255,69,180,.95)) drop-shadow(0 2px 2px rgba(30,20,60,.4))}
+.lde-gem-on:hover{transform:translateY(-2px) scale(1.16)}
+.lde-gems-narrowed .lde-gem:not(.lde-gem-on){opacity:.4;filter:grayscale(.4) drop-shadow(0 1px 1px rgba(30,20,60,.3))}
+.lde-gems-narrowed .lde-gem:not(.lde-gem-on):hover{opacity:1;filter:drop-shadow(0 2px 2px rgba(30,20,60,.35))}
+
 /* ---- Tiroir des filtres (mobile) ---- */
 .lde-sheet{transition:transform 260ms cubic-bezier(.2,1,.3,1)}
 .lde-scrim{transition:opacity 220ms ease}
@@ -164,7 +181,8 @@ const EXPLORER_CSS = `
   box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,86,120,.55)}
 
 @media (prefers-reduced-motion: reduce){
-  .lde-img,.lde-card,.lde-sheet,.lde-scrim{transition:none}
+  .lde-img,.lde-card,.lde-sheet,.lde-scrim,.lde-gem{transition:none}
+  .lde-gem:hover{transform:none}
 }
 `;
 
