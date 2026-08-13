@@ -344,7 +344,7 @@ export function DocCenter({
 
         {/* Le conteneur relatif porte les pastilles : elles peuvent ainsi
             déborder de la fenêtre, qui elle reste rognée. */}
-        <div className="relative z-[1] mx-auto max-w-[1180px]">
+        <div className="relative z-[1] mx-auto max-w-[1400px]">
 
           {/* ---- Pastilles décoratives (mêmes bijoux que /contact) ---- */}
           {/* Au premier plan (z-20), mais décalées assez loin verticalement
