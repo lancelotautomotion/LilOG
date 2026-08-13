@@ -330,7 +330,7 @@ function Highlight({ text, query }: { text: string; query: string }) {
    Briques d'interface
    ============================================================ */
 
-/** Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ ✖ ] */
+/** Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ × ] */
 function WindowButton({ label, glyph }: { label: string; glyph: string }) {
   return (
     <span
@@ -545,7 +545,7 @@ export function FaqShell() {
             <div className="flex shrink-0 items-center gap-1.5">
               <WindowButton label="Réduire" glyph="_" />
               <WindowButton label="Agrandir" glyph="🗖" />
-              <WindowButton label="Fermer" glyph="✖" />
+              <WindowButton label="Fermer" glyph="×" />
             </div>
           </div>
 
@@ -647,7 +647,7 @@ export function FaqShell() {
                         aria-label="Effacer la recherche"
                         className={`${MONO} absolute top-1/2 right-2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.65rem] font-bold text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
                       >
-                        ✖
+                        ×
                       </button>
                     )}
                   </div>
@@ -728,7 +728,7 @@ export function FaqShell() {
                       ⚠️ AUCUN_RESULTAT.DLG
                     </span>
                     <span className="grid h-4 w-5 shrink-0 place-items-center rounded-[3px] border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#d3d0e1_100%)] text-[0.5rem] font-bold text-[#262626]">
-                      ✖
+                      ×
                     </span>
                   </div>
                   <div className="flex items-start gap-3 px-3.5 py-4">
@@ -770,7 +770,7 @@ export function FaqShell() {
                   </span>
                   <div className="flex shrink-0 items-center gap-1.5">
                     <WindowButton label="Réduire" glyph="_" />
-                    <WindowButton label="Fermer" glyph="✖" />
+                    <WindowButton label="Fermer" glyph="×" />
                   </div>
                 </div>
 

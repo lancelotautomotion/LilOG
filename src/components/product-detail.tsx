@@ -309,7 +309,7 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
     toggle({ handle: product.handle, title: product.name, price: product.price, image: product.imageA, variantId: product.variantId });
   };
 
-  const badge = sold ? "✖ SOLD" : product.tag === "1 OF 1" ? "💎 1/1" : product.tag === "NEW" ? "🔥 NEW" : null;
+  const badge = sold ? "× SOLD" : product.tag === "1 OF 1" ? "💎 1/1" : product.tag === "NEW" ? "🔥 NEW" : null;
 
   return (
     <Link
@@ -660,7 +660,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                     }`}
                     style={{ boxShadow: "0 5px 0 rgba(0,0,0,0.18)" }}
                   >
-                    {sold ? "[ ✖ SOLD_OUT.SYS ]" : added ? "[ ✓ ADDED.OK ]" : "[ 🛒 ADD_TO_CART.EXE ]"}
+                    {sold ? "[ × SOLD_OUT.SYS ]" : added ? "[ ✓ ADDED.OK ]" : "[ 🛒 ADD_TO_CART.EXE ]"}
                   </button>
 
                   <button

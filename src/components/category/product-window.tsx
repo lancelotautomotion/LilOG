@@ -4,7 +4,7 @@
    MEDIA_GRID — la fiche produit en fenêtre d'application
    ------------------------------------------------------------
    Chaque pièce du catalogue est une petite fenêtre : barre de
-   titre bleue avec le nom tronqué et ses boutons [ _ ] [ ✖ ],
+   titre bleue avec le nom tronqué et ses boutons [ _ ] [ × ],
    visuel au ratio constant qui gagne en contraste au survol,
    stickers d'état collés dans les coins, et pied de fenêtre où
    le prix s'affiche en afficheur vert sur noir à côté du bouton
@@ -34,8 +34,8 @@ type Sticker = { label: React.ReactNode; from: string; to: string; ink: string }
 
 const HOT: Sticker = { label: "🔥 HOT", from: "#ffb03b", to: "#e8541b", ink: "#3d1400" };
 const RARE: Sticker = { label: "💎 RARE", from: "#bfe9ff", to: "#4aa8e0", ink: "#06304d" };
-const SOLD: Sticker = { label: "✖ SOLD", from: "#d8d5e6", to: "#8b87a3", ink: "#1e1a2e" };
-/* Même gris « chunky plastic » que les boutons [ _ ] [ ✖ ] du header de
+const SOLD: Sticker = { label: "× SOLD", from: "#d8d5e6", to: "#8b87a3", ink: "#1e1a2e" };
+/* Même gris « chunky plastic » que les boutons [ _ ] [ × ] du header de
    fiche : un badge éditorial n'a pas besoin de crier plus fort qu'un état
    du produit (HOT, RARE, SOLD), qui gardent eux leurs couleurs vives. */
 const LOUNA_PICK: Sticker = { label: "💗 Coup de cœur", from: "#fdfdff", to: "#d3d0e1", ink: "#262626" };
@@ -190,7 +190,7 @@ export function ProductWindow({
         added ? "bg-[linear-gradient(180deg,#d8ffe8_0%,#8ce8b4_48%,#4fbe84_100%)]" : PLASTIC_FACE
       } ${PLASTIC} ${sold ? "" : PLASTIC_PRESS} ${sold ? "" : "hover:brightness-105"}`}
     >
-      {sold ? "[ ✖ SOLD ]" : added ? "[ ✓ OK ]" : "[ + CART ]"}
+      {sold ? "[ × SOLD ]" : added ? "[ ✓ OK ]" : "[ + CART ]"}
     </button>
   );
 
@@ -220,7 +220,7 @@ export function ProductWindow({
         {product.name}
       </span>
       <CardControl glyph="_" label="Réduire" />
-      <CardControl glyph="✖" label="Fermer" />
+      <CardControl glyph="×" label="Fermer" />
     </div>
   );
 

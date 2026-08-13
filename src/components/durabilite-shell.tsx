@@ -104,7 +104,7 @@ const RESCUE_CSS = `
    Briques d'interface
    ============================================================ */
 
-/** Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ ✖ ] */
+/** Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ × ] */
 function WindowButton({ label, glyph }: { label: string; glyph: string }) {
   return (
     <span
@@ -535,7 +535,7 @@ function RecycleBin() {
           <div className="flex shrink-0 items-center gap-1.5">
             <WindowButton label="Réduire" glyph="_" />
             <WindowButton label="Agrandir" glyph="🗖" />
-            <WindowButton label="Fermer" glyph="✖" />
+            <WindowButton label="Fermer" glyph="×" />
           </div>
         </div>
 
@@ -698,7 +698,7 @@ export function DurabiliteShell() {
           {/* Au premier plan (z-20), mais décalées assez loin verticalement
               pour dégager toute la hauteur de la barre de titre / barre de
               statut : elles chevauchent le bord de la fenêtre, jamais son
-              icône ni ses boutons [_][🗖][✖]. */}
+              icône ni ses boutons [_][🗖][×]. */}
           <span aria-hidden className="pointer-events-none absolute inset-0 z-20">
             <span
               className="durab-sticker absolute -left-[10px] h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)]"
@@ -746,7 +746,7 @@ export function DurabiliteShell() {
               <div className="flex shrink-0 items-center gap-1.5">
                 <WindowButton label="Réduire" glyph="_" />
                 <WindowButton label="Agrandir" glyph="🗖" />
-                <WindowButton label="Fermer" glyph="✖" />
+                <WindowButton label="Fermer" glyph="×" />
               </div>
             </div>
 

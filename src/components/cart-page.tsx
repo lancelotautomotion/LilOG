@@ -223,7 +223,7 @@ export function CartPage() {
                           onClick={(e) => { e.stopPropagation(); handleRemove(line.id); }}
                           disabled={pending}
                           aria-label="Retirer"
-                        >✕</button>
+                        >×</button>
                       </li>
                     ))}
                   </ul>

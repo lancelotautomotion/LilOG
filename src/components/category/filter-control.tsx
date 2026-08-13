@@ -370,7 +370,7 @@ export function FilterControl({
               aria-label="Fermer les filtres"
               className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.48rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
             >
-              [ ✖ ]
+              [ × ]
             </button>
           )}
       </div>

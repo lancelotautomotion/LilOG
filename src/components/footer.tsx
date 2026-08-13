@@ -10,7 +10,7 @@
 
    Autrement dit : exactement le vocabulaire de /contact, /faq,
    /cgv et /durabilite — fenêtre arrondie bordée #b8b4cc, barre
-   de titre violette avec [ _ ] [ 🗖 ] [ ✖ ], fond papier
+   de titre violette avec [ _ ] [ 🗖 ] [ × ], fond papier
    millimétré, jetons « chunky plastic », champs encastrés,
    pastilles Y2K, typo MONO pour les libellés et LCD pour
    l'horloge, rose maison sur les petits accents.
@@ -136,7 +136,7 @@ const TASKBAR_CSS = `
    Briques d'interface
    ============================================================ */
 
-/** Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ ✖ ] */
+/** Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ × ] */
 function WindowButton({ label, glyph }: { label: string; glyph: string }) {
   return (
     <span
@@ -384,7 +384,7 @@ export function Footer() {
             <div className="flex shrink-0 items-center gap-1.5">
               <WindowButton label="Réduire" glyph="_" />
               <WindowButton label="Agrandir" glyph="🗖" />
-              <WindowButton label="Fermer" glyph="✖" />
+              <WindowButton label="Fermer" glyph="×" />
             </div>
           </div>
 

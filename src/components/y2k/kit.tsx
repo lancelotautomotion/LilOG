@@ -7,7 +7,7 @@
    sont exactement les mêmes
    valeurs que /contact, /faq, /histoire et le pied de page :
    fenêtres bordées #b8b4cc, barre de titre violette avec
-   [ _ ] [ 🗖 ] [ ✖ ], jetons « chunky plastic », papier
+   [ _ ] [ 🗖 ] [ × ], jetons « chunky plastic », papier
    millimétré pastel, MONO pour les libellés, LCD pour les
    afficheurs.
 
@@ -116,7 +116,7 @@ export const BEVEL_IN =
    Briques d'interface
    ============================================================ */
 
-/** Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ ✖ ] */
+/** Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ × ] */
 export function WindowButton({ label, glyph }: { label: string; glyph: string }) {
   return (
     <span
@@ -136,7 +136,7 @@ export function WindowControls() {
     <div className="flex shrink-0 items-center gap-1">
       <WindowButton label="Réduire" glyph="_" />
       <WindowButton label="Agrandir" glyph="🗖" />
-      <WindowButton label="Fermer" glyph="✖" />
+      <WindowButton label="Fermer" glyph="×" />
     </div>
   );
 }

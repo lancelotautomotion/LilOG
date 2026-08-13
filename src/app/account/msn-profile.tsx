@@ -216,7 +216,7 @@ export function MsnProfile({
                 onClick={() => setModalOpen(false)}
                 aria-label="Fermer"
               >
-                ✕
+                ×
               </button>
             </div>
 

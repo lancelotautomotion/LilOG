@@ -19,7 +19,7 @@ export default async function Page() {
           <div className="dm-titlebar">
             <span className="dm-titlebar-text">VIRTUAL_CLOSET.EXE</span>
             <div className="dm-chrome">
-              <Link className="dm-chrome-btn" href="/" aria-label="Fermer">✕</Link>
+              <Link className="dm-chrome-btn" href="/" aria-label="Fermer">×</Link>
             </div>
           </div>
           <div className="dm-error-body">

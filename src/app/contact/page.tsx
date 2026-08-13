@@ -39,7 +39,7 @@ const GRID_BG = {
 };
 
 /* ============================================================
-   Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ ✖ ]
+   Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ × ]
    ============================================================ */
 function WindowButton({ label, glyph }: { label: string; glyph: string }) {
   return (
@@ -249,7 +249,7 @@ export default function ContactPage() {
             <div className="flex shrink-0 items-center gap-1.5">
               <WindowButton label="Réduire" glyph="_" />
               <WindowButton label="Agrandir" glyph="🗖" />
-              <WindowButton label="Fermer" glyph="✖" />
+              <WindowButton label="Fermer" glyph="×" />
             </div>
           </div>
 
