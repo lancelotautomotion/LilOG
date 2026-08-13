@@ -150,6 +150,19 @@ const EXPLORER_CSS = `
 .lde-sheet{transition:transform 260ms cubic-bezier(.2,1,.3,1)}
 .lde-scrim{transition:opacity 220ms ease}
 
+/* ---- Ascenseur du panneau de filtres (bureau) ----
+   Même plastique biseauté que l'ascenseur du Notepad de la fiche produit.
+   scrollbar-gutter:stable réserve la gouttière en permanence : sans elle
+   Chrome n'affiche l'ascenseur qu'au survol et rien n'indique que les
+   rubriques continuent plus bas. On ne déclare pas scrollbar-width /
+   scrollbar-color, qui désactiveraient les pseudo-éléments -webkit-. */
+.lde-filters-scroll{scrollbar-gutter:stable}
+.lde-filters-scroll::-webkit-scrollbar{width:12px}
+.lde-filters-scroll::-webkit-scrollbar-track{background:#eceafa;border-left:1px solid #d8d5e6}
+.lde-filters-scroll::-webkit-scrollbar-thumb{border:1px solid #a5a1bd;
+  background:linear-gradient(180deg,#fdfdff 0%,#ebe9f4 48%,#c9c6da 100%);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,86,120,.55)}
+
 @media (prefers-reduced-motion: reduce){
   .lde-img,.lde-card,.lde-sheet,.lde-scrim{transition:none}
 }
@@ -452,7 +465,11 @@ export function CategoryPage({
                 la grille pour lui laisser la place de rester figé. */}
             <div className="flex gap-5 px-4 py-4 sm:px-6">
               {/* FILTER_CONTROL.SYS — colonne collante à partir de lg, sans
-                  chrome de fenêtre propre : elle vit dans ce même conteneur. */}
+                  chrome de fenêtre propre : elle vit dans ce même conteneur.
+                  Le panneau plafonne lui-même sa hauteur à l'écran visible et
+                  fait défiler ses rubriques à l'intérieur (voir `bare` dans
+                  filter-control.tsx) : le pointeur posé dessus fait défiler
+                  les filtres, pas la page, et ce dès le haut du catalogue. */}
               <div className="hidden w-[270px] shrink-0 lg:block">
                 <div className="sticky top-[86px]">
                   <FilterControl state={filterState} bare />

@@ -346,10 +346,11 @@ export function FilterControl({
   let sectionN = 2;
   const nextN = () => String(++sectionN).padStart(2, "0");
 
-  const body = (
-    <>
-      {/* Barre d'état du panneau */}
-      <div className="flex items-center justify-between gap-2 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
+  /* Barre d'état : séparée du corps parce qu'en mode `bare` elle reste
+     figée en haut du panneau pendant que les rubriques défilent — le
+     bouton RESET doit rester à portée de clic. */
+  const statusBar = (
+    <div className="flex shrink-0 items-center justify-between gap-2 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
         <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
           {activeCount > 0 ? `${activeCount} filtre(s) actif(s)` : "Aucun filtre"}
         </span>
@@ -372,9 +373,12 @@ export function FilterControl({
               [ ✖ ]
             </button>
           )}
-        </div>
       </div>
+    </div>
+  );
 
+  const sections = (
+    <>
       <Section n="01" label="TRIER PAR">
         <div className="flex flex-wrap gap-1.5">
           {(Object.keys(SORT_LABELS) as Sort[]).map((s) => (
@@ -460,12 +464,26 @@ export function FilterControl({
   );
 
   if (bare) {
-    return <div className="overflow-hidden rounded-lg border border-[#d8d5e6] bg-white">{body}</div>;
+    /* Colonne de bureau : le panneau ne dépasse jamais la hauteur visible
+       (86px de barre de navigation collante + 16px de marge basse), et ce
+       sont ses rubriques qui défilent à l'intérieur. Sans ce plafond, un
+       panneau plus haut que l'écran restait figé par `sticky` avec son bas
+       hors cadre : les dernières rubriques n'étaient atteignables qu'en
+       arrivant au pied de la page. */
+    return (
+      <div className="flex max-h-[calc(100dvh-102px)] flex-col overflow-hidden rounded-lg border border-[#d8d5e6] bg-white">
+        {statusBar}
+        {/* min-h-0 : sans lui, un enfant flex refuse de se réduire sous la
+            hauteur de son contenu et le débordement repart sur la page. */}
+        <div className="lde-filters-scroll min-h-0 flex-1 overflow-y-auto">{sections}</div>
+      </div>
+    );
   }
 
   return (
     <WindowFrame title="FILTER_CONTROL.SYS" icon="🎛️" className="w-full">
-      {body}
+      {statusBar}
+      {sections}
     </WindowFrame>
   );
 }
