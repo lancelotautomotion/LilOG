@@ -42,7 +42,11 @@ export default function LoginPage() {
           avec son contenu, la barre fixe du haut est compensée par le
           padding. Le débordement horizontal des décors est déjà rogné par
           `body { overflow-x: hidden }`. */}
-      <main className="relative flex min-h-[calc(100svh-52px)] items-center justify-center px-4 pt-[clamp(76px,9vw,112px)] pb-[clamp(36px,6vw,72px)]">
+      {/* Le padding haut vaut la barre fixe (52px) plus la marge que
+          l'ajustement automatique de la fenêtre réserve de son côté :
+          les deux doivent s'accorder, sans quoi la fenêtre se réduit
+          pour une place que la page ne lui laisse pas. */}
+      <main className="relative flex min-h-[calc(100svh-52px)] items-center justify-center px-4 pt-[66px] pb-[14px]">
         {/* ── Papier peint du bureau ── */}
         <div aria-hidden className="absolute inset-0" style={{ background: WALLPAPER }} />
         <div

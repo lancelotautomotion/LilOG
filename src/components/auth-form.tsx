@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
@@ -18,6 +18,58 @@ import {
 type Mode = "login" | "register";
 
 const LS_REMEMBER_KEY = "lilog_login_remember";
+
+/* Marge laissée entre la fenêtre et les bords de la zone visible. */
+const FIT_GAP = 14;
+/* En dessous, on préfère laisser défiler plutôt que rendre le texte
+   illisible — un écran de moins de ~380px utiles reste l'exception. */
+const FIT_MIN = 0.62;
+
+/**
+ * Met la fenêtre à l'échelle pour qu'elle tienne en entier sous la barre
+ * de navigation, sans défilement. Le facteur ne descend jamais au-dessus
+ * de 1 : sur un grand écran, rien n'est touché.
+ *
+ * La mesure porte sur la hauteur de mise en page (`offsetHeight`), que la
+ * transformation ne modifie pas — pas de boucle entre l'échelle et la
+ * mesure. La hauteur du conteneur est en revanche corrigée à la main,
+ * sinon la page réserverait la place de la fenêtre non réduite et
+ * redeviendrait défilante pour rien.
+ */
+function useFitToViewport() {
+  const winRef = useRef<HTMLDivElement>(null);
+  const [{ scale, height }, setFit] = useState({ scale: 1, height: 0 });
+
+  useEffect(() => {
+    const win = winRef.current;
+    if (!win) return;
+
+    const measure = () => {
+      const navH = document.querySelector("nav")?.getBoundingClientRect().height ?? 0;
+      const avail = window.innerHeight - navH - FIT_GAP * 2;
+      const natural = win.offsetHeight;
+      if (!natural) return;
+      const next = Math.max(FIT_MIN, Math.min(1, avail / natural));
+      setFit(prev =>
+        Math.abs(prev.scale - next) < 0.005 && prev.height === natural
+          ? prev
+          : { scale: next, height: natural },
+      );
+    };
+
+    /* ResizeObserver déclenche lui-même une première mesure au moment
+       d'observer : pas de setState synchrone dans le corps de l'effet. */
+    const ro = new ResizeObserver(measure);
+    ro.observe(win);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  return { winRef, scale, height };
+}
 
 /* Biseaux Windows : relief sortant (fenêtre, boutons, onglet actif),
    relief rentrant (cadre photo, zones encastrées). */
@@ -47,6 +99,8 @@ export function AuthForm() {
   const [shaded, setShaded] = useState(false);
   const [maximized, setMaximized] = useState(false);
   const [wizz, setWizz] = useState(false);
+
+  const { winRef, scale, height } = useFitToViewport();
 
   const avatar = useStored(LS_AVATAR_KEY);
   const storedStatus = useStored(LS_STATUS_KEY);
@@ -105,11 +159,19 @@ export function AuthForm() {
 
   return (
     <div
+      /* Conteneur : il ne porte que la largeur et la hauteur réduite.
+         La mise à l'échelle est sur l'enfant, pour que la mesure de
+         `offsetHeight` reste celle de la fenêtre à taille réelle. */
       className={
         "relative w-full transition-[max-width] duration-300 " +
-        (maximized ? "max-w-[780px]" : "max-w-[560px]") +
-        (wizz ? " login-wizz" : "")
+        (maximized ? "max-w-[780px]" : "max-w-[560px]")
       }
+      style={scale < 1 && height ? { height: Math.round(height * scale) } : undefined}
+    >
+    <div
+      ref={winRef}
+      className={"relative w-full origin-top" + (wizz ? " login-wizz" : "")}
+      style={scale < 1 ? { transform: `scale(${scale})` } : undefined}
       onAnimationEnd={e => { if (e.target === e.currentTarget) setWizz(false); }}
     >
       {STICKERS.map(s => (
@@ -127,7 +189,7 @@ export function AuthForm() {
 
         {/* ── Barre de titre ── */}
         <div
-          className="flex items-center gap-2 px-3 py-2 select-none"
+          className="flex items-center gap-2 px-3 py-1.5 select-none"
           style={{ backgroundImage: "var(--y2k-titlebar)" }}
         >
           <span className="flex-1 truncate text-[0.68rem] font-bold tracking-[0.08em] text-white sm:text-[0.8rem] drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">
@@ -141,11 +203,11 @@ export function AuthForm() {
         </div>
 
         {/* ── Barre de menus ── */}
-        <div className="flex border-b border-gray-400 bg-[#ece9d8] px-1.5 py-0.5">
+        <div className="flex border-b border-gray-400 bg-[#ece9d8] px-1.5">
           {["Fichier", "Contacts", "Aide"].map(item => (
             <span
               key={item}
-              className="cursor-default rounded px-3 py-1 text-[0.72rem] uppercase tracking-[0.06em] text-[#3d3550] hover:bg-[#7147d4] hover:text-white"
+              className="cursor-default rounded px-3 py-0.5 text-[0.72rem] uppercase tracking-[0.06em] text-[#3d3550] hover:bg-[#7147d4] hover:text-white"
             >
               {item}
             </span>
@@ -156,19 +218,19 @@ export function AuthForm() {
         <div className={shaded ? "hidden" : "block"}>
 
           {/* ── Bloc avatar + statut ── */}
-          <div className="flex items-center gap-3 border-b border-gray-400 bg-gradient-to-b from-[#f6f2ff] to-[#e4ddf7] p-4">
+          <div className="flex items-center gap-3 border-b border-gray-400 bg-gradient-to-b from-[#f6f2ff] to-[#e4ddf7] p-2.5">
             <button
               type="button"
               onClick={cycleAvatar}
               title="Changer d'avatar"
               className={`shrink-0 rounded-md bg-white p-1 shadow-inner ${BEVEL_IN}`}
             >
-              <span className="relative block h-20 w-20 overflow-hidden rounded-sm">
+              <span className="relative block h-14 w-14 overflow-hidden rounded-sm">
                 <Image
                   src={avatarSrc}
                   alt="Avatar"
                   fill
-                  sizes="80px"
+                  sizes="56px"
                   className="object-cover"
                   unoptimized
                 />
@@ -180,12 +242,12 @@ export function AuthForm() {
                 Invitée_LilOG <span className="hidden text-[0.7rem] font-normal text-[#6B7280] sm:inline">(clique la photo ✎)</span>
               </p>
 
-              <div className="relative mt-1.5">
+              <div className="relative mt-1">
                 <select
                   aria-label="Statut"
                   value={statusId}
                   onChange={e => writeStored(LS_STATUS_KEY, e.target.value)}
-                  className={`w-full cursor-pointer appearance-none rounded-md bg-white py-2 pl-2.5 pr-8 text-[0.66rem] tracking-[0.04em] sm:text-[0.74rem] text-[#2b2340] shadow-inner outline-none ${BEVEL_IN}`}
+                  className={`w-full cursor-pointer appearance-none rounded-md bg-white py-1.5 pl-2.5 pr-8 text-[0.66rem] tracking-[0.04em] sm:text-[0.74rem] text-[#2b2340] shadow-inner outline-none ${BEVEL_IN}`}
                 >
                   {MSN_STATUSES.map(s => (
                     <option key={s.id} value={s.id}>{s.emoji}  {s.loginLabel}</option>
@@ -197,7 +259,7 @@ export function AuthForm() {
           </div>
 
           {/* ── Onglets ── */}
-          <div className="flex gap-1 px-2 pt-2.5">
+          <div className="flex gap-1 px-2 pt-2">
             <Tab active={mode === "login"} onClick={() => { setMode("login"); setError(null); }}>
               🔑 Connexion
             </Tab>
@@ -207,10 +269,10 @@ export function AuthForm() {
           </div>
 
           {/* ── Panneau ── */}
-          <div className="mx-2 mb-2 rounded-b-lg rounded-tr-lg border border-gray-400 bg-[#f7f6fb] px-4 py-5 shadow-inner">
-            <form className="flex flex-col gap-3" onSubmit={handleCredentials}>
+          <div className="mx-2 mb-2 rounded-b-lg rounded-tr-lg border border-gray-400 bg-[#f7f6fb] px-4 py-3 shadow-inner">
+            <form className="flex flex-col gap-2" onSubmit={handleCredentials}>
               {mode === "register" && (
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-2 sm:grid-cols-2">
                   <Field label="PRENOM.TXT">
                     <input
                       className={INPUT}
@@ -286,7 +348,7 @@ export function AuthForm() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="mt-1 w-full rounded-xl border-2 border-t-[#ffa6e4] border-l-[#ffa6e4] border-r-[#5b1a9e] border-b-[#5b1a9e] bg-gradient-to-b from-[#ff5cc8] via-[#d63fdd] to-[#7b2ff7] px-4 py-4 text-[0.8rem] font-bold uppercase tracking-[0.12em] text-white sm:text-[0.9rem] shadow-[0_4px_0_#4c1d95,0_10px_20px_rgba(76,29,149,0.35)] transition-[transform,box-shadow] active:translate-y-[4px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full rounded-xl border-2 border-t-[#ffa6e4] border-l-[#ffa6e4] border-r-[#5b1a9e] border-b-[#5b1a9e] bg-gradient-to-b from-[#ff5cc8] via-[#d63fdd] to-[#7b2ff7] px-4 py-3 text-[0.8rem] font-bold uppercase tracking-[0.12em] text-white sm:text-[0.9rem] shadow-[0_4px_0_#4c1d95,0_10px_20px_rgba(76,29,149,0.35)] transition-[transform,box-shadow] active:translate-y-[4px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isPending
                   ? "⏳ CHARGEMENT..."
@@ -297,7 +359,7 @@ export function AuthForm() {
             </form>
 
             {/* ── Séparateur ── */}
-            <div className="my-4 flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.14em] text-[#6B7280]">
+            <div className="my-2 flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.14em] text-[#6B7280]">
               <span className="h-px flex-1 bg-gray-300" />ou<span className="h-px flex-1 bg-gray-300" />
             </div>
 
@@ -305,7 +367,7 @@ export function AuthForm() {
             <button
               type="button"
               onClick={handleGoogle}
-              className={`flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-white to-[#e9e6f5] px-4 py-3.5 text-[0.72rem] font-bold uppercase tracking-[0.08em] text-[#2b2340] sm:text-[0.8rem] shadow-[0_3px_0_rgba(120,100,170,0.45)] transition-[transform,box-shadow] hover:from-white hover:to-[#f4f1ff] active:translate-y-[3px] active:shadow-none ${BEVEL_OUT}`}
+              className={`flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-white to-[#e9e6f5] px-4 py-2.5 text-[0.72rem] font-bold uppercase tracking-[0.08em] text-[#2b2340] sm:text-[0.8rem] shadow-[0_3px_0_rgba(120,100,170,0.45)] transition-[transform,box-shadow] hover:from-white hover:to-[#f4f1ff] active:translate-y-[3px] active:shadow-none ${BEVEL_OUT}`}
             >
               <GoogleIcon />
               Continuer avec Google
@@ -314,7 +376,7 @@ export function AuthForm() {
         </div>
 
         {/* ── Barre de statut ── */}
-        <div className="flex items-center gap-2 border-t border-gray-400 bg-[#d9d5c8] px-3 py-1.5">
+        <div className="flex items-center gap-2 border-t border-gray-400 bg-[#d9d5c8] px-3 py-1">
           <span className="login-led inline-block h-2 w-2 shrink-0 rounded-full bg-[#22c55e]" />
           <span className="min-w-0 flex-1 truncate text-[0.68rem] uppercase tracking-[0.06em] text-[#4b4536]">
             STATUS: {status}
@@ -330,17 +392,18 @@ export function AuthForm() {
         </div>
       </div>
     </div>
+    </div>
   );
 }
 
 /* Champ encastré + étiquette rétro */
 const INPUT =
-  "w-full rounded-xl border border-gray-400 bg-white p-3.5 text-base text-[#1E2430] shadow-inner outline-none transition-[border-color,box-shadow] placeholder:text-gray-400 focus:border-[#7147d4] focus:shadow-[inset_0_1px_3px_rgba(0,0,0,0.12),0_0_0_3px_rgba(255,63,176,0.18)]";
+  "w-full rounded-xl border border-gray-400 bg-white px-3.5 py-2.5 text-base text-[#1E2430] shadow-inner outline-none transition-[border-color,box-shadow] placeholder:text-gray-400 focus:border-[#7147d4] focus:shadow-[inset_0_1px_3px_rgba(0,0,0,0.12),0_0_0_3px_rgba(255,63,176,0.18)]";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#5b3fa8]">
+      <span className="mb-0.5 block text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#5b3fa8]">
         {label}
       </span>
       {children}
@@ -354,7 +417,7 @@ function Tab({ active, onClick, children }: { active: boolean; onClick: () => vo
       type="button"
       onClick={onClick}
       className={
-        "relative -mb-px rounded-t-lg border border-b-0 whitespace-nowrap border-gray-400 px-2.5 py-2 text-[0.62rem] uppercase tracking-[0.08em] transition-colors sm:px-3.5 sm:text-[0.74rem] " +
+        "relative -mb-px rounded-t-lg border border-b-0 whitespace-nowrap border-gray-400 px-2.5 py-1.5 text-[0.62rem] uppercase tracking-[0.08em] transition-colors sm:px-3.5 sm:text-[0.74rem] " +
         (active
           ? "z-10 bg-[#f7f6fb] font-bold text-[#7b2ff7]"
           : "bg-[#ddd9ea] text-[#6B7280] hover:bg-[#e9e6f5] hover:text-[#2b2340]")

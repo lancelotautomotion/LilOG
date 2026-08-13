@@ -2267,15 +2267,18 @@ a { color: inherit; text-decoration: none; }
 
 .login-mono { font-family: var(--mono); }
 
-/* Wizz : la fenêtre tremble, comme le buzzer MSN. */
+/* Wizz : la fenêtre tremble, comme le buzzer MSN.
+   Animé via `translate`/`rotate` et non `transform` : la fenêtre porte
+   déjà un `transform: scale()` quand l'écran est trop court pour elle,
+   et une animation sur `transform` l'écraserait le temps du tremblement. */
 @keyframes login-wizz {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  10% { transform: translate(-9px, 5px) rotate(-1deg); }
-  25% { transform: translate(8px, -6px) rotate(1deg); }
-  40% { transform: translate(-7px, -4px) rotate(-0.8deg); }
-  55% { transform: translate(6px, 5px) rotate(0.8deg); }
-  70% { transform: translate(-4px, 2px) rotate(-0.4deg); }
-  85% { transform: translate(2px, -2px) rotate(0.2deg); }
+  0%, 100% { translate: 0 0;      rotate: 0deg;    }
+  10%      { translate: -9px 5px; rotate: -1deg;   }
+  25%      { translate: 8px -6px; rotate: 1deg;    }
+  40%      { translate: -7px -4px; rotate: -0.8deg; }
+  55%      { translate: 6px 5px;  rotate: 0.8deg;  }
+  70%      { translate: -4px 2px; rotate: -0.4deg; }
+  85%      { translate: 2px -2px; rotate: 0.2deg;  }
 }
 .login-wizz { animation: login-wizz 600ms ease-in-out; }
 
