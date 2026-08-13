@@ -158,10 +158,10 @@ export function ProductWindow({
 
   const price = (
     <span
-      className={`${MONO} rounded bg-black px-2 py-1 text-[0.62rem] leading-none font-bold whitespace-nowrap text-green-400`}
+      className={`${MONO} rounded bg-black px-2 py-1.5 text-[0.78rem] leading-none font-bold whitespace-nowrap text-green-400`}
       style={{ textShadow: "0 0 8px rgba(74,222,128,.55)" }}
     >
-      {product.was && <s className="mr-1 text-green-400/45">€{product.was}</s>}€{product.price}
+      {product.was && <s className="mr-1 text-[0.62rem] text-green-400/45">€{product.was}</s>}€{product.price}
     </span>
   );
 
@@ -172,7 +172,7 @@ export function ProductWindow({
      est coupée : la vignette fait 170px de large en mobile. */
   const sizeChip = product.sizes.length > 0 && (
     <span
-      className={`${MONO} rounded border border-[#c6c2d8] px-1.5 py-1 text-[0.5rem] leading-none font-bold whitespace-nowrap text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
+      className={`${MONO} rounded border border-[#c6c2d8] px-2 py-1.5 text-[0.64rem] leading-none font-bold whitespace-nowrap text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
       title={`Taille ${product.sizes.join(" / ")}`}
     >
       📏 {product.sizes.slice(0, 3).join(" / ")}
@@ -280,8 +280,10 @@ export function ProductWindow({
       {/* Barre d'action : sur une carte de deux colonnes en mobile, la place
           est comptée — le pied passe à la ligne plutôt que de déborder. */}
       <div className="mt-auto flex flex-wrap items-center justify-between gap-1.5 border-t border-[#d8d5e6] bg-[#e9e7f2] px-2 py-2">
-        {/* Prix et taille restent solidaires quand le pied passe à la ligne. */}
-        <span className="flex items-center gap-1.5">
+        {/* Prix et taille restent groupés quand le pied passe à la ligne, mais
+            peuvent eux-mêmes se séparer : un prix barré suivi d'une pièce en
+            quatre tailles déborderait sinon de la vignette en mobile. */}
+        <span className="flex min-w-0 flex-wrap items-center gap-1.5">
           {price}
           {sizeChip}
         </span>
