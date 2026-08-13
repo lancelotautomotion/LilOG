@@ -1,11 +1,11 @@
 import { AuthForm } from "@/components/auth-form";
-import Link from "next/link";
+import { PageShell } from "@/components/page-shell";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Connexion — Lil'OG" };
 
-/* Étoiles métalliques du papier peint. Positions figées : pas de
-   Math.random au rendu, donc pas de mismatch d'hydratation. */
+/* Étoiles métalliques du fond. Positions figées : pas de Math.random
+   au rendu, donc pas de mismatch d'hydratation. */
 const STARS = [
   { top: "7%",  left: "9%",  size: 30, delay: "0s"   },
   { top: "17%", left: "79%", size: 22, delay: "1.2s" },
@@ -35,43 +35,44 @@ const GRAPH_PAPER =
 
 export default function LoginPage() {
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden p-4">
-      {/* ── Papier peint du bureau ── */}
-      <div aria-hidden className="absolute inset-0" style={{ background: WALLPAPER }} />
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{ backgroundImage: GRAPH_PAPER, backgroundSize: "96px 96px, 96px 96px, 16px 16px, 16px 16px" }}
-      />
-      <div aria-hidden className="absolute inset-0">
-        {STARS.map((star, i) => (
-          <span
-            key={i}
-            className="login-star absolute select-none text-[#b79cf0]"
-            style={{
-              top: star.top,
-              left: star.left,
-              fontSize: `${star.size}px`,
-              animationDelay: star.delay,
-              textShadow: "0 1px 2px rgba(255,255,255,0.9)",
-            }}
-          >
-            ✦
-          </span>
-        ))}
-      </div>
+    <PageShell>
+      {/* Pas d'`overflow-hidden` ici : l'onglet « Créer un compte » rend la
+          fenêtre plus haute que l'écran, et le rognage coupait alors le bas
+          du bloc sans possibilité de le faire défiler. Le <main> grandit
+          avec son contenu, la barre fixe du haut est compensée par le
+          padding. Le débordement horizontal des décors est déjà rogné par
+          `body { overflow-x: hidden }`. */}
+      <main className="relative flex min-h-[calc(100svh-52px)] items-center justify-center px-4 pt-[clamp(76px,9vw,112px)] pb-[clamp(36px,6vw,72px)]">
+        {/* ── Papier peint du bureau ── */}
+        <div aria-hidden className="absolute inset-0" style={{ background: WALLPAPER }} />
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{ backgroundImage: GRAPH_PAPER, backgroundSize: "96px 96px, 96px 96px, 16px 16px, 16px 16px" }}
+        />
+        <div aria-hidden className="absolute inset-0">
+          {STARS.map((star, i) => (
+            <span
+              key={i}
+              className="login-star absolute select-none text-[#b79cf0]"
+              style={{
+                top: star.top,
+                left: star.left,
+                fontSize: `${star.size}px`,
+                animationDelay: star.delay,
+                textShadow: "0 1px 2px rgba(255,255,255,0.9)",
+              }}
+            >
+              ✦
+            </span>
+          ))}
+        </div>
 
-      {/* ── Contenu ── */}
-      <Link
-        href="/"
-        className="login-mono absolute left-4 top-4 z-10 text-[0.74rem] uppercase tracking-[0.1em] text-[#5b3fa8] opacity-70 transition-opacity hover:opacity-100"
-      >
-        ← Retour
-      </Link>
-
-      <div className="relative z-10 flex w-full justify-center">
-        <AuthForm />
-      </div>
-    </main>
+        {/* ── Fenêtre (les strass sont collés dessus, dans AuthForm) ── */}
+        <div className="relative z-10 flex w-full justify-center">
+          <AuthForm />
+        </div>
+      </main>
+    </PageShell>
   );
 }
