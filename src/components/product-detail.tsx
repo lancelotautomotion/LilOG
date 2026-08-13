@@ -126,12 +126,15 @@ function StatCell({ icon, label, value }: { icon: string; label: string; value: 
     <div
       className={`flex min-w-0 flex-1 items-center gap-2 rounded-md border border-[#c6c2d8] bg-[#f7f6fc] px-2.5 py-2 ${BEVEL_IN}`}
     >
-      <span aria-hidden className="shrink-0 text-[0.9rem] leading-none">{icon}</span>
+      <span aria-hidden className="shrink-0 text-[1.05rem] leading-none">{icon}</span>
       <span className="min-w-0">
-        <span className={`${MONO} block truncate text-[0.46rem] font-bold tracking-[0.1em] text-[#6B7280] uppercase`}>
+        {/* Mêmes tailles que le bloc de description des catalogues :
+            0.58rem pour l'étiquette (comme les #tags), 0.76rem pour la
+            valeur (comme le paragraphe). */}
+        <span className={`${MONO} block truncate text-[0.58rem] font-bold tracking-[0.1em] text-[#6B7280] uppercase`}>
           {label}
         </span>
-        <span className={`${MONO} block truncate text-[0.62rem] font-bold text-[#1E2430] uppercase`}>{value}</span>
+        <span className={`${MONO} block truncate text-[0.76rem] font-bold text-[#1E2430] uppercase`}>{value}</span>
       </span>
     </div>
   );
@@ -193,7 +196,7 @@ function SystemLogs({
             type="button"
             onClick={() => setActive(i)}
             aria-pressed={i === active}
-            className={`${MONO} flex items-center gap-1 rounded-t-md border border-b-0 px-2 py-1.5 text-[0.46rem] font-bold tracking-[0.02em] uppercase transition sm:text-[0.5rem] ${
+            className={`${MONO} flex items-center gap-1 rounded-t-md border border-b-0 px-2.5 py-1.5 text-[0.52rem] font-bold tracking-[0.02em] uppercase transition sm:text-[0.58rem] ${
               i === active
                 ? "relative z-[1] -mb-px border-[#c6c2d8] bg-white text-[#1E2430]"
                 : "border-transparent bg-[#dcdaea] text-[#6B7280] hover:bg-[#eceafa]"
@@ -219,7 +222,9 @@ function SystemLogs({
           onScroll={measure}
           className={`lpi-scroll h-[clamp(220px,38vh,300px)] overflow-y-auto rounded-md rounded-tl-none border border-[#c6c2d8] bg-white p-3.5 lg:h-auto lg:min-h-[200px] lg:flex-1 ${BEVEL_IN}`}
         >
-          <div className={`${MONO} lpi-desc text-[0.64rem] leading-[1.75] text-[#3b3550]`}>{shown.body}</div>
+          {/* Même corps de texte que le bloc de description des catalogues
+              (0.76rem / 1.85) : les deux se lisent de la même façon. */}
+          <div className={`${MONO} lpi-desc text-[0.76rem] leading-[1.85] text-[#3b3550]`}>{shown.body}</div>
         </div>
 
         {more && (
@@ -506,7 +511,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                 {/* Prix et caractéristiques sur une même rangée : l'afficheur
                     garde sa largeur naturelle (shrink-0), les trois pastilles
                     se partagent le reste. `items-stretch` les met à la hauteur
-                    de l'afficheur. Sous 320px de place pour le groupe — colonne
+                    de l'afficheur. Sous 360px de place pour le groupe — colonne
                     étroite ou affichage en une colonne — il repasse dessous. */}
                 <div className="mt-4 flex flex-wrap items-stretch gap-2">
                   {/* Écran LED — un vrai afficheur d'appareil : boîtier noir
@@ -552,7 +557,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   </div>
 
                   {/* Fiche de caractéristiques RPG */}
-                  <div className="flex min-w-[320px] flex-1 flex-wrap items-stretch gap-2">
+                  <div className="flex min-w-[360px] flex-1 flex-wrap items-stretch gap-2">
                     <StatCell icon="📏" label="Taille" value={size} />
                     <StatCell icon="💎" label="État" value={product.etat ?? "Non renseigné"} />
                     {dept && <StatCell icon="🗂️" label="Rayon" value={dept} />}
