@@ -45,7 +45,7 @@ const STYLE_PHRASES = [
   "SUPER CUTE",
 ] as const;
 
-/* Strass de la maison — mêmes pastilles et mêmes teintes que /faq,
+/* Strass de la maison : mêmes pastilles et mêmes teintes que /faq,
  * /contact, /login et le bas de page. Elles décorent l'arête centrale
  * de part et d'autre de la bulle STYLE_ME. */
 const STRASS_STAR: [string, string, string] = ["#FFB3D6", "#F0509A", "#B7175C"];
@@ -88,7 +88,7 @@ function priceOf(item: ClosetItem, selected: ReadonlySet<string>): number {
 }
 
 /**
- * Narrow a pool to the shopper's sizes — an empty selection means "toutes".
+ * Narrow a pool to the shopper's sizes: an empty selection means "toutes".
  * `strict` columns (Hauts / Bas) show nothing when nothing fits; the optional
  * modules fall back to the full pool rather than going dark, since a bag or a
  * collier has no morphology to speak of.
@@ -111,7 +111,7 @@ function toggleIn(set: ReadonlySet<string>, value: string): Set<string> {
   return next;
 }
 
-/** "M, L" — for the toolbar tag and the empty-rack message. */
+/** "M, L": for the toolbar tag and the empty-rack message. */
 function describe(selected: ReadonlySet<string>): string {
   return selected.size === 0 ? "toutes" : [...selected].join(", ");
 }
@@ -164,7 +164,7 @@ function useReel() {
 }
 
 /* ================================================================== *
- * ÉTAPE 1 — SYSTEM_LOGIN.EXE
+ * ÉTAPE 1 : SYSTEM_LOGIN.EXE
  * ================================================================== */
 
 /** One multi-select row of size chips, plus a "toutes" reset. */
@@ -229,7 +229,7 @@ function SizeGate({
   onLaunch,
 }: {
   sizes: string[];
-  /** Empty when the catalogue holds no shoes — the row is then hidden. */
+  /** Empty when the catalogue holds no shoes: the row is then hidden. */
   shoeSizes: string[];
   /** true when the catalogue carried no sizing and we fell back to a default. */
   inferred: boolean;
@@ -316,7 +316,7 @@ function SizeGate({
 }
 
 /* ================================================================== *
- * ÉTAPE 3 — Les deux baies plein cadre
+ * ÉTAPE 3 : Les deux baies plein cadre
  * ================================================================== */
 
 function Bay({
@@ -337,9 +337,9 @@ function Bay({
   selected: ReadonlySet<string>;
   /** Bumped by STYLE_ME so both bays spin together. */
   spinSignal: number;
-  /** Grid column of .dm-screen — 1 for HAUTS, 3 for BAS. */
+  /** Grid column of .dm-screen : 1 for HAUTS, 3 for BAS. */
   col: 1 | 3;
-  /** This piece alone is in the wishlist — unrelated to the full-look save. */
+  /** This piece alone is in the wishlist: unrelated to the full-look save. */
   saved: boolean;
   onToggleSave: () => void;
   onNext: () => void;
@@ -403,8 +403,8 @@ function Bay({
       </div>
 
       <div className="dm-bay-plate" style={cell}>
-        <span className="dm-plate-name">{item ? item.name : "—"}</span>
-        <span className="dm-plate-price">{item ? euros(priceOf(item, selected)) : "—"}</span>
+        <span className="dm-plate-name">{item ? item.name : "···"}</span>
+        <span className="dm-plate-price">{item ? euros(priceOf(item, selected)) : "···"}</span>
       </div>
 
       <div className="dm-bay-actions" style={cell}>
@@ -442,7 +442,7 @@ function Bay({
 }
 
 /* ================================================================== *
- * ÉTAPE 4 — Le terminal .EXE, encastré dans la console
+ * ÉTAPE 4 : Le terminal .EXE, encastré dans la console
  * ================================================================== */
 
 function ModuleTerminal({
@@ -564,8 +564,8 @@ function ModuleWindow({
   onNext: () => void;
   onClose: () => void;
 }) {
-  // The window only ever mounts after a click, so `window` is safe here —
-  // clamp the cascade so a narrow desktop never opens a module off-screen.
+  // The window only ever mounts after a click, so `window` is safe here.
+  // Clamp the cascade so a narrow desktop never opens a module off-screen.
   const [pos, setPos] = useState(() => {
     if (typeof window === "undefined") return mod.offset;
     const maxX = Math.max(90, window.innerWidth / 2 - 130);
@@ -590,7 +590,7 @@ function ModuleWindow({
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     onFocus();
     // The × lives inside the drag handle. Capturing the pointer here would
-    // retarget the whole gesture — including the click — onto the title bar,
+    // retarget the whole gesture, including the click, onto the title bar,
     // so the close button would never fire.
     if ((e.target as HTMLElement).closest("button, a")) return;
     drag.current = { sx: e.clientX, sy: e.clientY, ox: pos.x, oy: pos.y };
@@ -689,7 +689,7 @@ function ModuleWindow({
 }
 
 /* ================================================================== *
- * ÉTAPE 5 — Le scanner de la console
+ * ÉTAPE 5 : Le scanner de la console
  * ================================================================== */
 
 function MatchScanner({ keys }: { keys: string[] }) {
@@ -735,7 +735,7 @@ function MatchScanner({ keys }: { keys: string[] }) {
 }
 
 /* ================================================================== *
- * ÉTAPE 2 — VIRTUAL_CLOSET.EXE
+ * ÉTAPE 2 : VIRTUAL_CLOSET.EXE
  * ================================================================== */
 
 export function DressingMachine({ items }: { items: ClosetItem[] }) {
@@ -776,7 +776,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
     return acc;
   }, [items]);
 
-  // A single size across the whole catalogue isn't a choice — fall back to the
+  // A single size across the whole catalogue isn't a choice: fall back to the
   // standard range so the gate always has something to pick from. The machine
   // still works: pieces with no size data match every morphology.
   const gateOptions = useMemo(() => {
@@ -845,7 +845,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
   const lookKey = lookKeys.join("|");
   // Le bouton du bas ne réagit qu'à une sauvegarde explicite du look complet :
   // cocher les cœurs un par un ne doit pas l'allumer. On mémorise la signature
-  // du look enregistré, et on vérifie que ses pièces y sont toujours — changer
+  // du look enregistré, et on vérifie que ses pièces y sont toujours, changer
   // une pièce ou décocher son cœur éteint donc le témoin.
   const [savedLookKey, setSavedLookKey] = useState<string | null>(null);
   const lookSaved =
@@ -865,8 +865,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
     });
     setStatus(
       wasSaved
-        ? `${piece.name.toUpperCase()} — RETIRÉ DE LA WISHLIST.`
-        : `${piece.name.toUpperCase()} — AJOUTÉ À LA WISHLIST.`,
+        ? `${piece.name.toUpperCase()} : RETIRÉ DE LA WISHLIST.`
+        : `${piece.name.toUpperCase()} : AJOUTÉ À LA WISHLIST.`,
     );
   };
 
@@ -892,7 +892,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
         }
         return next;
       });
-      setStatus("STYLE_ME.EXE — NOUVEAU LOOK TIRÉ.");
+      setStatus("STYLE_ME.EXE : NOUVEAU LOOK TIRÉ.");
     }, SPIN_SWAP);
   }, [later, shuffle, sizes, openSlots, pools]);
 
@@ -932,7 +932,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
     // terminal : celle-ci est à hauteur fixe, la console ne grandit donc plus
     // à chaque module lancé.
     const empty = (counts[mod.slot] ?? 0) === 0;
-    setStatus(`${mod.exe} — ${empty ? "[ERREUR] RAYON VIDE." : "[OK]"}`);
+    setStatus(`${mod.exe} : ${empty ? "[ERREUR] RAYON VIDE." : "[OK]"}`);
     if (empty) return;
 
     later(() => {
@@ -958,7 +958,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
       });
     }
     setSavedLookKey(lookKey);
-    setStatus(`LOOK SAUVEGARDÉ — ${look.length} PIÈCE${look.length > 1 ? "S" : ""}.`);
+    setStatus(`LOOK SAUVEGARDÉ : ${look.length} PIÈCE${look.length > 1 ? "S" : ""}.`);
   };
 
   /** Tout le look au panier, puis droit au panier pour finaliser l'achat. */
@@ -976,7 +976,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
     }
 
     setCopping(true);
-    setStatus(`BUY_THE_LOOK.EXE — ${lines.length} PIÈCE${lines.length > 1 ? "S" : ""} AU PANIER…`);
+    setStatus(`BUY_THE_LOOK.EXE : ${lines.length} PIÈCE${lines.length > 1 ? "S" : ""} AU PANIER…`);
     try {
       // Une seule mutation pour tout le look, sinon les appels concurrents se
       // disputent le cookie de panier (cf. addLinesToCartAction).

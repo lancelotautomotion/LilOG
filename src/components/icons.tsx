@@ -52,7 +52,7 @@ export const Icon = {
   ),
   /* Cœur symétrique : le creux entre les lobes et la pointe sont tous deux
      sur l'axe x=12, et les deux moitiés sont des courbes miroir. L'ancien
-     tracé plaçait le creux à x=10 pour une pointe à x=12 — le lobe gauche
+     tracé plaçait le creux à x=10 pour une pointe à x=12 : le lobe gauche
      était plus large que le droit, ce qui donnait un cœur de travers. */
   heart: (p: SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" {...p}>
@@ -83,7 +83,7 @@ export const Icon = {
       <path d="m6 9 6 6 6-6" />
     </svg>
   ),
-  /* Dossier Win95, jaune fixe — indépendant du rendu emoji de la plateforme.
+  /* Dossier Win95, jaune fixe : indépendant du rendu emoji de la plateforme.
      C'est LE dossier du site : menu latéral, explorateur de l'accueil,
      raccourcis de /contact, arborescences de /faq et des pages légales
      utilisent tous celui-ci, jamais un 📁 ou un dessin maison. */
@@ -98,7 +98,7 @@ export const Icon = {
       />
     </svg>
   ),
-  // Sa version ouverte, même trait et même jaune — pour les états dépliés.
+  // Sa version ouverte, même trait et même jaune, pour les états dépliés.
   folderOpen: (p: SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 20 16" width="16" height="14" {...p}>
       <path

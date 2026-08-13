@@ -1,5 +1,5 @@
 /* ============================================================
-   POST /api/contact — transmission du formulaire SEND_MESSAGE.SYS
+   POST /api/contact : transmission du formulaire SEND_MESSAGE.SYS
    ------------------------------------------------------------
    Le message part par l'API HTTP de Resend (https://resend.com),
    appelée au fetch : pas de dépendance npm à installer, donc rien
@@ -7,10 +7,10 @@
 
    Variables d'environnement (dashboard Vercel → Settings →
    Environment Variables) :
-     · RESEND_API_KEY     — obligatoire, la clé « re_… » du compte.
-     · CONTACT_TO_EMAIL   — facultatif, boîte de réception.
+     · RESEND_API_KEY     : obligatoire, la clé « re_… » du compte.
+     · CONTACT_TO_EMAIL   : facultatif, boîte de réception.
                             Défaut : lilog.shop@gmail.com
-     · CONTACT_FROM_EMAIL — facultatif, expéditeur. Défaut :
+     · CONTACT_FROM_EMAIL : facultatif, expéditeur. Défaut :
                             onboarding@resend.dev, le domaine de
                             test de Resend, qui n'écrit qu'à
                             l'adresse du titulaire du compte. Dès
@@ -127,7 +127,7 @@ export async function POST(request: Request) {
         /* Répondre depuis Gmail écrit directement à la personne, sans
            avoir à recopier son adresse depuis le corps du message. */
         reply_to: email,
-        subject: `[Lil'OG] ${label} — ${name}`,
+        subject: `[Lil'OG] ${label} · ${name}`,
         text,
         html,
       }),

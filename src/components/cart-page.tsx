@@ -121,7 +121,7 @@ export function CartPage() {
                       <Link href={`/products/${item.handle}`} className="oc-img-wrap">
                         <SmartImg src={item.image} alt={item.title} />
                       </Link>
-                      {/* Scan beam — monté uniquement pendant la phase filling, en sync avec la barre */}
+                      {/* Scan beam : monté uniquement pendant la phase filling, en sync avec la barre */}
                       {scanPhase === 'filling' && (
                         <div key={current} className="oc-scan-overlay" aria-hidden="true" />
                       )}
@@ -191,7 +191,7 @@ export function CartPage() {
           <div className="oc-summary">
             <div className="oc-win95-outer oc-summary-win">
               <div className="oc-win95-titlebar">
-                <span className="oc-win95-title">MON PANIER — {total} article{total !== 1 ? "s" : ""}</span>
+                <span className="oc-win95-title">MON PANIER · {total} article{total !== 1 ? "s" : ""}</span>
                 <div className="account-win95-chrome">
                   <span>_</span>
                   <span>□</span>
@@ -254,7 +254,7 @@ export function CartPage() {
       {showHeart && (
         <div className="ch-overlay" aria-live="polite">
           <div className="ch-scene">
-            {/* Left wing — marshmallow Y2K (mirror of right) */}
+            {/* Left wing : marshmallow Y2K (mirror of right) */}
             <svg className="ch-wing ch-wing-l" viewBox="0 0 440 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <defs>
                 <radialGradient id="wLG" cx="350" cy="80" r="310" gradientUnits="userSpaceOnUse">
@@ -305,7 +305,7 @@ export function CartPage() {
               </g>
             </svg>
 
-            {/* Heart — glossy Y2K */}
+            {/* Heart : glossy Y2K */}
             <div className="ch-heart">
               <svg viewBox="0 0 200 188" className="ch-heart-svg" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -323,7 +323,7 @@ export function CartPage() {
                       fill="url(#chHG)" stroke="#A8166A" strokeWidth="4" strokeLinejoin="round"/>
                 <path d="M100,174 C54,143 8,112 8,62 C8,31 32,7 62,7 C77,7 91,15 100,27 C109,15 123,7 138,7 C168,7 192,31 192,62 C192,112 146,143 100,174Z"
                       fill="url(#chGlow)"/>
-                {/* Main Y2K gloss bubble — upper right */}
+                {/* Main Y2K gloss bubble : upper right */}
                 <ellipse cx="134" cy="52" rx="30" ry="26" fill="rgba(255,255,255,0.88)" transform="rotate(-12 134 52)"/>
                 {/* Secondary shimmer dot */}
                 <ellipse cx="150" cy="76" rx="11" ry="9"  fill="rgba(255,255,255,0.55)" transform="rotate(-8 150 76)"/>
@@ -331,7 +331,7 @@ export function CartPage() {
               <p className="ch-heart-msg">{heartMsg}</p>
             </div>
 
-            {/* Right wing — marshmallow Y2K */}
+            {/* Right wing : marshmallow Y2K */}
             <svg className="ch-wing ch-wing-r" viewBox="0 0 440 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <defs>
                 <radialGradient id="wRG" cx="90" cy="80" r="310" gradientUnits="userSpaceOnUse">

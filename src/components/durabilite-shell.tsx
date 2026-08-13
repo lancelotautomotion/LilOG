@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   RESCUE_MODE_2000.EXE — /durabilite
+   RESCUE_MODE_2000.EXE : /durabilite
    ------------------------------------------------------------
    Toute la page vit dans une seule fenêtre applicative Y2K /
    Windows 95, direction "chunky plastic", strictement alignée
@@ -19,7 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import { PageShell } from "@/components/page-shell";
 import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
 
-/* ---- Jetons "chunky plastic" — identiques à /contact et DocCenter ---- */
+/* ---- Jetons "chunky plastic" : identiques à /contact et DocCenter ---- */
 const PLASTIC =
   "shadow-[inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_5px_rgba(0,0,0,0.25),0_2px_3px_rgba(30,36,48,0.18)]";
 const PLASTIC_PRESS =
@@ -196,18 +196,18 @@ function BootLine({ text, delay = 0 }: { text: string; delay?: number }) {
   );
 }
 
-/** Étiquette de module — donne l'impression que chaque section est un
+/** Étiquette de module : donne l'impression que chaque section est un
  *  fichier chargé par RESCUE_MODE_2000.EXE. */
 function SectionLabel({ n, file }: { n: string; file: string }) {
   return (
     <p className={`${MONO} mb-3 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#5b2fb8]`}>
-      <span style={{ color: PINK }}>▶</span> MODULE_{n} — {file}
+      <span style={{ color: PINK }}>▶</span> MODULE_{n} · {file}
     </p>
   );
 }
 
 /* ============================================================
-   SECTION 1 — VS MODE
+   SECTION 1 · VS MODE
    ============================================================ */
 
 type Stat = { value: string; label: string };
@@ -309,7 +309,7 @@ function VsMode() {
       <SectionLabel n="01" file="VS_MODE.BAT" />
       <div className="mb-5 text-center">
         <p className={`${LCD} text-[clamp(1.9rem,5.4vw,2.7rem)] uppercase leading-none tracking-[0.06em] text-[#2a1266]`}>
-          Round 1 — Fight!
+          Round 1 · Fight!
         </p>
         <p className={`${MONO} mt-1 text-[0.58rem] uppercase tracking-[0.24em] text-[#8b86a3]`}>
           Sélectionne ton camp
@@ -348,7 +348,7 @@ function VsMode() {
 }
 
 /* ============================================================
-   SECTION 2 — IMPACT_COUNTER.EXE
+   SECTION 2 · IMPACT_COUNTER.EXE
    ============================================================ */
 
 function CounterBox({
@@ -436,15 +436,15 @@ function ImpactCounters() {
 }
 
 /* ============================================================
-   SECTION 3 — RECYCLE_BIN.EXE
+   SECTION 3 · RECYCLE_BIN.EXE
    ============================================================ */
 
-/** Corbeille métallique dessinée en SVG — un glyphe emoji n'est pas garanti
+/** Corbeille métallique dessinée en SVG : un glyphe emoji n'est pas garanti
  *  centré dans sa boîte de caractère selon la police/plateforme du lecteur ;
  *  un viewBox local rend le centrage exact partout.
  *
  *  Volume plutôt qu'aplat : ouverture elliptique qui laisse voir l'intérieur,
- *  corps tronconique en métal brossé, couvercle soulevé de biais — la version
+ *  corps tronconique en métal brossé, couvercle soulevé de biais : la version
  *  précédente était un tracé plat vu de face, sans perspective, qui se lisait
  *  plus comme un seau que comme une poubelle. Le couvercle ôté raconte au
  *  passage la section : ce qui est dedans en ressort. */
@@ -581,7 +581,7 @@ function RecycleBin() {
                 On a juste refusé de jeter.
               </p>
               <p className={`${MONO} mb-3 text-[0.72rem] leading-[1.9] text-[#2b2b33]`}>
-                Taille basse, fits qui claquent, matières qui ont du répondant — tout ça existe déjà, planqué
+                Taille basse, fits qui claquent, matières qui ont du répondant : tout ça existe déjà, planqué
                 dans une penderie oubliée. On les retrouve. On les lave. On les remet en scène.
               </p>
               <p className={`${MONO} text-[0.72rem] leading-[1.9] text-[#2b2b33]`}>
@@ -614,7 +614,7 @@ function RecycleBin() {
 }
 
 /* ============================================================
-   SECTION 4 — ENGAGEMENTS (badges de succès)
+   SECTION 4 · ENGAGEMENTS (badges de succès)
    ============================================================ */
 
 type Achievement = { icon: string; title: string; desc: string };
@@ -780,7 +780,7 @@ export function DurabiliteShell() {
             {/* ---- Barre de statut ---- */}
             <div className="flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
               <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
-                <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com — SIRET 98014870400011
+                <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com · SIRET 98014870400011
               </span>
               <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
                 4 module(s) chargé(s)

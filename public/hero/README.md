@@ -3,7 +3,7 @@
 Le hero de l'accueil est prévu pour tourner sur une vidéo plein écran.
 
 Pour l'activer : dépose ici un fichier nommé **`camcorder.mp4`**.
-Aucune modification de code n'est nécessaire — le composant
+Aucune modification de code n'est nécessaire : le composant
 `src/components/home/hero-camcorder.tsx` le charge automatiquement et ne
 l'affiche que lorsqu'il est réellement lisible.
 
@@ -13,7 +13,7 @@ d'écran noir, ni en production ni en preview.
 
 Recommandations pour le fichier :
 
-- format `.mp4` (H.264), muet — la lecture automatique n'est autorisée par
+- format `.mp4` (H.264), muet : la lecture automatique n'est autorisée par
   les navigateurs que sur une vidéo sans son ;
 - cadrage paysage, 1920 × 1080 suffit (l'habillage caméscope se pose
   par-dessus) ;

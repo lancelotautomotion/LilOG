@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   MEDIA_GRID — la fiche produit en fenêtre d'application
+   MEDIA_GRID : la fiche produit en fenêtre d'application
    ------------------------------------------------------------
    Chaque pièce du catalogue est une petite fenêtre : barre de
    titre bleue avec le nom tronqué et ses boutons [ _ ] [ × ],
@@ -52,7 +52,7 @@ function primarySticker(product: Product, sold: boolean): Sticker | null {
  * Le sticker du coin bas est un choix éditorial, pas un état automatique :
  * Louna tague la fiche "coup de cœur" (ou "louna-pick") dans l'admin
  * Shopify, insensible aux accents/à la casse/aux tirets, et le badge sort
- * tout seul — aucun outil supplémentaire à construire pour elle.
+ * tout seul : aucun outil supplémentaire à construire pour elle.
  */
 function isLounaPick(product: Product): boolean {
   return product.tags.some((tag) => {
@@ -168,7 +168,7 @@ export function ProductWindow({
   /* Taille posée à côté du prix, dans les deux présentations : c'est le
      premier critère de tri d'une friperie, et l'ouvrir fiche par fiche pour
      le connaître n'a pas de sens. Rien pour les pièces sans taille (sacs,
-     bijoux) — « TU » n'apprendrait rien. Au-delà de trois tailles, la liste
+     bijoux), « TU » n'apprendrait rien. Au-delà de trois tailles, la liste
      est coupée : la vignette fait 170px de large en mobile. */
   const sizeChip = product.sizes.length > 0 && (
     <span
@@ -230,7 +230,7 @@ export function ProductWindow({
     return (
       <article className="lde-card overflow-hidden rounded-lg border-2 border-[#b8b4cc] bg-[#f0f0f5] shadow-[4px_4px_0_rgba(24,12,58,0.45)]">
         {titleBar}
-        {/* Trois colonnes à partir de sm — visuel, informations, actions —
+        {/* Trois colonnes à partir de sm : visuel, informations, actions,
             pour que la rangée se remplisse au lieu de s'étirer dans le vide. */}
         <div className="flex items-stretch gap-3 p-2.5">
           {media}
@@ -278,7 +278,7 @@ export function ProductWindow({
       </Link>
 
       {/* Barre d'action : sur une carte de deux colonnes en mobile, la place
-          est comptée — le pied passe à la ligne plutôt que de déborder. */}
+          est comptée : le pied passe à la ligne plutôt que de déborder. */}
       <div className="mt-auto flex flex-wrap items-center justify-between gap-1.5 border-t border-[#d8d5e6] bg-[#e9e7f2] px-2 py-2">
         {/* Prix et taille restent groupés quand le pied passe à la ligne, mais
             peuvent eux-mêmes se séparer : un prix barré suivi d'une pièce en

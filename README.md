@@ -1,14 +1,14 @@
-# Lil'OG — Pre-loved Y2K
+# Lil'OG · Pre-loved Y2K
 
 Boutique e-commerce Y2K vintage. Front-end Next.js (App Router) + TypeScript + Tailwind CSS,
 connecté à un back-end **Shopify headless** via l'API Storefront (GraphQL).
 
-- `design-reference/` — prototype HTML/React original (référence design, non exécuté en prod)
-- `src/app/` — pages et layout Next.js
-- `src/components/` — composants UI (Nav, Hero, ProductCard, Lookbook, Editorial, Footer…)
-- `src/lib/shopify/` — client Storefront API, requêtes GraphQL, mapping des produits
-- `src/lib/i18n*.ts` — dictionnaire et contexte de langue (9 langues, sélecteur en nav)
-- `src/data/` — imagerie éditoriale statique (hero, lookbook) — à remplacer par vos vraies photos de campagne
+- `design-reference/` : prototype HTML/React original (référence design, non exécuté en prod)
+- `src/app/` : pages et layout Next.js
+- `src/components/` : composants UI (Nav, Hero, ProductCard, Lookbook, Editorial, Footer…)
+- `src/lib/shopify/` : client Storefront API, requêtes GraphQL, mapping des produits
+- `src/lib/i18n*.ts` : dictionnaire et contexte de langue (9 langues, sélecteur en nav)
+- `src/data/` : imagerie éditoriale statique (hero, lookbook), à remplacer par vos vraies photos de campagne
 
 ## Démarrer
 

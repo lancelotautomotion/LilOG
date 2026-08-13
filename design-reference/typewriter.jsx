@@ -1,4 +1,4 @@
-/* Typewriter — faithful port of the provided typewriter.tsx logic to
+/* Typewriter : faithful port of the provided typewriter.tsx logic to
    browser React (framer-motion cursor replaced by a CSS blink). Same props:
    text (string|string[]), speed, initialDelay, waitTime, deleteSpeed, loop,
    showCursor, hideCursorOnType, cursorChar, className, cursorClassName. */

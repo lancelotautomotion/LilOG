@@ -12,7 +12,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { handle } = await params;
   const collection = await getCollectionProducts(decodeURIComponent(handle)).catch(() => null);
-  return { title: collection ? `${collection.title} — Lil'OG` : "Lil'OG" };
+  return { title: collection ? `${collection.title} · Lil'OG` : "Lil'OG" };
 }
 
 export default async function Page({

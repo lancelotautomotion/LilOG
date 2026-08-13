@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   Y2KPhone — le clapet Lil'OG interactif
+   Y2KPhone : le clapet Lil'OG interactif
    ------------------------------------------------------------
    Le téléphone N'EST PAS redessiné en HTML/CSS : on affiche le
    visuel de référence (`public/téléphone.png`, détouré et exporté
@@ -9,7 +9,7 @@
    d'interactions invisible :
 
      • 12 zones cliquables calées au pixel sur les touches, plus
-       les touches ✆ / ⛔ — coordonnées relevées sur l'image
+       les touches ✆ / ⛔ : coordonnées relevées sur l'image
        d'origine (997 × 1577 px, recadrée en 813 × 1483 px) et
        exprimées en % pour rester homothétiques ;
      • un écran LCD reconstruit, lui, en CSS : c'est le seul
@@ -37,7 +37,7 @@ import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 /** Visuel de référence détouré.
  *  Régénération depuis `public/téléphone.png` (997 × 1577) :
  *  fond gris uni supprimé par remplissage depuis les bords, puis
- *  recadrage sur la silhouette — crop (20, 30) → (833, 1513),
+ *  recadrage sur la silhouette : crop (20, 30) → (833, 1513),
  *  soit 813 × 1483 px, exporté en WebP qualité 92 (~150 Ko).
  *  Si l'asset est régénéré avec un autre cadrage, tous les
  *  pourcentages ci-dessous sont à recalculer. */
@@ -59,7 +59,7 @@ const MAX_LEN = 18;
    Le visuel de référence portait des strass photoréalistes qui
    juraient avec la DA du site. Les petits (ronds facettés, étoiles
    métalliques) ont été gommés dans l'asset lui-même, tout comme le
-   cœur du coin bas-droit — voir scripts/phone-degem.py.
+   cœur du coin bas-droit : voir scripts/phone-degem.py.
 
    Les trois grosses gemmes roses restantes débordent de la
    silhouette : les effacer obligerait à reconstruire le bord du
@@ -89,7 +89,7 @@ type Placement = {
 type Gem = Placement &
   (
     | { kind: "gem"; shape: "star" | "heart"; hue: [string, string, string] }
-    /* Étoile chromée : celle des disquettes. Elle ne recouvre aucune gemme —
+    /* Étoile chromée : celle des disquettes. Elle ne recouvre aucune gemme,
        le cœur qui occupait le coin bas-droit a été retiré du visuel. */
     | { kind: "chrome" }
   );
@@ -145,7 +145,7 @@ function Gems({ where }: { where: "lid" | "base" }) {
    ------------------------------------------------------------ */
 
 /* Combiné classique : un corps ARQUÉ terminé par deux pavillons ronds.
-   C'est la courbure qui fait lire le ☎ — un corps droit entre deux
+   C'est la courbure qui fait lire le ☎ : un corps droit entre deux
    boules donne un haltère, pas un téléphone. Décrocher = combiné
    penché ; raccrocher = combiné reposé, tourné à l'opposé. */
 function Handset({ down = false }: { down?: boolean }) {
@@ -181,7 +181,7 @@ type KeyIcon = {
 
    Centres mesurés sur la FACE de chaque touche (segmentée par sa
    saturation : le plastique gris des touches est neutre, le corps du
-   téléphone est lavande) — menu (302, 892) · décrocher (291, 962)
+   téléphone est lavande) : menu (302, 892) · décrocher (291, 962)
    contacts (585, 932) · raccrocher (590, 1001). */
 const KEY_ICONS: KeyIcon[] = [
   {
@@ -304,12 +304,12 @@ const DTMF: Record<string, [number, number]> = {
   call: [440, 480], end: [480, 620],
 };
 
-/* Grain numérique de l'écran — SVG inline, aucun fichier à charger. */
+/* Grain numérique de l'écran : SVG inline, aucun fichier à charger. */
 const NOISE_URL =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")";
 
 /* ============================================================
-   Audio — « déposer le fichier suffit »
+   Audio : « déposer le fichier suffit »
    ------------------------------------------------------------
    1. l'ArrayBuffer de key.mp3 est préchargé au montage ;
    2. il est décodé au premier geste utilisateur (l'AudioContext
@@ -409,7 +409,7 @@ function useKeySound(muted: boolean) {
   );
 }
 
-/** Vibration matérielle (mobile) — silencieuse si non supportée. */
+/** Vibration matérielle (mobile) : silencieuse si non supportée. */
 function buzz(pattern: number | number[]) {
   try {
     navigator.vibrate?.(pattern);
@@ -436,12 +436,12 @@ const CSS = `
 /* En deux colonnes, c'est la HAUTEUR disponible qui commande : le
    clapet se cale exactement sur celle du bloc SEND_MESSAGE.SYS et
    sa largeur se déduit du ratio. En pile (mobile), on revient au
-   dimensionnement par la largeur — sans hauteur de référence, une
+   dimensionnement par la largeur, sans hauteur de référence, une
    taille pilotée par la hauteur s'effondrerait.
 
    .y2kp devient une colonne flex : la scène absorbe la hauteur restante
    et en déduit sa largeur par le ratio, tandis que le bandeau d'aide
-   garde sa hauteur propre — sans quoi il déborderait sous le clapet et
+   garde sa hauteur propre, sans quoi il déborderait sous le clapet et
    viendrait chevaucher les raccourcis. */
 @media (min-width:1024px){
   .y2kp{height:100%;display:flex;flex-direction:column}
@@ -493,7 +493,7 @@ const CSS = `
 /* ---- Les deux moitiés, découpées le long de la charnière ----
    Purement décoratives : le pointer-events:none garantit que la
    couche de touches reçoit les clics quel que soit l'empilement
-   3D, sans avoir à la pousser en avant — un translateZ ici
+   3D, sans avoir à la pousser en avant : un translateZ ici
    déroute le hit-testing de Chromium dans une chaîne
    preserve-3d imbriquée. */
 .y2kp-half,.y2kp-fold{pointer-events:none}
@@ -503,7 +503,7 @@ const CSS = `
 /* La découpe le long de la charnière porte sur le VISUEL (image +
    reflet), jamais sur la moitié entière : un clip-path rogne aussi
    l'ombre portée et tout ce qui dépasse. L'ombre est donc posée sur
-   .y2kp-plate, qui n'est pas découpé — il prend pour source l'image
+   .y2kp-plate, qui n'est pas découpé : il prend pour source l'image
    déjà découpée, si bien que l'ombre épouse la silhouette tout en
    pouvant s'étendre librement au-delà. Sans cela, le dégradé se
    coupait net sur les bords de la boîte. */
@@ -512,7 +512,7 @@ const CSS = `
 .y2kp-clip-top{clip-path:polygon(0 0,100% 0,100% 53.48%,0 46.65%)}
 .y2kp-clip-bottom{clip-path:polygon(0 46.65%,100% 53.48%,100% 100%,0 100%)}
 
-/* Bijoux vectoriels — voir STICKERS plus bas. Hors du .y2kp-plate,
+/* Bijoux vectoriels : voir STICKERS plus bas. Hors du .y2kp-plate,
    donc jamais rognés : ils débordent de la silhouette par nature. */
 .y2kp-gem{position:absolute;aspect-ratio:1;
   filter:drop-shadow(0 2px 3px rgba(72,28,128,.34))}
@@ -848,7 +848,7 @@ export default function Y2KPhone() {
       className="y2kp"
       data-phase={phase}
       role="group"
-      aria-label="Clapet Lil'OG — clavier interactif"
+      aria-label="Clapet Lil'OG, clavier interactif"
       tabIndex={0}
       onKeyDown={onKeyDown}
       onPointerMove={onPointerMove}
@@ -948,7 +948,7 @@ export default function Y2KPhone() {
                     <Gems where="lid" />
                   </div>
 
-                  {/* Dos du clapet — visible uniquement téléphone fermé. */}
+                  {/* Dos du clapet : visible uniquement téléphone fermé. */}
                   <div className="y2kp-back" aria-hidden>
                     <div className="y2kp-back-shell" />
                   </div>
@@ -966,7 +966,7 @@ export default function Y2KPhone() {
       </div>
 
       <div className="y2kp-hint">
-        <span>[#] EFFACE — [✆] APPEL</span>
+        <span>[#] EFFACE · [✆] APPEL</span>
         <button
           type="button"
           className="y2kp-mute"

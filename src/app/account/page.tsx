@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { shopifyGetCustomerWithOrders, shopifyGetAddresses } from "@/lib/shopify/customers";
 import { AccountShell } from "./account-shell";
 
-export const metadata: Metadata = { title: "Mon compte — Lil'OG" };
+export const metadata: Metadata = { title: "Mon compte · Lil'OG" };
 
 export default async function AccountPage() {
   const session = await auth();

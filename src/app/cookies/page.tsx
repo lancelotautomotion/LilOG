@@ -1,7 +1,7 @@
 "use client";
 
 /* Composant client : les sections sont du JSX riche (gras, retours à
-   la ligne, liens). Créé côté client, il garde ses enfants statiques —
+   la ligne, liens). Créé côté client, il garde ses enfants statiques :
    sérialisé depuis le serveur, React réclamerait une clé par enfant. */
 
 import { DocCenter, DocSection, P, Bullets, Tldr, Notice } from "@/components/doc-center";
@@ -32,7 +32,7 @@ const SECTIONS: DocSection[] = [
     content: (
       <>
         <P>
-          <strong>Cookies strictement nécessaires</strong> — Ces cookies sont indispensables au fonctionnement du site. Ils
+          <strong>Cookies strictement nécessaires</strong> : ces cookies sont indispensables au fonctionnement du site. Ils
           ne peuvent pas être désactivés. Ils comprennent notamment :
         </P>
         <Bullets
@@ -44,12 +44,12 @@ const SECTIONS: DocSection[] = [
         />
         <P>
           <strong>Cookies analytiques</strong>{" "}
-          (avec consentement) — Ces cookies nous permettent de mesurer l&apos;audience du site et d&apos;améliorer son
+          (avec consentement) : ces cookies nous permettent de mesurer l&apos;audience du site et d&apos;améliorer son
           contenu. Ils collectent des données anonymisées sur les pages visitées et les
           parcours utilisateurs.
         </P>
         <P>
-          <strong>Cookies de préférences</strong> (avec consentement) — Ces cookies mémorisent vos préférences (langue
+          <strong>Cookies de préférences</strong> (avec consentement) : ces cookies mémorisent vos préférences (langue
           choisie, devise) pour personnaliser votre expérience.
         </P>
       </>

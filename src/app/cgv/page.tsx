@@ -1,7 +1,7 @@
 "use client";
 
 /* Composant client : les sections sont du JSX riche (gras, retours à
-   la ligne, liens). Créé côté client, il garde ses enfants statiques —
+   la ligne, liens). Créé côté client, il garde ses enfants statiques :
    sérialisé depuis le serveur, React réclamerait une clé par enfant. */
 
 import { DocCenter, DocSection, P, Bullets, Tldr, Notice } from "@/components/doc-center";
@@ -38,7 +38,7 @@ const SECTIONS: DocSection[] = [
       <P>
         <strong>Lil&apos;OG</strong>
         <br />
-        Entreprise individuelle — Louna Lili Guitton
+        Entreprise individuelle, Louna Lili Guitton
         <br />
         26 rue Soubise, 93400 Saint-Ouen-Sur-Seine, France
         <br />
@@ -55,7 +55,7 @@ const SECTIONS: DocSection[] = [
     title: "Produits",
     content: (
       <>
-        <Tldr>chaque pièce est unique, seconde main, nettoyée et décrite telle qu&apos;elle est — usure comprise.</Tldr>
+        <Tldr>chaque pièce est unique, seconde main, nettoyée et décrite telle qu&apos;elle est, usure comprise.</Tldr>
         <P>
           Lil&apos;OG propose exclusivement des articles de seconde main, sélectionnés, expertisés et nettoyés avant mise en
           vente. Chaque pièce est unique (one-of-one) : aucun réassort n&apos;est possible une fois un article vendu.
@@ -77,7 +77,7 @@ const SECTIONS: DocSection[] = [
       <>
         <P>
           Les prix sont affichés en euros toutes taxes comprises (TTC). Lil&apos;OG, en tant que micro-entreprise sous le
-          seuil de franchise de TVA (article 293 B du CGI), ne collecte pas de TVA — la mention « TVA non applicable »
+          seuil de franchise de TVA (article 293 B du CGI), ne collecte pas de TVA : la mention « TVA non applicable »
           s&apos;applique.
         </P>
         <P>

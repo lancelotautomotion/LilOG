@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   README.TXT — module 04 de l'accueil
+   README.TXT : module 04 de l'accueil
    ------------------------------------------------------------
    « Notre histoire » n'est plus un bloc texte + photo : c'est un
    Bloc-notes ouvert sur le bureau. Barre de titre bleue avec
@@ -11,7 +11,7 @@
 
    La photo est un polaroid scotché en travers de la fenêtre :
    posé à cheval sur le bord droit en desktop, recentré sous la
-   fenêtre en mobile — même élément, jamais dupliqué.
+   fenêtre en mobile, même élément, jamais dupliqué.
 
    ⚠ PAREFEU : Tailwind + feuille locale préfixée `lhr-`.
    ============================================================ */
@@ -32,7 +32,7 @@ import {
   WindowFrame,
 } from "@/components/y2k/kit";
 
-/** Photographie maison — la même campagne que /histoire. */
+/** Photographie maison : la même campagne que /histoire. */
 const POLAROID_SRC = "/histoire/look-07.jpg";
 
 const README_CSS = `
@@ -80,7 +80,7 @@ export function ReadmeWindow() {
         {/* En desktop, la colonne de droite est réservée au polaroid :
             la fenêtre s'arrête avant, la photo la chevauche. */}
         <div className="relative md:pr-[168px]">
-          <WindowFrame title="README.TXT — Bloc-notes" icon="📝" bar={NAVY_BAR}>
+          <WindowFrame title="README.TXT · Bloc-notes" icon="📝" bar={NAVY_BAR}>
             {/* Menus */}
             <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
               {["Fichier", "Édition", "Format", "Affichage", "?"].map((m) => (
@@ -97,7 +97,7 @@ export function ReadmeWindow() {
                   sur une fin de ligne. */}
               <div className="min-w-0 flex-1 px-[clamp(16px,3.4vw,38px)] py-[clamp(20px,3.6vw,40px)] md:pr-[96px]">
                 <p className={`${MONO} text-[0.52rem] tracking-[0.16em] text-[#9a94b5] uppercase`}>
-                  — {t.ed.eyebrow} —
+                  · {t.ed.eyebrow} ·
                 </p>
 
                 <h2
@@ -183,7 +183,7 @@ export function ReadmeWindow() {
             </div>
 
             <p className="mt-2 text-center text-[0.95rem] leading-none text-[#3b3550] font-[family-name:var(--font-hand)]">
-              Lil&apos;OG archive — vol. 001
+              Lil&apos;OG archive · vol. 001
             </p>
           </div>
         </div>

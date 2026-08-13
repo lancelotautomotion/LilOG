@@ -35,7 +35,7 @@ export default async function CheckoutSuccessPage() {
           gap: "8px",
         }}>
           <span style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", color: "#fff", letterSpacing: "0.06em", textTransform: "uppercase", flex: 1 }}>
-            ✓ Commande confirmée — Lil&apos;OG
+            ✓ Commande confirmée · Lil&apos;OG
           </span>
           <div style={{ display: "flex", gap: "3px" }}>
             {["_", "□", "×"].map((s) => (

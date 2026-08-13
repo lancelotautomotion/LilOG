@@ -6,7 +6,7 @@ Deux traitements distincts :
    pleine matière sur des surfaces lisses : un simple inpainting les fait
    disparaître sans trace.
 
-2. Le cœur en bas à droite est supprimé pour de bon — il faisait doublon
+2. Le cœur en bas à droite est supprimé pour de bon : il faisait doublon
    avec celui du capot, du même côté du téléphone, et sa place revient à
    une grappe d'étoiles chromées posée côté composant. Comme il déborde
    de la silhouette, il faut réparer AUSSI l'alpha, donc le bord du
@@ -16,7 +16,7 @@ Deux traitements distincts :
 
 Les trois grosses gemmes roses restantes ne sont pas effacées : elles
 débordent elles aussi, et un sticker vectoriel de même forme les
-recouvre côté composant — nettement plus sûr que de reconstruire la
+recouvre côté composant : nettement plus sûr que de reconstruire la
 silhouette à quatre endroits.
 
 S'exécute depuis la racine du repo, après scripts/phone-rematte.py.
@@ -76,7 +76,7 @@ c = rgb.astype(int)
 heart = box & (c[:, :, 0] > 110) & (c[:, :, 0] - c[:, :, 1] > 30) & (alpha > 60)
 # Le creux central de la gemme est presque noir : trop sombre pour le test
 # « rose saturé » ci-dessus, il resterait sinon en mouche sur le boîtier.
-# Fenêtre resserrée sur la gemme seule — la boîte élargie mordrait sur le
+# Fenêtre resserrée sur la gemme seule : la boîte élargie mordrait sur le
 # contour sombre de la touche #, juste à sa gauche.
 core = np.zeros(alpha.shape, bool)
 core[y0 : y1 + 1, x0 + 20 : x1 + 8] = True
@@ -139,7 +139,7 @@ rgb[sy, sx] = np.where(heart[sy, sx][..., None], blur, rgb[sy, sx])
 
 # ---- 3. Pictogrammes des touches hautes --------------------------------
 # Les quatre glyphes du visuel (décrocher, raccrocher et les deux touches
-# de fonction) sont illisibles — des gribouillis. On les gomme ici, des
+# de fonction) sont illisibles : des gribouillis. On les gomme ici, des
 # icônes vectorielles propres sont reposées par-dessus dans Y2KPhone.
 # Les fenêtres de recherche sont serrées sur les glyphes SEULS : élargies,
 # elles happent le contour sombre des touches, qui doit rester intact.

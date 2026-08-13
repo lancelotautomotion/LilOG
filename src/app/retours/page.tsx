@@ -1,7 +1,7 @@
 "use client";
 
 /* Composant client : les sections sont du JSX riche (gras, retours à
-   la ligne, liens). Créé côté client, il garde ses enfants statiques —
+   la ligne, liens). Créé côté client, il garde ses enfants statiques :
    sérialisé depuis le serveur, React réclamerait une clé par enfant. */
 
 import { DocCenter, DocSection, HELP_TABS, P, Bullets, Tldr, Notice, Field, A } from "@/components/doc-center";
@@ -58,7 +58,7 @@ const SECTIONS: DocSection[] = [
     title: "Frais de retour",
     content: (
       <>
-        <Tldr>les frais de retour sont à ta charge — prends un envoi suivi, c&apos;est plus sûr.</Tldr>
+        <Tldr>les frais de retour sont à ta charge : prends un envoi suivi, c&apos;est plus sûr.</Tldr>
         <P>
           Les <strong>frais de retour sont à la charge du client</strong>. Nous te recommandons d&apos;utiliser un service
           de livraison avec suivi et assurance, car Lil&apos;OG ne pourra être tenu responsable en cas de perte ou de
@@ -127,7 +127,7 @@ export default function RetoursPage() {
       folder="RETOURS"
       root="AIDE"
       date="14 juillet 2026"
-      status="lilog.shop@gmail.com — Lun-Ven 10h/18h"
+      status="lilog.shop@gmail.com · Lun-Ven 10h/18h"
       sections={SECTIONS}
     />
   );

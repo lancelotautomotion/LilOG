@@ -1,14 +1,14 @@
 "use client";
 
 /* ============================================================
-   ITEM_INSPECTOR_2000.EXE — /products/[handle]
+   ITEM_INSPECTOR_2000.EXE : /products/[handle]
    ------------------------------------------------------------
    La fiche produit vit dans une seule fenêtre applicative, comme
    /category, /histoire et /faq : LIL_OG_PHOTO_VIEWER à gauche
    (lecteur média + Polaroids), ITEM_STATS.SYS à droite (titre
    brutaliste, écran LED, fiche de specs RPG, alerte stock
    clignotante, bouton chunky 3D), puis SYSTEM_LOGS en pied de
-   fenêtre — trois fichiers système en menus déroulants, un seul
+   fenêtre : trois fichiers système en menus déroulants, un seul
    ouvert à la fois.
 
    RECOMMENDED_COMBO.EXE, le cross-sell, est une seconde fenêtre en
@@ -16,7 +16,7 @@
 
    ⚠ PAREFEU : Tailwind + feuille locale préfixée `lpi-`, servie
    une seule fois pour toute la page. Aucune classe de
-   globals.css — les anciennes règles `.pdp-*` ne sont plus
+   globals.css : les anciennes règles `.pdp-*` ne sont plus
    utilisées par cette page.
    ============================================================ */
 
@@ -86,14 +86,14 @@ const PDP_CSS = `
 @keyframes lpi-blink{0%,49%{opacity:1}50%,100%{opacity:.25}}
 .lpi-blink{animation:lpi-blink 1.15s step-end infinite}
 
-/* Lignes de balayage de l'afficheur de prix — l'écran a l'air allumé,
+/* Lignes de balayage de l'afficheur de prix : l'écran a l'air allumé,
    pas imprimé. Purement décoratif, sous le texte. */
 .lpi-crt::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:repeating-linear-gradient(to bottom,rgba(0,0,0,.32) 0 1px,rgba(0,0,0,0) 1px 3px)}
 
 /* Ascenseur du Notepad, façon Windows : gouttière grise, poignée en
    plastique biseauté.
-   scrollbar-gutter:stable réserve la place en permanence — sans elle
+   scrollbar-gutter:stable réserve la place en permanence, sans elle
    Chrome dessine un ascenseur flottant qui n'apparaît qu'au survol, et
    rien n'indique que le texte continue. On ne déclare surtout pas
    scrollbar-width / scrollbar-color : ces propriétés standard, une
@@ -119,7 +119,7 @@ const PDP_CSS = `
 `;
 
 /* ============================================================
-   ITEM_STATS.SYS — bloc RPG
+   ITEM_STATS.SYS : bloc RPG
    ============================================================ */
 
 function StatCell({ icon, label, value }: { icon: string; label: string; value: string }) {
@@ -142,7 +142,7 @@ function StatCell({ icon, label, value }: { icon: string; label: string; value: 
 }
 
 /* ============================================================
-   SYSTEM_LOGS — fichiers système en menus déroulants
+   SYSTEM_LOGS : fichiers système en menus déroulants
    ------------------------------------------------------------
    Un seul fichier ouvert à la fois : cliquer sur un en-tête ferme
    le précédent. Le premier (DESCRIPTION_&_MOOD.TXT) est ouvert au
@@ -152,7 +152,7 @@ function StatCell({ icon, label, value }: { icon: string; label: string; value: 
    imposée. Deux des trois fiches tiennent en quelques lignes : la
    fenêtre restait alors aux trois quarts vide. Chaque panneau prend
    désormais la hauteur de son texte, et ne se met à défiler qu'une
-   fois passé le plafond — le cas des longues descriptions Shopify,
+   fois passé le plafond, le cas des longues descriptions Shopify,
    qui feraient sinon une page à rallonge.
    ============================================================ */
 
@@ -164,7 +164,7 @@ function SystemLogs({
   const [open, setOpen] = useState(0);
 
   /* Le texte est plafonné en hauteur : reste à le dire. L'ascenseur ne
-     suffit pas — Chrome le dessine en flottant, invisible tant qu'on ne
+     suffit pas, Chrome le dessine en flottant, invisible tant qu'on ne
      survole pas le cadre. On mesure donc le débordement pour n'afficher
      le dégradé et la mention [ ▼ SUITE ] que lorsqu'il reste à lire. */
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -191,7 +191,7 @@ function SystemLogs({
 
   return (
     /* Plus de `flex-1` : la pile de menus prend la hauteur de son
-       contenu. C'est tout l'objet du changement — la colonne ne
+       contenu. C'est tout l'objet du changement, la colonne ne
        s'étire plus pour rejoindre le bas du lecteur photo, elle
        s'arrête où le texte s'arrête. */
     <div className="mt-6 flex flex-col">
@@ -280,11 +280,11 @@ function SystemLogs({
 }
 
 /* ============================================================
-   SUGGESTED_STYLE_COMBO.EXE — carte d'inventaire
+   SUGGESTED_STYLE_COMBO.EXE : carte d'inventaire
    ------------------------------------------------------------
    Une carte propre à cette page plutôt que la fenêtre Win98 dense
    du catalogue (barre de titre, menus, chrome serré) : même famille
-   que ITEM_STATS.SYS — écran LED rose, bouton chunky 3D, typo LCD —
+   que ITEM_STATS.SYS, écran LED rose, bouton chunky 3D, typo LCD,
    pour que le cross-sell parle la même langue que la fiche
    au-dessus de lui, avec de l'air autour de la photo.
    ============================================================ */
@@ -316,7 +316,7 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
       href={`/products/${product.handle}`}
       className="group block overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-white shadow-[5px_5px_0_rgba(24,12,58,0.35)] transition hover:-translate-y-1 hover:shadow-[7px_9px_0_rgba(24,12,58,0.42)]"
     >
-      {/* Photo posée à même la carte, sur un carré blanc plein — l'encadrement
+      {/* Photo posée à même la carte, sur un carré blanc plein, l'encadrement
           précédent (padding + fond lavande + biseau) creusait un cadre
           visible tout autour de chaque photo. */}
       <div className="relative aspect-[3/4] overflow-hidden rounded-t-2xl bg-white">
@@ -345,9 +345,9 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
         {/* Prix et taille côte à côte : les suggestions sont choisies dans la
             taille de la pièce regardée, encore faut-il pouvoir le vérifier
             sans ouvrir la fiche. Pas de pastille pour les pièces sans taille
-            (sacs, bijoux, accessoires) — « TU » n'apprendrait rien. */}
+            (sacs, bijoux, accessoires), « TU » n'apprendrait rien. */}
         <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          {/* Mini écran LED — même famille que PRICE_TAG.SYS au-dessus. */}
+          {/* Mini écran LED : même famille que PRICE_TAG.SYS au-dessus. */}
           <div className={`lpi-crt relative overflow-hidden rounded-md border-2 border-[#2b2b3d] bg-black px-2 py-1 ${BEVEL_IN}`}>
             <span className="relative z-[2] flex items-baseline gap-1.5">
               <span className={`${LCD} text-[1.15rem] leading-none tracking-[0.02em]`} style={{ color: NEON, textShadow: `0 0 8px ${NEON}b3` }}>
@@ -536,7 +536,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
               {/* LIL_OG_PHOTO_VIEWER */}
               <ProductGallery images={product.images} name={product.name} />
 
-              {/* ITEM_STATS.SYS — colonne en flex, empilement simple : depuis
+              {/* ITEM_STATS.SYS : colonne en flex, empilement simple : depuis
                   que SYSTEM_LOGS est une pile de menus déroulants, plus rien
                   ne s'étire pour rejoindre le bas du lecteur photo. */}
               <div className="flex min-w-0 flex-col">
@@ -553,7 +553,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                 )}
 
                 {/* Même typo LCD que les titres de /category, /histoire,
-                    /faq et /durabilite — le nom de la pièce parle le même
+                    /faq et /durabilite, le nom de la pièce parle le même
                     langage que le reste du site plutôt qu'une typo
                     brutaliste propre à cette page. */}
                 <h1
@@ -565,10 +565,10 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                 {/* Prix et caractéristiques sur une même rangée : l'afficheur
                     garde sa largeur naturelle (shrink-0), les trois pastilles
                     se partagent le reste. `items-stretch` les met à la hauteur
-                    de l'afficheur. Sous 360px de place pour le groupe — colonne
-                    étroite ou affichage en une colonne — il repasse dessous. */}
+                    de l'afficheur. Sous 360px de place pour le groupe, colonne
+                    étroite ou affichage en une colonne, il repasse dessous. */}
                 <div className="mt-4 flex flex-wrap items-stretch gap-2">
-                  {/* Écran LED — un vrai afficheur d'appareil : boîtier noir
+                  {/* Écran LED : un vrai afficheur d'appareil : boîtier noir
                       encastré, libellé gravé, chiffres néon en typo LCD, prix
                       barré et remise logés dans le même bandeau plutôt que
                       dispersés à côté. */}
@@ -687,7 +687,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   <p className={`${MONO} mt-2.5 text-[0.6rem] text-[#d4006e]`}>⚠ {addError}</p>
                 )}
 
-                {/* SYSTEM_LOGS — dans la colonne de droite, sous l'achat :
+                {/* SYSTEM_LOGS : dans la colonne de droite, sous l'achat :
                     c'est lui qui occupe la hauteur laissée libre par le
                     lecteur photo, au lieu de s'étaler en pleine largeur
                     sous un grand vide. */}
@@ -706,7 +706,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
             </div>
           </WindowFrame>
 
-          {/* RECOMMENDED_COMBO.EXE — une seconde fenêtre sous la fiche, pas
+          {/* RECOMMENDED_COMBO.EXE : une seconde fenêtre sous la fiche, pas
               des cartes posées à même le décor : titre et suggestions tiennent
               dans le même bloc blanc, sans bandes de léopard entre elles.
               Le titre quitte donc le blanc néon (illisible sur fond clair)

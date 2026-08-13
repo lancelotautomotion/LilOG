@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   Disquette 3.5" — réplique fidèle de public/disquettes.png
+   Disquette 3.5" : réplique fidèle de public/disquettes.png
    ------------------------------------------------------------
    Extrait de /contact pour être partagé avec les autres pages
    qui parlent le même dialecte Y2K (/cgv notamment). Le rendu
@@ -10,8 +10,8 @@
    Le boîtier est dessiné en SVG dans un viewBox calqué au pixel
    près sur le visuel de référence (corps 494 × 522, soit les
    proportions réelles d'une 3.5" : 90 × 94 mm). Toutes les cotes
-   ci-dessous — rainures de moulage, encoches, obturateur, lucarne,
-   flèche d'insertion, logo HD, trous de protection — sont relevées
+   ci-dessous (rainures de moulage, encoches, obturateur, lucarne,
+   flèche d'insertion, logo HD, trous de protection) sont relevées
    sur l'image source.
 
    L'étiquette reste du HTML posé par-dessus (positionné en %) :
@@ -156,7 +156,7 @@ const FLOPPY_CSS = `
 }
 `;
 
-/** Feuille de style des disquettes — à monter une fois par page. */
+/** Feuille de style des disquettes : à monter une fois par page. */
 export function FloppyStyles() {
   return <style>{FLOPPY_CSS}</style>;
 }
@@ -483,7 +483,7 @@ export function Floppy({
 
       {variant === "purple" && (
         <>
-          {/* Grappe d'étoiles chrome — positions relevées sur la référence */}
+          {/* Grappe d'étoiles chrome : positions relevées sur la référence */}
           <div
             className="absolute"
             style={{ left: "80.5%", top: "22.9%", width: "17.7%", aspectRatio: "0.847" }}

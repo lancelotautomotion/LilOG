@@ -28,7 +28,7 @@ function computeTag(tags: string[], availableForSale: boolean): Product["tag"] {
 }
 
 /**
- * Toutes les valeurs lisibles portées par un champ méta Catégorie — texte
+ * Toutes les valeurs lisibles portées par un champ méta Catégorie, texte
  * simple ou référence (unique ou en liste) à un ou plusieurs metaobjects de
  * taxonomie. Les GID non résolus (`gid://...`) sont écartés : mieux vaut un
  * filtre incomplet qu'une pastille "gid://shopify/Metaobject/123".
@@ -49,7 +49,7 @@ function resolveRichMetafieldList(meta: RichMetafield | null | undefined): strin
       if (Array.isArray(parsed)) {
         return parsed.filter((v): v is string => typeof v === "string" && !v.startsWith("gid://"));
       }
-    } catch { /* pas du JSON — valeur texte simple */ }
+    } catch { /* pas du JSON, valeur texte simple */ }
     return [meta.value];
   }
 
@@ -78,7 +78,7 @@ function extractColorValues(node: ShopifyProductNode): string[] {
  * Tailles d'une fiche, telles que le catalogue les filtre. La taille des
  * pièces vintage vend souvent sans variante ("Default Title") : elle vit
  * alors dans le champ méta Catégorie « Taille » (shopify.size et ses
- * repères), pas dans une option de variante — même source que la PDP et le
+ * repères), pas dans une option de variante, même source que la PDP et le
  * dressing. On ne retombe sur l'option « Taille » / « Size » qu'à défaut.
  */
 function extractSizeValues(node: ShopifyProductNode): string[] {
@@ -109,7 +109,7 @@ function extractSizeValues(node: ShopifyProductNode): string[] {
 }
 
 /**
- * Matières d'une fiche (« Coton », « Polyester »…) — champ méta Catégorie
+ * Matières d'une fiche (« Coton », « Polyester »…), champ méta Catégorie
  * uniquement, il n'existe pas d'équivalent en option de variante à
  * interroger en repli. Une pièce sans matière renseignée reste simplement
  * absente du filtre MATIÈRE, plutôt que d'y afficher une valeur inventée.
@@ -130,7 +130,7 @@ function stripEmoji(str: string): string {
 }
 
 // Un champ méta Catégorie Shopify (namespace "shopify") peut être du texte
-// simple OU référencer un/des metaobject(s) de taxonomie — la vraie valeur
+// simple OU référencer un/des metaobject(s) de taxonomie, la vraie valeur
 // affichable vit alors dans le champ "label" du/des metaobject(s) référencé(s).
 // Fine couche au-dessus de resolveRichMetafieldList : la PDP et le panier
 // affichent une chaîne unique ("38, 40"), là où le filtre du catalogue a
@@ -142,7 +142,7 @@ function resolveRichMetafield(meta: RichMetafield | null | undefined): string | 
 
 // Ces pièces vintage sont uniques : la taille vit dans le champ méta Catégorie
 // "Taille" (shopify.size) ; à défaut on retombe sur les options du variant
-// ("Default Title" si le produit n'a qu'une option) — même heuristique
+// ("Default Title" si le produit n'a qu'une option), même heuristique
 // utilisée sur la PDP et le panier.
 export function extractSizeValue(
   sizeMeta: RichMetafield | null | undefined,
@@ -203,7 +203,7 @@ export async function getFeaturedProducts(count = 8): Promise<Product[]> {
 
 /**
  * Recherche texte libre dans le catalogue. Une chaîne vide renvoie tout de
- * suite un tableau vide — inutile d'aller demander à Shopify de « trouver »
+ * suite un tableau vide, inutile d'aller demander à Shopify de « trouver »
  * une chaîne vide, qui renverrait tout le catalogue.
  */
 export async function searchProducts(query: string, count = 60): Promise<Product[]> {

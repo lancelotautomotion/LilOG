@@ -11,7 +11,7 @@ const BOTTOMS_HANDLES = ["jupes", "shorts-bermudas", "pantalons", "jeans"];
 /* Repli quand le rayon complémentaire n'a pas assez de pièces à la bonne
    taille. Les vestes sont un vêtement : elles restent filtrées par taille.
    Les sacs, bijoux, accessoires et chaussures ne se portent pas à la taille
-   du haut regardé — les filtrer sur elle ne ferait que vider la sélection,
+   du haut regardé : les filtrer sur elle ne ferait que vider la sélection,
    d'où deux listes séparées. */
 const FALLBACK_SIZED_HANDLES = ["manteaux-et-vestes"];
 const FALLBACK_ANY_SIZE_HANDLES = ["accessoires", "sacs", "chaussures"];
@@ -31,20 +31,20 @@ export async function generateMetadata({
   if (!product) return { title: "Lil'OG" };
   const plainDescription = product.descriptionHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
   return {
-    title: `${product.name} — Lil'OG`,
+    title: `${product.name} · Lil'OG`,
     description: plainDescription || undefined,
   };
 }
 
 /**
- * Toutes les écritures de la taille de la pièce regardée — « S » ramène
+ * Toutes les écritures de la taille de la pièce regardée : « S » ramène
  * aussi « 36 », pour retrouver les bas étiquetés en taille FR quand le haut
  * l'est en lettre.
  *
  * `looksLikeSize` fait le tri : le champ méta Taille et les titres de
  * variantes contiennent parfois autre chose qu'une taille (une couleur, une
  * mention libre). Sans ce garde-fou, une valeur fantaisie passerait dans le
- * filtre et ne correspondrait à rien — la sélection reviendrait vide au lieu
+ * filtre et ne correspondrait à rien, la sélection reviendrait vide au lieu
  * de simplement ignorer la taille.
  */
 function viewedSizes(detail: ProductDetailType): Set<string> {
@@ -105,8 +105,8 @@ export default async function ProductPage({
   };
   const missing = () => related.length < RELATED_COUNT;
 
-  /* 1. Le rayon complémentaire — des bas pour un haut, des hauts pour un bas
-        — d'abord dans la taille exacte, puis les pièces dont la taille n'est
+  /* 1. Le rayon complémentaire : des bas pour un haut, des hauts pour un bas,
+        d'abord dans la taille exacte, puis les pièces dont la taille n'est
         pas renseignée, qui peuvent tomber juste. */
   const complementary = isTops ? BOTTOMS_HANDLES : isBottoms ? TOPS_HANDLES : [];
   if (complementary.length > 0) {
@@ -125,7 +125,7 @@ export default async function ProductPage({
     take(sizes.size > 0 ? pool.filter((p) => fitsSize(p, sizes)) : pool);
   }
 
-  // 3. Bijoux, accessoires, sacs, chaussures — hors barème de taille.
+  // 3. Bijoux, accessoires, sacs, chaussures, hors barème de taille.
   if (missing()) take(await poolFrom(FALLBACK_ANY_SIZE_HANDLES));
 
   // 4. Dernier recours : la sélection du moment, pour ne jamais afficher une

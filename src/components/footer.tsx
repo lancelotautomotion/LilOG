@@ -1,15 +1,15 @@
 "use client";
 
 /* ============================================================
-   LIL_OG_TASKBAR.EXE — pied de page global
+   LIL_OG_TASKBAR.EXE : pied de page global
    ------------------------------------------------------------
    Structure de barre des tâches Windows (bouton START, champ
    newsletter, onglets de fenêtres minimisées, zone de
-   notification, horloge) — mais rendue dans la direction
+   notification, horloge), mais rendue dans la direction
    artistique du site, pas dans le gris plat de Windows 95.
 
    Autrement dit : exactement le vocabulaire de /contact, /faq,
-   /cgv et /durabilite — fenêtre arrondie bordée #b8b4cc, barre
+   /cgv et /durabilite : fenêtre arrondie bordée #b8b4cc, barre
    de titre violette avec [ _ ] [ 🗖 ] [ × ], fond papier
    millimétré, jetons « chunky plastic », champs encastrés,
    pastilles Y2K, typo MONO pour les libellés et LCD pour
@@ -17,7 +17,7 @@
 
    ⚠ PAREFEU : tout le style vit ici, via Tailwind + une feuille
    locale préfixée `liltb-`. Les anciennes classes globales
-   `.footer*` de globals.css ne sont plus utilisées — elles
+   `.footer*` de globals.css ne sont plus utilisées, elles
    portaient des `!important` (thème LDL) qui écraseraient la
    fenêtre.
    ============================================================ */
@@ -29,7 +29,7 @@ import { useLanguage } from "@/lib/i18n-context";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 import logoBlack from "../../public/logo-black.png";
 
-/* ---- Jetons « chunky plastic » — identiques à /contact et /faq ---- */
+/* ---- Jetons « chunky plastic » : identiques à /contact et /faq ---- */
 const PLASTIC =
   "shadow-[inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_5px_rgba(0,0,0,0.25),0_2px_3px_rgba(30,36,48,0.18)]";
 const PLASTIC_PRESS =
@@ -103,7 +103,7 @@ const LEGAL_HREFS: Record<string, string> = {
 };
 
 const TASKBAR_CSS = `
-/* Pastilles Y2K — même respiration que sur /faq et les pages légales. */
+/* Pastilles Y2K : même respiration que sur /faq et les pages légales. */
 @keyframes liltb-bob{
   0%,100%{transform:translate3d(0,0,0) rotate(var(--r,0deg)) scale(1)}
   50%{transform:translate3d(0,-8%,0) rotate(calc(var(--r,0deg) + 6deg)) scale(1.06)}
@@ -199,7 +199,7 @@ function TrayIcon({ href, label, children }: { href: string; label: string; chil
 }
 
 /* ============================================================
-   Zone de notification — panneau encastré, comme les champs du site
+   Zone de notification : panneau encastré, comme les champs du site
    ============================================================ */
 
 function Tray() {
@@ -210,8 +210,8 @@ function Tray() {
 
   useEffect(() => {
     /* `undefined` en locale = celle du système : l'horloge affiche
-       exactement ce qu'affiche la barre des tâches du visiteur — 18:40 en
-       France, 06:40 PM aux États-Unis — dans son propre fuseau. */
+       exactement ce qu'affiche la barre des tâches du visiteur, 18:40 en
+       France, 06:40 PM aux États-Unis : dans son propre fuseau. */
     const render = () =>
       setClock(new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }));
 
@@ -241,7 +241,7 @@ function Tray() {
         <TiktokPixel />
       </TrayIcon>
 
-      <span aria-hidden title="Connecté — 56 Kbps" className="liltb-led text-[0.9rem] leading-none">
+      <span aria-hidden title="Connecté · 56 Kbps" className="liltb-led text-[0.9rem] leading-none">
         💻
       </span>
 
@@ -258,7 +258,7 @@ function Tray() {
 }
 
 /* ============================================================
-   Newsletter — champ encastré + bouton plastique
+   Newsletter : champ encastré + bouton plastique
    ============================================================ */
 
 function Newsletter({ className = "" }: { className?: string }) {
@@ -277,7 +277,7 @@ function Newsletter({ className = "" }: { className?: string }) {
       <p
         className={`${MONO} flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-3.5 py-2 text-[0.58rem] font-bold tracking-[0.04em] text-purple-800 ${className}`}
       >
-        <span aria-hidden>💾</span> ADRESSE ENREGISTRÉE — À TRÈS VITE
+        <span aria-hidden>💾</span> ADRESSE ENREGISTRÉE · À TRÈS VITE
         <span style={{ color: PINK }}>★</span>
       </p>
     );
@@ -355,8 +355,8 @@ export function Footer() {
         </span>
 
         {/* ================= FENÊTRE ================= */}
-        {/* Pas d'`overflow-hidden` ici, sinon le menu démarrer — qui s'ouvre
-            vers le haut, donc au-dessus de la fenêtre — serait rogné. Les
+        {/* Pas d'`overflow-hidden` ici, sinon le menu démarrer, qui s'ouvre
+            vers le haut, donc au-dessus de la fenêtre, serait rogné. Les
             angles sont arrondis par la barre de titre et la barre de statut,
             les deux seules bandes qui touchent les coins. */}
         <div
@@ -398,7 +398,7 @@ export function Footer() {
             <div className="flex flex-wrap items-center gap-2.5 md:flex-nowrap">
               <Link
                 href="/"
-                aria-label="Lil'OG — accueil"
+                aria-label="Lil'OG, accueil"
                 className={`order-1 flex shrink-0 items-center gap-3 rounded-xl border border-[#c6c2d8] bg-white px-[clamp(12px,1.8vw,20px)] py-[clamp(8px,1.2vw,13px)] no-underline transition hover:brightness-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
               >
                 <Image src={logoBlack} alt="Lil'OG" className="h-[clamp(30px,4vw,42px)] w-auto" />
@@ -447,7 +447,7 @@ export function Footer() {
             {/* ---------- LIGNE 3 : raccourcis pratiques ----------
                 Volontairement plus petits que la navigation ci-dessus : ce
                 sont des liens de service, pas les rayons de la boutique.
-                Plus de filet en pointillés ni d'intertitre — la différence
+                Plus de filet en pointillés ni d'intertitre : la différence
                 de taille suffit à les distinguer. */}
             <div className="mt-[clamp(10px,1.6vw,14px)] flex flex-wrap items-center gap-1.5">
               {SHORTCUTS.map(({ href, icon, label, external }) => (

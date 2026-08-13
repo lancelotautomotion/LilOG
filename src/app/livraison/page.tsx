@@ -1,7 +1,7 @@
 "use client";
 
 /* Composant client : les sections sont du JSX riche (gras, retours à
-   la ligne, liens). Créé côté client, il garde ses enfants statiques —
+   la ligne, liens). Créé côté client, il garde ses enfants statiques :
    sérialisé depuis le serveur, React réclamerait une clé par enfant. */
 
 import { DocCenter, DocSection, HELP_TABS, P, Bullets, Tldr, Notice, A } from "@/components/doc-center";
@@ -16,7 +16,7 @@ const SECTIONS: DocSection[] = [
       <>
         <Tldr>2 à 5 jours ouvrés de préparation, plus le délai du transporteur.</Tldr>
         <P>
-          Chaque pièce Lil&apos;OG est unique — une fois ta commande confirmée, nous la préparons avec soin avant de te
+          Chaque pièce Lil&apos;OG est unique : une fois ta commande confirmée, nous la préparons avec soin avant de te
           l&apos;envoyer. Compte <strong>2 à 5 jours ouvrés</strong>{" "}
           pour la préparation et l&apos;expédition, auxquels s&apos;ajoutent les délais du transporteur.
         </P>
@@ -37,8 +37,8 @@ const SECTIONS: DocSection[] = [
         <P>Deux transporteurs, un numéro de suivi transmis par e-mail dès l&apos;expédition :</P>
         <Bullets
           items={[
-            { label: "Colissimo", text: "— France" },
-            { label: "Mondial Relay", text: "— France & Europe" },
+            { label: "Colissimo", text: ": France" },
+            { label: "Mondial Relay", text: ": France & Europe" },
           ]}
         />
         <P>Les livraisons sont effectuées du lundi au vendredi, hors jours fériés. Aucune livraison le week-end.</P>
@@ -80,7 +80,7 @@ const SECTIONS: DocSection[] = [
         </P>
         <P>
           En cas de non-réception dans les délais annoncés, contacte-nous à <strong>lilog.shop@gmail.com</strong> en
-          précisant ton numéro de commande — nous faisons le nécessaire pour retrouver ton colis.
+          précisant ton numéro de commande, nous faisons le nécessaire pour retrouver ton colis.
         </P>
       </>
     ),
@@ -98,7 +98,7 @@ const SECTIONS: DocSection[] = [
           numéro de commande.
         </Notice>
         <P>
-          Nous prenons en charge les litiges liés au transport et trouvons une solution rapide — renvoi ou remboursement —
+          Nous prenons en charge les litiges liés au transport et trouvons une solution rapide (renvoi ou remboursement)
           selon les cas.
         </P>
         <P>
@@ -121,7 +121,7 @@ export default function LivraisonPage() {
       folder="LIVRAISON"
       root="AIDE"
       date="14 juillet 2026"
-      status="lilog.shop@gmail.com — Lun-Ven 10h/18h"
+      status="lilog.shop@gmail.com · Lun-Ven 10h/18h"
       sections={SECTIONS}
     />
   );

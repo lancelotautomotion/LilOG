@@ -1,11 +1,11 @@
 "use client";
 
 /* ============================================================
-   SEARCH_RESULTS.EXE — /search
+   SEARCH_RESULTS.EXE : /search
    ------------------------------------------------------------
    Même fenêtre unique que /category : barre de titre violette,
    barre de menus, barre d'adresse, puis un champ de recherche à
-   la place du bloc de filtres — la fiche produit se trouve par
+   la place du bloc de filtres, la fiche produit se trouve par
    mot-clé, pas seulement par rayon.
 
    ⚠ PAREFEU : Tailwind + feuille locale préfixée `lsr-`. Aucune
@@ -104,7 +104,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
             {/* Sous-en-tête */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d8d5e6] px-4 py-3 sm:px-6">
               <h2 className={`${MONO} text-[0.66rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase`}>
-                MEDIA_GRID — {results.length} RÉSULTAT{results.length !== 1 ? "S" : ""}
+                MEDIA_GRID · {results.length} RÉSULTAT{results.length !== 1 ? "S" : ""}
               </h2>
             </div>
 
@@ -117,7 +117,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
                   <span aria-hidden className="text-[2rem]">
                     🔍
                   </span>
-                  <p>Tape un mot-clé pour fouiller l&apos;archive — nom, matière, couleur, style…</p>
+                  <p>Tape un mot-clé pour fouiller l&apos;archive : nom, matière, couleur, style…</p>
                 </div>
               ) : results.length === 0 ? (
                 <div

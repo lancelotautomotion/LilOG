@@ -15,7 +15,7 @@ interface CartContextValue {
   count: number;
   pending: boolean;
   addItem: (variantId: string, quantity?: number) => Promise<void>;
-  /** Plusieurs lignes en un seul aller-retour — voir addLinesToCartAction. */
+  /** Plusieurs lignes en un seul aller-retour, voir addLinesToCartAction. */
   addItems: (lines: CartLineInput[]) => Promise<void>;
   updateQuantity: (lineId: string, quantity: number) => Promise<void>;
   removeItem: (lineId: string) => Promise<void>;

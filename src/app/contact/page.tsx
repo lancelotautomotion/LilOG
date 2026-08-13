@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   /contact — LIL_OG_SUPPORT_CENTER.EXE
+   /contact : LIL_OG_SUPPORT_CENTER.EXE
    Direction artistique Y2K / Windows 95 / Chunky Plastic.
 
    ⚠ PAREFEU : cette page est 100 % autonome.
@@ -81,7 +81,7 @@ const SHORTCUTS: {
   },
 ];
 
-/* Le clapet occupe désormais toute la hauteur de la colonne — donc celle
+/* Le clapet occupe désormais toute la hauteur de la colonne, donc celle
    du formulaire, puisque c'est lui qui dicte la hauteur de la rangée. Les
    raccourcis ont leur propre bande, plus bas. */
 function HotlineColumn() {
@@ -93,7 +93,7 @@ function HotlineColumn() {
 }
 
 /* ============================================================
-   Bande de raccourcis — pleine largeur, entre le formulaire et
+   Bande de raccourcis : pleine largeur, entre le formulaire et
    les disquettes. Icônes de bureau format « gros bouton ».
    ============================================================ */
 function Shortcuts() {
@@ -481,10 +481,10 @@ export default function ContactPage() {
           {/* ---- Barre de statut ---- */}
           <div className="flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
             <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
-              ✦ lilog.shop@gmail.com — Lun-Ven 10h/18h
+              ✦ lilog.shop@gmail.com · Lun-Ven 10h/18h
             </span>
             <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
-              3 objet(s) — 1.44 Mo
+              3 objet(s) · 1.44 Mo
             </span>
           </div>
         </div>

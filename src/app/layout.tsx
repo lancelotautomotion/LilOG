@@ -44,7 +44,7 @@ const lcd = VT323({
    « Module not found » (404 sur fonts.gstatic.com). Le fichier vit
    désormais dans le dépôt : plus rien à demander à Google au moment du
    build, donc plus de déploiement à la merci de son CDN.
-   Fichier variable couvrant les graisses 500 à 700, sous-ensemble latin —
+   Fichier variable couvrant les graisses 500 à 700, sous-ensemble latin :
    le seul usage est .msn-display-name, un prénom. */
 const gothic = localFont({
   src: "./fonts/grenze-gotisch-latin.woff2",
@@ -60,8 +60,8 @@ const hand = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Lil'OG — Pre-loved Y2K",
-  description: "Vintage Y2K de seconde main, une pièce à la fois — Paris.",
+  title: "Lil'OG · Pre-loved Y2K",
+  description: "Vintage Y2K de seconde main, une pièce à la fois · Paris.",
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

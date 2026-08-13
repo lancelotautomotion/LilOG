@@ -27,7 +27,7 @@ export interface ShopifyProductNode {
   options?: { name: string; values?: string[]; optionValues?: { name: string }[] }[];
   // Couleur, taille, matière : chacune interrogée sur plusieurs espaces de
   // noms candidats (le champ standard Shopify d'abord, puis les champs
-  // méta maison) — les boutiques ne rangent pas toutes ces informations
+  // méta maison), les boutiques ne rangent pas toutes ces informations
   // au même endroit. `RichMetafield` couvre les deux formes possibles :
   // texte simple ou référence à un metaobject de taxonomie.
   colorMeta?: RichMetafield | null;
@@ -86,7 +86,7 @@ export interface ProductVariant {
   availableForSale: boolean;
 }
 
-// Richer shape for the PDP — full image set, description, variants.
+// Richer shape for the PDP : full image set, description, variants.
 export interface ProductDetail {
   id: string;
   handle: string;
@@ -103,13 +103,13 @@ export interface ProductDetail {
   images: string[];
   // `variants` excludes the synthetic "Default Title" variant Shopify creates
   // for single-variant products (nothing to pick), but that variant's id is
-  // still what a cart line needs — kept here as the add-to-cart fallback.
+  // still what a cart line needs, kept here as the add-to-cart fallback.
   defaultVariantId: string | null;
   variants: ProductVariant[];
   size: string | null;
 }
 
-// Flat shape consumed by <ProductCard> — mirrors the design prototype's data.jsx shape.
+// Flat shape consumed by <ProductCard>, mirrors the design prototype's data.jsx shape.
 export interface Product {
   id: string;
   handle: string;
@@ -122,9 +122,9 @@ export interface Product {
   tag: "NEW" | "1 OF 1" | "SOLD" | null;
   tags: string[];
   colors: string[];
-  /** Tailles normalisées ("S", "38", …) — alimente le filtre du catalogue. */
+  /** Tailles normalisées ("S", "38", …), alimente le filtre du catalogue. */
   sizes: string[];
-  /** Matières (« Coton », « Polyester »…) — alimente le filtre du catalogue. */
+  /** Matières (« Coton », « Polyester »…), alimente le filtre du catalogue. */
   materials: string[];
   imageA: string;
   imageB: string;

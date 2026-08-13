@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   Stickers décoratifs Y2K — vocabulaire commun de /contact
+   Stickers décoratifs Y2K : vocabulaire commun de /contact
    ------------------------------------------------------------
    Ces pastilles vectorielles sont partagées par les disquettes
    d'INFOS_PRATIQUES et par le clapet : c'est ce qui garantit que
@@ -86,9 +86,9 @@ export function GemSticker({
   );
 }
 
-/* Étoile chrome bombée : le volume vient des facettes — pour chaque
+/* Étoile chrome bombée : le volume vient des facettes, pour chaque
    branche, une moitié éclairée et une moitié à l'ombre partant du
-   centre — plus un liseré clair sur tout le pourtour. */
+   centre, plus un liseré clair sur tout le pourtour. */
 const STAR_TIPS: [number, number][] = [
   [50, 3],
   [94.7, 35.5],

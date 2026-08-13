@@ -1,22 +1,22 @@
 /* ============================================================
-   Lil'OG — Y2K editorial vintage. Design tokens + base styles.
+   Lil'OG : Y2K editorial vintage. Design tokens + base styles.
    ============================================================ */
 
 :root {
-  /* Brand palette — lavender + bubblegum + gold on greyed charcoal & cream */
-  --choco: #322f37;          /* greyed charcoal — text + dark section backgrounds */
+  /* Brand palette : lavender + bubblegum + gold on greyed charcoal & cream */
+  --choco: #322f37;          /* greyed charcoal, text + dark section backgrounds */
   --choco-deep: #211f26;     /* darker charcoal for footer */
   --choco-soft: #6e6975;     /* muted grey for meta */
-  --pink: #f7a3e3;           /* bubblegum pink — primary accent */
+  --pink: #f7a3e3;           /* bubblegum pink, primary accent */
   --pink-soft: #f9c4ee;      /* softer bubblegum */
-  --butter: #f2d488;         /* golden yellow — highlight */
+  --butter: #f2d488;         /* golden yellow, highlight */
   --bubble: #f7a3e3;         /* bubblegum pink */
   --gold: #f2d488;           /* golden yellow */
   --cream: #f3ece6;          /* page base */
   --cream-2: #e7ddd2;
   --paper: #faf6f1;
 
-  /* Accent — driven by Tweaks (subtle pink by default) */
+  /* Accent : driven by Tweaks (subtle pink by default) */
   --accent: var(--pink);
 
   /* Fonts */
@@ -625,7 +625,7 @@ a { color: inherit; text-decoration: none; }
 .card-price s { color: var(--choco-soft); opacity: 0.6; margin-right: 6px; }
 
 /* ============================================================
-   LOOKBOOK — Zara-style succession of full-bleed photos
+   LOOKBOOK : Zara-style succession of full-bleed photos
    ============================================================ */
 .lookbook {
   display: flex;

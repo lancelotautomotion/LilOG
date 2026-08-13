@@ -2,7 +2,7 @@ import { AuthForm } from "@/components/auth-form";
 import { PageShell } from "@/components/page-shell";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Connexion — Lil'OG" };
+export const metadata: Metadata = { title: "Connexion · Lil'OG" };
 
 /* Étoiles métalliques du fond. Positions figées : pas de Math.random
    au rendu, donc pas de mismatch d'hydratation. */

@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   ARCADE_SLOT — module 02 de l'accueil
+   ARCADE_SLOT : module 02 de l'accueil
    ------------------------------------------------------------
    La borne d'arcade qui envoie sur /dressing-machine : coque de
    plastique gris biseautée, fronton lumineux, écran cathodique
@@ -20,7 +20,7 @@ import { LCD, MONO, NAVY_BAR, PLASTIC, SectionLabel, WindowFrame } from "@/compo
 /** Les symboles qui défilent dans les rouleaux. */
 const REEL = ["👗", "👠", "👜", "🕶️", "💍", "👖", "🎀", "💄"];
 
-/** Chaque rouleau tourne à sa propre vitesse — sinon l'illusion tombe. */
+/** Chaque rouleau tourne à sa propre vitesse, sinon l'illusion tombe. */
 const REEL_SPEEDS = ["2.1s", "2.8s", "3.4s"];
 
 const ARCADE_CSS = `
@@ -66,7 +66,7 @@ const ARCADE_CSS = `
 
 /**
  * Un strass : dégradé radial nacré + croix scintillante, posé en pastille.
- * `uid` — comme GemSticker/ChromeStar — donne un id de gradient unique par
+ * `uid`, comme GemSticker/ChromeStar, donne un id de gradient unique par
  * instance : plusieurs strass à la même taille et au même délai auraient
  * sinon fabriqué le même id, et le second se serait tu (silencieusement
  * retombé sur le gradient déjà déclaré par le premier).
@@ -144,7 +144,7 @@ export function ArcadeSlot() {
     <section id="slot" className="px-4 py-[clamp(48px,8vw,96px)] sm:px-6">
       {/* Conteneur élargi (980px → 1400px, la largeur des autres fenêtres du
           site) : la borne garde sa taille propre mais n'est plus seule au
-          centre — un texte de présentation prend la colonne de gauche, elle
+          centre : un texte de présentation prend la colonne de gauche, elle
           se retrouve décalée à droite. */}
       <div className="mx-auto w-full max-w-[1400px]">
         <SectionLabel n="02" file="ARCADE_SLOT.EXE" tone="wallpaper" />
@@ -159,7 +159,7 @@ export function ArcadeSlot() {
             bords. */}
         <div className="grid gap-10 lg:grid-cols-[minmax(0,420px)_minmax(0,780px)] lg:items-center lg:justify-center xl:gap-14">
           {/* ---- Texte de présentation, pour qui arrive sur le site ----
-              Sur mobile, il suit la borne plutôt que de la précéder — la
+              Sur mobile, il suit la borne plutôt que de la précéder, la
               vitrine visuelle accroche d'abord, l'explication vient ensuite,
               comme le reste du site (hero, puis légende). */}
           {/* Le texte vit dans une fenêtre, pas à même le fond : posé

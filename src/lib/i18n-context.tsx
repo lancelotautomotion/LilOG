@@ -16,7 +16,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Reads localStorage (unavailable during SSR), so this can only run
-    // client-side post-mount — the brief default-locale flash is intentional.
+    // client-side post-mount, the brief default-locale flash is intentional.
     const stored = localStorage.getItem(STORAGE_KEY) as LangCode | null;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (stored && DICT[stored]) setLang(stored);

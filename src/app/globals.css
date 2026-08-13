@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Lil'OG — Y2K editorial vintage. Design tokens + base styles.
+   Lil'OG : Y2K editorial vintage. Design tokens + base styles.
    Ported from design-reference/styles.css, fonts wired to next/font.
    ============================================================ */
 
 :root {
-  /* LDL v1.0 — Lil'OG Design Language */
+  /* LDL v1.0 : Lil'OG Design Language */
   --choco: #1E2430;          /* LDL text */
   --choco-deep: #111827;     /* deep dark */
   --choco-soft: #6B7280;     /* muted text / meta */
   --pink: #FF77C8;           /* LDL accent */
   --pink-soft: #FFB8E0;      /* softer accent */
-  --butter: #f2d488;         /* golden yellow — secondary highlight */
+  --butter: #f2d488;         /* golden yellow, secondary highlight */
   --bubble: #FF77C8;         /* alias */
   --gold: #f2d488;
   --cream: #F7F8FC;          /* LDL background */
@@ -31,7 +31,7 @@
   --ldl-radius: 0px;
   --ldl-titlebar: #1B48CE;
   /* Barre de titre unique du site : le fronton de la borne d'arcade,
-     violet profond → violet → fuchsia. Toutes les fenêtres la portent —
+     violet profond → violet → fuchsia. Toutes les fenêtres la portent,
      menu, catalogue, fiches, compte, panier, wishlist, Dressing Machine.
      Six dégradés différents cohabitaient avant, du navy Win95 au rose. */
   --y2k-titlebar: linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%);
@@ -42,14 +42,14 @@
   --ldl-btn: #1B48CE;
   --ldl-transition: 180ms ease;
 
-  /* Accent — LDL pink */
+  /* Accent : LDL pink */
   --accent: var(--ldl-accent);
 
   /* Fonts */
-  --serif: var(--font-serif), ui-monospace, monospace;    /* IBM Plex Mono — titles */
-  --sans: var(--font-sans), system-ui, sans-serif;        /* Montserrat — body */
-  --mono: var(--font-mono), ui-monospace, monospace;      /* Space Mono — labels */
-  --gothic: var(--font-gothic), var(--serif);             /* Grenze Gotisch — accents éditoriaux */
+  --serif: var(--font-serif), ui-monospace, monospace;    /* IBM Plex Mono, titles */
+  --sans: var(--font-sans), system-ui, sans-serif;        /* Montserrat, body */
+  --mono: var(--font-mono), ui-monospace, monospace;      /* Space Mono, labels */
+  --gothic: var(--font-gothic), var(--serif);             /* Grenze Gotisch, accents éditoriaux */
 
   --ui-track: 0.18em;
 
@@ -335,7 +335,7 @@ a { color: inherit; text-decoration: none; }
 }
 .drawer.open { transform: translateX(0); }
 
-/* Title bar — dégradé bleu marine → violet, titre en monospace (comme /account) */
+/* Title bar : dégradé bleu marine → violet, titre en monospace (comme /account) */
 .drawer-w95-bar {
   display: flex;
   align-items: center;
@@ -382,7 +382,7 @@ a { color: inherit; text-decoration: none; }
 .drawer-w95-close { cursor: pointer; transition: background 120ms; }
 .drawer-w95-close:hover { background: rgba(255,255,255,0.22); }
 
-/* Nav content — liste de cartes arrondies, façon /account (acct-nav-btn) */
+/* Nav content : liste de cartes arrondies, façon /account (acct-nav-btn) */
 .drawer-nav {
   padding: 14px;
   display: flex;
@@ -397,7 +397,7 @@ a { color: inherit; text-decoration: none; }
   gap: 6px;
 }
 
-/* Liens principaux — cartes blanches arrondies, monospace, surlignage plein au survol */
+/* Liens principaux : cartes blanches arrondies, monospace, surlignage plein au survol */
 .drawer-link, .drawer-parent {
   font-family: var(--mono);
   font-size: 0.82rem;
@@ -424,7 +424,7 @@ a { color: inherit; text-decoration: none; }
   color: #fff;
 }
 
-/* Contact — bouton en couleur inversée (permanent), léger espace au-dessus */
+/* Contact : bouton en couleur inversée (permanent), léger espace au-dessus */
 .drawer-item-contact { margin-top: 10px; }
 .drawer-link-contact,
 .drawer-link-contact:hover {
@@ -473,7 +473,7 @@ a { color: inherit; text-decoration: none; }
 .drawer-item.open .drawer-parent:not(:hover) { border-color: var(--ldl-primary); color: var(--ldl-primary); }
 .drawer-item.open .caret { transform: rotate(180deg); }
 
-/* Sous-menu — carte imbriquée, même vibe arrondie */
+/* Sous-menu : carte imbriquée, même vibe arrondie */
 .drawer-sub {
   overflow: hidden;
   max-height: 0;
@@ -807,7 +807,7 @@ a { color: inherit; text-decoration: none; }
 .card-price s { color: var(--choco-soft); opacity: 0.6; margin-right: 6px; }
 
 /* ============================================================
-   LOOKBOOK — Zara-style succession of full-bleed photos
+   LOOKBOOK : Zara-style succession of full-bleed photos
    ============================================================ */
 .lookbook {
   display: flex;
@@ -1401,9 +1401,9 @@ a { color: inherit; text-decoration: none; }
 }
 /* [col1, row1] Title */
 .cat-grid-title   { grid-column: 1; grid-row: 1; align-self: end; }
-/* [col2, row1] Vibe card — right-aligned within its column */
+/* [col2, row1] Vibe card : right-aligned within its column */
 .cat-vibe-card    { grid-column: 2; grid-row: 1; margin-left: auto; }
-/* [col1, row2] Filter — sticky so it stays fixed while right col scrolls */
+/* [col1, row2] Filter : sticky so it stays fixed while right col scrolls */
 .filter-sidebar   { grid-column: 1; grid-row: 2; position: sticky; top: 96px; }
 /* [col2, row2] Product grid */
 .category-grid-wrap { grid-column: 2; grid-row: 2; min-width: 0; }
@@ -1601,7 +1601,7 @@ a { color: inherit; text-decoration: none; }
 .cart-checkout:hover { background: var(--accent); }
 
 /* ============================================================
-   OUTFIT COMPUTER — Clueless cart
+   OUTFIT COMPUTER : Clueless cart
    ============================================================ */
 
 /* ── Outfit machine root ── */
@@ -1622,7 +1622,7 @@ a { color: inherit; text-decoration: none; }
   z-index: 0;
 }
 
-/* Full-page layout — machine + summary side by side */
+/* Full-page layout : machine + summary side by side */
 .oc-page {
   position: relative;
   z-index: 1;
@@ -1646,7 +1646,7 @@ a { color: inherit; text-decoration: none; }
 .oc-center > .oc-win95-outer { flex: 1; display: flex; flex-direction: column; }
 .oc-center > .oc-win95-outer .oc-win95-screen { flex: 1; }
 
-/* Window shell — fond blanc pur, bordures fines, standard UI 2026 (aligné /account) */
+/* Window shell : fond blanc pur, bordures fines, standard UI 2026 (aligné /account) */
 .oc-win95-outer {
   width: 100%;
   background: #fff;
@@ -1679,7 +1679,7 @@ a { color: inherit; text-decoration: none; }
   line-height: 1;
 }
 
-/* Screen — cadre propre, fond blanc/gris très clair (évite tout bug de transparence PNG) */
+/* Screen : cadre propre, fond blanc/gris très clair (évite tout bug de transparence PNG) */
 .oc-win95-screen {
   margin: 0;
   border: none;
@@ -1709,7 +1709,7 @@ a { color: inherit; text-decoration: none; }
   object-fit: cover !important;
   display: block !important;
 }
-/* Scan beam overlay — sweeps top→bottom over the photo during 'filling' phase */
+/* Scan beam overlay : sweeps top→bottom over the photo during 'filling' phase */
 .oc-scan-overlay {
   position: absolute;
   inset: 0;
@@ -1765,7 +1765,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--ldl-primary);
   flex-shrink: 0;
 }
-/* ── Style Scanner — épuré, bleu roi sur fond blanc ── */
+/* ── Style Scanner : épuré, bleu roi sur fond blanc ── */
 .oc-style-meter {
   display: flex;
   flex-direction: column;
@@ -1788,7 +1788,7 @@ a { color: inherit; text-decoration: none; }
   user-select: none;
 }
 
-/* Barre — segments bleu roi sur piste claire */
+/* Barre : segments bleu roi sur piste claire */
 .oc-scan-bar-track {
   width: 88%;
   height: 12px;
@@ -1823,7 +1823,7 @@ a { color: inherit; text-decoration: none; }
   );
 }
 
-/* Zone de texte sous la barre — hauteur fixe = pas de saut de layout */
+/* Zone de texte sous la barre : hauteur fixe = pas de saut de layout */
 .oc-scan-result {
   min-height: 1.1rem;
   display: flex;
@@ -1839,7 +1839,7 @@ a { color: inherit; text-decoration: none; }
   animation: ocCursorBlink 500ms step-end infinite;
 }
 
-/* Phrase finale — police LCD (VT323) */
+/* Phrase finale : police LCD (VT323) */
 .oc-scan-phrase {
   font-family: var(--font-lcd), monospace;
   font-size: 1.55rem;
@@ -1887,7 +1887,7 @@ a { color: inherit; text-decoration: none; }
 .oc-screen-empty p { font-family: var(--mono); font-size: 0.8rem; color: var(--ldl-text); margin: 0; text-align: center; }
 .oc-link { font-family: var(--mono); font-size: 0.7rem; color: var(--ldl-primary); border-bottom: 1px solid var(--ldl-primary); padding-bottom: 2px; }
 
-/* Boutons de navigation — épurés, agrandis, fond blanc / bleu au survol */
+/* Boutons de navigation : épurés, agrandis, fond blanc / bleu au survol */
 .oc-nav-row {
   display: flex;
   align-items: center;
@@ -2025,7 +2025,7 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* Taille / État / Marque — infos étendues de la ligne produit */
+/* Taille / État / Marque : infos étendues de la ligne produit */
 .oc-summary-meta {
   display: flex;
   flex-wrap: wrap;
@@ -2048,7 +2048,7 @@ a { color: inherit; text-decoration: none; }
   font-weight: 700;
   color: var(--ldl-primary);
 }
-/* Bouton de suppression — discret */
+/* Bouton de suppression : discret */
 .oc-summary-remove {
   background: transparent;
   border: 1px solid transparent;
@@ -2091,7 +2091,7 @@ a { color: inherit; text-decoration: none; }
   color: var(--ldl-muted);
   margin: 0;
 }
-/* CTA principal — harmonisé avec SETUP_MY_LOOK.EXE (/account) */
+/* CTA principal : harmonisé avec SETUP_MY_LOOK.EXE (/account) */
 .oc-checkout-btn {
   display: block;
   width: 100%;
@@ -2194,7 +2194,7 @@ a { color: inherit; text-decoration: none; }
   100% { transform: translateY(-13vh) scale(0.88); opacity: 0; }
 }
 
-/* Jerky wing flaps — steps() gives the sacadé effect */
+/* Jerky wing flaps : steps() gives the sacadé effect */
 @keyframes chWingR {
   0%   { transform: rotateZ(-10deg); }
   33%  { transform: rotateZ(20deg);  }
@@ -2258,10 +2258,10 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   LOGIN — LIL_OG_MESSENGER_V2.0.EXE
+   LOGIN : LIL_OG_MESSENGER_V2.0.EXE
    La page est écrite en Tailwind ; ne restent ici que les keyframes
    et la police, qu'aucun utilitaire ne couvre.
-   (Le bloc AUTH — LDL qui occupait cette place a disparu avec
+   (Le bloc AUTH / LDL qui occupait cette place a disparu avec
    l'ancienne fenêtre : aucune de ses classes n'était utilisée ailleurs.)
    ══════════════════════════════════════════════════════════════════ */
 
@@ -2312,7 +2312,7 @@ a { color: inherit; text-decoration: none; }
 .login-star { animation: login-twinkle 5s ease-in-out infinite; }
 
 /* ══════════════════════════════════════════════════════════════════
-   ACCOUNT PAGES — LDL v1.0
+   ACCOUNT PAGES : LDL v1.0
    ══════════════════════════════════════════════════════════════════ */
 
 /* Full-page desktop */
@@ -2948,7 +2948,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ============================================================
-   MSN PROFILE — colonne gauche (UI épurée, fond blanc)
+   MSN PROFILE : colonne gauche (UI épurée, fond blanc)
    ============================================================ */
 
 /* Carte : pas de biseau 3D, juste une bordure fine + ombre nette */
@@ -3097,7 +3097,7 @@ a { color: inherit; text-decoration: none; }
 .msn-edit-btn { justify-content: center; }
 
 /* ============================================================
-   MODALE AVATAR — carrousel
+   MODALE AVATAR : carrousel
    ============================================================ */
 .msn-modal-scrim {
   position: fixed;
@@ -3219,7 +3219,7 @@ a { color: inherit; text-decoration: none; }
   animation: msn-fade 200ms ease;
 }
 
-/* Nom du personnage — texte plat, lisible */
+/* Nom du personnage : texte plat, lisible */
 .msn-carousel-name {
   font-family: var(--mono);
   font-size: 0.82rem;
@@ -3854,7 +3854,7 @@ a { color: inherit; text-decoration: none; }
 
 
 /* ============================================================
-   LDL — Lil'OG Design Language v1.0
+   LDL : Lil'OG Design Language v1.0
    Future-retro: Windows 98 evolved to 2026.
    ============================================================ */
 
@@ -4548,7 +4548,7 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   LDL — STATIC PAGES
+   LDL : STATIC PAGES
    ═══════════════════════════════════════════════════════════════ */
 .static-page {
   padding: clamp(80px, 10vw, 110px) clamp(16px, 5vw, 80px) 80px !important;
@@ -5038,9 +5038,9 @@ html, body {
 /* ── Entrée /dressing-machine : une borne d'arcade dans le menu ──────
    C'est l'attraction du site, pas un rayon du catalogue : elle cesse
    d'être une carte blanche parmi douze pour devenir l'écran du cabinet
-   d'ARCADE_SLOT.EXE, sur l'accueil — verre noir, balayage cathodique,
+   d'ARCADE_SLOT.EXE, sur l'accueil : verre noir, balayage cathodique,
    titre LCD néon et ampoules de fronton. Le contraste tient surtout au
-   matériau — les onze rayons sont en papier, celle-ci est allumée — et
+   matériau (les onze rayons sont en papier, celle-ci est allumée) et
    à peine à la taille : seize pixels de plus que les autres lignes,
    pris par la ligne d'attente du bas. */
 /* Respiration sous la borne : elle n'est pas le premier des rayons mais
@@ -5055,7 +5055,7 @@ html, body {
   /* En rang comme les autres entrées : le titre et sa ligne d'attente
      s'empilent dans leur propre colonne, ce qui laisse le bouton se
      centrer sur toute la hauteur du cabinet plutôt que de se caler sur
-     la ligne du titre. Rembourrage symétrique — le bloc de texte tombe
+     la ligne du titre. Rembourrage symétrique, le bloc de texte tombe
      alors au milieu de l'écran. */
   align-items: center;
   gap: 11px;
@@ -5070,7 +5070,7 @@ html, body {
 }
 .drawer-link-closet:hover { filter: brightness(1.12); }
 
-/* Balayage du tube — décoratif, posé sous le texte (z-index des enfants). */
+/* Balayage du tube : décoratif, posé sous le texte (z-index des enfants). */
 .drawer-link-closet::after {
   content: "";
   position: absolute;
@@ -5181,7 +5181,7 @@ html, body {
 }
 
 /* ============================================================
-   /dressing-machine — VIRTUAL_CLOSET.EXE
+   /dressing-machine : VIRTUAL_CLOSET.EXE
    Borne d'arcade / écran de contrôle rétro façon Clueless.
 
    Le châssis extérieur reste celui de /account (fenêtre blanche,
@@ -5194,7 +5194,7 @@ html, body {
   --dm-nav-h: 52px;            /* hauteur de .nav (globals) */
   /* Plastique de la borne d'arcade de l'accueil (ARCADE_SLOT.EXE) : le
      boîtier beige Win95 laisse place au lavande nacré, les arêtes passent
-     du gris-brun au violet. Le catalogue n'a pas bougé — c'est la même
+     du gris-brun au violet. Le catalogue n'a pas bougé, c'est la même
      machine, dans la matière du reste du site. */
   --dm-chassis: #e6e3f2;       /* plastique lavande, corps du cabinet */
   --dm-chassis-2: #c6c2d8;
@@ -5359,10 +5359,10 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-toolbar-tag strong { color: var(--ldl-primary); font-weight: 700; }
 
 /* ================================================================
-   L'ÉCRAN — deux baies plein cadre, séparées par une arête de 4px
+   L'ÉCRAN : deux baies plein cadre, séparées par une arête de 4px
    ================================================================ */
 /* Grille plutôt que deux colonnes flex : bandeau, hublot, plaque et bouton
-   partagent les mêmes rangées, donc s'alignent par construction — et la
+   partagent les mêmes rangées, donc s'alignent par construction, et la
    bulle centrale peut se poser sur la rangée du hublot, pas sur toute la
    hauteur de l'écran. */
 .dm-screen {
@@ -5593,7 +5593,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-spin-emoji { font-size: 1rem; line-height: 1; }
 
 /* Cœur de la pièce : même plastique que le SPIN, en pastille carrée.
-   Coché, il s'enfonce et vire au violet #7147D4 — celui de STYLE_ME. */
+   Coché, il s'enfonce et vire au violet #7147D4, celui de STYLE_ME. */
 .dm-heart {
   flex: 0 0 auto;
   width: 62px;
@@ -5651,7 +5651,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 
 /* Strass de la maison le long de l'arête : les mêmes pastilles vectorielles
    (ChromeStar / GemSticker) que /faq, /contact, /login et le bas de page,
-   à la place des anciens chevrons et breloques en glyphe — le rendu ne
+   à la place des anciens chevrons et breloques en glyphe : le rendu ne
    dépend ainsi d'aucune police système. Deux étoiles chromées aux
    extrémités, deux cœurs roses, et deux étoiles roses qui encadrent la
    bulle. Portées par .dm-style-cell, donc cantonnées à la rangée du
@@ -5674,8 +5674,8 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 }
 
 /* Les quatre du rail. La cellule ne fait que 4px de large : le recentrage
-   passe par la propriété `translate`, et non par `transform` — que
-   l'animation occupe déjà — et reste correct pour des pastilles bien plus
+   passe par la propriété `translate`, et non par `transform` (que
+   l'animation occupe déjà), et reste correct pour des pastilles bien plus
    larges que leur conteneur. */
 .dm-strass-rail {
   position: absolute;
@@ -5738,7 +5738,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 }
 
 /* Bulle d'arcade : cercle parfait, plastique fuchsia bombé, à cheval sur
-   l'arête. Le bombé tient à trois couches — reflet spéculaire haut, ombre
+   l'arête. Le bombé tient à trois couches : reflet spéculaire haut, ombre
    interne basse, tranche portée sous le bouton. */
 .dm-style-me {
   position: relative;
@@ -5805,7 +5805,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-style-me:focus-visible { outline: 3px dotted #fff; outline-offset: 4px; }
 
 /* ================================================================
-   LA CONSOLE — barre de contrôle basse
+   LA CONSOLE : barre de contrôle basse
    ================================================================ */
 .dm-console {
   flex-shrink: 0;
@@ -5988,7 +5988,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 }
 .dm-w95:focus-visible { outline: 2px dotted #14161d; outline-offset: 3px; }
 
-/* Save — Win95 gris, LED verte quand le look est en wishlist */
+/* Save : Win95 gris, LED verte quand le look est en wishlist */
 .dm-save { align-self: center; }
 .dm-save-led {
   width: 8px;
@@ -6167,7 +6167,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 }
 
 /* ================================================================
-   ÉTAPE 1 — SYSTEM_LOGIN.EXE
+   ÉTAPE 1 : SYSTEM_LOGIN.EXE
    ================================================================ */
 .dm-gate-scrim {
   position: fixed;
@@ -6350,13 +6350,13 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 }
 
 /* ============================================================
-   Navbar — boutons « chunky plastic » (Y2K / Mac OS 9)
+   Navbar : boutons « chunky plastic » (Y2K / Mac OS 9)
 
    Chaque cible cliquable du header devient une pastille de plastique
    moulé : dégradé gris teinté violet, lumière en haut, creux en bas,
    tranche portée. Le bloc est en fin de feuille et porte des !important
    là où la section LDL en pose déjà (fond, bordure, rayon, padding des
-   .nav-icon-btn) — sans quoi ces règles-là l'emporteraient.
+   .nav-icon-btn), sans quoi ces règles-là l'emporteraient.
    ============================================================ */
 
 :root {
@@ -6385,7 +6385,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   transition: filter 130ms ease, box-shadow 90ms ease, transform 90ms ease !important;
 }
 
-/* Pastilles à texte — même hauteur que les rondes, la rangée s'aligne. */
+/* Pastilles à texte : même hauteur que les rondes, la rangée s'aligne. */
 .nav .nav-closet,
 .nav .nav-login-text,
 .nav .lang-btn {

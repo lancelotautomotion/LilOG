@@ -21,7 +21,7 @@ async function getShopifyToken(): Promise<string | null> {
   return (session as { shopifyToken?: string | null } | null)?.shopifyToken ?? null;
 }
 
-/* Lie le panier au client Shopify connecté s'il ne l'est pas déjà —
+/* Lie le panier au client Shopify connecté s'il ne l'est pas déjà,
    condition pour que la commande finale apparaisse dans son historique. */
 async function ensureLinkedToCustomer(cartId: string, token: string | null): Promise<Cart | null> {
   if (!token) return null;
@@ -53,7 +53,7 @@ export async function getCartAction(): Promise<Cart | null> {
  *
  * Un appel par pièce ne marche pas pour un look complet : le tout premier
  * crée le panier *et* pose le cookie, et les appels suivants sont émis avant
- * que le navigateur ait forcément appliqué ce Set-Cookie — ils repartent donc
+ * que le navigateur ait forcément appliqué ce Set-Cookie, ils repartent donc
  * sans identifiant et recréent chacun leur panier. Une seule mutation Shopify
  * pour tout le look supprime la course.
  */

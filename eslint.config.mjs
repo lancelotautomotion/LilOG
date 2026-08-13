@@ -12,7 +12,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Static design prototype kept for reference only — not part of the app build.
+    // Static design prototype kept for reference only: not part of the app build.
     "design-reference/**",
   ]),
 ]);

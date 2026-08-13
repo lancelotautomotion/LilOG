@@ -1,8 +1,8 @@
-# Emails Shopify — gabarits Lil'OG
+# Emails Shopify · gabarits Lil'OG
 
 Les emails transactionnels (confirmation de compte, commande, expédition…)
 ne sont **pas** envoyés par ce site : c'est Shopify qui les compose et les
-expédie. Rien dans ce dossier n'est déployé sur Vercel — les fichiers vivent
+expédie. Rien dans ce dossier n'est déployé sur Vercel : les fichiers vivent
 ici pour être versionnés et relus, puis **copiés-collés dans l'admin Shopify**.
 
 ## 1. Coller un gabarit
@@ -22,7 +22,7 @@ Garder une copie de l'ancien gabarit avant de coller : Shopify propose
 - **Le bouton renvoie sur lilog.shop**, jamais sur `{{ shop.url }}`. La
   boutique Shopify est sans devanture : son URL est le `.myshopify.com`, qui
   n'a rien à faire dans un email client. Les liens sont donc écrits en dur
-  vers le domaine du site — c'est la variable `site` en haut du fichier, à
+  vers le domaine du site : c'est la variable `site` en haut du fichier, à
   changer là et nulle part ailleurs si le domaine bouge un jour.
 - **L'identité visuelle** : fenêtre Y2K, barre de titre au dégradé violet →
   fuchsia de la maison, logo, bouton chunky rose, barre de statut.
@@ -35,7 +35,7 @@ Garder une copie de l'ancien gabarit avant de coller : Shopify propose
   Outlook, qui ne sait pas dégrader.
 - Space Mono n'existe pas dans les clients mail : la pile de polices retombe
   sur les monospaces du système.
-- Les images doivent être servies en HTTPS depuis un domaine public — ici
+- Les images doivent être servies en HTTPS depuis un domaine public, ici
   `https://lilog.shop/logo-black.png`, déjà dans `public/`.
 
 ## 2. Changer l'adresse d'expéditeur
@@ -54,7 +54,7 @@ d'une adresse frauduleuse. Pour envoyer depuis une adresse du domaine :
 
 ⚠️ Le domaine `lilog.shop` pointe sur Vercel. Ces enregistrements doivent être
 ajoutés **là où sont gérés les DNS du domaine** (Vercel, ou le bureau
-d'enregistrement si les serveurs de noms n'ont pas été délégués) — pas dans
+d'enregistrement si les serveurs de noms n'ont pas été délégués), pas dans
 Shopify, qui se contente de les vérifier.
 
 ## 3. Les autres notifications

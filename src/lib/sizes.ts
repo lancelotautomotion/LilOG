@@ -1,8 +1,8 @@
 // Size vocabulary shared by the Shopify mapper (server) and the Virtual
-// Closet UI (client) — kept out of the shopify/ folder so importing it from a
+// Closet UI (client) : kept out of the shopify/ folder so importing it from a
 // client component doesn't drag the Storefront client into the bundle.
 
-// Values that mean "fits everyone" — treated as *no* size so the piece stays
+// Values that mean "fits everyone" : treated as *no* size so the piece stays
 // visible whatever the shopper picked at the gate.
 const ONE_SIZE = new Set([
   "TU", "U", "UNI", "UNIQUE", "TAILLE UNIQUE", "ONE SIZE", "OS", "ONESIZE", "DEFAULT TITLE", "-", "",
@@ -25,7 +25,7 @@ export function normalizeSize(raw: string): string | null {
     .trim()
     .toUpperCase()
     .replace(/\s+/g, " ")
-    // "38 / 40" and "38/40" are the same combined size — one chip, not two.
+    // "38 / 40" and "38/40" are the same combined size, one chip, not two.
     .replace(/\s*([/-])\s*/g, "$1");
   if (ONE_SIZE.has(upper)) return null;
   const mapped = WORD_SIZES[upper] ?? upper;
@@ -37,7 +37,7 @@ const LETTER_SIZES = new Set(["XXXS", "XXS", "XS", "S", "M", "L", "XL", "XXL", "
 /**
  * Does this value actually look like a size?
  *
- * Shopify options aren't named consistently — a shop may file the brand, the
+ * Shopify options aren't named consistently, a shop may file the brand, the
  * era or the condition as a variant option. Without this guard the closet
  * offered "BLANCHEPORTE" and "PHILDAR" as morphologies. Only applied to
  * options we *couldn't* identify by name; an option explicitly called
@@ -57,7 +57,7 @@ export function looksLikeSize(value: string): boolean {
 }
 
 /**
- * Size hidden in a product tag — `taille-m`, `Taille 38`, `T38`, `size-L`,
+ * Size hidden in a product tag: `taille-m`, `Taille 38`, `T38`, `size-L`,
  * or a bare letter size. Numerics need an explicit prefix: a lone `40` tag is
  * as likely to be a decade as a size.
  */
@@ -74,12 +74,12 @@ export function sizeFromTag(tag: string): string | null {
 /** Shown in the gate when the catalogue carries no size data of its own. */
 export const STANDARD_SIZES = ["XS", "S", "M", "L", "XL"];
 
-/** Same idea for footwear — EU sizes, the range Lil'OG actually stocks. */
+/** Same idea for footwear : EU sizes, the range Lil'OG actually stocks. */
 export const STANDARD_SHOE_SIZES = ["35", "36", "37", "38", "39", "40", "41", "42"];
 
 /**
  * Correspondance lettre ↔ taille FR (femme). Le catalogue mélange les deux
- * barèmes — un haut est étiqueté « S », une jupe « 36 » — et deux pièces de
+ * barèmes, un haut est étiqueté « S », une jupe « 36 », et deux pièces de
  * la même taille ne se ressemblent donc pas du tout, chaîne pour chaîne.
  * Sert à rapprocher un haut d'un bas dans la même taille.
  */

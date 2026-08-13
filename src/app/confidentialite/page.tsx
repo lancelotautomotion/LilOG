@@ -1,7 +1,7 @@
 "use client";
 
 /* Composant client : les sections sont du JSX riche (gras, retours à
-   la ligne, liens). Créé côté client, il garde ses enfants statiques —
+   la ligne, liens). Créé côté client, il garde ses enfants statiques :
    sérialisé depuis le serveur, React réclamerait une clé par enfant. */
 
 import { DocCenter, DocSection, P, Bullets, Tldr, Notice } from "@/components/doc-center";
@@ -18,7 +18,7 @@ const SECTIONS: DocSection[] = [
           Le responsable du traitement des données personnelles collectées via le site lil-og.vercel.app est :
         </P>
         <P>
-          <strong>Louna Lili Guitton — Lil&apos;OG</strong>
+          <strong>Louna Lili Guitton · Lil&apos;OG</strong>
           <br />
           26 rue Soubise, 93400 Saint-Ouen-Sur-Seine, France
           <br />
@@ -35,7 +35,7 @@ const SECTIONS: DocSection[] = [
     content: (
       <>
         <Tldr>
-          ce qu&apos;il faut pour t&apos;envoyer ton colis et te répondre — jamais tes coordonnées bancaires, gérées par
+          ce qu&apos;il faut pour t&apos;envoyer ton colis et te répondre, jamais tes coordonnées bancaires, gérées par
           Shopify Payments.
         </Tldr>
         <P>Dans le cadre de son activité, Lil&apos;OG collecte les données suivantes :</P>
@@ -45,7 +45,7 @@ const SECTIONS: DocSection[] = [
             { label: "Données de livraison :", text: "adresse postale complète" },
             {
               label: "Données de paiement :",
-              text: "traitées directement par Shopify Payments — Lil'OG n'a pas accès aux données bancaires",
+              text: "traitées directement par Shopify Payments ; Lil'OG n'a pas accès aux données bancaires",
             },
             {
               label: "Données de navigation :",
@@ -110,9 +110,9 @@ const SECTIONS: DocSection[] = [
         </P>
         <Bullets
           items={[
-            { label: "Shopify Inc.", text: "— plateforme e-commerce et paiement" },
-            { label: "Colissimo / Mondial Relay", text: "— transporteurs pour la livraison" },
-            { label: "Klarna / Alma", text: "— paiement fractionné (si utilisé)" },
+            { label: "Shopify Inc.", text: ": plateforme e-commerce et paiement" },
+            { label: "Colissimo / Mondial Relay", text: ": transporteurs pour la livraison" },
+            { label: "Klarna / Alma", text: ": paiement fractionné (si utilisé)" },
           ]}
         />
         <P>

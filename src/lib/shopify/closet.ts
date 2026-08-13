@@ -11,7 +11,7 @@ import type {
   ShopifySizeMetafield,
 } from "./types";
 
-// Storefront API caps `first` at 250 — page through until the catalogue is
+// Storefront API caps `first` at 250: page through until the catalogue is
 // exhausted (bounded, so a runaway store can't stall the render).
 const PAGE_SIZE = 250;
 const MAX_PAGES = 4;
@@ -70,7 +70,7 @@ function classify(node: ShopifyClosetNode): ClosetSlot | null {
     if (handles.has(handle)) return slot;
   }
 
-  // No collection match (product not merchandised into a category) — fall back
+  // No collection match (product not merchandised into a category), fall back
   // to the product type's home category.
   const fromType = HANDLE_BY_TYPE.get(type);
   if (fromType) return SLOT_PRIORITY.find(([h]) => h === fromType)?.[1] ?? null;
@@ -147,19 +147,19 @@ function sizesFromMetafield(meta: ShopifySizeMetafield | null | undefined): stri
 }
 
 /**
- * Every size a piece is available in, looked up in four places — shops file
+ * Every size a piece is available in, looked up in four places, shops file
  * sizing inconsistently, and a closet with no sizes is a closet with no gate.
  * Empty = one-size / unsized, which the gate treats as matching any morphology.
  */
 function collectSizes(node: ShopifyClosetNode, variants: ClosetVariant[]): string[] {
   const set = new Set<string>();
 
-  // 1. Buyable variants — the most reliable source when the shop uses them.
+  // 1. Buyable variants, the most reliable source when the shop uses them.
   for (const v of variants) {
     if (v.available && v.size) set.add(v.size);
   }
 
-  // 2. Category metafield — where the size lives for a product sold without
+  // 2. Category metafield, where the size lives for a product sold without
   //    variants, which is the norm for one-of-one vintage.
   if (set.size === 0) {
     for (const meta of [node.sizeMeta, node.sizeMeta2, node.sizeMeta3, node.sizeMeta4]) {
@@ -181,7 +181,7 @@ function collectSizes(node: ShopifyClosetNode, variants: ClosetVariant[]): strin
     }
   }
 
-  // 4. Tags — last resort for shops that only tag their sizing.
+  // 4. Tags, last resort for shops that only tag their sizing.
   if (set.size === 0) {
     for (const tag of node.tags) {
       const s = sizeFromTag(tag);
@@ -221,7 +221,7 @@ function mapClosetItem(node: ShopifyClosetNode, slot: ClosetSlot): ClosetItem {
 
 /**
  * Every buyable piece of the catalogue, tagged with the closet slot it can
- * fill. Feeds /dressing-machine — the two clothing columns plus the four
+ * fill. Feeds /dressing-machine, the two clothing columns plus the four
  * optional accessory modules.
  */
 export async function getClosetCatalogue(): Promise<ClosetItem[]> {

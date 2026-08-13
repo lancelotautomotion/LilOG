@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   LIL_OG_DESKTOP.EXE — page d'accueil
+   LIL_OG_DESKTOP.EXE : page d'accueil
    ------------------------------------------------------------
    L'accueil n'est plus une vitrine e-commerce mais un bureau
    Y2K. Quatre modules, dans cet ordre :
@@ -57,7 +57,7 @@ export function HomeShell() {
         <style>{SHELL_CSS}</style>
         <div aria-hidden className="pointer-events-none absolute inset-0" style={WALLPAPER_GRID} />
 
-        {/* Pastilles du bureau — décoratives, jamais cliquables. */}
+        {/* Pastilles du bureau : décoratives, jamais cliquables. */}
         <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
           <span
             className="lhs-sticker absolute top-[7%] left-[3%] h-12 w-12 opacity-80"

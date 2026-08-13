@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { shopifyGetCustomerOrder } from "@/lib/shopify/customers";
 import Image from "next/image";
 
-export const metadata: Metadata = { title: "Détail commande — Lil'OG" };
+export const metadata: Metadata = { title: "Détail commande · Lil'OG" };
 
 function fmt(amount: string, currency: string) {
   return new Intl.NumberFormat("fr-FR", { style: "currency", currency }).format(Number(amount));
@@ -53,7 +53,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       <div className="account-win95">
         {/* Title bar */}
         <div className="account-win95-bar">
-          <span className="account-win95-title">♛ Lil&apos;OG — Commande {order.name}</span>
+          <span className="account-win95-title">♛ Lil&apos;OG · Commande {order.name}</span>
           <div className="account-win95-chrome">
             <span>_</span>
             <span>□</span>

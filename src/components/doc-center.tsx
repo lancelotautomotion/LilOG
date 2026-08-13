@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   DOC_CENTER — coque « fenêtre rétro » des pages de documentation
+   DOC_CENTER : coque « fenêtre rétro » des pages de documentation
    ------------------------------------------------------------
    Deux applications l'utilisent, avec chacune sa barre d'onglets :
    • LEGAL_CENTER.EXE : /cgv, /cookies, /mentions-legales,
@@ -26,7 +26,7 @@ import { PageShell } from "@/components/page-shell";
 import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
 import { Icon } from "@/components/icons";
 
-/* ---- Jetons « chunky plastic » — identiques à /contact ---- */
+/* ---- Jetons « chunky plastic » : identiques à /contact ---- */
 const PLASTIC =
   "shadow-[inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_5px_rgba(0,0,0,0.25),0_2px_3px_rgba(30,36,48,0.18)]";
 const PLASTIC_PRESS =
@@ -121,7 +121,7 @@ export function A({ href, children }: { href: string; children: React.ReactNode 
 /** Une puce : texte simple, ou intitulé en gras suivi de son explication. */
 export type BulletItem = string | { label: string; text: string };
 
-/** Liste à puces « étoile pixel » — le marqueur natif est remplacé.
+/** Liste à puces « étoile pixel » : le marqueur natif est remplacé.
     Les puces sont décrites en données (et non en JSX) pour que les pages
     restent lisibles et que React n'ait pas de tableau d'éléments à cléer. */
 export function Bullets({ items }: { items: BulletItem[] }) {
@@ -144,7 +144,7 @@ export function Bullets({ items }: { items: BulletItem[] }) {
   );
 }
 
-/** Résumé rapide — petite étiquette collée dans le texte. */
+/** Résumé rapide : petite étiquette collée dans le texte. */
 export function Tldr({ children }: { children: React.ReactNode }) {
   return (
     <div
@@ -160,7 +160,7 @@ export function Tldr({ children }: { children: React.ReactNode }) {
       </span>
       <p className={`${MONO} text-[clamp(0.66rem,1.4vw,0.72rem)] leading-[1.8]`} style={{ color: "#7a0f4b" }}>
         <span className="font-bold tracking-[0.06em]" style={{ color: PINK }}>
-          EN BREF —{" "}
+          EN BREF :{" "}
         </span>
         {children}
       </p>
@@ -168,7 +168,7 @@ export function Tldr({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Champ encastré façon formulaire Win95 — adresse, coordonnées, code. */
+/** Champ encastré façon formulaire Win95 : adresse, coordonnées, code. */
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mb-4 flex flex-col gap-1.5">
@@ -243,7 +243,7 @@ export type DocSection = {
 
 export type DocTab = { href: string; icon: string; label: string };
 
-/** LEGAL_CENTER.EXE — les quatre documents juridiques. */
+/** LEGAL_CENTER.EXE : les quatre documents juridiques. */
 export const LEGAL_TABS: DocTab[] = [
   { href: "/cgv", icon: "📜", label: "CGV" },
   { href: "/cookies", icon: "📄", label: "COOKIES" },
@@ -251,7 +251,7 @@ export const LEGAL_TABS: DocTab[] = [
   { href: "/confidentialite", icon: "🔒", label: "CONFIDENTIALITÉ" },
 ];
 
-/** AIDE_CENTER.EXE — les pages pratiques. */
+/** AIDE_CENTER.EXE : les pages pratiques. */
 export const HELP_TABS: DocTab[] = [
   { href: "/livraison", icon: "📦", label: "LIVRAISON" },
   { href: "/retours", icon: "↩️", label: "RETOURS" },
@@ -268,10 +268,10 @@ export function DocCenter({
   folder,
   root = "LEGAL",
   date,
-  status = "lilog.shop@gmail.com — SIRET 98014870400011",
+  status = "lilog.shop@gmail.com · SIRET 98014870400011",
   sections,
 }: {
-  /** Onglet à afficher enfoncé — doit correspondre à une entrée de `tabs`. */
+  /** Onglet à afficher enfoncé : doit correspondre à une entrée de `tabs`. */
   activeHref: string;
   /** Nom de l'application affiché dans la barre de titre. */
   appName?: string;
@@ -283,7 +283,7 @@ export function DocCenter({
   subtitle: string;
   /** Dossier affiché dans le chemin C:\LILOG\…\…\ */
   folder: string;
-  /** Racine du chemin — LEGAL par défaut, AIDE pour les pages pratiques. */
+  /** Racine du chemin : LEGAL par défaut, AIDE pour les pages pratiques. */
   root?: string;
   date: string;
   /** Texte de gauche de la barre de statut. */
@@ -469,7 +469,7 @@ export function DocCenter({
                 >
                   VERSION : {date}
                   <br />
-                  {sections.length} FICHIER(S) — 1.44 Mo
+                  {sections.length} FICHIER(S) · 1.44 Mo
                 </div>
               </header>
 
@@ -629,7 +629,7 @@ export function DocCenter({
                     <p
                       className={`${MONO} mt-[clamp(26px,4vw,40px)] border-t border-dashed border-[#d8d5e6] pt-4 text-[0.55rem] tracking-[0.08em] text-[#8b86a3]`}
                     >
-                      <span style={{ color: PINK }}>✦</span> FIN_DU_DOCUMENT — Version en vigueur : {date} — Lil&apos;OG
+                      <span style={{ color: PINK }}>✦</span> FIN_DU_DOCUMENT · Version en vigueur : {date} · Lil&apos;OG
                       © 2026
                     </p>
                   </div>
@@ -643,7 +643,7 @@ export function DocCenter({
                 <span style={{ color: PINK }}>✦</span> {status}
               </span>
               <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
-                {sections.length} objet(s) — 1.44 Mo
+                {sections.length} objet(s) · 1.44 Mo
               </span>
             </div>
           </div>

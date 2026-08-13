@@ -1,11 +1,11 @@
 // "Taille" vit dans les champs méta Catégorie de Shopify (namespace "shopify",
-// clé "size") — un champ de taxonomie standard qui référence des metaobjects
+// clé "size"), un champ de taxonomie standard qui référence des metaobjects
 // ("label") plutôt que de stocker directement du texte. On récupère la
 // référence (valeur unique) et les références (valeur liste) en plus de la
 // valeur brute, pour couvrir les deux formes possibles.
 // Sélection de champs partagée par toute donnée pouvant être soit du texte
 // simple soit une référence (ou liste de références) à un metaobject de
-// taxonomie Shopify — c'est la forme exacte des champs méta Catégorie
+// taxonomie Shopify, c'est la forme exacte des champs méta Catégorie
 // (Taille, Couleur, Matière…). Un seul jeu de champs pour les trois plutôt
 // que trois fragments identiques.
 const RICH_METAFIELD_FIELDS = /* GraphQL */ `
@@ -76,7 +76,7 @@ export const FEATURED_PRODUCTS_QUERY = /* GraphQL */ `
 `;
 
 // Shopify's category (taxonomy) metafields hold the size for products sold
-// without variants — the case for one-of-one vintage. Their value is a
+// without variants, the case for one-of-one vintage. Their value is a
 // metaobject reference, so the human-readable size lives in the referenced
 // object's `label` field, not in `value` (which is a gid://).
 const SIZE_METAFIELD_FRAGMENT = /* GraphQL */ `
@@ -111,7 +111,7 @@ const SIZE_METAFIELD_FRAGMENT = /* GraphQL */ `
 // Recherche texte libre : `query` accepte la syntaxe de recherche standard
 // Storefront et, laissé en texte brut (sans préfixe de champ), fait déjà une
 // recherche plein texte sur le titre, le type de produit, le vendeur et les
-// tags — pas besoin de construire un filtre `title:*...*` à la main. Même
+// tags, pas besoin de construire un filtre `title:*...*` à la main. Même
 // sélection de champs que FEATURED_PRODUCTS_QUERY : le résultat passe par le
 // même mapProduct() et rend avec les mêmes ProductWindow que le catalogue.
 export const SEARCH_PRODUCTS_QUERY = /* GraphQL */ `

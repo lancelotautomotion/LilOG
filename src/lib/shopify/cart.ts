@@ -53,7 +53,7 @@ export async function getCart(cartId: string): Promise<Cart | null> {
   return node ? mapCart(node) : null;
 }
 
-/** One line of a cart mutation — several can go in a single round-trip. */
+/** One line of a cart mutation : several can go in a single round-trip. */
 export interface CartLineInput {
   variantId: string;
   quantity: number;
@@ -88,7 +88,7 @@ export async function createCart(
   return createCartWithLines([{ variantId, quantity }], customerAccessToken);
 }
 
-/* Associe le panier au client Shopify connecté — condition pour que la
+/* Associe le panier au client Shopify connecté, condition pour que la
    commande finale apparaisse dans son historique de commandes. */
 export async function cartBuyerIdentityUpdate(cartId: string, customerAccessToken: string): Promise<Cart> {
   const data = await shopifyFetch<CartBuyerIdentityUpdateResponse>(

@@ -4,7 +4,7 @@ import { DressingMachine } from "@/components/dressing-machine";
 import { getClosetCatalogue } from "@/lib/shopify/closet";
 
 export const metadata: Metadata = {
-  title: "Virtual Closet — Lil'OG",
+  title: "Virtual Closet · Lil'OG",
   description:
     "La Dressing Machine Lil'OG : compose ton look Y2K pièce par pièce, comme dans la penderie virtuelle de Cher Horowitz.",
 };
@@ -23,7 +23,7 @@ export default async function Page() {
             </div>
           </div>
           <div className="dm-error-body">
-            <p>&gt; ERREUR — CATALOGUE INDISPONIBLE.</p>
+            <p>&gt; ERREUR : CATALOGUE INDISPONIBLE.</p>
             <p>&gt; La machine n&apos;a trouvé aucune pièce à charger.</p>
             <Link className="dm-w95 dm-cop-btn" href="/">RETOUR_ACCUEIL.EXE →</Link>
           </div>

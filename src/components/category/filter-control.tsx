@@ -1,12 +1,12 @@
 "use client";
 
 /* ============================================================
-   FILTER_CONTROL.SYS — le panneau de configuration du catalogue
+   FILTER_CONTROL.SYS : le panneau de configuration du catalogue
    ------------------------------------------------------------
    Les filtres ne sont plus une colonne de cases à cocher mais
    une fenêtre « Panneau de configuration » : boutons plastique
    à course 3D pour le tri, le type, la taille et la couleur, et
-   un filtre de prix monté comme un égaliseur audio — bandes LED
+   un filtre de prix monté comme un égaliseur audio : bandes LED
    à segments (la répartition réelle des prix de la collection)
    et deux curseurs façon faders.
 
@@ -38,8 +38,8 @@ const SORT_LABELS: Record<Sort, string> = {
 /* ============================================================
    Les pastilles de couleur : des strass, pas des ronds
    ------------------------------------------------------------
-   Chaque teinte du catalogue est une étoile taillée — le même
-   tracé que les strass de /contact — dans une rampe de trois
+   Chaque teinte du catalogue est une étoile taillée (le même
+   tracé que les strass de /contact) dans une rampe de trois
    tons : éclat, teinte, tranche. La palette est franchement Y2K
    (bonbon, néon, givré, chrome) plutôt que les aplats sourds
    d'origine.
@@ -115,7 +115,7 @@ export function extractColors(products: Product[]): { key: string; gem: Gem }[] 
 }
 
 /* Facettes de la taille : pour chaque branche, une moitié éclairée et une
-   moitié à l'ombre partant du centre — le même découpage que les strass de
+   moitié à l'ombre partant du centre : le même découpage que les strass de
    /contact, mais en blanc et noir translucides plutôt qu'en rose, pour que
    la même taille tienne sur toutes les teintes, du blanc au noir. */
 const STAR_TIPS: [number, number][] = [
@@ -133,7 +133,7 @@ const STAR_NOTCHES: [number, number][] = [
   [37.7, 33],
 ];
 
-/** Un strass taillé. `uid` isole les dégradés — deux pastilles sur la même
+/** Un strass taillé. `uid` isole les dégradés : deux pastilles sur la même
  *  page ne peuvent pas se voler leur `id`. La boîte déborde de 6 unités de
  *  chaque côté pour que le liseré des pointes ne soit jamais rogné. */
 function ColorGem({ uid, gem }: { uid: string; gem: Gem }) {
@@ -234,7 +234,7 @@ function Section({ n, label, children }: { n: string; label: string; children: R
   return (
     <div className="border-b border-[#d8d5e6] px-3 py-3 last:border-b-0">
       <p className={`${MONO} mb-2.5 text-[0.5rem] font-bold tracking-[0.16em] text-[#5b2fb8] uppercase`}>
-        <span className="text-[#d3016d]">▸</span> {n} — {label}
+        <span className="text-[#d3016d]">▸</span> {n} · {label}
       </p>
       {children}
     </div>
@@ -404,7 +404,7 @@ export function FilterControl({
 }: {
   state: FilterState;
   onClose?: () => void;
-  /** Sans le chrome de fenêtre (barre de titre violette, bordure, ombre) —
+  /** Sans le chrome de fenêtre (barre de titre violette, bordure, ombre),
    * pour s'intégrer dans le conteneur unique du catalogue plutôt que d'y
    * imbriquer une seconde fenêtre. Le tiroir mobile garde le chrome complet,
    * lui reste un panneau autonome posé par-dessus la page. */
@@ -454,13 +454,13 @@ export function FilterControl({
 
   /* Numérotation des rubriques : un compteur plutôt que des indices écrits
      en dur, parce que TAILLE, TYPE, COULEUR et MATIÈRE n'apparaissent que si
-     la collection en a — un numéro figé (« 04 » pour TYPE) se serait décalé
+     la collection en a : un numéro figé (« 04 » pour TYPE) se serait décalé
      à chaque fois qu'une rubrique au-dessus se vide ou s'ajoute. */
   let sectionN = 2;
   const nextN = () => String(++sectionN).padStart(2, "0");
 
   /* Barre d'état : séparée du corps parce qu'en mode `bare` elle reste
-     figée en haut du panneau pendant que les rubriques défilent — le
+     figée en haut du panneau pendant que les rubriques défilent : le
      bouton RESET doit rester à portée de clic. */
   const statusBar = (
     <div className="flex shrink-0 items-center justify-between gap-2 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">

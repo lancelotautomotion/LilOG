@@ -20,7 +20,7 @@ export const MSN_AVATARS = [
   { name: "Sharpay Evans",    src: "/MSN/Sharpay Evans.png"     },
 ];
 
-/* `label` sert au compte, `loginLabel` à la fenêtre de connexion —
+/* `label` sert au compte, `loginLabel` à la fenêtre de connexion,
    les identifiants restent communs pour que le statut suive. */
 export const MSN_STATUSES = [
   { id: "online",   emoji: "🟢", label: "En ligne",        loginLabel: "EN LIGNE (PRÊTE À SHOPPER)" },

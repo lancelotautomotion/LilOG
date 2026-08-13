@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   FILE_EXPLORER.SYS — module 03 de l'accueil
+   FILE_EXPLORER.SYS : module 03 de l'accueil
    ------------------------------------------------------------
    Les rayons de la boutique ne sont pas présentés en grille de
    produits mais en icônes de bureau : onze dossiers et une
@@ -57,7 +57,7 @@ const EXPLORER_CSS = `
 /**
  * Disquette au format icône. Le grand boîtier de /contact
  * (components/contact/floppy) ne descend pas à 70 px : on reprend donc sa
- * peau rose — coque F781B4→E24B85, volet clair, étiquette papier — plutôt
+ * peau rose (coque F781B4→E24B85, volet clair, étiquette papier) plutôt
  * que d'inventer une troisième couleur de disquette.
  */
 function FloppyIcon({ uid }: { uid: string }) {
@@ -130,16 +130,16 @@ export function FileExplorer() {
   return (
     /* `#drops` : ancre historique de la boutique, gardée pour que les liens
        du pied de page, de la nav et de l'espace client continuent d'atterrir
-       ici — l'explorateur de rayons a remplacé la grille de produits.
+       ici : l'explorateur de rayons a remplacé la grille de produits.
 
        Bloc plein viewport comme CAMCORDER_OS au-dessus : plus de conteneur
        `max-w` centré, la ligne s'étire d'un bord à l'autre de l'écran et se
-       coupe en deux — l'explorateur d'un côté, une photo de la marchandise
+       coupe en deux : l'explorateur d'un côté, une photo de la marchandise
        de l'autre. Sur mobile, la photo passe en bandeau au-dessus (`order`)
        plutôt que serrée entre deux blocs de texte. */
     <section id="drops" className="pb-[clamp(48px,8vw,96px)]">
       {/* Étiquette calée sur la gouttière de la ligne ci-dessous, donc sur
-          le bord gauche de la fenêtre — comme ARCADE_SLOT et README.TXT qui
+          le bord gauche de la fenêtre, comme ARCADE_SLOT et README.TXT qui
           posent la leur au-dessus de leur propre bloc. Le conteneur centré
           `max-w` d'origine la laissait flotter au milieu de l'écran depuis
           que le module s'étire d'un bord à l'autre. */}
@@ -154,7 +154,7 @@ export function FileExplorer() {
           reste du site à gauche. Même gouttière posée des deux côtés,
           `gap` entre les deux colonnes pour ne pas les souder au milieu. */}
       <div className="grid gap-4 px-4 sm:gap-6 sm:px-6 lg:grid-cols-2 lg:items-stretch">
-        {/* Même retrait vertical que la colonne fenêtre — sans lui, l'image
+        {/* Même retrait vertical que la colonne fenêtre : sans lui, l'image
             remplissait toute la cellule de grille pendant que la fenêtre,
             elle, était rentrée de son `py`, et dépassait donc en haut comme
             en bas. Le cadre photo est un enfant du bloc rembourré (et non
@@ -163,7 +163,7 @@ export function FileExplorer() {
         {/* Pas de padding haut : il s'ajoutait au `mb-3` de l'étiquette et
             la laissait flotter à 44px du bloc, là où ARCADE_SLOT et
             README.TXT collent la leur à 12px. Le padding bas reste, et
-            reste identique sur les deux colonnes — c'est lui qui garde la
+            reste identique sur les deux colonnes, c'est lui qui garde la
             photo et la fenêtre alignées. */}
         <div className="order-1 pb-5 lg:order-2 lg:pb-8">
           {/* Même ombre dure que la fenêtre d'à côté : sans elle, les deux
@@ -241,7 +241,7 @@ export function FileExplorer() {
             >
               {folders.map((f) => (
                 <Tile key={f.href} href={f.href} filename={f.filename} caption={f.caption}>
-                  {/* Le dossier du site, agrandi — jamais un dessin propre à
+                  {/* Le dossier du site, agrandi : jamais un dessin propre à
                       cette page : c'est celui du menu latéral et de /contact. */}
                   <Icon.folder className="h-full w-full drop-shadow-[0_3px_3px_rgba(30,20,70,0.28)]" />
                 </Tile>
@@ -258,7 +258,7 @@ export function FileExplorer() {
                 {count} {t.home.filesObjects}
               </span>
               <span className={`${MONO} text-[0.52rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
-                2,3 Go — 100% one of one
+                2,3 Go · 100% one of one
               </span>
             </div>
           </WindowFrame>

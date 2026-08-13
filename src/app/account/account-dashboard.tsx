@@ -180,7 +180,7 @@ export function AccountDashboard({
 
         {/* ── Title bar ─────────────────────────────────────── */}
         <div className="account-win95-bar">
-          <span className="account-win95-title">Lil&apos;OG — Espace Client</span>
+          <span className="account-win95-title">Lil&apos;OG · Espace Client</span>
           <div className="account-win95-chrome">
             <span>_</span>
             <span>□</span>
@@ -212,7 +212,7 @@ export function AccountDashboard({
               shopifyToken={shopifyToken}
             />
 
-            {/* Navigation — bascule le contenu de la fenêtre de droite */}
+            {/* Navigation : bascule le contenu de la fenêtre de droite */}
             <div className="acct-nav-panel">
               <button
                 className={"acct-nav-btn" + (section === "orders" ? " active" : "")}

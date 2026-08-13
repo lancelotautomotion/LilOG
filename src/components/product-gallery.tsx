@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   LIL_OG_PHOTO_VIEWER — galerie de la fiche produit
+   LIL_OG_PHOTO_VIEWER : galerie de la fiche produit
    ------------------------------------------------------------
    La photo principale vit dans une fenêtre lecteur média façon
    Windows 98 : barre de titre "📷 ITEM_VIEWER_V1.0.RAW", cadre
@@ -85,7 +85,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
 
         {/* Cadre allongé (2/3) et image en `object-contain` : les photos de
             la boutique sont chinées une à une et n'ont pas toutes le même
-            ratio — en `cover`, la plus haute se faisait couper la tête ou
+            ratio, en `cover`, la plus haute se faisait couper la tête ou
             l'ourlet. En `contain`, la pièce est toujours entière, et le
             fond gris encastré tient lieu de passe-partout, comme dans un
             vrai lecteur d'images. */}
@@ -98,7 +98,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
             key={index}
             className="absolute inset-0 h-full w-full object-contain"
             src={pics[index]}
-            alt={`${name} — vue ${index + 1}`}
+            alt={`${name}, vue ${index + 1}`}
             tone={index}
           />
           {pics.length > 1 && (
@@ -127,7 +127,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
           Centrées et agrandies : le lecteur est plus haut qu'avant (cadre
           2/3), et une rangée de petits timbres alignés à gauche laissait
           un vide sous elle. Elles restent en `flex-wrap` plutôt qu'en
-          `overflow-x-auto` — les fiches n'ont jamais plus de 5-6 photos,
+          `overflow-x-auto`, les fiches n'ont jamais plus de 5-6 photos,
           pas besoin de scroll horizontal, et le centrage ne marche que si
           la rangée peut passer à la ligne plutôt que déborder. */}
       {pics.length > 1 && (
@@ -172,7 +172,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
 
           <img
             src={pics[index]}
-            alt={`${name} — vue ${index + 1}`}
+            alt={`${name}, vue ${index + 1}`}
             className="max-h-[82vh] max-w-[92vw] object-contain shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
             onClick={(e) => e.stopPropagation()}
           />

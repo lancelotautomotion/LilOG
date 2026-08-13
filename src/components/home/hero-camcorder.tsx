@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   CAMCORDER_OS — module 01 de l'accueil
+   CAMCORDER_OS : module 01 de l'accueil
    ------------------------------------------------------------
    Plein écran (100svh), pensé pour accueillir une vidéo de fond.
    Tant qu'aucune vidéo n'est déposée dans /public/hero, le fond
@@ -9,9 +9,9 @@
    révèle que lorsqu'il est réellement lisible, donc un fichier
    absent ne laisse jamais de trou noir.
 
-   Par-dessus : l'habillage d'un caméscope des années 2000 —
+   Par-dessus : l'habillage d'un caméscope des années 2000,
    témoin [REC] clignotant, timecode, jauge de batterie, date,
-   repères de cadre — puis le texte de marque en machine à
+   repères de cadre, puis le texte de marque en machine à
    écrire, typo mono néon.
    ============================================================ */
 
@@ -24,7 +24,7 @@ import { MONO, NEON } from "@/components/y2k/kit";
 /**
  * Vidéo de fond. Le fichier n'est pas versionné (poids) : dépose
  * `camcorder.mp4` dans `public/hero/` et il est pris en compte
- * automatiquement — sinon la bande de stills ci-dessous tient le rôle.
+ * automatiquement, sinon la bande de stills ci-dessous tient le rôle.
  */
 const HERO_VIDEO = "/hero/camcorder.mp4";
 
@@ -78,7 +78,7 @@ const HERO_CSS = `
    Afficheurs du caméscope
    ============================================================ */
 
-/** Timecode HH:MM:SS:FF — il démarre au montage, jamais au build. */
+/** Timecode HH:MM:SS:FF : il démarre au montage, jamais au build. */
 function Timecode() {
   const [ticks, setTicks] = useState(0);
 
@@ -115,9 +115,9 @@ function Battery() {
  * Repères de cadre du viseur, aux quatre coins.
  *
  * Deux pièges, qui coupaient les repères dans la première version :
- * — en haut, la barre de navigation est opaque et recouvre les 72 premiers
+ * · en haut, la barre de navigation est opaque et recouvre les 72 premiers
  *   pixels du hero, donc le cadre démarre en dessous ;
- * — les pastilles d'habillage (REC, batterie, date, PLAY) partageaient la
+ * · les pastilles d'habillage (REC, batterie, date, PLAY) partageaient la
  *   même marge latérale que les repères et passaient par-dessus leurs
  *   traits. Elles sont désormais rentrées plus au centre (`inset-x` des
  *   deux rangées), de sorte qu'aucune ne croise un coin.
@@ -149,7 +149,7 @@ export function HeroCamcorder() {
 
   /* La date du viseur est celle du visiteur, dans sa langue et son fuseau :
      elle ne peut donc pas être rendue côté serveur sans provoquer une
-     différence d'hydratation. Même procédé que l'horloge du pied de page —
+     différence d'hydratation. Même procédé que l'horloge du pied de page,
      le viseur affiche des tirets jusqu'au montage. */
   useEffect(() => {
     const stamp = () =>
@@ -265,7 +265,7 @@ export function HeroCamcorder() {
             style={{
               color: NEON,
               /* Halo rose pour le néon, ombre sombre pour tenir aussi sur un
-                 plan clair — le voile ne fait plus le travail à sa place. */
+                 plan clair : le voile ne fait plus le travail à sa place. */
               textShadow:
                 "0 0 12px rgba(255,94,196,.75), 0 0 38px rgba(255,94,196,.45), 0 3px 18px rgba(0,0,0,.7)",
             }}
@@ -285,7 +285,7 @@ export function HeroCamcorder() {
           className={`${MONO} mt-6 text-[0.58rem] tracking-[0.24em] text-[#5affa0] uppercase md:text-[0.66rem]`}
           style={{ textShadow: "0 0 10px rgba(90,255,160,.5), 0 2px 10px rgba(0,0,0,.8)" }}
         >
-          ▸ LIL_OG_DESKTOP.EXE — {t.hero.avail}
+          ▸ LIL_OG_DESKTOP.EXE · {t.hero.avail}
         </p>
       </div>
 

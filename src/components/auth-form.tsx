@@ -23,7 +23,7 @@ const LS_REMEMBER_KEY = "lilog_login_remember";
 /* Marge laissée entre la fenêtre et les bords de la zone visible. */
 const FIT_GAP = 14;
 /* En dessous, on préfère laisser défiler plutôt que rendre le texte
-   illisible — un écran de moins de ~380px utiles reste l'exception. */
+   illisible : un écran de moins de ~380px utiles reste l'exception. */
 const FIT_MIN = 0.62;
 
 /**
@@ -32,7 +32,7 @@ const FIT_MIN = 0.62;
  * de 1 : sur un grand écran, rien n'est touché.
  *
  * La mesure porte sur la hauteur de mise en page (`offsetHeight`), que la
- * transformation ne modifie pas — pas de boucle entre l'échelle et la
+ * transformation ne modifie pas : pas de boucle entre l'échelle et la
  * mesure. La hauteur du conteneur est en revanche corrigée à la main,
  * sinon la page réserverait la place de la fenêtre non réduite et
  * redeviendrait défilante pour rien.
@@ -77,7 +77,7 @@ function useFitToViewport() {
 const BEVEL_OUT = "border-2 border-t-white border-l-white border-r-gray-800 border-b-gray-800";
 const BEVEL_IN  = "border-2 border-t-gray-500 border-l-gray-500 border-r-white border-b-white";
 
-/* Strass de la maison — mêmes formes et mêmes teintes que /faq, /contact
+/* Strass de la maison : mêmes formes et mêmes teintes que /faq, /contact
    et le bas de page. Collés sur les flancs de la fenêtre, jamais sur ses
    commandes ni sur les champs. */
 const STICKERS = [
@@ -115,7 +115,7 @@ export function AuthForm() {
   /* « Se souvenir de moi » : l'email revient pré-rempli à la visite
      suivante. La valeur stockée vaut null au premier passage (case
      cochée par défaut), "" si la cliente avait décoché, l'email sinon.
-     Elle sert de valeur initiale tant que rien n'a été saisi — pas
+     Elle sert de valeur initiale tant que rien n'a été saisi : pas
      d'effet ni de setState au montage, donc pas de rendu en cascade. */
   const savedLogin = useStored(LS_REMEMBER_KEY);
   const [emailEdit, setEmailEdit] = useState<string | null>(null);
@@ -215,7 +215,7 @@ export function AuthForm() {
           ))}
         </div>
 
-        {/* Corps — enroulé quand la fenêtre est réduite */}
+        {/* Corps : enroulé quand la fenêtre est réduite */}
         <div className={shaded ? "hidden" : "block"}>
 
           {/* ── Bloc avatar + statut ── */}
@@ -443,7 +443,7 @@ function ChromeButton({
   /* Exactement les boutons de fenêtre du reste du site (kit y2k,
      bas de page, /faq…) : pastille plastique claire, biseau `PLASTIC`,
      glyphes `_` `🗖` `×`. Seuls l'enfoncement et le curseur sont
-     ajoutés — ici, contrairement au décor des autres fenêtres, ils
+     ajoutés : ici, contrairement au décor des autres fenêtres, ils
      cliquent vraiment. */
   const className =
     `grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.7rem] leading-none font-bold text-[#262626] select-none ${PLASTIC} ${PLASTIC_PRESS} cursor-pointer`;

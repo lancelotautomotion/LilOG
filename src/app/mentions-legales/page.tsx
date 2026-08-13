@@ -1,7 +1,7 @@
 "use client";
 
 /* Composant client : les sections sont du JSX riche (gras, retours à
-   la ligne, liens). Créé côté client, il garde ses enfants statiques —
+   la ligne, liens). Créé côté client, il garde ses enfants statiques :
    sérialisé depuis le serveur, React réclamerait une clé par enfant. */
 
 import { DocCenter, DocSection, P, Tldr, Notice, A } from "@/components/doc-center";
@@ -16,7 +16,7 @@ const SECTIONS: DocSection[] = [
       <>
         <P>Le site lil-og.vercel.app est édité par :</P>
         <P>
-          <strong>Lil&apos;OG</strong> — Entreprise individuelle
+          <strong>Lil&apos;OG</strong>, entreprise individuelle
           <br />
           Représentante légale : Louna Lili Guitton
           <br />

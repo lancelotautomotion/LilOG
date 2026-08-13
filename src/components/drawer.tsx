@@ -6,12 +6,12 @@ import { Icon } from "@/components/icons";
 import { CATEGORIES } from "@/lib/categories";
 import type { LangCode } from "@/lib/i18n";
 
-/* Wording Y2K / file-explorer — propre au menu latéral, il ne remplace pas les
+/* Wording Y2K / file-explorer : propre au menu latéral, il ne remplace pas les
    traductions partagées (t.cat) utilisées ailleurs (lookbook, pages catégorie).
    Une entrée par langue : ces libellés étaient les mêmes en anglais quelle que
    soit la langue choisie, y compris sur un site qui s'ouvre en français.
    Les langues absentes de cette table retombent sur t.cat, qui est traduit
-   partout — jamais sur de l'anglais. La numérotation, elle, est calculée à
+   partout, jamais sur de l'anglais. La numérotation, elle, est calculée à
    l'affichage : identique dans toutes les langues, et elle se réordonne toute
    seule si CATEGORIES change. */
 const DRAWER_LABELS: Partial<Record<LangCode, Record<string, string>>> = {
@@ -59,7 +59,7 @@ const LINKS = CATEGORIES.map((c) => ({
 export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t, lang } = useLanguage();
 
-  /** « 01. Tops & t-shirts » — le numéro suit la position dans CATEGORIES. */
+  /** « 01. Tops & t-shirts » : le numéro suit la position dans CATEGORIES. */
   const fileLabel = (key: string, i: number) =>
     `${String(i + 1).padStart(2, "0")}. ${DRAWER_LABELS[lang]?.[key] ?? t.cat[key] ?? key}`;
 
@@ -95,7 +95,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
           {/* La Dressing Machine n'est pas un rayon : c'est la borne d'arcade
               de l'accueil, réduite à une ligne de menu. Le dossier jaune laisse
               donc place au joystick, et la ligne d'attente reprend le jeton
-              d'ARCADE_SLOT.EXE — déjà traduit dans les neuf langues. */}
+              d'ARCADE_SLOT.EXE, déjà traduit dans les neuf langues. */}
           <div className="drawer-item drawer-item-closet">
             <a className="drawer-link drawer-link-closet" href="/dressing-machine" onClick={onClose}>
               <span className="dm-tile-marquee" aria-hidden="true">

@@ -1,4 +1,4 @@
-/* Lil'OG — components (Nav, Drawer, Hero, Drops, Categories, Editorial, Footer) */
+/* Lil'OG : components (Nav, Drawer, Hero, Drops, Categories, Editorial, Footer) */
 (function () {
   const RES = (id, path) => (window.__resources && window.__resources[id]) || path;
   const LOGO_WHITE = RES("logoWhite", "logo-white.png");
@@ -314,7 +314,7 @@
           p.type === "split" ? (
             <div className="lb-split" key={idx}>
               {p.items.map((c, j) => (
-                <a className="lb-cell" href="#drops" key={j} data-screen-label={"Look — " + nameOf(c.key)}>
+                <a className="lb-cell" href="#drops" key={j} data-screen-label={"Look, " + nameOf(c.key)}>
                   <SmartImg src={c.img} alt={nameOf(c.key)} tone={c.tone} />
                   <div className="lb-cap">
                     <h2 className="lb-name">{nameOf(c.key)}</h2>
@@ -325,7 +325,7 @@
             </div>
           ) : (
             <a className={"lb-full align-" + (p.align || "left")} href="#drops" key={idx}
-              data-screen-label={"Look — " + nameOf(p.name)}>
+              data-screen-label={"Look, " + nameOf(p.name)}>
               <SmartImg src={p.img} alt={nameOf(p.name)} tone={p.tone} />
               <div className="lb-cap">
                 {p.kicker && <span className="lb-kicker">{t.lb[p.kicker]}</span>}

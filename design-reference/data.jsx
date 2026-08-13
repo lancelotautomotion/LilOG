@@ -1,4 +1,4 @@
-/* Lil'OG — data + smart image helper (shared via window) */
+/* Lil'OG : data + smart image helper (shared via window) */
 (function () {
   function ux(id, w) {
     return `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w || 900}&q=80`;

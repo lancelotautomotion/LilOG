@@ -30,7 +30,7 @@ export async function getOrCreateShopifyTokenForEmail(
 
   // Pas encore de compte miroir : on le crée. Si l'email est déjà pris par
   // un vrai compte Shopify (mot de passe différent), la création échoue et
-  // on abandonne — impossible de deviner le mot de passe existant.
+  // on abandonne, impossible de deviner le mot de passe existant.
   const { error } = await shopifyCustomerCreate(email, password, firstName, lastName);
   if (error) return null;
 

@@ -1,11 +1,11 @@
 "use client";
 
 /* ============================================================
-   DIRECTORY_EXPLORER.EXE — /category/[handle]
+   DIRECTORY_EXPLORER.EXE : /category/[handle]
    ------------------------------------------------------------
    Le catalogue vit dans une seule fenêtre applicative, comme
    /histoire, /durabilite et /faq : une barre de titre violette,
-   un corps blanc, et à l'intérieur — menus, barre d'adresse, nom
+   un corps blanc, et à l'intérieur : menus, barre d'adresse, nom
    du rayon, FILTER_CONTROL.SYS et MEDIA_GRID empilés en sections,
    plutôt que des cartes séparées flottant sur le décor.
 
@@ -15,7 +15,7 @@
 
    ⚠ PAREFEU : Tailwind + la feuille locale `lde-` ci-dessous,
    servie une seule fois pour toute la page. Aucune classe de
-   globals.css — les anciennes règles `.category-*`, `.cat-vibe-*`
+   globals.css : les anciennes règles `.category-*`, `.cat-vibe-*`
    et `.filter-*` ne sont plus utilisées par cette page.
    ============================================================ */
 
@@ -42,12 +42,12 @@ import type { Product } from "@/lib/shopify/types";
 
 const PER_PAGE = 20;
 
-/* Identité éditoriale de chaque rayon — reprise telle quelle, seule la
+/* Identité éditoriale de chaque rayon, reprise telle quelle, seule la
    présentation change : elle vit désormais dans la fenêtre d'en-tête. */
 const CAT_VIBES: Record<string, { tagline: string; desc: string; tags: string[] }> = {
   tops: {
     tagline: "Baby tee era, forever",
-    desc: "Crop tops, bustiers, caraco… les pièces qui ont fait de la décennie 2000 une ère iconique. Du mesh, du velours, du strass — porté avec un jean taille basse et c'est réglé.",
+    desc: "Crop tops, bustiers, caraco… les pièces qui ont fait de la décennie 2000 une ère iconique. Du mesh, du velours, du strass, porté avec un jean taille basse et c'est réglé.",
     tags: ["Y2K", "Crop Top", "Limited Pieces", "Vintage 2000s"],
   },
   outerwear: {
@@ -57,7 +57,7 @@ const CAT_VIBES: Record<string, { tagline: string; desc: string; tags: string[] 
   },
   dresses: {
     tagline: "Main character dress-up",
-    desc: "Mini, babydoll, slip dress, asymétrique — des robes qui racontent une histoire. Celle d'une fille qui sait exactement ce qu'elle fait.",
+    desc: "Mini, babydoll, slip dress, asymétrique : des robes qui racontent une histoire. Celle d'une fille qui sait exactement ce qu'elle fait.",
     tags: ["Party Ready", "Mini Dress", "Slip Dress", "Y2K Fever"],
   },
   skirts: {
@@ -67,12 +67,12 @@ const CAT_VIBES: Record<string, { tagline: string; desc: string; tags: string[] 
   },
   shorts: {
     tagline: "Hot pants only",
-    desc: "Shorts taille basse, bermudas cargo, daisy dukes — l'été Y2K dans toute sa splendeur. À porter avec des mules plateforme, évidemment.",
+    desc: "Shorts taille basse, bermudas cargo, daisy dukes : l'été Y2K dans toute sa splendeur. À porter avec des mules plateforme, évidemment.",
     tags: ["Low Rise", "Cargo", "Summer Y2K", "2000s"],
   },
   trousers: {
     tagline: "Low rise is not a threat, it's a lifestyle",
-    desc: "Pantalons taille basse, bootcut flare, cargos à poches — les silhouettes qui ont défini une époque. Retrouve ce feeling.",
+    desc: "Pantalons taille basse, bootcut flare, cargos à poches : les silhouettes qui ont défini une époque. Retrouve ce feeling.",
     tags: ["Low Rise", "Bootcut", "Cargo Pants", "Y2K Uniform"],
   },
   swimwear: {
@@ -82,7 +82,7 @@ const CAT_VIBES: Record<string, { tagline: string; desc: string; tags: string[] 
   },
   jeans: {
     tagline: "The original low rise rebellion",
-    desc: "Bootcut, flare, ultra low-rise, brodés, délavés, déchirés — tous les jeans qui ont fait de la taille basse une religion. Porte-les comme Paris Hilton en 2003.",
+    desc: "Bootcut, flare, ultra low-rise, brodés, délavés, déchirés : tous les jeans qui ont fait de la taille basse une religion. Porte-les comme Paris Hilton en 2003.",
     tags: ["Bootcut", "Ultra Low Rise", "Embroidered", "Vintage Denim"],
   },
   bags: {
@@ -92,12 +92,12 @@ const CAT_VIBES: Record<string, { tagline: string; desc: string; tags: string[] 
   },
   shoes: {
     tagline: "Platform or nothing",
-    desc: "Mules plateforme, sneakers chunky, bottes à bouts pointus — les chaussures qui ajoutent des centimètres et beaucoup de caractère.",
+    desc: "Mules plateforme, sneakers chunky, bottes à bouts pointus : les chaussures qui ajoutent des centimètres et beaucoup de caractère.",
     tags: ["Platform", "Chunky Sole", "Mules", "Statement Shoes"],
   },
   accessories: {
     tagline: "The more the better",
-    desc: "Ceintures à boucle, foulards, lunettes papillon, bijoux strass — l'art du layering à son paroxysme. Superpose, multiplie, exagère.",
+    desc: "Ceintures à boucle, foulards, lunettes papillon, bijoux strass : l'art du layering à son paroxysme. Superpose, multiplie, exagère.",
     tags: ["Layer Up", "Strass", "Belt Buckle", "Y2K Jewelry"],
   },
 };
@@ -190,7 +190,7 @@ const EXPLORER_CSS = `
    Briques d'en-tête
    ============================================================ */
 
-/** Bascule d'affichage — le mode actif reste enfoncé. */
+/** Bascule d'affichage : le mode actif reste enfoncé. */
 function ViewToggle({ view, setView }: { view: ViewMode; setView: (v: ViewMode) => void }) {
   const modes: [ViewMode, string][] = [
     ["grid", "🗔 GRILLE"],
@@ -259,7 +259,7 @@ export function CategoryPage({
 
   /* Toucher un filtre renvoie à la première page : le paramètre `?page`
      devenu caduc quitte l'URL. C'est fait dans le gestionnaire d'événement,
-     pas dans un effet — la pagination est déjà bornée plus bas, donc rien ne
+     pas dans un effet : la pagination est déjà bornée plus bas, donc rien ne
      casse si le paramètre traîne le temps d'une navigation. */
   const clearPage = useCallback(() => {
     const params = new URLSearchParams(window.location.search);
@@ -388,7 +388,7 @@ export function CategoryPage({
 
       {/* Pas de overflow-hidden ici : FILTER_CONTROL.SYS a besoin d'un
           panneau `sticky`, qui ne fonctionne sous aucun ancêtre en
-          overflow non-visible — voir la note sur `clip` de WindowFrame. */}
+          overflow non-visible : voir la note sur `clip` de WindowFrame. */}
       <main className="relative">
         <style>{EXPLORER_CSS}</style>
         <LeopardBackdrop />
@@ -478,7 +478,7 @@ export function CategoryPage({
             {/* Sous-en-tête : nom du bloc grille + bascule d'affichage */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d8d5e6] px-4 py-2 sm:px-6">
               <h2 className={`${MONO} text-[0.66rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase`}>
-                MEDIA_GRID — {filtered.length} FICHIER(S)
+                MEDIA_GRID · {filtered.length} FICHIER(S)
               </h2>
               <ViewToggle view={view} setView={setView} />
             </div>
@@ -489,7 +489,7 @@ export function CategoryPage({
                 étiré (par défaut, `items-stretch`) sur toute la hauteur de
                 la grille pour lui laisser la place de rester figé. */}
             <div className="flex gap-5 px-4 py-3 sm:px-6">
-              {/* FILTER_CONTROL.SYS — colonne collante à partir de lg, sans
+              {/* FILTER_CONTROL.SYS : colonne collante à partir de lg, sans
                   chrome de fenêtre propre : elle vit dans ce même conteneur.
                   Le panneau plafonne lui-même sa hauteur à l'écran visible et
                   fait défiler ses rubriques à l'intérieur (voir `bare` dans
@@ -536,7 +536,7 @@ export function CategoryPage({
               </div>
             </div>
 
-            {/* Barre d'état + pagination, au pied de la fenêtre unique —
+            {/* Barre d'état + pagination, au pied de la fenêtre unique,
                 rounded-b-2xl : clip=false oblige, c'est elle qui ferme
                 proprement le bas du cadre. */}
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">

@@ -1,5 +1,5 @@
 /* ============================================================
-   LOUNA_JOURNAL_2000.EXE — /histoire
+   LOUNA_JOURNAL_2000.EXE : /histoire
    ------------------------------------------------------------
    Toute la page vit dans une seule fenêtre applicative Y2K /
    Windows 95, direction "chunky plastic", alignée sur /contact,
@@ -17,7 +17,7 @@ import Image from "next/image";
 import { PageShell } from "@/components/page-shell";
 import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
 
-/* ---- Jetons "chunky plastic" — identiques à /contact, /durabilite, /cgv ---- */
+/* ---- Jetons "chunky plastic" : identiques à /contact, /durabilite, /cgv ---- */
 const PLASTIC =
   "shadow-[inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_5px_rgba(0,0,0,0.25),0_2px_3px_rgba(30,36,48,0.18)]";
 
@@ -76,11 +76,11 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
   );
 }
 
-/** Étiquette de module — cohérente avec /durabilite. */
+/** Étiquette de module : cohérente avec /durabilite. */
 function SectionLabel({ n, file }: { n: string; file: string }) {
   return (
     <p className={`${MONO} mb-3 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#5b2fb8]`}>
-      <span style={{ color: PINK }}>▶</span> {n} — {file}
+      <span style={{ color: PINK }}>▶</span> {n} · {file}
     </p>
   );
 }
@@ -102,7 +102,7 @@ function Tape({ rotate = "-2deg", className = "" }: { rotate?: string; className
 }
 
 /* ============================================================
-   WIDGET APPAREIL PHOTO — Canon digicam + polaroids scotchés
+   WIDGET APPAREIL PHOTO : Canon digicam + polaroids scotchés
    ============================================================ */
 
 type Polaroid = { src: string; rot: string };
@@ -120,7 +120,7 @@ const POLAROIDS: Polaroid[] = [
   { src: "/histoire/look-16.jpeg", rot: "6deg" },
 ];
 
-/* Coordonnées de dispersion desktop, en % du conteneur large (960px) —
+/* Coordonnées de dispersion desktop, en % du conteneur large (960px) :
    un mur de polaroids sur toute la largeur, deux profondeurs par côté
    pour combler l'espace jusqu'au boîtier, qui reste seul au centre. */
 const SCATTER: React.CSSProperties[] = [
@@ -205,7 +205,7 @@ function CameraWidget() {
             ))}
           </div>
 
-          {/* Plaque signalétique + LED — centrée dans l'espace libre au-dessus du boîtier. */}
+          {/* Plaque signalétique + LED : centrée dans l'espace libre au-dessus du boîtier. */}
           <div className="relative z-10 flex w-[clamp(220px,26vw,300px)] items-center justify-center md:h-full">
             <div className="flex w-full items-center justify-between rounded-full border border-[#c6c2d8] bg-white/90 px-4 py-1.5 backdrop-blur-[1px]" style={{ boxShadow: "inset 0 1px 2px rgba(255,255,255,0.9), 0 3px 8px rgba(30,36,48,0.14)" }}>
               <span className={`${LCD} text-[0.9rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}>
@@ -237,7 +237,7 @@ function CameraWidget() {
             </div>
           </div>
 
-          {/* Réseaux sociaux — centrés dans l'espace libre en dessous du boîtier. */}
+          {/* Réseaux sociaux : centrés dans l'espace libre en dessous du boîtier. */}
           <div className="relative z-10 flex items-center justify-center gap-4 md:h-full">
             <SocialButton href="https://fr.pinterest.com/lounaliliguitton/" label="Pinterest de Louna" hue="linear-gradient(160deg,#ff2f5e 0%,#c8102e 100%)">
               <PinterestGlyph />
@@ -260,7 +260,7 @@ function CameraWidget() {
 }
 
 /* ============================================================
-   BADGES PRESSE — "Backstage Pass" (texte seul, aucun visuel tiers)
+   BADGES PRESSE : "Backstage Pass" (texte seul, aucun visuel tiers)
    ============================================================ */
 
 type Pass = { icon: string; label: string; hue: string };
@@ -304,7 +304,7 @@ function BackstagePass() {
 }
 
 /* ============================================================
-   SYSTEM_LOGS — parcours narratif en 4 cartes reliées
+   SYSTEM_LOGS : parcours narratif en 4 cartes reliées
    ============================================================ */
 
 type LogEntry = {
@@ -332,7 +332,7 @@ const LOGS: LogEntry[] = [
     era: "L'ORNE → PARIS",
     paragraphs: [
       <>
-        Je m&apos;appelle Louna Lili Guitton. Je suis originaire de <Hi>l&apos;Orne</Hi> — le genre d&apos;endroit où
+        Je m&apos;appelle Louna Lili Guitton. Je suis originaire de <Hi>l&apos;Orne</Hi>, le genre d&apos;endroit où
         tu apprends vite que le style, c&apos;est ce que tu construis toi-même, pas ce que tu trouves au centre
         commercial du coin. Adolescente, la mode était ma fenêtre sur autre chose. Une façon de dire quelque chose
         sans parler.
@@ -350,7 +350,7 @@ const LOGS: LogEntry[] = [
       <>
         J&apos;ai étudié la mode, j&apos;ai appris le métier, et j&apos;ai eu la chance de travailler avec des
         stars, de signer des éditos pour <Hi>Vogue, Elle Arabia, Vanity Fair</Hi>… J&apos;ai été de l&apos;autre côté
-        de l&apos;objectif aussi — photographe pour une marque de prêt-à-porter — parce que la mode, c&apos;est une
+        de l&apos;objectif aussi, photographe pour une marque de prêt-à-porter, parce que la mode, c&apos;est une
         image, un geste, une histoire entière.
       </>,
     ],
@@ -358,11 +358,11 @@ const LOGS: LogEntry[] = [
   {
     n: "03",
     file: "LE TOURNANT OMAJ",
-    era: "OMAJ — 2 ANS",
+    era: "OMAJ · 2 ANS",
     paragraphs: [
       <>
         Avant d&apos;embrasser pleinement le métier de styliste, j&apos;ai passé deux ans chez <Hi tone="blue">OMAJ</Hi> à
-        plonger dans les coulisses d&apos;une plateforme de seconde main — à expertiser, trier, valoriser des pièces.
+        plonger dans les coulisses d&apos;une plateforme de seconde main : à expertiser, trier, valoriser des pièces.
         J&apos;y ai vu ce qu&apos;une plateforme peut rater : la curation, le goût, l&apos;exigence éditoriale. Et
         j&apos;y ai surtout compris ce que la seconde main peut être quand elle est traitée avec le même sérieux que
         le neuf.
@@ -377,18 +377,18 @@ const LOGS: LogEntry[] = [
   {
     n: "04",
     file: "LIL'OG : COMBLER LE VIDE",
-    era: "LIL'OG — AUJOURD'HUI",
+    era: "LIL'OG · AUJOURD'HUI",
     paragraphs: [
       <>
-        Je cherchais une plateforme qui proposerait une vraie sélection mode — pas des lots, pas du tout-venant, mais
+        Je cherchais une plateforme qui proposerait une vraie sélection mode : pas des lots, pas du tout-venant, mais
         des pièces choisies avec un œil formé. Des pièces qui ont de la gueule. Qui racontent quelque chose. Qui
         méritent qu&apos;on les remarque.
       </>,
       <>Je ne l&apos;ai pas trouvée. Alors je l&apos;ai créée.</>,
       <>
         <Hi>Lil&apos;OG, c&apos;est la conviction que style et seconde main ne s&apos;opposent pas.</Hi> Que consommer
-        mieux ne veut pas dire renoncer à son identité. Et que nous, acteurs de la mode, avons une responsabilité —
-        et une chance unique — de montrer que c&apos;est possible. <Hi tone="blue">Une pièce à la fois.</Hi>
+        mieux ne veut pas dire renoncer à son identité. Et que nous, acteurs de la mode, avons une responsabilité,
+        et une chance unique, de montrer que c&apos;est possible. <Hi tone="blue">Une pièce à la fois.</Hi>
       </>,
     ],
   },
@@ -549,7 +549,7 @@ export function HistoireShell() {
             {/* ---- Barre de statut ---- */}
             <div className="flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
               <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
-                <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com — SIRET 98014870400011
+                <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com · SIRET 98014870400011
               </span>
               <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
                 4 log(s) chargé(s)

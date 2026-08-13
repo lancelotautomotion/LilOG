@@ -1,4 +1,4 @@
-/* Lil'OG — app shell + Tweaks wiring */
+/* Lil'OG : app shell + Tweaks wiring */
 const { useState } = React;
 const { Nav, Drawer, Hero, Lookbook, Editorial, Footer } = window.LilOGUI;
 

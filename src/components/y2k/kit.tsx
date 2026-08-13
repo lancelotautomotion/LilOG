@@ -1,5 +1,5 @@
 /* ============================================================
-   Vocabulaire Y2K commun — fenêtres, plastique, scotch
+   Vocabulaire Y2K commun : fenêtres, plastique, scotch
    ------------------------------------------------------------
    Les jetons et briques de fenêtre partagés par les modules de
    l'accueil (CAMCORDER_OS, ARCADE_SLOT, FILE_EXPLORER.SYS,
@@ -58,13 +58,13 @@ export const GRID_BG: React.CSSProperties = {
 export const HARD_SHADOW = "shadow-[6px_6px_0_rgba(24,12,58,0.55)] md:shadow-[10px_10px_0_rgba(24,12,58,0.55)]";
 
 /**
- * Le fond d'écran du bureau — page d'accueil uniquement. Calé sur
+ * Le fond d'écran du bureau : page d'accueil uniquement. Calé sur
  * `#a86fe8`, le violet clair qui termine le dégradé des barres de titre.
  *
  * Posé en `style` inline sur `<main>` plutôt qu'en décor `fixed` plein
  * viewport : un décor `fixed` couvrant tout l'écran peint par-dessus le
  * hero plein écran qui précède `<main>` dans le DOM et masque ses
- * propres visuels — c'est justement ce que ce fond évite.
+ * propres visuels, c'est justement ce que ce fond évite.
  */
 export const WALLPAPER: React.CSSProperties = {
   background:
@@ -74,7 +74,7 @@ export const WALLPAPER: React.CSSProperties = {
     "linear-gradient(180deg, #9a63e4 0%, #a86fe8 38%, #b98cef 72%, #9d68e6 100%)",
 };
 
-/** Quadrillage du fond d'écran — le même pas que le papier millimétré. */
+/** Quadrillage du fond d'écran : le même pas que le papier millimétré. */
 export const WALLPAPER_GRID: React.CSSProperties = {
   backgroundImage:
     "linear-gradient(rgba(59,29,143,0.10) 1px, transparent 1px)," +
@@ -114,7 +114,7 @@ export function LeopardBackdrop() {
 export const BEVEL_OUT =
   "shadow-[inset_1px_1px_0_rgba(255,255,255,0.95),inset_-1px_-1px_0_rgba(90,86,120,0.75),inset_2px_2px_0_rgba(255,255,255,0.55),inset_-2px_-2px_0_rgba(140,136,170,0.5)]";
 
-/** Le même biseau, creusé — pour les zones encastrées (champs, écrans). */
+/** Le même biseau, creusé : pour les zones encastrées (champs, écrans). */
 export const BEVEL_IN =
   "shadow-[inset_1px_1px_0_rgba(90,86,120,0.75),inset_-1px_-1px_0_rgba(255,255,255,0.9),inset_2px_2px_4px_rgba(0,0,0,0.18)]";
 
@@ -169,7 +169,7 @@ export function WindowFrame({
   bodyStyle?: React.CSSProperties;
   children: React.ReactNode;
   /**
-   * `overflow-hidden` sur le cadre — nécessaire pour que la barre de titre
+   * `overflow-hidden` sur le cadre, nécessaire pour que la barre de titre
    * (coins carrés) épouse les coins arrondis du cadre. Passe à `false`
    * uniquement si un enfant a besoin d'échapper au cadrage, par exemple un
    * panneau `sticky` : `position: sticky` ne fonctionne pas sous un ancêtre
@@ -236,10 +236,10 @@ export function Tape({
 }
 
 /**
- * Étiquette de module — cohérente avec /durabilite et /histoire.
+ * Étiquette de module : cohérente avec /durabilite et /histoire.
  * `paper` : posée sur une surface claire (papier millimétré, fenêtre).
  * `wallpaper` : posée à même le fond d'écran violet du bureau (accueil
- * uniquement) — indigo foncé, pensé pour ce violet clair uni.
+ * uniquement), indigo foncé, pensé pour ce violet clair uni.
  */
 export function SectionLabel({
   n,
@@ -257,7 +257,7 @@ export function SectionLabel({
         wall ? "text-[#2b0f6b]" : "text-[#5b2fb8]"
       }`}
     >
-      <span style={{ color: wall ? "#ffffff" : PINK }}>▶</span> {n} — {file}
+      <span style={{ color: wall ? "#ffffff" : PINK }}>▶</span> {n} · {file}
     </p>
   );
 }

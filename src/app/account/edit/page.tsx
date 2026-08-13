@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { shopifyGetCustomer, shopifyUpdateCustomer } from "@/lib/shopify/customers";
 import { EditProfileForm } from "./edit-form";
 
-export const metadata: Metadata = { title: "Modifier le profil — Lil'OG" };
+export const metadata: Metadata = { title: "Modifier le profil · Lil'OG" };
 
 export default async function EditProfilePage() {
   const session = await auth();
@@ -41,7 +41,7 @@ export default async function EditProfilePage() {
       <div className="account-win95">
         {/* Title bar */}
         <div className="account-win95-bar">
-          <span className="account-win95-title">♛ Lil&apos;OG — Modifier le profil</span>
+          <span className="account-win95-title">♛ Lil&apos;OG · Modifier le profil</span>
           <div className="account-win95-chrome">
             <span>_</span>
             <span>□</span>

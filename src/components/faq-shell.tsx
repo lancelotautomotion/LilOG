@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   HELP_CENTER_2000.EXE — /faq
+   HELP_CENTER_2000.EXE : /faq
    ------------------------------------------------------------
    Toute la page vit dans une seule fenêtre applicative Y2K /
    Windows 95, direction « chunky plastic », strictement alignée
@@ -27,7 +27,7 @@ import { PageShell } from "@/components/page-shell";
 import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/stickers";
 import { Icon } from "@/components/icons";
 
-/* ---- Jetons « chunky plastic » — identiques à /contact ---- */
+/* ---- Jetons « chunky plastic » : identiques à /contact ---- */
 const PLASTIC =
   "shadow-[inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_5px_rgba(0,0,0,0.25),0_2px_3px_rgba(30,36,48,0.18)]";
 const PLASTIC_PRESS =
@@ -119,7 +119,7 @@ const FAQS: Faq[] = [
     q: "Comment authentifiez-vous les pièces ?",
     a: [
       "Chaque pièce est inspectée à la main par Louna, styliste de formation. Elle vérifie les étiquettes, les coutures, les matières et l'état général avant toute mise en vente.",
-      "Aucune pièce douteuse ne passe — si on a un doute, on ne vend pas.",
+      "Aucune pièce douteuse ne passe : si on a un doute, on ne vend pas.",
     ],
   },
   {
@@ -135,7 +135,7 @@ const FAQS: Faq[] = [
     cat: "authenticite",
     q: "Est-ce qu'une pièce peut être réservée ?",
     a: [
-      "Non. Chaque pièce est unique et disponible en premier arrivé, premier servi. Si tu hésites, quelqu'un d'autre peut l'acheter entre-temps — c'est la nature de la seconde main sélective.",
+      "Non. Chaque pièce est unique et disponible en premier arrivé, premier servi. Si tu hésites, quelqu'un d'autre peut l'acheter entre-temps, c'est la nature de la seconde main sélective.",
       "Pas de réservation, pas d'exception.",
     ],
   },
@@ -155,7 +155,7 @@ const FAQS: Faq[] = [
     q: "Puis-je vous vendre mes propres pièces ?",
     a: [
       "Lil'OG n'est pas une plateforme de dépôt-vente pour le moment : la sélection est entièrement curatée par Louna.",
-      "Si tu as des pièces exceptionnelles à proposer, envoie-nous un message à lilog.shop@gmail.com — on ne promet rien, mais on regarde.",
+      "Si tu as des pièces exceptionnelles à proposer, envoie-nous un message à lilog.shop@gmail.com : on ne promet rien, mais on regarde.",
     ],
     link: { href: "/contact", label: "NOUS_ÉCRIRE.EXE" },
   },
@@ -167,7 +167,7 @@ const FAQS: Faq[] = [
     q: "Les tailles sont-elles fiables sur des pièces vintage ?",
     a: [
       "Le vintage a ses propres codes : un L des années 90 peut correspondre à un M actuel.",
-      "C'est pourquoi chaque fiche produit indique les mesures réelles de la pièce — pas seulement la taille étiquetée. Mesure-toi et compare, c'est le seul moyen fiable.",
+      "C'est pourquoi chaque fiche produit indique les mesures réelles de la pièce, pas seulement la taille étiquetée. Mesure-toi et compare, c'est le seul moyen fiable.",
     ],
   },
   {
@@ -603,7 +603,7 @@ export function FaqShell() {
                     Questions fréquentes
                   </h2>
                   <p className={`${MONO} mt-1.5 text-[clamp(0.62rem,1.5vw,0.7rem)] leading-relaxed text-[#4a4560]`}>
-                    Authenticité, tailles, livraison, retours — les réponses, sans blabla.
+                    Authenticité, tailles, livraison, retours : les réponses, sans blabla.
                   </p>
                 </div>
                 <div
@@ -687,7 +687,7 @@ export function FaqShell() {
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-[#c6c2d8] pt-3">
                 <p className={`${MONO} text-[0.55rem] tracking-[0.08em] text-[#5b2fb8]`}>
                   <span style={{ color: PINK }}>✦</span> {visible.length} FICHE(S) AFFICHÉE(S)
-                  {query.trim() && ` — RECHERCHE : « ${query.trim()} »`}
+                  {query.trim() && ` · RECHERCHE : « ${query.trim()} »`}
                 </p>
                 {visible.length > 0 && (
                   <button
@@ -786,7 +786,7 @@ export function FaqShell() {
                     Une question sur ta commande ?
                   </p>
                   <p className={`${MONO} max-w-[46ch] text-[clamp(0.64rem,1.5vw,0.72rem)] leading-[1.9] text-[#4a4560]`}>
-                    On répond du lundi au vendredi, de 10h à 18h. Mesures, état d&apos;une pièce, suivi de colis — écris-nous,
+                    On répond du lundi au vendredi, de 10h à 18h. Mesures, état d&apos;une pièce, suivi de colis : écris-nous,
                     on regarde ça tout de suite.
                   </p>
 
@@ -820,10 +820,10 @@ export function FaqShell() {
           {/* ---- Barre de statut ---- */}
           <div className="flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
             <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
-              <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com — Lun-Ven 10h/18h
+              <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com · Lun-Ven 10h/18h
             </span>
             <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
-              {visible.length} objet(s) — 1.44 Mo
+              {visible.length} objet(s) · 1.44 Mo
             </span>
           </div>
         </div>
