@@ -77,6 +77,58 @@ export const STANDARD_SIZES = ["XS", "S", "M", "L", "XL"];
 /** Same idea for footwear — EU sizes, the range Lil'OG actually stocks. */
 export const STANDARD_SHOE_SIZES = ["35", "36", "37", "38", "39", "40", "41", "42"];
 
+/**
+ * Correspondance lettre ↔ taille FR (femme). Le catalogue mélange les deux
+ * barèmes — un haut est étiqueté « S », une jupe « 36 » — et deux pièces de
+ * la même taille ne se ressemblent donc pas du tout, chaîne pour chaîne.
+ * Sert à rapprocher un haut d'un bas dans la même taille.
+ */
+const LETTER_TO_FR: Record<string, string> = {
+  XXS: "32",
+  XS: "34",
+  S: "36",
+  M: "38",
+  L: "40",
+  XL: "42",
+  XXL: "44",
+  XXXL: "46",
+};
+
+const FR_TO_LETTER: Record<string, string> = Object.fromEntries(
+  Object.entries(LETTER_TO_FR).map(([letter, fr]) => [fr, letter]),
+);
+
+/**
+ * Toutes les écritures d'une même taille : « S » donne `["S", "36"]`, « 38 »
+ * donne `["38", "M"]`, et une taille combinée « 38/40 » se déplie en ses deux
+ * tailles. Deux pièces sont de la même taille dès que ces listes se croisent.
+ *
+ * ⚠ Barème vêtement uniquement. Les pointures partagent les mêmes nombres
+ * (38 se porte au pied comme à la taille) : ne pas s'en servir pour comparer
+ * une chaussure à un vêtement.
+ */
+export function sizeEquivalents(raw: string): string[] {
+  const canonical = normalizeSize(raw);
+  if (!canonical) return [];
+  const out = new Set<string>();
+  for (const part of canonical.split(/[/-]/)) {
+    const value = part.trim();
+    if (!value) continue;
+    out.add(value);
+    /* « T.38 », « T 38 » et « FR 38 » désignent le 38. On ne touche pas aux
+       préfixes UK / US / IT, qui sont eux d'autres barèmes. */
+    const bare = value.replace(/^(?:T\.?|FR)\s*(?=\d)/, "");
+    if (bare !== value) out.add(bare);
+    for (const v of [value, bare]) {
+      const fr = LETTER_TO_FR[v];
+      if (fr) out.add(fr);
+      const letter = FR_TO_LETTER[v];
+      if (letter) out.add(letter);
+    }
+  }
+  return [...out];
+}
+
 const SIZE_RANK = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
 /** Letter sizes first (in wearing order), then numeric, then everything else. */
