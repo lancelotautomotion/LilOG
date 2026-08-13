@@ -39,7 +39,7 @@ const GRID_BG = {
   backgroundSize: "22px 22px",
 };
 
-const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 55%, #a86fe8 100%)";
+const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)";
 const DANGER_BAR = "linear-gradient(100deg, #1c1216 0%, #4a1116 45%, #c81e3a 100%)";
 const WIN_BAR = "linear-gradient(100deg, #0f5c3d 0%, #1fae6b 45%, #7147d4 100%)";
 

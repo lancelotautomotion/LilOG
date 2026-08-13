@@ -41,8 +41,7 @@ const LCD = "font-[family-name:var(--font-lcd)]";
 /* Le rose de la maison : tous les petits accents roses passent par lui. */
 const PINK = "#d3016d";
 
-const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 55%, #a86fe8 100%)";
-const VIOLET_BAR_SOFT = "linear-gradient(90deg, #5b2fb8 0%, #7147d4 60%, #b184ee 100%)";
+const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)";
 const VIOLET_BUMP = "linear-gradient(180deg, #b58cf5 0%, #7147d4 55%, #5b2fb8 100%)";
 
 /* Quadrillage « papier millimétré » pastel du fond de fenêtre. */
@@ -622,7 +621,7 @@ export function FaqShell() {
                 className="mb-[clamp(14px,2.4vw,22px)] overflow-hidden rounded-xl border border-[#c6c2d8] bg-white/85 backdrop-blur-[1px]"
                 style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)" }}
               >
-                <div className="px-3 py-2" style={{ background: VIOLET_BAR_SOFT }}>
+                <div className="px-3 py-2" style={{ background: VIOLET_BAR }}>
                   <h3 className={`${MONO} text-[0.66rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}>
                     🔎 RECHERCHE.EXE ★
                   </h3>

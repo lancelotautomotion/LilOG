@@ -44,7 +44,7 @@ const LCD = "font-[family-name:var(--font-lcd)]";
 /** Le rose de la maison : tous les petits accents roses passent par lui. */
 const PINK = "#d3016d";
 
-const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 55%, #a86fe8 100%)";
+const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)";
 
 /* Quadrillage « papier millimétré » pastel du fond de fenêtre. */
 const GRID_BG = {

@@ -36,9 +36,15 @@ export const NEON = "#ff5ec4";
 /** Vert « moniteur » des afficheurs système. */
 export const MATRIX = "#5affa0";
 
-export const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 55%, #a86fe8 100%)";
-/** Barre de titre « Notepad » : le navy Windows glisse vers le violet maison. */
-export const NAVY_BAR = "linear-gradient(90deg, #000080 0%, #1B48CE 55%, #7147d4 100%)";
+/**
+ * Barre de titre du site : le fronton de la borne d'arcade, violet profond →
+ * violet → fuchsia. Toutes les fenêtres la portent, quelle que soit la page.
+ * Même valeur que `--y2k-titlebar` dans globals.css, pour les fenêtres qui
+ * sont habillées en CSS (menu, compte, panier, Dressing Machine).
+ */
+export const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)";
+/** Ancien navy des fenêtres « Notepad », aligné sur la barre commune. */
+export const NAVY_BAR = VIOLET_BAR;
 
 /** Quadrillage « papier millimétré » pastel du fond des fenêtres. */
 export const GRID_BG: React.CSSProperties = {

@@ -233,7 +233,7 @@ export default function ContactPage() {
             className="flex items-center justify-between gap-3 px-3 py-2"
             style={{
               background:
-                "linear-gradient(90deg, #3b1d8f 0%, #7147d4 55%, #a86fe8 100%)",
+                "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)",
             }}
           >
             <div className="flex min-w-0 items-center gap-2">
@@ -291,7 +291,7 @@ export default function ContactPage() {
                   className="px-3 py-2"
                   style={{
                     background:
-                      "linear-gradient(90deg, #5b2fb8 0%, #7147d4 60%, #b184ee 100%)",
+                      "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)",
                   }}
                 >
                   <h2

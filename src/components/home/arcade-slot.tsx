@@ -198,7 +198,7 @@ export function ArcadeSlot() {
               {/* Fronton lumineux */}
               <div
                 className="mb-[clamp(12px,2vw,20px)] flex items-center gap-2 rounded-xl border-2 border-[#3b1d8f] px-3 py-2"
-                style={{ background: "linear-gradient(90deg,#3b1d8f 0%,#7147d4 45%,#ff3fb0 100%)" }}
+                style={{ background: "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)" }}
               >
                 {/* La 3e ampoule de chaque côté ne sort qu'à partir de sm :
                     en dessous, la place revient au nom de la borne. */}
