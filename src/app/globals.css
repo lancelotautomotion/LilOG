@@ -2258,249 +2258,40 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   AUTH — LDL
+   LOGIN — LIL_OG_MESSENGER_V2.0.EXE
+   La page est écrite en Tailwind ; ne restent ici que les keyframes
+   et la police, qu'aucun utilitaire ne couvre.
+   (Le bloc AUTH — LDL qui occupait cette place a disparu avec
+   l'ancienne fenêtre : aucune de ses classes n'était utilisée ailleurs.)
    ══════════════════════════════════════════════════════════════════ */
 
-/* LDL Auth window */
-.auth-win95 {
-  width: min(468px, 100%);
-  background: var(--ldl-surface);
-  border: 1px solid var(--ldl-border);
-  border-radius: var(--ldl-radius);
-  box-shadow: var(--ldl-shadow-window);
-  overflow: hidden;
-}
+.login-mono { font-family: var(--mono); }
 
-/* Title bar — LDL blue gradient */
-.auth-win95-bar {
-  background: var(--ldl-titlebar);
-  padding: 6px 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  user-select: none;
+/* Wizz : la fenêtre tremble, comme le buzzer MSN. */
+@keyframes login-wizz {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-9px, 5px) rotate(-1deg); }
+  25% { transform: translate(8px, -6px) rotate(1deg); }
+  40% { transform: translate(-7px, -4px) rotate(-0.8deg); }
+  55% { transform: translate(6px, 5px) rotate(0.8deg); }
+  70% { transform: translate(-4px, 2px) rotate(-0.4deg); }
+  85% { transform: translate(2px, -2px) rotate(0.2deg); }
 }
-.auth-win95-title-text {
-  flex: 1;
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  color: #fff;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 700;
-}
-.auth-win95-chrome { display: flex; gap: 5px; flex-shrink: 0; align-items: center; }
-.auth-win95-btn {
-  width: 28px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.92);
-  font-family: var(--mono);
-  font-weight: 400;
-  cursor: default;
-  flex-shrink: 0;
-  line-height: 1;
-  user-select: none;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 1px 2px rgba(0,0,0,0.18);
-  transition: background 120ms;
-}
-.auth-win95-btn:hover { background: rgba(255,255,255,0.22); }
+.login-wizz { animation: login-wizz 600ms ease-in-out; }
 
-/* Menu bar */
-.auth-win95-menu {
-  background: var(--ldl-bg);
-  border-bottom: 1px solid var(--ldl-border);
-  padding: 3px 6px;
-  display: flex;
+/* LED verte de la barre de statut. */
+@keyframes login-led {
+  0%, 55%   { opacity: 1; box-shadow: 0 0 6px 1px rgba(34, 197, 94, 0.85); }
+  56%, 100% { opacity: 0.28; box-shadow: none; }
 }
-.auth-win95-menu-item {
-  font-family: var(--mono);
-  font-size: 0.64rem;
-  color: var(--ldl-muted);
-  padding: 2px 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-radius: 0;
+.login-led { animation: login-led 1.4s steps(1, end) infinite; }
+
+/* Étoiles métalliques du papier peint. */
+@keyframes login-twinkle {
+  0%, 100% { opacity: 0.18; transform: scale(0.85) rotate(0deg); }
+  50%      { opacity: 0.62; transform: scale(1.12) rotate(18deg); }
 }
-.auth-win95-menu-item:first-child { background: var(--ldl-btn); color: #fff; }
-.auth-win95-inner { padding: 14px 14px 10px; }
-.auth-win95-tabs { display: flex; gap: 4px; margin-bottom: -1px; }
-.auth-win95-tab {
-  padding: 6px 16px;
-  font-family: var(--mono);
-  font-size: 0.64rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  background: var(--ldl-bg);
-  border: 1px solid var(--ldl-border);
-  border-bottom: none;
-  color: var(--ldl-muted);
-  border-radius: 0;
-  position: relative;
-  bottom: -1px;
-  z-index: 0;
-  transition: background var(--ldl-transition), color var(--ldl-transition);
-}
-.auth-win95-tab:hover { color: var(--ldl-text); background: var(--ldl-surface); }
-.auth-win95-tab.active {
-  background: var(--ldl-surface);
-  color: var(--ldl-primary);
-  font-weight: 700;
-  border-color: var(--ldl-border);
-  border-bottom-color: var(--ldl-surface);
-  z-index: 2;
-}
-.auth-win95-panel {
-  background: var(--ldl-surface);
-  border: 1px solid var(--ldl-border);
-  border-radius: 0;
-  padding: 16px;
-  position: relative;
-  z-index: 1;
-}
-.auth-form { display: flex; flex-direction: column; gap: 10px; }
-.auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.auth-input {
-  width: 100%;
-  padding: 10px 12px;
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  color: var(--ldl-text);
-  background: var(--ldl-bg);
-  border: 1px solid var(--ldl-border);
-  border-radius: 0;
-  outline: none;
-  box-sizing: border-box;
-  transition: border-color var(--ldl-transition), box-shadow var(--ldl-transition);
-}
-.auth-input:focus {
-  border-color: var(--ldl-primary);
-  box-shadow: 0 0 0 3px rgba(30,77,255,0.1);
-  background: var(--ldl-surface);
-}
-.auth-input::placeholder { color: var(--ldl-muted); }
-.auth-error {
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  color: #c00;
-  background: #fff0f0;
-  border: 1px solid rgba(204,0,0,0.3);
-  border-radius: 0;
-  padding: 6px 10px;
-  margin: 0;
-  letter-spacing: 0.04em;
-}
-.auth-submit {
-  width: 100%;
-  padding: 10px 16px;
-  margin-top: 6px;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #fff;
-  background: var(--ldl-btn);
-  border: none;
-  border-radius: 0;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,128,0.25);
-  transition: filter var(--ldl-transition), transform var(--ldl-transition);
-}
-.auth-submit:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.auth-submit:active { transform: scale(0.98); }
-.auth-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-.auth-submit.auth-signout { background: var(--ldl-text); box-shadow: none; margin-top: 12px; }
-.auth-submit.auth-signout:hover { filter: none; background: var(--ldl-primary); }
-.auth-divider {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 10px 0;
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  color: var(--ldl-muted);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--ldl-border); }
-.auth-google {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 16px;
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ldl-text);
-  background: var(--ldl-surface);
-  border: 1px solid var(--ldl-border);
-  border-radius: 0;
-  cursor: pointer;
-  transition: box-shadow var(--ldl-transition), border-color var(--ldl-transition);
-}
-.auth-google:hover { box-shadow: var(--ldl-shadow); border-color: var(--ldl-primary); }
-.auth-google:active { transform: scale(0.98); }
-.auth-win95-statusbar {
-  background: var(--ldl-bg);
-  border-top: 1px solid var(--ldl-border);
-  padding: 4px 10px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.auth-win95-status-cell {
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  color: var(--ldl-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-}
-.auth-win95-status-cell:last-child { flex: 1; text-align: right; }
-.auth-desktop-back {
-  position: absolute;
-  top: 18px;
-  left: 22px;
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  color: var(--ldl-muted);
-  opacity: 0.55;
-  transition: opacity 0.2s;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.auth-desktop-back:hover { opacity: 1; }
-.auth-desktop-logo {
-  position: fixed;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(180px, 45vw);
-  height: auto;
-  opacity: 0.055;
-  pointer-events: none;
-  filter: grayscale(1);
-}
-@media (max-width: 520px) {
-  .auth-desktop { padding: 12px; justify-content: flex-start; padding-top: 56px; }
-  .auth-win95 { width: 100%; }
-  .auth-win95-inner { padding: 10px; }
-  .auth-win95-panel { padding: 12px; }
-  .auth-row { grid-template-columns: 1fr; }
-}
+.login-star { animation: login-twinkle 5s ease-in-out infinite; }
 
 /* ══════════════════════════════════════════════════════════════════
    ACCOUNT PAGES — LDL v1.0
