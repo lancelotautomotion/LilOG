@@ -165,6 +165,21 @@ export function ProductWindow({
     </span>
   );
 
+  /* Taille posée à côté du prix, dans les deux présentations : c'est le
+     premier critère de tri d'une friperie, et l'ouvrir fiche par fiche pour
+     le connaître n'a pas de sens. Rien pour les pièces sans taille (sacs,
+     bijoux) — « TU » n'apprendrait rien. Au-delà de trois tailles, la liste
+     est coupée : la vignette fait 170px de large en mobile. */
+  const sizeChip = product.sizes.length > 0 && (
+    <span
+      className={`${MONO} rounded border border-[#c6c2d8] px-1.5 py-1 text-[0.5rem] leading-none font-bold whitespace-nowrap text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
+      title={`Taille ${product.sizes.join(" / ")}`}
+    >
+      📏 {product.sizes.slice(0, 3).join(" / ")}
+      {product.sizes.length > 3 && "…"}
+    </span>
+  );
+
   const cartButton = (
     <button
       type="button"
@@ -223,10 +238,10 @@ export function ProductWindow({
           <div className="flex min-w-0 flex-1 flex-col justify-between gap-2 py-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <Link href={href} className="min-w-0 sm:flex-1">
               <h3 className={`${MONO} truncate text-[0.72rem] font-bold text-[#1E2430]`}>{product.name}</h3>
+              {/* Les tailles ne sont plus listées ici : elles ont leur
+                  pastille à côté du prix, comme en vue grille. */}
               <p className={`${MONO} mt-1 truncate text-[0.52rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
-                {[product.productType, product.meta, ...product.sizes.slice(0, 4)]
-                  .filter(Boolean)
-                  .join("  ·  ") || "PIÈCE UNIQUE"}
+                {[product.productType, product.meta].filter(Boolean).join("  ·  ") || "PIÈCE UNIQUE"}
               </p>
               {pick && (
                 <span className="relative mt-2 hidden sm:inline-block">
@@ -235,8 +250,9 @@ export function ProductWindow({
               )}
             </Link>
 
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
               {price}
+              {sizeChip}
               {cartButton}
               {favButton}
             </div>
@@ -264,7 +280,11 @@ export function ProductWindow({
       {/* Barre d'action : sur une carte de deux colonnes en mobile, la place
           est comptée — le pied passe à la ligne plutôt que de déborder. */}
       <div className="mt-auto flex flex-wrap items-center justify-between gap-1.5 border-t border-[#d8d5e6] bg-[#e9e7f2] px-2 py-2">
-        {price}
+        {/* Prix et taille restent solidaires quand le pied passe à la ligne. */}
+        <span className="flex items-center gap-1.5">
+          {price}
+          {sizeChip}
+        </span>
         <span className="flex items-center gap-1.5">
           {cartButton}
           {favButton}
