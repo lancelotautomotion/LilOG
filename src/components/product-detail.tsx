@@ -341,14 +341,28 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
           {product.productType || product.meta || "Pièce unique"}
         </p>
 
-        {/* Mini écran LED — même famille que PRICE_TAG.SYS au-dessus. */}
-        <div className={`lpi-crt relative mt-2 w-fit overflow-hidden rounded-md border-2 border-[#2b2b3d] bg-black px-2 py-1 ${BEVEL_IN}`}>
-          <span className="relative z-[2] flex items-baseline gap-1.5">
-            <span className={`${LCD} text-[1.15rem] leading-none tracking-[0.02em]`} style={{ color: NEON, textShadow: `0 0 8px ${NEON}b3` }}>
-              {product.price}€
+        {/* Prix et taille côte à côte : les suggestions sont choisies dans la
+            taille de la pièce regardée, encore faut-il pouvoir le vérifier
+            sans ouvrir la fiche. Pas de pastille pour les pièces sans taille
+            (sacs, bijoux, accessoires) — « TU » n'apprendrait rien. */}
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+          {/* Mini écran LED — même famille que PRICE_TAG.SYS au-dessus. */}
+          <div className={`lpi-crt relative overflow-hidden rounded-md border-2 border-[#2b2b3d] bg-black px-2 py-1 ${BEVEL_IN}`}>
+            <span className="relative z-[2] flex items-baseline gap-1.5">
+              <span className={`${LCD} text-[1.15rem] leading-none tracking-[0.02em]`} style={{ color: NEON, textShadow: `0 0 8px ${NEON}b3` }}>
+                {product.price}€
+              </span>
+              {product.was && <s className={`${MONO} text-[0.5rem] text-white/35`}>{product.was}€</s>}
             </span>
-            {product.was && <s className={`${MONO} text-[0.5rem] text-white/35`}>{product.was}€</s>}
-          </span>
+          </div>
+
+          {product.sizes.length > 0 && (
+            <span
+              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1.5 text-[0.54rem] font-bold tracking-[0.04em] text-[#3b3550] uppercase ${PLASTIC}`}
+            >
+              📏 {product.sizes.join(" / ")}
+            </span>
+          )}
         </div>
 
         <div className="mt-2.5 flex items-stretch gap-1.5">
