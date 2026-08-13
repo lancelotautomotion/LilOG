@@ -2286,6 +2286,21 @@ a { color: inherit; text-decoration: none; }
 }
 .login-led { animation: login-led 1.4s steps(1, end) infinite; }
 
+/* Strass collés sur la fenêtre : même flottement que sur /faq et les
+   pages légales, avec des durées décalées pour éviter le battement
+   synchrone. `--r` porte l'angle de pose de chaque pastille. */
+@keyframes login-bob {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--r, 0deg)) scale(1); }
+  50%      { transform: translate3d(0, -7%, 0) rotate(calc(var(--r, 0deg) + 6deg)) scale(1.05); }
+}
+.login-sticker {
+  animation: login-bob 7s ease-in-out infinite;
+  filter: drop-shadow(0 3px 4px rgba(30, 36, 48, 0.3));
+}
+.login-s2 { animation-duration: 8.4s; animation-delay: -2.2s; }
+.login-s3 { animation-duration: 6.2s; animation-delay: -3.7s; }
+.login-s4 { animation-duration: 9s;   animation-delay: -5.1s; }
+
 /* Étoiles métalliques du papier peint. */
 @keyframes login-twinkle {
   0%, 100% { opacity: 0.18; transform: scale(0.85) rotate(0deg); }

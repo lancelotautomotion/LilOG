@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 import { actionSignup } from "@/lib/actions/auth-actions";
 import {
   LS_AVATAR_KEY,
@@ -22,6 +23,16 @@ const LS_REMEMBER_KEY = "lilog_login_remember";
    relief rentrant (cadre photo, zones encastrées). */
 const BEVEL_OUT = "border-2 border-t-white border-l-white border-r-gray-800 border-b-gray-800";
 const BEVEL_IN  = "border-2 border-t-gray-500 border-l-gray-500 border-r-white border-b-white";
+
+/* Strass de la maison — mêmes formes et mêmes teintes que /faq, /contact
+   et le bas de page. Collés sur les flancs de la fenêtre, jamais sur ses
+   commandes ni sur les champs. */
+const STICKERS = [
+  { key: "s1", cls: "login-s1 -left-3 -top-5 sm:-left-6 h-[clamp(30px,4.4vw,50px)] w-[clamp(30px,4.4vw,50px)]",       r: "-14deg", node: <ChromeStar uid="lgn-chrome" /> },
+  { key: "s2", cls: "login-s2 -right-3 top-[24%] sm:-right-6 h-[clamp(24px,3.4vw,40px)] w-[clamp(24px,3.4vw,40px)]",  r: "12deg",  node: <GemSticker uid="lgn-star-a" shape="star"  hue={["#FFB3D6", "#F0509A", "#B7175C"]} /> },
+  { key: "s3", cls: "login-s3 -left-3 bottom-[20%] sm:-left-6 h-[clamp(26px,3.8vw,44px)] w-[clamp(26px,3.8vw,44px)]", r: "10deg",  node: <GemSticker uid="lgn-heart"  shape="heart" hue={["#FFC0DF", "#EE4B96", "#B3155A"]} /> },
+  { key: "s4", cls: "login-s4 -right-3 -bottom-5 sm:-right-6 h-[clamp(28px,4vw,46px)] w-[clamp(28px,4vw,46px)]",      r: "-12deg", node: <GemSticker uid="lgn-star-b" shape="star"  hue={["#FFB3D6", "#F0509A", "#B7175C"]} /> },
+];
 
 export function AuthForm() {
   const [mode, setMode] = useState<Mode>("login");
@@ -101,6 +112,17 @@ export function AuthForm() {
       }
       onAnimationEnd={e => { if (e.target === e.currentTarget) setWizz(false); }}
     >
+      {STICKERS.map(s => (
+        <span
+          key={s.key}
+          aria-hidden
+          className={`login-sticker pointer-events-none absolute z-20 ${s.cls}`}
+          style={{ ["--r" as string]: s.r }}
+        >
+          {s.node}
+        </span>
+      ))}
+
       <div className={`login-mono overflow-hidden rounded-xl bg-[#ece9d8] shadow-2xl ${BEVEL_OUT}`}>
 
         {/* ── Barre de titre ── */}
