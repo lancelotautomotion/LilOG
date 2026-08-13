@@ -38,7 +38,7 @@ export default async function CheckoutSuccessPage() {
             ✓ Commande confirmée — Lil&apos;OG
           </span>
           <div style={{ display: "flex", gap: "3px" }}>
-            {["_", "□", "✕"].map((s) => (
+            {["_", "□", "×"].map((s) => (
               <span key={s} style={{
                 width: 16, height: 14,
                 background: "#c0c0c0",

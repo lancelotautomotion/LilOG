@@ -167,7 +167,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
             aria-label="Fermer"
             className={`${MONO} absolute top-4 right-4 z-10 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-2 text-[0.6rem] font-bold text-[#262626] uppercase ${PLASTIC} ${PLASTIC_PRESS}`}
           >
-            [ ✖ CLOSE ]
+            [ × CLOSE ]
           </button>
 
           <img

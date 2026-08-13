@@ -256,7 +256,7 @@ function SizeGate({
           <div className="dm-chrome">
             <span className="dm-chrome-btn" aria-hidden>_</span>
             <span className="dm-chrome-btn" aria-hidden>□</span>
-            <Link className="dm-chrome-btn" href="/" aria-label="Fermer">✕</Link>
+            <Link className="dm-chrome-btn" href="/" aria-label="Fermer">×</Link>
           </div>
         </div>
 
@@ -494,7 +494,7 @@ function ModuleTerminal({
               onClick={onClose}
               aria-label="Fermer le terminal des modules"
             >
-              ✕
+              ×
             </button>
           </div>
 
@@ -582,7 +582,7 @@ function ModuleWindow({
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     onFocus();
-    // The ✕ lives inside the drag handle. Capturing the pointer here would
+    // The × lives inside the drag handle. Capturing the pointer here would
     // retarget the whole gesture — including the click — onto the title bar,
     // so the close button would never fire.
     if ((e.target as HTMLElement).closest("button, a")) return;
@@ -626,7 +626,7 @@ function ModuleWindow({
             onClick={onClose}
             aria-label={`Fermer ${mod.window}`}
           >
-            ✕
+            ×
           </button>
         </div>
       </div>
@@ -997,7 +997,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
             <div className="dm-chrome">
               <span className="dm-chrome-btn" aria-hidden>_</span>
               <span className="dm-chrome-btn" aria-hidden>□</span>
-              <Link className="dm-chrome-btn" href="/" aria-label="Fermer">✕</Link>
+              <Link className="dm-chrome-btn" href="/" aria-label="Fermer">×</Link>
             </div>
           </div>
 

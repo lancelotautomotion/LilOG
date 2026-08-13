@@ -5,7 +5,7 @@
    ------------------------------------------------------------
    « Notre histoire » n'est plus un bloc texte + photo : c'est un
    Bloc-notes ouvert sur le bureau. Barre de titre bleue avec
-   [ _ ] [ 🗖 ] [ ✖ ], menus, fond blanc crème, texte en
+   [ _ ] [ 🗖 ] [ × ], menus, fond blanc crème, texte en
    monospace, et les chiffres de la maison affichés en bas
    comme des statistiques système sur fond noir.
 

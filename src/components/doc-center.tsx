@@ -86,7 +86,7 @@ body{overflow-x:clip}
    Briques de mise en page du « Notepad »
    ============================================================ */
 
-/* Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ ✖ ] */
+/* Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ × ] */
 function WindowButton({ label, glyph }: { label: string; glyph: string }) {
   return (
     <span
@@ -208,7 +208,7 @@ export function Notice({
           ⚠️ {title}
         </span>
         <span className="grid h-4 w-5 shrink-0 place-items-center rounded-[3px] border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#d3d0e1_100%)] text-[0.5rem] font-bold text-[#262626]">
-          ✖
+          ×
         </span>
       </div>
       <div className="flex items-start gap-3 px-3.5 py-3">
@@ -350,7 +350,7 @@ export function DocCenter({
           {/* Au premier plan (z-20), mais décalées assez loin verticalement
               pour dégager toute la hauteur de la barre de titre / barre de
               statut : elles chevauchent le bord de la fenêtre, jamais son
-              icône ni ses boutons [_][🗖][✖]. */}
+              icône ni ses boutons [_][🗖][×]. */}
           <span aria-hidden className="lildoc-noprint pointer-events-none absolute inset-0 z-20">
             <span
               className="lildoc-sticker absolute h-[clamp(34px,5vw,58px)] w-[clamp(34px,5vw,58px)] -left-[10px]"
@@ -409,7 +409,7 @@ export function DocCenter({
               <div className="lildoc-noprint flex shrink-0 items-center gap-1.5">
                 <WindowButton label="Réduire" glyph="_" />
                 <WindowButton label="Agrandir" glyph="🗖" />
-                <WindowButton label="Fermer" glyph="✖" />
+                <WindowButton label="Fermer" glyph="×" />
               </div>
             </div>
 

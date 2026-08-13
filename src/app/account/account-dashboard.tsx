@@ -18,7 +18,7 @@ const STATUS_MAP: Record<string, { label: string; icon: string; cls: string }> =
   UNFULFILLED:         { label: "En préparation",  icon: "✦", cls: "pending"   },
   PARTIALLY_FULFILLED: { label: "Partiel",         icon: "≈", cls: "partial"   },
   PENDING:             { label: "En attente",      icon: "⟳", cls: "pending"   },
-  CANCELLED:           { label: "Annulée",         icon: "✕", cls: "cancelled" },
+  CANCELLED:           { label: "Annulée",         icon: "×", cls: "cancelled" },
 };
 
 function statusInfo(s: string) {
