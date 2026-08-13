@@ -188,7 +188,7 @@ function ViewToggle({ view, setView }: { view: ViewMode; setView: (v: ViewMode) 
             type="button"
             onClick={() => setView(mode)}
             aria-pressed={on}
-            className={`${MONO} rounded-md border px-2.5 py-2 text-[0.5rem] font-bold tracking-[0.06em] whitespace-nowrap uppercase transition active:translate-y-0.5 sm:text-[0.56rem] ${
+            className={`${MONO} rounded-md border px-2.5 py-1.5 text-[0.5rem] font-bold tracking-[0.06em] whitespace-nowrap uppercase transition active:translate-y-0.5 sm:text-[0.56rem] ${
               on
                 ? "border-[#3b1d8f] bg-[linear-gradient(180deg,#a86fe8_0%,#7147d4_48%,#4b2a9e_100%)] text-white shadow-[inset_0_2px_5px_rgba(0,0,0,0.4)]"
                 : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#3b3550] hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`
@@ -377,7 +377,7 @@ export function CategoryPage({
 
         {/* La barre de navigation est fixe et opaque : la fenêtre commence en
             dessous, sinon elle mangerait sa barre de titre. */}
-        <div className="relative z-[1] mx-auto w-full max-w-[1400px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(24px,4vw,48px)] sm:px-6">
+        <div className="relative z-[1] mx-auto w-full max-w-[1400px] px-4 pt-[calc(72px+clamp(8px,1vw,12px))] pb-[clamp(24px,4vw,48px)] sm:px-6">
           {/* ================= FENÊTRE UNIQUE ================= */}
           {/* clip=false : FILTER_CONTROL.SYS doit rester figé au scroll
               (position: sticky), ce qui ne fonctionne sous aucun ancêtre en
@@ -390,7 +390,7 @@ export function CategoryPage({
             clip={false}
           >
             {/* Barre de menus */}
-            <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
+            <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1">
               {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
                 <span key={m} className={`${MONO} text-[0.54rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
                   {m}
@@ -399,7 +399,7 @@ export function CategoryPage({
             </div>
 
             {/* Barre d'adresse */}
-            <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-2">
+            <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-1.5">
               <span className={`${MONO} shrink-0 text-[0.52rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
                 Adresse
               </span>
@@ -418,25 +418,32 @@ export function CategoryPage({
 
             {/* En-tête : nom du rayon, même typo/couleur que les titres de
                 /histoire, /durabilite et /faq (police LCD, encre #2a1266,
-                centré) plutôt qu'un style propre à cette page. */}
-            <div className="border-b border-[#d8d5e6] px-4 pt-5 pb-4 text-center sm:px-6">
+                centré) plutôt qu'un style propre à cette page.
+
+                ⚠ Hauteurs comptées : cet en-tête, additionné au chrome de la
+                fenêtre au-dessus, décide de ce qu'on voit des vêtements en
+                arrivant sur la page. Il a été resserré (marges, corps du
+                titre, colonne de texte élargie à 130ch pour tenir en deux
+                lignes) pour que la première rangée de la grille tienne dans
+                l'écran d'un portable. Le rallonger la repousse en dessous. */}
+            <div className="border-b border-[#d8d5e6] px-4 pt-4 pb-3 text-center sm:px-6">
               <h1
-                className={`${LCD} text-[clamp(1.9rem,6vw,3.2rem)] leading-[1.02] tracking-[0.02em] text-[#2a1266] uppercase`}
+                className={`${LCD} text-[clamp(1.7rem,4.4vw,2.5rem)] leading-[1.02] tracking-[0.02em] text-[#2a1266] uppercase`}
               >
                 {label}
               </h1>
               {vibe && (
-                <p className={`${MONO} mt-2 text-[0.74rem] tracking-[0.04em] text-[#5b2fb8] italic`}>
+                <p className={`${MONO} mt-1.5 text-[0.74rem] tracking-[0.04em] text-[#5b2fb8] italic`}>
                   {vibe.tagline}
                 </p>
               )}
 
               {vibe && (
-                <div className="mt-4 rounded-xl border border-[#d8d5e6] bg-[#f7f6fc] p-[clamp(12px,2.2vw,20px)] text-left">
-                  <p className={`${MONO} max-w-[88ch] text-[0.76rem] leading-[1.85] text-[#3b3550]`}>
+                <div className="mt-3 rounded-xl border border-[#d8d5e6] bg-[#f7f6fc] p-[clamp(10px,1.6vw,15px)] text-left">
+                  <p className={`${MONO} max-w-[130ch] text-[0.76rem] leading-[1.85] text-[#3b3550]`}>
                     {vibe.desc}
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-1.5">
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {vibe.tags.map((tag) => (
                       <span
                         key={tag}
@@ -451,7 +458,7 @@ export function CategoryPage({
             </div>
 
             {/* Sous-en-tête : nom du bloc grille + bascule d'affichage */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d8d5e6] px-4 py-3 sm:px-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d8d5e6] px-4 py-2 sm:px-6">
               <h2 className={`${MONO} text-[0.66rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase`}>
                 MEDIA_GRID — {filtered.length} FICHIER(S)
               </h2>
@@ -463,7 +470,7 @@ export function CategoryPage({
                 dans la hauteur de son propre parent, qui doit donc être
                 étiré (par défaut, `items-stretch`) sur toute la hauteur de
                 la grille pour lui laisser la place de rester figé. */}
-            <div className="flex gap-5 px-4 py-4 sm:px-6">
+            <div className="flex gap-5 px-4 py-3 sm:px-6">
               {/* FILTER_CONTROL.SYS — colonne collante à partir de lg, sans
                   chrome de fenêtre propre : elle vit dans ce même conteneur.
                   Le panneau plafonne lui-même sa hauteur à l'écran visible et
