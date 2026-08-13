@@ -8,10 +8,10 @@
    (lecteur média + Polaroids), ITEM_STATS.SYS à droite (titre
    brutaliste, écran LED, fiche de specs RPG, alerte stock
    clignotante, bouton chunky 3D), puis SYSTEM_LOGS en pied de
-   fenêtre — trois fichiers système à onglets plutôt qu'une pile
-   d'accordéons plats.
+   fenêtre — trois fichiers système en menus déroulants, un seul
+   ouvert à la fois.
 
-   RECOMMENDED_COMBO.EXE, le cross-sell, est un module séparé en
+   RECOMMENDED_COMBO.EXE, le cross-sell, est une seconde fenêtre en
    dessous, comme FILE_EXPLORER.SYS sur l'accueil.
 
    ⚠ PAREFEU : Tailwind + feuille locale préfixée `lpi-`, servie
@@ -684,30 +684,41 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
             </div>
           </WindowFrame>
 
-          {/* RECOMMENDED_COMBO.EXE — titre de module, pas une légende : centré
-              et repris en LCD géant avec le même halo néon que le prix, pour
-              qu'il porte sur le décor léopard plutôt que de s'y fondre. */}
+          {/* RECOMMENDED_COMBO.EXE — une seconde fenêtre sous la fiche, pas
+              des cartes posées à même le décor : titre et suggestions tiennent
+              dans le même bloc blanc, sans bandes de léopard entre elles.
+              Le titre quitte donc le blanc néon (illisible sur fond clair)
+              pour l'encre LCD des autres titres du site. */}
           {related.length > 0 && (
             <div className="mt-[clamp(20px,3vw,32px)]">
-              <div className="mb-5 text-center sm:mb-7">
-                <p
-                  className={`${MONO} text-[0.5rem] font-bold tracking-[0.28em] text-white/75 uppercase`}
-                  style={{ textShadow: "0 2px 6px rgba(0,0,0,0.85)" }}
-                >
-                  ▶ RECOMMENDED_COMBO.EXE
-                </p>
-                <h2
-                  className={`${LCD} mt-1.5 text-[clamp(1.8rem,5.6vw,2.8rem)] leading-none tracking-[0.03em] text-white uppercase`}
-                  style={{ textShadow: `0 0 14px ${NEON}b3, 0 0 38px ${NEON}59, 0 3px 16px rgba(0,0,0,.8)` }}
-                >
-                  🎮 SUGGESTED_STYLE_COMBO.EXE
-                </h2>
-              </div>
-              <div className="grid grid-cols-2 gap-[clamp(12px,2vw,20px)] md:grid-cols-4">
-                {related.map((p, idx) => (
-                  <ComboCard key={p.id} product={p} idx={idx} />
-                ))}
-              </div>
+              <WindowFrame
+                title="C:\ LIL_OG \ RECOMMENDED_COMBO.EXE"
+                icon={<Icon.folderOpen width={15} height={12} />}
+                bodyStyle={{ backgroundColor: "#ffffff" }}
+              >
+                <div className="border-b border-[#d8d5e6] px-4 pt-5 pb-4 text-center sm:px-6">
+                  <h2
+                    className={`${LCD} text-[clamp(1.4rem,4.2vw,2.4rem)] leading-none tracking-[0.03em] text-[#2a1266] uppercase`}
+                  >
+                    🎮 SUGGESTED_STYLE_COMBO.EXE
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-2 gap-[clamp(12px,2vw,20px)] px-4 py-4 sm:px-6 md:grid-cols-4">
+                  {related.map((p, idx) => (
+                    <ComboCard key={p.id} product={p} idx={idx} />
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
+                  <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+                    {related.length} objet(s) suggéré(s)
+                  </span>
+                  <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
+                    Pour aller avec
+                  </span>
+                </div>
+              </WindowFrame>
             </div>
           )}
         </div>
