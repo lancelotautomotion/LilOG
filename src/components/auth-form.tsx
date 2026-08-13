@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
+import { PLASTIC, PLASTIC_FACE, PLASTIC_PRESS } from "@/components/y2k/kit";
 import { actionSignup } from "@/lib/actions/auth-actions";
 import {
   LS_AVATAR_KEY,
@@ -196,9 +197,9 @@ export function AuthForm() {
             🔐 LIL_OG_MESSENGER_V2.0.EXE
           </span>
           <div className="flex shrink-0 items-center gap-1">
-            <ChromeButton label="Réduire la fenêtre" onClick={() => setShaded(v => !v)}>_</ChromeButton>
-            <ChromeButton label="Agrandir la fenêtre" onClick={() => setMaximized(v => !v)}>🗖</ChromeButton>
-            <ChromeButton label="Fermer et retourner à la boutique" href="/">✖</ChromeButton>
+            <ChromeButton label="Réduire" onClick={() => setShaded(v => !v)}>_</ChromeButton>
+            <ChromeButton label="Agrandir" onClick={() => setMaximized(v => !v)}>🗖</ChromeButton>
+            <ChromeButton label="Fermer" href="/">×</ChromeButton>
           </div>
         </div>
 
@@ -439,8 +440,13 @@ function ChromeButton({
   onClick?: () => void;
   href?: string;
 }) {
+  /* Exactement les boutons de fenêtre du reste du site (kit y2k,
+     bas de page, /faq…) : pastille plastique claire, biseau `PLASTIC`,
+     glyphes `_` `🗖` `×`. Seuls l'enfoncement et le curseur sont
+     ajoutés — ici, contrairement au décor des autres fenêtres, ils
+     cliquent vraiment. */
   const className =
-    "flex h-6 w-8 items-center justify-center rounded border border-white/55 bg-white/15 text-[12px] leading-none text-white/95 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_1px_2px_rgba(0,0,0,0.2)] transition-colors hover:bg-white/30 active:translate-y-[1px]";
+    `grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.7rem] leading-none font-bold text-[#262626] select-none ${PLASTIC} ${PLASTIC_PRESS} cursor-pointer`;
 
   if (href) {
     return <Link href={href} aria-label={label} title={label} className={className}>{children}</Link>;
