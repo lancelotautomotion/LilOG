@@ -16,7 +16,7 @@ import type { LangCode } from "@/lib/i18n";
    seule si CATEGORIES change. */
 const DRAWER_LABELS: Partial<Record<LangCode, Record<string, string>>> = {
   fr: {
-    tops: "Tops & t-shirts",
+    tops: "Top & Baby tee",
     outerwear: "Vestes & manteaux",
     dresses: "Robes & nuisettes",
     skirts: "Minijupes & jupes",
