@@ -32,6 +32,7 @@ import { Footer } from "@/components/footer";
 import { Icon } from "@/components/icons";
 import { SmartImg } from "@/components/smart-img";
 import { ProductGallery } from "@/components/product-gallery";
+import { CATEGORIES } from "@/lib/categories";
 import {
   BEVEL_IN,
   LCD,
@@ -414,7 +415,14 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
 
   const badge = product.tag === "1 OF 1" ? "💎 1 OF 1" : product.tag === "NEW" ? "🔥 NEW IN" : null;
   const size = variant?.title ?? product.size ?? "UNIQUE";
-  const dept = product.collections[0] ? (t.cat[product.collections[0]] ?? product.collections[0]) : null;
+  /* Shopify renvoie des identifiants de collection (« manteaux-et-vestes »),
+     alors que les traductions sont rangées par clé de rayon (« outerwear ») :
+     sans ce passage par CATEGORIES, la pastille RAYON affichait le handle brut,
+     tirets compris. */
+  const deptKey = product.collections
+    .map((handle) => CATEGORIES.find((c) => c.handle === handle)?.catKey)
+    .find(Boolean);
+  const dept = deptKey ? (t.cat[deptKey] ?? deptKey) : (product.collections[0] ?? null);
 
   const add = async () => {
     if (sold || !variantId) return;

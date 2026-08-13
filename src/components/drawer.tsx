@@ -4,21 +4,43 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/i18n-context";
 import { Icon } from "@/components/icons";
 import { CATEGORIES } from "@/lib/categories";
+import type { LangCode } from "@/lib/i18n";
 
-// Wording Y2K / file-explorer — propre au menu latéral, ne remplace pas les
-// traductions partagées (t.cat) utilisées ailleurs (lookbook, pages catégorie).
-const DRAWER_LABELS: Record<string, string> = {
-  tops: "01. TOPS & BABY TEES",
-  outerwear: "02. OUTERWEAR / COATS",
-  dresses: "03. SLIP DRESSES & CO",
-  skirts: "04. MICRO & MINI SKIRTS",
-  shorts: "05. HOT PANTS & SHORTS",
-  trousers: "06. LOW-RISE & BOTTOMS",
-  swimwear: "07. SWIMWEAR / BIKINIS",
-  jeans: "08. DENIM & FLARES",
-  bags: "09. IT-BAGS & PURSES",
-  shoes: "10. CHUNKY KICKS & HEELS",
-  accessories: "11. BLING & ACCESSOIRES",
+/* Wording Y2K / file-explorer — propre au menu latéral, il ne remplace pas les
+   traductions partagées (t.cat) utilisées ailleurs (lookbook, pages catégorie).
+   Une entrée par langue : ces libellés étaient les mêmes en anglais quelle que
+   soit la langue choisie, y compris sur un site qui s'ouvre en français.
+   Les langues absentes de cette table retombent sur t.cat, qui est traduit
+   partout — jamais sur de l'anglais. La numérotation, elle, est calculée à
+   l'affichage : identique dans toutes les langues, et elle se réordonne toute
+   seule si CATEGORIES change. */
+const DRAWER_LABELS: Partial<Record<LangCode, Record<string, string>>> = {
+  fr: {
+    tops: "Tops & t-shirts",
+    outerwear: "Vestes & manteaux",
+    dresses: "Robes & nuisettes",
+    skirts: "Minijupes & jupes",
+    shorts: "Shorts",
+    trousers: "Pantalons & pantacourts",
+    swimwear: "Maillots & bikinis",
+    jeans: "Jeans & pattes d'eph",
+    bags: "Sacs & pochettes",
+    shoes: "Baskets & talons",
+    accessories: "Bijoux & accessoires",
+  },
+  en: {
+    tops: "Tops & baby tees",
+    outerwear: "Outerwear / coats",
+    dresses: "Slip dresses & co",
+    skirts: "Micro & mini skirts",
+    shorts: "Shorts",
+    trousers: "Low-rise & bottoms",
+    swimwear: "Swimwear / bikinis",
+    jeans: "Denim & flares",
+    bags: "It-bags & purses",
+    shoes: "Chunky kicks & heels",
+    accessories: "Bling & accessories",
+  },
 };
 
 const LINKS = CATEGORIES.map((c) => ({
@@ -35,7 +57,12 @@ const LINKS = CATEGORIES.map((c) => ({
 }));
 
 export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+
+  /** « 01. Tops & t-shirts » — le numéro suit la position dans CATEGORIES. */
+  const fileLabel = (key: string, i: number) =>
+    `${String(i + 1).padStart(2, "0")}. ${DRAWER_LABELS[lang]?.[key] ?? t.cat[key] ?? key}`;
+
   const [expanded, setExpanded] = useState<number | null>(null);
   const [expandedSub, setExpandedSub] = useState<string | null>(null);
 
@@ -78,7 +105,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
                   <div className="drawer-parent">
                     <a href={l.href} onClick={onClose} className="drawer-parent-link">
                       <Icon.folder className="drawer-folder-icon" aria-hidden="true" />
-                      {DRAWER_LABELS[l.key] ?? t.cat[l.key]}
+                      {fileLabel(l.key, i)}
                     </a>
                     <button
                       className="drawer-parent-toggle"
@@ -128,7 +155,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               ) : (
                 <a className="drawer-link" href={l.href} onClick={onClose}>
                   <Icon.folder className="drawer-folder-icon" aria-hidden="true" />
-                  {DRAWER_LABELS[l.key] ?? t.cat[l.key]}
+                  {fileLabel(l.key, i)}
                 </a>
               )}
             </div>
