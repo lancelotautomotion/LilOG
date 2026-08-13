@@ -5222,12 +5222,136 @@ html, body {
   padding: 5px 8px !important;
 }
 
-/* Entrée /dressing-machine dans le menu — c'est l'attraction du site. */
-/* Entrée /dressing-machine : même carte que les autres dossiers du menu,
-   simplement soulignée par un filet accent — elle ne dépareille pas. */
-.drawer-link-closet {
-  border-color: var(--ldl-accent);
-  box-shadow: inset 3px 0 0 var(--ldl-accent);
+/* ── Entrée /dressing-machine : une borne d'arcade dans le menu ──────
+   C'est l'attraction du site, pas un rayon du catalogue : elle cesse
+   d'être une carte blanche parmi douze pour devenir l'écran du cabinet
+   d'ARCADE_SLOT.EXE, sur l'accueil — verre noir, balayage cathodique,
+   titre LCD néon et ampoules de fronton. Le contraste tient surtout au
+   matériau — les onze rayons sont en papier, celle-ci est allumée — et
+   à peine à la taille : seize pixels de plus que les autres lignes,
+   pris par la ligne d'attente du bas. */
+.drawer-link-closet,
+.drawer-link-closet:hover {
+  position: relative;
+  overflow: hidden;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+  padding: 15px 14px 11px;
+  background: linear-gradient(180deg, #2a1352 0%, #150b2e 55%, #0d0d15 100%);
+  border: 2px solid #ff5ec4;
+  color: #fff;
+  box-shadow:
+    0 0 0 1px rgba(255, 94, 196, 0.22),
+    0 7px 20px rgba(255, 94, 196, 0.3),
+    inset 0 0 26px rgba(255, 94, 196, 0.14);
+}
+.drawer-link-closet:hover { filter: brightness(1.12); }
+
+/* Balayage du tube — décoratif, posé sous le texte (z-index des enfants). */
+.drawer-link-closet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5) 0 1px,
+    rgba(0, 0, 0, 0) 1px 3px
+  );
+}
+
+.dm-tile-marquee,
+.dm-tile-row,
+.dm-tile-sub { position: relative; z-index: 1; }
+
+/* Fronton : trois ampoules qui clignotent en décalé. */
+.dm-tile-marquee {
+  position: absolute;
+  top: 7px;
+  right: 12px;
+  display: flex;
+  gap: 5px;
+}
+.dm-tile-bulb {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #ffd7f0;
+  box-shadow: 0 0 8px rgba(255, 215, 240, 0.95);
+  animation: dmTileBulb 1.6s ease-in-out infinite;
+}
+.dm-tile-bulb:nth-child(2) { animation-delay: 0.28s; }
+.dm-tile-bulb:nth-child(3) { animation-delay: 0.56s; }
+@keyframes dmTileBulb {
+  0%, 100% { opacity: 1; box-shadow: 0 0 9px rgba(255, 215, 240, 0.95); }
+  50%      { opacity: 0.28; box-shadow: none; }
+}
+
+.dm-tile-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dm-tile-icon {
+  font-size: 1rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(255, 94, 196, 0.6));
+}
+
+/* Titre en typo LCD, comme les prix et les titres de rayon. */
+.dm-tile-title {
+  font-family: var(--font-lcd), var(--mono);
+  font-size: 1.1rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: #ff5ec4;
+  animation: dmTileGlow 2.6s ease-in-out infinite;
+}
+@keyframes dmTileGlow {
+  0%, 100% { text-shadow: 0 0 10px rgba(255, 94, 196, 0.75), 0 0 32px rgba(255, 94, 196, 0.38); }
+  50%      { text-shadow: 0 0 16px rgba(255, 94, 196, 0.95), 0 0 46px rgba(255, 94, 196, 0.55); }
+}
+
+/* Bouton du cabinet, en plastique épais : course de 3px à l'appui. */
+.dm-tile-play {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 7px;
+  border-bottom: 3px solid #7a0a52;
+  background: linear-gradient(180deg, #ff8ed8 0%, #ff5ec4 45%, #c3128a 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  transition: transform 90ms ease, box-shadow 90ms ease;
+}
+.drawer-link-closet:active .dm-tile-play {
+  transform: translateY(3px);
+  border-bottom-width: 0;
+}
+
+/* Ligne d'attente de la borne, en vert écran. */
+.dm-tile-sub {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #5affa0;
+  text-shadow: 0 0 8px rgba(90, 255, 160, 0.5);
+  animation: dmTileBlink 2.2s step-end infinite;
+}
+@keyframes dmTileBlink {
+  0%, 62%  { opacity: 1; }
+  63%, 100% { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-tile-bulb,
+  .dm-tile-title,
+  .dm-tile-sub { animation: none !important; }
 }
 
 /* ============================================================
