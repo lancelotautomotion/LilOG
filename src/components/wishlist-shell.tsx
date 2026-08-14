@@ -93,7 +93,7 @@ export function WishlistShell() {
                         )}
                       </Link>
                       <div className="burnbook-title">{item.title}</div>
-                      <div className="burnbook-price">{item.price} €</div>
+                      <div className="burnbook-price">{item.price}€</div>
                       {item.variantId ? (
                         <button
                           className="account-btn primary burnbook-cart-btn"

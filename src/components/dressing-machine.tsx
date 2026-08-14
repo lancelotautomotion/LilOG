@@ -117,7 +117,7 @@ function describe(selected: ReadonlySet<string>): string {
 }
 
 function euros(n: number): string {
-  return "€" + n.toFixed(2);
+  return n.toFixed(2) + "€";
 }
 
 /** Types a string out one character at a time while `active`. */

@@ -410,7 +410,7 @@ function PriceEqualizer({
               className={`${LCD} text-[1.125rem] leading-none text-green-400`}
               style={{ textShadow: "0 0 8px rgba(74,222,128,.5)" }}
             >
-              €{value}
+              {value}€
             </span>
           </span>
         ))}

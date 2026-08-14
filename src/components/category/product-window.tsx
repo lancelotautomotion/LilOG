@@ -65,6 +65,19 @@ function lounaPickSticker(product: Product): Sticker | null {
   return isLounaPick(product) ? LOUNA_PICK : null;
 }
 
+/* ---- Pastilles du pied de fiche ----
+   Prix, taille, [ + CART ] et le cœur forment une seule rangée : sans
+   gabarit commun, chacune se réglait sur son propre contenu — le bouton
+   panier héritait de l'interligne du corps de page et dépassait les autres
+   de huit pixels, la pastille de taille gagnait ses deux pixels de bordure —
+   et le pied partait en escalier. Une hauteur fixe, un corps de texte
+   commun, un centrage commun : les quatre s'alignent quel que soit leur
+   contenu. */
+const CHIP_H = "h-[30px]";
+const CHIP_BASE =
+  `${CHIP_H} inline-flex items-center justify-center text-[0.875rem] leading-none ` +
+  "font-bold whitespace-nowrap";
+
 function StickerChip({ sticker, className = "" }: { sticker: Sticker; className?: string }) {
   return (
     <span
@@ -158,10 +171,10 @@ export function ProductWindow({
 
   const price = (
     <span
-      className={`${MONO} rounded bg-black px-1.5 py-1.5 text-[0.8125rem] leading-none font-bold whitespace-nowrap text-green-400`}
+      className={`${MONO} ${CHIP_BASE} shrink-0 rounded bg-black px-2 text-green-400`}
       style={{ textShadow: "0 0 8px rgba(74,222,128,.55)" }}
     >
-      {product.was && <s className="mr-1 text-[0.8125rem] text-green-400/45">€{product.was}</s>}€{product.price}
+      {product.was && <s className="mr-1 text-[0.875rem] text-green-400/45">{product.was}€</s>}{product.price}€
     </span>
   );
 
@@ -172,7 +185,7 @@ export function ProductWindow({
      est coupée : la vignette fait 170px de large en mobile. */
   const sizeChip = product.sizes.length > 0 && (
     <span
-      className={`${MONO} rounded border border-[#c6c2d8] px-1.5 py-1.5 text-[0.8125rem] leading-none font-bold whitespace-nowrap text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
+      className={`${MONO} ${CHIP_BASE} shrink-0 rounded border border-[#c6c2d8] px-2 text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
       title={`Taille ${product.sizes.join(" / ")}`}
     >
       📏 {product.sizes.slice(0, 3).join(" / ")}
@@ -186,7 +199,7 @@ export function ProductWindow({
       onClick={add}
       disabled={sold}
       aria-label={sold ? "Épuisé" : `Ajouter ${product.name} au panier`}
-      className={`${MONO} shrink-0 rounded-md border border-[#c6c2d8] px-1.5 py-1.5 text-[0.8125rem] font-bold whitespace-nowrap text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 ${
+      className={`${MONO} ${CHIP_BASE} shrink-0 rounded-md border border-[#c6c2d8] px-2 text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 ${
         added ? "bg-[linear-gradient(180deg,#d8ffe8_0%,#8ce8b4_48%,#4fbe84_100%)]" : PLASTIC_FACE
       } ${PLASTIC} ${sold ? "" : PLASTIC_PRESS} ${sold ? "" : "hover:brightness-105"}`}
     >
@@ -200,11 +213,11 @@ export function ProductWindow({
       onClick={toggleFav}
       aria-label={fav ? "Retirer de la wishlist" : "Ajouter à la wishlist"}
       aria-pressed={fav}
-      className={`grid h-[26px] w-[24px] shrink-0 place-items-center rounded-md border border-[#c6c2d8] sm:w-[26px] ${PLASTIC_FACE} transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS} ${
+      className={`${CHIP_H} grid w-[30px] shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS} ${
         fav ? "text-[#d3016d]" : "text-[#6B7280]"
       }`}
     >
-      {fav ? <Icon.heart width={13} height={13} /> : <Icon.heartO width={13} height={13} />}
+      {fav ? <Icon.heart width={15} height={15} /> : <Icon.heartO width={15} height={15} />}
     </button>
   );
 
@@ -278,12 +291,14 @@ export function ProductWindow({
       </Link>
 
       {/* Barre d'action : sur une carte de deux colonnes en mobile, la place
-          est comptée : le pied passe à la ligne plutôt que de déborder. */}
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-1 border-t border-[#d8d5e6] bg-[#e9e7f2] px-1.5 py-2 sm:flex-nowrap">
-        {/* Prix et taille restent groupés quand le pied passe à la ligne, mais
-            peuvent eux-mêmes se séparer : un prix barré suivi d'une pièce en
-            quatre tailles déborderait sinon de la vignette en mobile. */}
-        <span className="flex min-w-0 flex-wrap items-center gap-1 sm:flex-nowrap">
+          est comptée : le pied passe à la ligne plutôt que de déborder.
+          Le passage à la ligne reste autorisé à toutes les largeurs. En
+          `nowrap`, les pastilles n'avaient plus qu'à se laisser comprimer :
+          une pièce en trois tailles voyait la sienne rognée en plein milieu
+          (« 📏 M / L / X »), et un prix barré écrasait la taille jusqu'à la
+          faire disparaître. Mieux vaut une seconde ligne qu'un libellé coupé. */}
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-1 border-t border-[#d8d5e6] bg-[#e9e7f2] px-1.5 py-2">
+        <span className="flex min-w-0 flex-wrap items-center gap-1">
           {price}
           {sizeChip}
         </span>
