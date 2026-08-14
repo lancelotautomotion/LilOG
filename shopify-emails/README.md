@@ -66,5 +66,5 @@ et le bouton changent. Les plus utiles à traiter ensuite :
 | --- | --- |
 | Activation du compte client | `{{ customer.account_activation_url }}` (imposé par Shopify) |
 | Confirmation de commande | fait : voir [confirmation-commande.md](confirmation-commande.md) |
-| Confirmation d'expédition | l'URL de suivi, puis `…/account/orders` |
+| Confirmation d'expédition | fait : voir [confirmation-expedition.liquid](confirmation-expedition.liquid) |
 | Panier abandonné | `https://lilog.shop/cart` |
