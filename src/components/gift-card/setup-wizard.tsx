@@ -7,7 +7,7 @@
    comme un disque à graver. Une grande fenêtre Windows 95,
    deux colonnes :
 
-     à gauche   le CD-ROM dans son boîtier (100 % CSS)
+     à gauche   la photo du CD-ROM dans son boîtier
      à droite   ÉTAPE 1 la capacité, ÉTAPE 2 la licence
 
    et, en bas à droite comme dans tout assistant Windows, le
@@ -259,12 +259,10 @@ export function SetupWizard({
           <div className="relative z-[1] grid gap-[clamp(20px,3vw,36px)] lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]">
             {/* ================= COLONNE GAUCHE : LE DISQUE ================= */}
             <div className="flex flex-col items-center gap-4">
-              <CdRom
-                amount={picked ? euros(picked.amount) : null}
-                spinning={burning}
-              />
+              <CdRom spinning={burning} />
 
-              {/* Voyant du graveur */}
+              {/* Voyant du graveur : la capacité choisie y est rappelée,
+                  faute de pouvoir encore l'écrire sur la photo du disque. */}
               <div
                 className={`${MONO} flex w-full max-w-[420px] items-center gap-2 rounded-[4px] border border-[#3f3d55] bg-black px-3 py-2 text-[0.9375rem] font-bold tracking-[0.06em] uppercase`}
                 style={{ color: burning ? "#ff5ec4" : done ? "#5affa0" : "#8e8aa8" }}
@@ -277,7 +275,7 @@ export function SetupWizard({
                       ? "DISQUE GRAVÉ · OK"
                       : noDisc
                         ? "AUCUN DISQUE DANS LE LECTEUR"
-                        : "LECTEUR PRÊT"}
+                        : `LECTEUR PRÊT${picked ? ` · ${euros(picked.amount)}` : ""}`}
                 </span>
               </div>
             </div>
