@@ -69,6 +69,16 @@ const HERO_CSS = `
 @keyframes lhzBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 .lhz-bounce{animation:lhzBounce 2.2s ease-in-out infinite}
 
+/* Décalages du haut du viseur. Ils tiennent compte de --lhb-h, la hauteur
+   du bandeau FREE_SHIPPING.EXE qui descend la navigation d'autant ; la
+   variable vaut 0 si le bandeau n'est pas monté. */
+.lhz-frame{top:calc(76px + var(--lhb-h, 0px))}
+.lhz-toprow{top:calc(84px + var(--lhb-h, 0px) + env(safe-area-inset-top))}
+@media (min-width:768px){
+  .lhz-frame{top:calc(96px + var(--lhb-h, 0px))}
+  .lhz-toprow{top:calc(112px + var(--lhb-h, 0px))}
+}
+
 @media (prefers-reduced-motion: reduce){
   .lhz-still,.lhz-track,.lhz-rec,.lhz-caret,.lhz-bounce{animation:none!important}
 }
@@ -127,7 +137,7 @@ function Brackets() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute top-[76px] right-2 bottom-2 left-2 z-20 md:top-[96px] md:right-6 md:bottom-6 md:left-6"
+      className="lhz-frame pointer-events-none absolute right-2 bottom-2 left-2 z-20 md:right-6 md:bottom-6 md:left-6"
     >
       <span className={`${base} top-0 left-0 border-t-2 border-l-2`} />
       <span className={`${base} top-0 right-0 border-t-2 border-r-2`} />
@@ -230,7 +240,7 @@ export function HeroCamcorder() {
       <Brackets />
 
       {/* ---- Ligne haute : témoin d'enregistrement / batterie ---- */}
-      <div className="absolute inset-x-10 top-[calc(84px+env(safe-area-inset-top))] z-30 flex items-start justify-between gap-3 md:inset-x-24 md:top-28">
+      <div className="lhz-toprow absolute inset-x-10 z-30 flex items-start justify-between gap-3 md:inset-x-24">
         <div className="flex flex-col items-start gap-1.5">
           <span className={chip}>
             <span className="lhz-rec inline-block h-2.5 w-2.5 rounded-full bg-[#ff2d2d] shadow-[0_0_10px_#ff2d2d]" />

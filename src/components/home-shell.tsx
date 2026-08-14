@@ -30,6 +30,8 @@ import { HeroCamcorder } from "@/components/home/hero-camcorder";
 import { ArcadeSlot } from "@/components/home/arcade-slot";
 import { FileExplorer } from "@/components/home/file-explorer";
 import { ReadmeWindow } from "@/components/home/readme-window";
+import { AnnounceBar } from "@/components/home/announce-bar";
+import { ShippingToast } from "@/components/home/shipping-toast";
 
 const SHELL_CSS = `
 @keyframes lhsBob{
@@ -48,10 +50,17 @@ export function HomeShell() {
 
   return (
     <>
-      <Nav onMenu={() => setMenu(true)} />
+      {/* Le bandeau et la navigation partagent un hôte : c'est lui qui
+          autorise le bandeau à descendre `.nav` de sa propre hauteur, sans
+          qu'aucune autre page n'en subisse l'effet. */}
+      <div className="lhb-host">
+        <AnnounceBar />
+        <Nav onMenu={() => setMenu(true)} />
+      </div>
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
       <HeroCamcorder />
+      <ShippingToast />
 
       <main className="relative overflow-hidden" style={WALLPAPER}>
         <style>{SHELL_CSS}</style>
