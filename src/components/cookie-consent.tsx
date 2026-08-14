@@ -1,0 +1,226 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import {
+  BEVEL_IN,
+  GRID_BG,
+  HARD_SHADOW,
+  MONO,
+  PINK,
+  PLASTIC,
+  PLASTIC_FACE,
+  PLASTIC_PRESS,
+  VIOLET_BAR,
+} from "@/components/y2k/kit";
+import {
+  CONSENT_ALL,
+  CONSENT_NONE,
+  type Consent,
+  saveConsent,
+  useConsent,
+} from "@/lib/consent";
+import { useHydrated } from "@/lib/stored";
+
+/* ══════════════════════════════════════════════════════════════
+   AVERTISSEMENT_SYSTÈME.EXE — bandeau de consentement cookies
+
+   Une boîte de dialogue système, pas une bannière marketing :
+   même cadre, même barre de titre violette, mêmes jetons plastique
+   que les fenêtres du reste du site (kit y2k, /login, /faq). Aucun
+   style inventé ici — tout vient de `@/components/y2k/kit`.
+
+   Elle se pose en bas à droite sur grand écran et occupe toute la
+   largeur en bas sur mobile, au-dessus du reste de la page mais
+   sous la visionneuse plein écran de la fiche produit (z-200),
+   qui, elle, ne s'ouvre que sur un geste délibéré.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Le [×] de la barre de titre est un décor : fermer sans choisir
+   reviendrait à un refus déguisé, et la fenêtre reviendrait au
+   rechargement suivant. Il est donc grisé et inerte, comme un bouton
+   désactivé de boîte de dialogue Windows. */
+function DeadCloseButton() {
+  return (
+    <span
+      aria-hidden
+      title="Choisissez une option pour fermer"
+      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#b6b2c6] ${PLASTIC_FACE} text-[0.875rem] leading-none font-bold text-[#9a96ab] opacity-55 select-none ${PLASTIC}`}
+    >
+      ×
+    </span>
+  );
+}
+
+/** Interrupteur de catégorie du panneau CONFIG.SYS. */
+function Toggle({
+  label,
+  hint,
+  checked,
+  locked = false,
+  onChange,
+}: {
+  label: string;
+  hint: string;
+  checked: boolean;
+  locked?: boolean;
+  onChange?: (next: boolean) => void;
+}) {
+  return (
+    <label
+      className={`flex items-start gap-2.5 rounded-lg bg-white/70 px-2.5 py-2 ${BEVEL_IN} ${
+        locked ? "cursor-default opacity-80" : "cursor-pointer"
+      }`}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        disabled={locked}
+        onChange={e => onChange?.(e.target.checked)}
+        className="mt-0.5 h-4 w-4 shrink-0 accent-[#c93fe0] disabled:cursor-not-allowed"
+      />
+      <span className="min-w-0">
+        <span className={`${MONO} block text-[0.8125rem] font-bold tracking-[0.06em] text-[#2b2340] uppercase`}>
+          {label}
+          {locked && <span className="ml-1.5 font-normal text-[#6B7280] normal-case">(obligatoire)</span>}
+        </span>
+        <span className="mt-0.5 block text-[0.8125rem] leading-snug text-[#4b4560]">{hint}</span>
+      </span>
+    </label>
+  );
+}
+
+export function CookieConsent() {
+  const consent = useConsent();
+
+  /* `useConsent` s'appuie sur localStorage, illisible au rendu serveur :
+     sans cette garde, la fenêtre s'afficherait une image durant à chaque
+     chargement, y compris pour qui a déjà répondu. */
+  const hydrated = useHydrated();
+
+  const [configOpen, setConfigOpen] = useState(false);
+  const [draft, setDraft] = useState<Consent>(CONSENT_ALL);
+
+  if (!hydrated || consent) return null;
+
+  const decide = (choice: Consent) => {
+    saveConsent(choice);
+    setConfigOpen(false);
+  };
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="lcc-title"
+      className="lcc-pop fixed inset-x-0 bottom-0 z-[150] sm:inset-x-auto sm:right-4 sm:bottom-4 sm:w-[26rem]"
+    >
+      <div
+        className={`overflow-hidden rounded-t-2xl border-2 border-[#b8b4cc] bg-[#f0f0f5] sm:rounded-2xl ${HARD_SHADOW}`}
+      >
+        {/* ── Barre de titre ── */}
+        <div
+          className="flex items-center gap-2 border-b-2 border-[#2a1370] px-2.5 py-2 select-none"
+          style={{ background: VIOLET_BAR }}
+        >
+          <span
+            id="lcc-title"
+            className={`${MONO} min-w-0 flex-1 truncate text-[0.875rem] font-bold tracking-[0.1em] text-white uppercase [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
+          >
+            ⚠️ AVERTISSEMENT_SYSTÈME.EXE
+          </span>
+          <DeadCloseButton />
+        </div>
+
+        {/* ── Corps ──
+            Plafonné et défilant : ouvert, le panneau CONFIG.SYS ajoute
+            trois blocs et la fenêtre dépasserait le bas de l'écran sur
+            un petit téléphone. La barre de titre, elle, reste en place. */}
+        <div
+          className="max-h-[70vh] overflow-y-auto overscroll-contain px-3.5 py-3"
+          style={GRID_BG}
+        >
+          <div className="flex items-start gap-3">
+            <span
+              aria-hidden
+              className={`grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-white text-[1.5rem] leading-none ${BEVEL_IN}`}
+            >
+              🍪
+            </span>
+
+            <p className="min-w-0 text-[0.875rem] leading-relaxed text-[#2b2340]">
+              Le protocole <strong style={{ color: PINK }}>LIL_OG</strong>{" "}
+              requiert l&apos;activation de fichiers de session (Cookies) pour mémoriser votre panier, optimiser
+              l&apos;affichage et analyser le trafic du site. Autorisez-vous l&apos;exécution ?
+            </p>
+          </div>
+
+          {/* ── Panneau CONFIG.SYS ── */}
+          {configOpen && (
+            <div className="mt-3 flex flex-col gap-1.5">
+              <Toggle
+                label="SESSION.SYS"
+                hint="Panier, connexion, sécurité. Le site ne fonctionne pas sans."
+                checked
+                locked
+              />
+              <Toggle
+                label="AUDIENCE.LOG"
+                hint="Mesure de fréquentation (Google Analytics), pour savoir ce qui plaît."
+                checked={draft.analytics}
+                onChange={analytics => setDraft(d => ({ ...d, analytics }))}
+              />
+              <Toggle
+                label="PREFERENCES.INI"
+                hint="Mémorise la langue et la devise choisies."
+                checked={draft.preferences}
+                onChange={preferences => setDraft(d => ({ ...d, preferences }))}
+              />
+            </div>
+          )}
+
+          {/* ── Boutons ── */}
+          <div className="mt-3 flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={() => decide(configOpen ? draft : CONSENT_ALL)}
+              className={`${MONO} w-full rounded-xl border-2 border-t-[#ffa6e4] border-l-[#ffa6e4] border-r-[#5b1a9e] border-b-[#5b1a9e] bg-gradient-to-b from-[#ff5cc8] via-[#d63fdd] to-[#7b2ff7] px-4 py-2.5 text-[0.875rem] font-bold tracking-[0.08em] text-white uppercase shadow-[0_4px_0_#4c1d95,0_10px_20px_rgba(76,29,149,0.35)] transition-[transform,box-shadow] active:translate-y-[4px] active:shadow-none`}
+            >
+              [ 💾 {configOpen ? "ENREGISTRER_CHOIX.EXE" : "AUTORISER_TOUT.EXE"} ]
+            </button>
+
+            {!configOpen && (
+              <button
+                type="button"
+                onClick={() => setConfigOpen(true)}
+                aria-expanded={false}
+                className={`${MONO} w-full cursor-pointer rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2 text-[0.875rem] font-bold tracking-[0.08em] text-[#2b2340] uppercase ${PLASTIC} ${PLASTIC_PRESS}`}
+              >
+                [ ⚙️ CONFIG.SYS ]
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => decide(CONSENT_NONE)}
+              className={`${MONO} w-full cursor-pointer px-2 py-1 text-[0.8125rem] tracking-[0.04em] text-[#5b3fa8] underline decoration-dotted underline-offset-2 transition-colors hover:text-[#ff3fb0]`}
+            >
+              [ Interrompre la requête (Refuser) ]
+            </button>
+          </div>
+
+          <p className="mt-2 text-center text-[0.75rem] text-[#6B7280]">
+            Détail complet dans la{" "}
+            <Link
+              href="/cookies"
+              className="underline decoration-dotted underline-offset-2 hover:text-[#ff3fb0]"
+            >
+              politique de cookies
+            </Link>
+            .
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Montserrat, Space_Mono, Great_Vibes, VT323, Caveat } from "next/font/google";
 import localFont from "next/font/local";
+import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
+import { CookieConsent } from "@/components/cookie-consent";
 import { getCartAction } from "@/lib/actions/cart-actions";
 import "./globals.css";
 
@@ -67,17 +69,66 @@ export const metadata: Metadata = {
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
+/*
+ * Consent Mode v2, posé avant tout le reste.
+ *
+ * Google exige que `consent default` soit dans le dataLayer AVANT que
+ * gtag ne s'initialise ; d'où `beforeInteractive`, qui injecte ce
+ * script dans le HTML initial, alors que <GoogleAnalytics> se charge
+ * en `afterInteractive`. Inverser les deux ferait démarrer la mesure
+ * sans consentement.
+ *
+ * Tout part refusé, puis le choix déjà enregistré est rejoué dans la
+ * foulée : sans cette relecture, une visiteuse ayant accepté repartirait
+ * en « denied » à chaque page. Les signaux publicitaires restent refusés
+ * en toutes circonstances — le site n'a pas de régie.
+ *
+ * Les valeurs dupliquées ici (clé, version, péremption) viennent de
+ * `@/lib/consent` : ce script s'exécute avant tout module applicatif et
+ * ne peut rien importer. Les modifier d'un côté impose de les modifier
+ * de l'autre.
+ */
+const CONSENT_BOOTSTRAP = `
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent','default',{
+  ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',
+  analytics_storage:'denied',functionality_storage:'denied',
+  personalization_storage:'denied',security_storage:'granted',
+  wait_for_update:500
+});
+try{
+  var s=localStorage.getItem('lilog_cookie_consent');
+  if(s){
+    var c=JSON.parse(s);
+    if(c&&c.v===1&&typeof c.ts==='number'&&Date.now()-c.ts<15724800000){
+      gtag('consent','update',{
+        analytics_storage:c.analytics?'granted':'denied',
+        functionality_storage:c.preferences?'granted':'denied',
+        personalization_storage:c.preferences?'granted':'denied'
+      });
+    }
+  }
+}catch(e){}
+`;
+
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const initialCart = await getCartAction().catch(() => null);
 
   return (
     <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable} ${script.variable} ${lcd.variable} ${gothic.variable} ${hand.variable}`}>
       <body className="grain">
+        {gaId && (
+          <Script id="consent-default" strategy="beforeInteractive">
+            {CONSENT_BOOTSTRAP}
+          </Script>
+        )}
         <SessionProvider>
           <LanguageProvider>
             <CartProvider initialCart={initialCart}>{children}</CartProvider>
           </LanguageProvider>
         </SessionProvider>
+        <CookieConsent />
       </body>
       {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>

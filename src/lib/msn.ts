@@ -1,7 +1,5 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-
 /* ──────────────────────────────────────────────────────────────
    Identité MSN partagée entre la fenêtre de connexion et le
    compte : même liste d'avatars, mêmes statuts, même stockage.
@@ -31,32 +29,8 @@ export const MSN_STATUSES = [
   { id: "later",    emoji: "✨", label: "À plus tard",     loginLabel: "À PLUS TARD ✧･ﾟ"            },
 ];
 
-/* ── Persistance localStorage, lue via useSyncExternalStore ──
-   Le snapshot serveur vaut null : pas de mismatch d'hydratation, React
-   re-rend avec la valeur stockée une fois monté. */
-const listeners = new Set<() => void>();
-
-function subscribe(cb: () => void) {
-  listeners.add(cb);
-  window.addEventListener("storage", cb);   // synchro entre onglets
-  return () => {
-    listeners.delete(cb);
-    window.removeEventListener("storage", cb);
-  };
-}
-
-export function readStored(key: string) {
-  try { return localStorage.getItem(key); } catch { return null; }
-}
-
-export function writeStored(key: string, value: string | null) {
-  try {
-    if (value === null) localStorage.removeItem(key);
-    else                localStorage.setItem(key, value);
-  } catch {/* navigation privée */}
-  listeners.forEach(cb => cb());
-}
-
-export function useStored(key: string) {
-  return useSyncExternalStore(subscribe, () => readStored(key), () => null);
-}
+/* ── Persistance localStorage ──
+   Remontée dans `stored.ts` pour être partagée avec le bandeau de
+   cookies. Ré-exportée ici : les imports `from "@/lib/msn"` déjà en
+   place continuent de fonctionner. */
+export { readStored, writeStored, useStored } from "@/lib/stored";
