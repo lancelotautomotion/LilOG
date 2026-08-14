@@ -206,7 +206,7 @@ function ViewToggle({ view, setView }: { view: ViewMode; setView: (v: ViewMode) 
             type="button"
             onClick={() => setView(mode)}
             aria-pressed={on}
-            className={`${MONO} rounded-md border px-3 py-2 text-[1rem] font-bold tracking-[0.06em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
+            className={`${MONO} rounded-md border px-2.5 py-1.5 text-[0.875rem] font-bold tracking-[0.06em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
               on
                 ? "border-[#3b1d8f] bg-[linear-gradient(180deg,#a86fe8_0%,#7147d4_48%,#4b2a9e_100%)] text-white shadow-[inset_0_2px_5px_rgba(0,0,0,0.4)]"
                 : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#3b3550] hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`

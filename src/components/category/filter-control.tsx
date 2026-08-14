@@ -14,7 +14,7 @@
    page. Aucune classe de globals.css.
    ============================================================ */
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { compareSizes } from "@/lib/sizes";
 import {
   BEVEL_IN,
@@ -205,11 +205,14 @@ function Chip({
   on,
   onClick,
   title,
+  compact = false,
   children,
 }: {
   on: boolean;
   onClick: () => void;
   title?: string;
+  /** Rubriques à longue liste (matières, types) : un cran plus bas. */
+  compact?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -218,7 +221,9 @@ function Chip({
       onClick={onClick}
       aria-pressed={on}
       title={title}
-      className={`${MONO} rounded-md border px-2.5 py-1.5 text-[0.875rem] font-bold tracking-[0.04em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
+      className={`${MONO} rounded-md border font-bold tracking-[0.04em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
+        compact ? "px-2 py-1 text-[0.8125rem]" : "px-2.5 py-1.5 text-[0.875rem]"
+      } ${
         on
           ? "border-[#3b1d8f] bg-[linear-gradient(180deg,#a86fe8_0%,#7147d4_48%,#4b2a9e_100%)] text-white shadow-[inset_0_2px_5px_rgba(0,0,0,0.4),inset_0_-1px_0_rgba(255,255,255,0.25)]"
           : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#3b3550] hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`
@@ -229,14 +234,57 @@ function Chip({
   );
 }
 
-/** Bandeau de section, façon en-tête de rubrique du panneau. */
-function Section({ n, label, children }: { n: string; label: string; children: React.ReactNode }) {
+const SECTION_HEAD = "text-[0.8125rem] font-bold tracking-[0.16em] text-[#5b2fb8] uppercase";
+
+/** Bandeau de section, façon en-tête de rubrique du panneau.
+ *
+ *  `collapsible` replie la rubrique : matières et types alignent à eux deux
+ *  une trentaine de jetons, qui repoussaient le reste du panneau hors de
+ *  l'écran. Le chevron dit l'état, ▸ fermé et ▾ ouvert, et la pastille
+ *  rappelle les choix retenus quand la rubrique est repliée. */
+function Section({
+  n,
+  label,
+  collapsible = false,
+  activeCount = 0,
+  children,
+}: {
+  n: string;
+  label: string;
+  collapsible?: boolean;
+  activeCount?: number;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+
+  if (!collapsible) {
+    return (
+      <div className="border-b border-[#d8d5e6] px-3 py-3 last:border-b-0">
+        <p className={`${MONO} mb-2.5 ${SECTION_HEAD}`}>
+          <span className="text-[#d3016d]">▸</span> {n} · {label}
+        </p>
+        {children}
+      </div>
+    );
+  }
+
   return (
     <div className="border-b border-[#d8d5e6] px-3 py-3 last:border-b-0">
-      <p className={`${MONO} mb-2.5 text-[0.8125rem] font-bold tracking-[0.16em] text-[#5b2fb8] uppercase`}>
-        <span className="text-[#d3016d]">▸</span> {n} · {label}
-      </p>
-      {children}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className={`${MONO} flex w-full items-center gap-1.5 text-left ${SECTION_HEAD} transition hover:text-[#3b1d8f]`}
+      >
+        <span className="text-[#d3016d]">{open ? "▾" : "▸"}</span>
+        {n} · {label}
+        {activeCount > 0 && (
+          <span className="rounded-full bg-[#7147d4] px-1.5 py-px text-[0.8125rem] leading-none text-white">
+            {activeCount}
+          </span>
+        )}
+      </button>
+      {open && <div className="mt-2.5">{children}</div>}
     </div>
   );
 }
@@ -552,10 +600,10 @@ export function FilterControl({
       )}
 
       {materials.length > 0 && (
-        <Section n={nextN()} label="MATIÈRE">
-          <div className="flex flex-wrap gap-1.5">
+        <Section n={nextN()} label="MATIÈRE" collapsible activeCount={activeMaterials.size}>
+          <div className="flex flex-wrap gap-1">
             {materials.map((m) => (
-              <Chip key={m} on={activeMaterials.has(m)} onClick={() => toggleMaterial(m)}>
+              <Chip key={m} compact on={activeMaterials.has(m)} onClick={() => toggleMaterial(m)}>
                 {m}
               </Chip>
             ))}
@@ -564,10 +612,10 @@ export function FilterControl({
       )}
 
       {types.length > 0 && (
-        <Section n={nextN()} label="TYPE">
-          <div className="flex flex-wrap gap-1.5">
+        <Section n={nextN()} label="TYPE" collapsible activeCount={activeTypes.size}>
+          <div className="flex flex-wrap gap-1">
             {types.map((type) => (
-              <Chip key={type} on={activeTypes.has(type)} onClick={() => toggleType(type)}>
+              <Chip key={type} compact on={activeTypes.has(type)} onClick={() => toggleType(type)}>
                 {type}
               </Chip>
             ))}
