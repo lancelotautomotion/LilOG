@@ -12,6 +12,21 @@
    plus comme un CD qui tourne. À la place : un reflet qui balaie
    le boîtier et un halo qui pulse doucement dessous, pour garder
    un retour « ça travaille » sans animer la photo elle-même.
+
+   À partir de `lg`, où les deux colonnes de l'assistant partagent
+   une même rangée de grille, le cadre grandit (`flex-1`) pour
+   occuper tout l'espace que la colonne de gauche laissait vide
+   sous l'image — voir le commentaire dans setup-wizard.tsx. Le bas
+   du voyant colle ainsi toujours au bas du formulaire de droite,
+   quel que soit son contenu (avertissement, liste de capacités,
+   message d'erreur…), sans dépendre d'un recadrage figé de l'image
+   pour une hauteur de formulaire donnée.
+
+   En dessous de `lg`, les deux colonnes s'empilent et n'ont plus de
+   rangée commune à égaler : le cadre reprend alors le ratio propre
+   du fichier (1254×1035, déjà recadré pour limiter ses marges
+   blanches), sans quoi `flex-1` n'aurait rien à occuper et
+   écraserait l'image à sa hauteur plancher.
    ============================================================ */
 
 import Image from "next/image";
@@ -38,11 +53,7 @@ export function CdRom({
 
   return (
     <div
-      /* Le ratio suit celui du fichier (1254×1035) : gift-card-cd.png a été
-         recadré pour retirer l'essentiel des marges blanches au-dessus et
-         en dessous du boîtier, un carré aurait sinon réintroduit ce vide en
-         creux plutôt qu'en pixels. */
-      className="relative aspect-[1254/1035] w-full max-w-[420px] overflow-hidden rounded-[8px] bg-white/40 p-[4%] backdrop-blur-sm"
+      className="relative aspect-[1254/1035] w-full max-w-[420px] shrink-0 overflow-hidden rounded-[8px] bg-white/40 p-[4%] backdrop-blur-sm lg:aspect-auto lg:min-h-[200px] lg:flex-1"
       style={{ boxShadow: "8px 8px 0 rgba(24,12,58,0.38)" }}
     >
       <style>{CD_CSS}</style>

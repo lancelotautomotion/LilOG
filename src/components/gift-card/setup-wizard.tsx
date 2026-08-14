@@ -257,14 +257,18 @@ export function SetupWizard({
           </span>
 
           <div className="relative z-[1] grid gap-[clamp(20px,3vw,36px)] lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]">
-            {/* ================= COLONNE GAUCHE : LE DISQUE ================= */}
-            <div className="flex flex-col items-center gap-4">
+            {/* ================= COLONNE GAUCHE : LE DISQUE =================
+                `h-full` prend la hauteur que la grille lui étire déjà (elle
+                égale par défaut celle de la colonne de droite, la plus
+                grande des deux) : sans elle, ce flex-col n'a qu'une hauteur
+                intrinsèque et `flex-1` dans CdRom n'a rien à occuper. */}
+            <div className="flex h-full flex-col items-center gap-4">
               <CdRom spinning={burning} />
 
               {/* Voyant du graveur : la capacité choisie y est rappelée,
                   faute de pouvoir encore l'écrire sur la photo du disque. */}
               <div
-                className={`${MONO} flex w-full max-w-[420px] items-center gap-2 rounded-[4px] border border-[#3f3d55] bg-black px-3 py-2 text-[0.9375rem] font-bold tracking-[0.06em] uppercase`}
+                className={`${MONO} flex w-full max-w-[420px] shrink-0 items-center gap-2 rounded-[4px] border border-[#3f3d55] bg-black px-3 py-2 text-[0.9375rem] font-bold tracking-[0.06em] uppercase`}
                 style={{ color: burning ? "#ff5ec4" : done ? "#5affa0" : "#8e8aa8" }}
               >
                 <span className={`gc-led${burning || done ? " on" : ""}`} aria-hidden />
