@@ -1,144 +1,65 @@
-{%- comment -%}
-  Lil'OG : « Confirmation du compte client ».
-  À coller en remplacement TOTAL du gabarit dans Shopify :
-  Paramètres → Notifications → Clients → Bienvenue au compte client.
-  Le détail des contraintes est dans shopify-emails/README.md ; l'essentiel :
-  tables + styles en ligne, un `bgcolor` uni sous chaque dégradé pour Outlook,
-  monospaces système, et les liens en dur vers le site (jamais {{ shop.url }},
-  qui rendrait le .myshopify.com). Le domaine se change à la ligne suivante.
-{%- endcomment -%}
-
+{%- comment -%} Lil'OG : gabarit « Bienvenue au compte client ». Détails dans shopify-emails/README.md {%- endcomment -%}
 {%- assign site = 'https://lilog.shop' -%}
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light only">
-<meta name="supported-color-schemes" content="light only">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bienvenue chez Lil'OG</title>
 </head>
-<body style="margin:0; padding:0; background-color:#ffffff;">
+<body style="margin:0;padding:0;background:#ffffff;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;">
+<tr><td align="center" style="padding:28px 12px;font-family:'Courier New',Courier,monospace;">
 
-<!-- Aperçu affiché dans la liste des messages, invisible à l'ouverture -->
-<div style="display:none; max-height:0; overflow:hidden; opacity:0; color:transparent; height:0; width:0;">
-  Ton compte Lil&rsquo;OG est prêt : tes commandes et ton dressing t&rsquo;attendent.
-</div>
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:#ffffff;border:2px solid #2b2340;border-radius:14px;overflow:hidden;">
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;">
-<tr>
-<td align="center" style="padding:28px 12px;">
+<tr><td bgcolor="#7147d4" style="background:#7147d4;background-image:linear-gradient(90deg,#3b1d8f,#7147d4 45%,#ff3fb0);padding:12px 16px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td style="font:bold 13px 'Courier New',Courier,monospace;letter-spacing:1px;color:#ffffff;">LIL_OG_ACCOUNT.EXE</td>
+<td align="right" style="font:13px 'Courier New',Courier,monospace;color:#ffffff;">_ &nbsp;&#9744;&nbsp; &times;</td>
+</tr></table>
+</td></tr>
 
-  <!-- ═══ La fenêtre ═══ -->
-  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px; background-color:#ffffff; border:2px solid #2b2340; border-radius:14px; overflow:hidden;">
+<tr><td align="center" style="padding:34px 24px 4px;">
+<img src="{{ site }}/logo-black.png" width="150" alt="Lil'OG" style="display:block;width:150px;max-width:60%;height:auto;border:0;">
+</td></tr>
 
-    <!-- Barre de titre -->
-    <tr>
-      <td bgcolor="#7147d4" style="background-color:#7147d4; background-image:linear-gradient(90deg,#3b1d8f 0%,#7147d4 45%,#ff3fb0 100%); padding:12px 16px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td align="left" style="font-family:'Courier New',Courier,monospace; font-size:13px; font-weight:bold; letter-spacing:1px; color:#ffffff;">
-            LIL_OG_ACCOUNT.EXE
-          </td>
-          <td align="right" style="font-family:'Courier New',Courier,monospace; font-size:13px; color:#ffffff;">
-            _ &nbsp;&#9744;&nbsp; &times;
-          </td>
-        </tr>
-        </table>
-      </td>
-    </tr>
+<tr><td align="center" style="padding:14px 32px 0;color:#1E2430;">
+<div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7147d4;">Compte activé</div>
+<h1 style="margin:8px 0 14px;font-size:24px;line-height:1.25;color:#1E2430;">Bienvenue{% if customer.first_name %}, {{ customer.first_name }}{% endif %}&nbsp;!</h1>
+<div style="font-size:15px;line-height:1.6;color:#3d3550;">Ton compte est prêt. Tu peux suivre tes commandes, garder tes adresses au chaud et retrouver ton dressing d&rsquo;une visite à l&rsquo;autre.</div>
+<div style="padding-top:8px;font-size:13px;color:#6B7280;">Identifiant&nbsp;: {{ customer.email }}</div>
+</td></tr>
 
-    <!-- Logo -->
-    <tr>
-      <td align="center" style="padding:34px 24px 6px 24px;">
-        <img src="{{ site }}/logo-black.png" width="150" alt="Lil'OG"
-             style="display:block; width:150px; max-width:60%; height:auto; border:0;">
-      </td>
-    </tr>
-
-    <!-- Message -->
-    <tr>
-      <td align="center" style="padding:16px 32px 0 32px; font-family:'Courier New',Courier,monospace; color:#1E2430;">
-        <p style="margin:0 0 6px 0; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7147d4;">
-          Compte activé
-        </p>
-        <h1 style="margin:0 0 14px 0; font-size:24px; line-height:1.25; color:#1E2430;">
-          Bienvenue{% if customer.first_name %}, {{ customer.first_name }}{% endif %}&nbsp;!
-        </h1>
-        <p style="margin:0 0 8px 0; font-size:15px; line-height:1.6; color:#3d3550;">
-          Ton compte est prêt. Tu peux suivre tes commandes, garder tes adresses
-          au chaud et retrouver ton dressing d&rsquo;une visite à l&rsquo;autre.
-        </p>
-        <p style="margin:0; font-size:13px; line-height:1.6; color:#6B7280;">
-          Identifiant&nbsp;: {{ customer.email }}
-        </p>
-      </td>
-    </tr>
-
-    <!-- Bouton principal -->
-    <tr>
-      <td align="center" style="padding:26px 32px 8px 32px;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td bgcolor="#e7e5f1" style="background-color:#e7e5f1; background-image:linear-gradient(180deg,#f6f5fb 0%,#e7e5f1 48%,#d3d0e1 100%); border:1px solid #c6c2d8; border-radius:999px;">
-            <a href="{{ site }}/account"
-               style="display:inline-block; padding:13px 30px; font-family:'Courier New',Courier,monospace; font-size:13px; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; color:#262626; text-decoration:none; text-shadow:0 1px 0 rgba(255,255,255,0.8);">
-              Voir mon compte
-            </a>
-          </td>
-        </tr>
-        </table>
-      </td>
-    </tr>
-
-    <tr>
-      <td align="center" style="padding:4px 32px 30px 32px; font-family:'Courier New',Courier,monospace; font-size:13px;">
-        <a href="{{ site }}" style="color:#7147d4; text-decoration:underline;">ou continuer le shopping &rsaquo;</a>
-      </td>
-    </tr>
-
-    <!-- Raccourcis -->
-    <tr>
-      <td style="padding:0 24px 26px 24px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #ded7f0;">
-        <tr>
-          <td align="center" style="padding-top:20px; font-family:'Courier New',Courier,monospace; font-size:12px; letter-spacing:1px;">
-            <a href="{{ site }}/#drops" style="color:#3d3550; text-decoration:none;">BOUTIQUE</a>
-            &nbsp;&middot;&nbsp;
-            <a href="{{ site }}/dressing-machine" style="color:#3d3550; text-decoration:none;">DRESSING</a>
-            &nbsp;&middot;&nbsp;
-            <a href="{{ site }}/faq" style="color:#3d3550; text-decoration:none;">FAQ</a>
-            &nbsp;&middot;&nbsp;
-            <a href="{{ site }}/contact" style="color:#3d3550; text-decoration:none;">CONTACT</a>
-          </td>
-        </tr>
-        </table>
-      </td>
-    </tr>
-
-    <!-- Barre de statut -->
-    <tr>
-      <td bgcolor="#e7e5f1" style="background-color:#e7e5f1; border-top:2px solid #b8b4cc; padding:9px 16px; font-family:'Courier New',Courier,monospace; font-size:11px; color:#3d3550; letter-spacing:1px;">
-        STATUS: ACCOUNT_READY
-      </td>
-    </tr>
-
-  </table>
-
-  <!-- Pied hors fenêtre -->
-  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px;">
-  <tr>
-    <td align="center" style="padding:18px 16px 6px 16px; font-family:'Courier New',Courier,monospace; font-size:11px; line-height:1.7; color:#7a719a;">
-      Lil&rsquo;OG &mdash; vintage Y2K de seconde main, Paris.<br>
-      Une question&nbsp;? Réponds simplement à cet email.
-    </td>
-  </tr>
-  </table>
-
+<tr><td align="center" style="padding:24px 32px 6px;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+<td bgcolor="#e7e5f1" style="background:#e7e5f1;background-image:linear-gradient(180deg,#f6f5fb,#e7e5f1 48%,#d3d0e1);border:1px solid #c6c2d8;border-radius:999px;">
+<a href="{{ site }}/account" style="display:inline-block;padding:13px 30px;font:bold 13px 'Courier New',Courier,monospace;letter-spacing:1.5px;text-transform:uppercase;color:#262626;text-decoration:none;">Voir mon compte</a>
 </td>
-</tr>
+</tr></table>
+</td></tr>
+
+<tr><td align="center" style="padding:2px 32px 26px;font-size:13px;">
+<a href="{{ site }}" style="color:#7147d4;">ou continuer le shopping &rsaquo;</a>
+</td></tr>
+
+<tr><td align="center" style="padding:18px 24px 24px;border-top:1px solid #ded7f0;font-size:12px;letter-spacing:1px;">
+<a href="{{ site }}/#drops" style="color:#3d3550;text-decoration:none;">BOUTIQUE</a> &middot;
+<a href="{{ site }}/dressing-machine" style="color:#3d3550;text-decoration:none;">DRESSING</a> &middot;
+<a href="{{ site }}/faq" style="color:#3d3550;text-decoration:none;">FAQ</a> &middot;
+<a href="{{ site }}/contact" style="color:#3d3550;text-decoration:none;">CONTACT</a>
+</td></tr>
+
+<tr><td bgcolor="#e7e5f1" style="background:#e7e5f1;border-top:2px solid #b8b4cc;padding:9px 16px;font-size:11px;color:#3d3550;letter-spacing:1px;">STATUS: ACCOUNT_READY</td></tr>
+
 </table>
 
+<div style="padding:18px 16px 0;font-size:11px;line-height:1.7;color:#7a719a;">
+Lil&rsquo;OG &mdash; vintage Y2K de seconde main, Paris.<br>
+Une question&nbsp;? Réponds simplement à cet email.
+</div>
+
+</td></tr>
+</table>
 </body>
 </html>
