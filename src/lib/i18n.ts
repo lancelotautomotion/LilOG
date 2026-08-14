@@ -68,7 +68,7 @@ export const DICT: Record<LangCode, Dict> = {
     nav: { search: "Search", bag: "Bag", login: "Log in" },
     menu: { title: "Menu", close: "Close", dmTagline: "I want to be iconic, I'm starting the machine" },
     cat: {
-      newin: "New In", clothing: "Clothing", accessories: "Accessories", shoes: "Shoes", luxe: "Luxe edit",
+      all: "Whole catalog", newin: "New In", clothing: "Clothing", accessories: "Accessories", shoes: "Shoes", luxe: "Luxe edit",
       tops: "Tops", shirts: "Shirts", cardigans: "Cardigans", sweatshirts: "Sweatshirts", dresses: "Dresses",
       skirts: "Skirts", shorts: "Shorts", jumpsuits: "Jumpsuits", jeans: "Jeans", trousers: "Trousers",
       leather: "Leather", lingerie: "Lingerie", swimwear: "Swimwear",
@@ -121,7 +121,7 @@ export const DICT: Record<LangCode, Dict> = {
     nav: { search: "Rechercher", bag: "Panier", login: "Connexion" },
     menu: { title: "Menu", close: "Fermer", dmTagline: "Je veux être iconique, je lance la machine" },
     cat: {
-      newin: "Nouveautés", clothing: "Vêtements", accessories: "Accessoires", shoes: "Chaussures", luxe: "Sélection luxe",
+      all: "Tout le catalogue", newin: "Nouveautés", clothing: "Vêtements", accessories: "Accessoires", shoes: "Chaussures", luxe: "Sélection luxe",
       tops: "Tops", shirts: "Chemises", cardigans: "Cardigans", sweatshirts: "Sweatshirts", dresses: "Robes",
       skirts: "Jupes", shorts: "Shorts", jumpsuits: "Combinaisons", jeans: "Jeans", trousers: "Pantalons",
       leather: "Cuir", lingerie: "Lingerie", swimwear: "Maillots de bain",
@@ -174,7 +174,7 @@ export const DICT: Record<LangCode, Dict> = {
     nav: { search: "Buscar", bag: "Cesta", login: "Acceder" },
     menu: { title: "Menú", close: "Cerrar", dmTagline: "Quiero ser icónica, activo la máquina" },
     cat: {
-      newin: "Novedades", clothing: "Ropa", accessories: "Accesorios", shoes: "Zapatos", luxe: "Selección lujo",
+      all: "Todo el catálogo", newin: "Novedades", clothing: "Ropa", accessories: "Accesorios", shoes: "Zapatos", luxe: "Selección lujo",
       tops: "Tops", shirts: "Camisas", cardigans: "Cárdigans", sweatshirts: "Sudaderas", dresses: "Vestidos",
       skirts: "Faldas", shorts: "Shorts", jumpsuits: "Monos", jeans: "Vaqueros", trousers: "Pantalones",
       leather: "Cuero", lingerie: "Lencería", swimwear: "Bañadores",
@@ -227,7 +227,7 @@ export const DICT: Record<LangCode, Dict> = {
     nav: { search: "Cerca", bag: "Carrello", login: "Accedi" },
     menu: { title: "Menu", close: "Chiudi", dmTagline: "Voglio essere iconica, avvio la macchina" },
     cat: {
-      newin: "Novità", clothing: "Abbigliamento", accessories: "Accessori", shoes: "Scarpe", luxe: "Selezione lusso",
+      all: "Tutto il catalogo", newin: "Novità", clothing: "Abbigliamento", accessories: "Accessori", shoes: "Scarpe", luxe: "Selezione lusso",
       tops: "Top", shirts: "Camicie", cardigans: "Cardigan", sweatshirts: "Felpe", dresses: "Vestiti",
       skirts: "Gonne", shorts: "Shorts", jumpsuits: "Tute", jeans: "Jeans", trousers: "Pantaloni",
       leather: "Pelle", lingerie: "Lingerie", swimwear: "Costumi",
@@ -280,7 +280,7 @@ export const DICT: Record<LangCode, Dict> = {
     nav: { search: "Suchen", bag: "Warenkorb", login: "Anmelden" },
     menu: { title: "Menü", close: "Schließen", dmTagline: "Ich will ikonisch sein, ich starte die Maschine" },
     cat: {
-      newin: "Neu", clothing: "Kleidung", accessories: "Accessoires", shoes: "Schuhe", luxe: "Luxus-Auswahl",
+      all: "Gesamter Katalog", newin: "Neu", clothing: "Kleidung", accessories: "Accessoires", shoes: "Schuhe", luxe: "Luxus-Auswahl",
       tops: "Tops", shirts: "Hemden", cardigans: "Strickjacken", sweatshirts: "Sweatshirts", dresses: "Kleider",
       skirts: "Röcke", shorts: "Shorts", jumpsuits: "Overalls", jeans: "Jeans", trousers: "Hosen",
       leather: "Leder", lingerie: "Dessous", swimwear: "Bademode",
@@ -333,7 +333,7 @@ export const DICT: Record<LangCode, Dict> = {
     nav: { search: "Поиск", bag: "Корзина", login: "Войти" },
     menu: { title: "Меню", close: "Закрыть", dmTagline: "Хочу быть иконой — запускаю машину" },
     cat: {
-      newin: "Новинки", clothing: "Одежда", accessories: "Аксессуары", shoes: "Обувь", luxe: "Люкс-подборка",
+      all: "Весь каталог", newin: "Новинки", clothing: "Одежда", accessories: "Аксессуары", shoes: "Обувь", luxe: "Люкс-подборка",
       tops: "Топы", shirts: "Рубашки", cardigans: "Кардиганы", sweatshirts: "Свитшоты", dresses: "Платья",
       skirts: "Юбки", shorts: "Шорты", jumpsuits: "Комбинезоны", jeans: "Джинсы", trousers: "Брюки",
       leather: "Кожа", lingerie: "Бельё", swimwear: "Купальники",
@@ -386,7 +386,7 @@ export const DICT: Record<LangCode, Dict> = {
     nav: { search: "搜索", bag: "购物袋", login: "登录" },
     menu: { title: "菜单", close: "关闭", dmTagline: "我要成为焦点，启动机器" },
     cat: {
-      newin: "新品", clothing: "服装", accessories: "配饰", shoes: "鞋履", luxe: "奢选",
+      all: "全部商品", newin: "新品", clothing: "服装", accessories: "配饰", shoes: "鞋履", luxe: "奢选",
       tops: "上衣", shirts: "衬衫", cardigans: "开衫", sweatshirts: "卫衣", dresses: "连衣裙",
       skirts: "半裙", shorts: "短裤", jumpsuits: "连体衣", jeans: "牛仔", trousers: "长裤",
       leather: "皮革", lingerie: "内衣", swimwear: "泳装",
@@ -439,7 +439,7 @@ export const DICT: Record<LangCode, Dict> = {
     nav: { search: "検索", bag: "バッグ", login: "ログイン" },
     menu: { title: "メニュー", close: "閉じる", dmTagline: "アイコニックになりたい、マシンを起動する" },
     cat: {
-      newin: "新着", clothing: "ウェア", accessories: "アクセサリー", shoes: "シューズ", luxe: "ラグジュアリー",
+      all: "全カタログ", newin: "新着", clothing: "ウェア", accessories: "アクセサリー", shoes: "シューズ", luxe: "ラグジュアリー",
       tops: "トップス", shirts: "シャツ", cardigans: "カーディガン", sweatshirts: "スウェット", dresses: "ワンピース",
       skirts: "スカート", shorts: "ショーツ", jumpsuits: "オールインワン", jeans: "ジーンズ", trousers: "パンツ",
       leather: "レザー", lingerie: "ランジェリー", swimwear: "水着",
@@ -492,7 +492,7 @@ export const DICT: Record<LangCode, Dict> = {
     nav: { search: "검색", bag: "장바구니", login: "로그인" },
     menu: { title: "메뉴", close: "닫기", dmTagline: "아이코닉해지고 싶어, 머신을 가동한다" },
     cat: {
-      newin: "신상품", clothing: "의류", accessories: "액세서리", shoes: "신발", luxe: "럭셔리 셀렉션",
+      all: "전체 카탈로그", newin: "신상품", clothing: "의류", accessories: "액세서리", shoes: "신발", luxe: "럭셔리 셀렉션",
       tops: "탑", shirts: "셔츠", cardigans: "가디건", sweatshirts: "스웨트셔츠", dresses: "드레스",
       skirts: "스커트", shorts: "쇼츠", jumpsuits: "점프수트", jeans: "진", trousers: "팬츠",
       leather: "레더", lingerie: "란제리", swimwear: "수영복",

@@ -111,6 +111,11 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               <span className="dm-tile-play" aria-hidden="true">▶ PLAY</span>
             </a>
           </div>
+          <div className="drawer-item">
+            <a className="drawer-link" href="/catalogue" onClick={onClose}>
+              <span aria-hidden="true">🗂️</span> Tout voir
+            </a>
+          </div>
           {LINKS.map((l, i) => (
             <div className={"drawer-item" + (l.sub && expanded === i ? " open" : "")} key={l.key}>
               {l.sub ? (
