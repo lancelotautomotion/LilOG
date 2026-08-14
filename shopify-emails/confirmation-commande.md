@@ -11,7 +11,17 @@ sur des cas qu'on ne verra qu'en production, sur de vraies commandes.
 On garde donc le gabarit de Shopify et on l'habille : quatre modifications
 chirurgicales, dont une seule fait l'essentiel du travail.
 
-⚠️ Avant de commencer, copier le gabarit actuel dans un fichier de côté.
+**[confirmation-commande.liquid](confirmation-commande.liquid) contient le
+fichier complet, les quatre modifications déjà appliquées** : à sélectionner
+en entier et coller directement dans « Modifier le code ». Reconstruit à
+partir du gabarit par défaut envoyé par la boutique, puis vérifié
+automatiquement (équilibre des balises Liquid `if`/`for`/`unless`/`capture`/
+`case`, plus aucun `{{ shop.url }}`, aucun résidu des blocs supprimés). Ce
+qui suit n'est utile que pour retrouver chaque modification isolément, par
+exemple pour la reporter à la main si Shopify a fait évoluer le gabarit par
+défaut entre-temps.
+
+⚠️ Avant de coller, copier le gabarit actuel dans un fichier de côté.
 
 ---
 
