@@ -66,7 +66,7 @@ export interface Dict {
 export const DICT: Record<LangCode, Dict> = {
   en: {
     nav: { search: "Search", bag: "Bag", login: "Log in" },
-    menu: { title: "Menu", close: "Close", dmTagline: "I want to be iconic, I'm starting the machine" },
+    menu: { title: "Menu", close: "Close", dmTagline: "I want to be iconic, I'm starting the machine" },
     cat: {
       newin: "New In", clothing: "Clothing", accessories: "Accessories", shoes: "Shoes", luxe: "Luxe edit",
       tops: "Tops", shirts: "Shirts", cardigans: "Cardigans", sweatshirts: "Sweatshirts", dresses: "Dresses",
@@ -119,7 +119,7 @@ export const DICT: Record<LangCode, Dict> = {
 
   fr: {
     nav: { search: "Rechercher", bag: "Panier", login: "Connexion" },
-    menu: { title: "Menu", close: "Fermer", dmTagline: "Je veux être iconique, je lance la machine" },
+    menu: { title: "Menu", close: "Fermer", dmTagline: "Je veux être iconique, je lance la machine" },
     cat: {
       newin: "Nouveautés", clothing: "Vêtements", accessories: "Accessoires", shoes: "Chaussures", luxe: "Sélection luxe",
       tops: "Tops", shirts: "Chemises", cardigans: "Cardigans", sweatshirts: "Sweatshirts", dresses: "Robes",
@@ -172,7 +172,7 @@ export const DICT: Record<LangCode, Dict> = {
 
   es: {
     nav: { search: "Buscar", bag: "Cesta", login: "Acceder" },
-    menu: { title: "Menú", close: "Cerrar", dmTagline: "Quiero ser icónica, activo la máquina" },
+    menu: { title: "Menú", close: "Cerrar", dmTagline: "Quiero ser icónica, activo la máquina" },
     cat: {
       newin: "Novedades", clothing: "Ropa", accessories: "Accesorios", shoes: "Zapatos", luxe: "Selección lujo",
       tops: "Tops", shirts: "Camisas", cardigans: "Cárdigans", sweatshirts: "Sudaderas", dresses: "Vestidos",
@@ -225,7 +225,7 @@ export const DICT: Record<LangCode, Dict> = {
 
   it: {
     nav: { search: "Cerca", bag: "Carrello", login: "Accedi" },
-    menu: { title: "Menu", close: "Chiudi", dmTagline: "Voglio essere iconica, avvio la macchina" },
+    menu: { title: "Menu", close: "Chiudi", dmTagline: "Voglio essere iconica, avvio la macchina" },
     cat: {
       newin: "Novità", clothing: "Abbigliamento", accessories: "Accessori", shoes: "Scarpe", luxe: "Selezione lusso",
       tops: "Top", shirts: "Camicie", cardigans: "Cardigan", sweatshirts: "Felpe", dresses: "Vestiti",
@@ -278,7 +278,7 @@ export const DICT: Record<LangCode, Dict> = {
 
   de: {
     nav: { search: "Suchen", bag: "Warenkorb", login: "Anmelden" },
-    menu: { title: "Menü", close: "Schließen", dmTagline: "Ich will ikonisch sein, ich starte die Maschine" },
+    menu: { title: "Menü", close: "Schließen", dmTagline: "Ich will ikonisch sein, ich starte die Maschine" },
     cat: {
       newin: "Neu", clothing: "Kleidung", accessories: "Accessoires", shoes: "Schuhe", luxe: "Luxus-Auswahl",
       tops: "Tops", shirts: "Hemden", cardigans: "Strickjacken", sweatshirts: "Sweatshirts", dresses: "Kleider",
@@ -331,7 +331,7 @@ export const DICT: Record<LangCode, Dict> = {
 
   ru: {
     nav: { search: "Поиск", bag: "Корзина", login: "Войти" },
-    menu: { title: "Меню", close: "Закрыть", dmTagline: "Хочу быть иконой — запускаю машину" },
+    menu: { title: "Меню", close: "Закрыть", dmTagline: "Хочу быть иконой — запускаю машину" },
     cat: {
       newin: "Новинки", clothing: "Одежда", accessories: "Аксессуары", shoes: "Обувь", luxe: "Люкс-подборка",
       tops: "Топы", shirts: "Рубашки", cardigans: "Кардиганы", sweatshirts: "Свитшоты", dresses: "Платья",
@@ -490,7 +490,7 @@ export const DICT: Record<LangCode, Dict> = {
 
   ko: {
     nav: { search: "검색", bag: "장바구니", login: "로그인" },
-    menu: { title: "메뉴", close: "닫기", dmTagline: "아이코닉해지고 싶어, 머신을 가동한다" },
+    menu: { title: "메뉴", close: "닫기", dmTagline: "아이코닉해지고 싶어, 머신을 가동한다" },
     cat: {
       newin: "신상품", clothing: "의류", accessories: "액세서리", shoes: "신발", luxe: "럭셔리 셀렉션",
       tops: "탑", shirts: "셔츠", cardigans: "가디건", sweatshirts: "스웨트셔츠", dresses: "드레스",
