@@ -1,6 +1,7 @@
 import { shopifyFetch } from "./client";
 import { compareSizes, normalizeSize } from "@/lib/sizes";
 import {
+  CATALOG_PRODUCTS_QUERY,
   COLLECTION_BY_HANDLE_QUERY,
   FEATURED_PRODUCTS_QUERY,
   PRODUCT_BY_HANDLE_QUERY,
@@ -203,12 +204,14 @@ export async function getFeaturedProducts(count = 8): Promise<Product[]> {
 
 /**
  * Le catalogue entier, toutes catégories confondues, pour le bouton
- * "Tout voir" du menu. Même requête que getFeaturedProducts (aucun filtre
- * de collection côté Shopify), juste un plafond relevé au maximum permis
- * par l'API Storefront (`first`).
+ * "Tout voir" du menu. Aucun filtre de collection côté Shopify, mais
+ * CATALOG_PRODUCTS_QUERY reste sur la même sélection de champs que
+ * COLLECTION_BY_HANDLE_QUERY (couleur/taille/matière/options) : sans elle,
+ * FILTER_CONTROL.SYS et la pastille de taille des fiches n'ont rien à
+ * afficher, contrairement à FEATURED_PRODUCTS_QUERY, allégée pour l'accueil.
  */
 export async function getAllProducts(count = 250): Promise<Product[]> {
-  const data = await shopifyFetch<FeaturedProductsResponse>(FEATURED_PRODUCTS_QUERY, { first: count });
+  const data = await shopifyFetch<FeaturedProductsResponse>(CATALOG_PRODUCTS_QUERY, { first: count });
   return data.products.edges.map((e) => mapProduct(e.node));
 }
 
