@@ -185,7 +185,7 @@ export function ProductWindow({
      est coupée : la vignette fait 170px de large en mobile. */
   const sizeChip = product.sizes.length > 0 && (
     <span
-      className={`${MONO} ${CHIP_BASE} shrink-0 rounded border border-[#c6c2d8] px-2 text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
+      className={`${MONO} ${CHIP_BASE} min-w-0 shrink truncate rounded border border-[#c6c2d8] px-2 text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
       title={`Taille ${product.sizes.join(" / ")}`}
     >
       📏 {product.sizes.slice(0, 3).join(" / ")}
@@ -290,22 +290,23 @@ export function ProductWindow({
         </p>
       </Link>
 
-      {/* Barre d'action : sur une carte de deux colonnes en mobile, la place
-          est comptée : le pied passe à la ligne plutôt que de déborder.
-          Le passage à la ligne reste autorisé à toutes les largeurs. En
-          `nowrap`, les pastilles n'avaient plus qu'à se laisser comprimer :
-          une pièce en trois tailles voyait la sienne rognée en plein milieu
-          (« 📏 M / L / X »), et un prix barré écrasait la taille jusqu'à la
-          faire disparaître. Mieux vaut une seconde ligne qu'un libellé coupé. */}
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-1 border-t border-[#d8d5e6] bg-[#e9e7f2] px-1.5 py-2">
-        <span className="flex min-w-0 flex-wrap items-center gap-1">
+      {/* Barre d'action : deux rangées fixes (prix/taille, puis panier/cœur)
+          plutôt qu'un seul flex-wrap. Avec une rangée unique, le point de
+          bascule dépendait du contenu de chaque fiche — une taille ou un
+          prix barré en plus faisait passer le panier à la ligne sur une
+          carte et pas sur sa voisine, et le pied partait en escalier dans
+          la grille. Deux rangées toujours présentes, même vides côté
+          taille : le panier et le cœur tombent au même niveau sur toutes
+          les fiches. */}
+      <div className="mt-auto flex flex-col gap-1 border-t border-[#d8d5e6] bg-[#e9e7f2] px-1.5 py-2">
+        <div className="flex min-w-0 items-center justify-between gap-1">
           {price}
           {sizeChip}
-        </span>
-        <span className="flex shrink-0 items-center gap-1">
+        </div>
+        <div className="flex items-center justify-between gap-1">
           {cartButton}
           {favButton}
-        </span>
+        </div>
       </div>
     </article>
   );
