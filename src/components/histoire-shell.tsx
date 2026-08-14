@@ -69,7 +69,7 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
       role="presentation"
       aria-label={label}
       title={label}
-      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.7rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
+      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.875rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
     >
       {glyph}
     </span>
@@ -79,7 +79,7 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
 /** Étiquette de module : cohérente avec /durabilite. */
 function SectionLabel({ n, file }: { n: string; file: string }) {
   return (
-    <p className={`${MONO} mb-3 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#5b2fb8]`}>
+    <p className={`${MONO} mb-3 text-[0.8125rem] font-bold uppercase tracking-[0.14em] text-[#5b2fb8]`}>
       <span style={{ color: PINK }}>▶</span> {n} · {file}
     </p>
   );
@@ -208,12 +208,12 @@ function CameraWidget() {
           {/* Plaque signalétique + LED : centrée dans l'espace libre au-dessus du boîtier. */}
           <div className="relative z-10 flex w-[clamp(220px,26vw,300px)] items-center justify-center md:h-full">
             <div className="flex w-full items-center justify-between rounded-full border border-[#c6c2d8] bg-white/90 px-4 py-1.5 backdrop-blur-[1px]" style={{ boxShadow: "inset 0 1px 2px rgba(255,255,255,0.9), 0 3px 8px rgba(30,36,48,0.14)" }}>
-              <span className={`${LCD} text-[0.9rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}>
+              <span className={`${LCD} text-[1rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}>
                 LOUNA.RAW
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="lj-led h-1.5 w-1.5 rounded-full bg-[#5aff8c]" aria-hidden />
-                <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#6b6480]`}>REC</span>
+                <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#6b6480]`}>REC</span>
               </span>
             </div>
           </div>
@@ -283,7 +283,7 @@ function PressPin({ icon, label, hue }: Pass) {
         style={{ boxShadow: "inset 0 1px 1px rgba(0,0,0,0.3)" }}
       />
       <span className="text-sm leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]">{icon}</span>
-      <span className={`${MONO} text-[0.62rem] font-bold tracking-[0.06em] whitespace-nowrap text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}>
+      <span className={`${MONO} text-[0.875rem] font-bold tracking-[0.06em] whitespace-nowrap text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}>
         {label}
       </span>
     </div>
@@ -401,8 +401,8 @@ function LogCard({ log }: { log: LogEntry }) {
       style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.12), 0 6px 16px rgba(30,36,48,0.16)" }}
     >
       <div className="flex items-center justify-between gap-2 px-4 py-2.5" style={{ background: VIOLET_BAR }}>
-        <span className={`${MONO} text-[0.6rem] font-bold tracking-[0.06em] text-white/85`}>LOG_{log.n}.DAT</span>
-        <span className={`${MONO} rounded-full border border-white/40 bg-white/10 px-2 py-0.5 text-[0.5rem] font-bold tracking-[0.08em] text-white`}>
+        <span className={`${MONO} text-[0.8125rem] font-bold tracking-[0.06em] text-white/85`}>LOG_{log.n}.DAT</span>
+        <span className={`${MONO} rounded-full border border-white/40 bg-white/10 px-2 py-0.5 text-[0.8125rem] font-bold tracking-[0.08em] text-white`}>
           {log.era}
         </span>
       </div>
@@ -415,7 +415,7 @@ function LogCard({ log }: { log: LogEntry }) {
           style={{ boxShadow: "inset 2px 2px 6px rgba(0,0,0,0.14)" }}
         >
           {log.paragraphs.map((p, i) => (
-            <p key={i} className={`${MONO} text-[0.74rem] leading-[1.9] text-[#2b2b33] ${i > 0 ? "mt-3" : ""}`}>
+            <p key={i} className={`${MONO} text-[0.9375rem] leading-[1.9] text-[#2b2b33] ${i > 0 ? "mt-3" : ""}`}>
               {p}
             </p>
           ))}
@@ -504,11 +504,11 @@ export function HistoireShell() {
             {/* ---- Barre de titre ---- */}
             <div className="flex items-center justify-between gap-3 px-3 py-2" style={{ background: VIOLET_BAR }}>
               <div className="flex min-w-0 items-center gap-2">
-                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-[4px] bg-white/90 text-[0.7rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
+                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-[4px] bg-white/90 text-[0.875rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
                   📓
                 </span>
                 <h1
-                  className={`${MONO} truncate text-[clamp(0.66rem,2.2vw,0.95rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
+                  className={`${MONO} truncate text-[clamp(0.875rem,2.2vw,1rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
                 >
                   LOUNA_JOURNAL_2000.EXE
                 </h1>
@@ -527,13 +527,13 @@ export function HistoireShell() {
                 className="mb-[clamp(16px,2.8vw,26px)] rounded-2xl border border-[#c6c2d8] bg-white/85 p-[clamp(14px,2.6vw,24px)] text-center backdrop-blur-[1px]"
                 style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)" }}
               >
-                <p className={`${MONO} mb-1 text-[0.56rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
+                <p className={`${MONO} mb-1 text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
                   C:\LILOG\HISTOIRE\ <span style={{ color: PINK }}>★</span> JOURNAL PERSONNEL
                 </p>
                 <h2 className={`${LCD} text-[clamp(1.9rem,6vw,3.2rem)] leading-[1.02] tracking-[0.02em] text-[#2a1266] uppercase`}>
                   La mode autrement.
                 </h2>
-                <p className={`${MONO} mx-auto mt-2 max-w-[62ch] text-[clamp(0.68rem,1.6vw,0.78rem)] leading-relaxed text-[#4a4560]`}>
+                <p className={`${MONO} mx-auto mt-2 max-w-[62ch] text-[clamp(0.875rem,1.6vw,0.9375rem)] leading-relaxed text-[#4a4560]`}>
                   De l&apos;Orne aux podiums, des plateaux de tournage à la seconde main : le journal de Louna,
                   fondatrice de Lil&apos;OG.
                 </p>
@@ -548,10 +548,10 @@ export function HistoireShell() {
 
             {/* ---- Barre de statut ---- */}
             <div className="flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
-              <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
+              <span className={`${MONO} truncate text-[0.8125rem] tracking-wider text-[#5a5670]`}>
                 <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com · SIRET 98014870400011
               </span>
-              <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
+              <span className={`${MONO} shrink-0 text-[0.8125rem] tracking-wider text-[#5a5670]`}>
                 4 log(s) chargé(s)
               </span>
             </div>

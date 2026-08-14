@@ -34,7 +34,7 @@ export default async function CheckoutSuccessPage() {
           padding: "4px 6px",
           gap: "8px",
         }}>
-          <span style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", color: "#fff", letterSpacing: "0.06em", textTransform: "uppercase", flex: 1 }}>
+          <span style={{ fontFamily: "var(--mono)", fontSize: "0.875rem", color: "#fff", letterSpacing: "0.06em", textTransform: "uppercase", flex: 1 }}>
             ✓ Commande confirmée · Lil&apos;OG
           </span>
           <div style={{ display: "flex", gap: "3px" }}>
@@ -49,7 +49,7 @@ export default async function CheckoutSuccessPage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "0.55rem",
+                fontSize: "0.8125rem",
                 fontFamily: "var(--mono)",
                 color: "#000",
                 userSelect: "none",
@@ -71,10 +71,10 @@ export default async function CheckoutSuccessPage() {
             marginBottom: "12px",
           }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: "2.4rem", color: "#00ff41", marginBottom: "8px", textShadow: "0 0 12px #00ff41, 0 0 24px rgba(0,255,65,0.4)" }}>✓</div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#fff", marginBottom: "4px" }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: "0.875rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#fff", marginBottom: "4px" }}>
               Merci pour ta commande !
             </div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "0.62rem", color: "#a0cfff", letterSpacing: "0.1em" }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: "0.875rem", color: "#a0cfff", letterSpacing: "0.1em" }}>
               Paiement accepté · Un email de confirmation t&apos;a été envoyé
             </div>
           </div>
@@ -82,7 +82,7 @@ export default async function CheckoutSuccessPage() {
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Link href="/" style={{
               fontFamily: "var(--mono)",
-              fontSize: "0.7rem",
+              fontSize: "0.875rem",
               textTransform: "uppercase",
               letterSpacing: "0.12em",
               color: "#000",

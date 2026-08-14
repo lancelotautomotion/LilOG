@@ -617,10 +617,10 @@ const CSS = `
 .y2kp-sig i:nth-child(4){animation:y2kp-blink 2.8s ease-in-out infinite}
 .y2kp-bat i:last-child{animation:y2kp-blink 4.6s ease-in-out infinite}
 
-.y2kp-title{font-size:11cqw;line-height:1.14;margin-top:1.4cqw;letter-spacing:.02em}
+.y2kp-title{font-size:11.9cqw;line-height:1.14;margin-top:1.4cqw;letter-spacing:.02em}
 .y2kp-rule{height:1px;background:currentColor;opacity:.32;margin:1.6cqw 0}
-.y2kp-row{font-size:9.5cqw;line-height:1.2}
-.y2kp-dial{flex:1;min-height:0;font-size:9.5cqw;line-height:1.22;word-break:break-all}
+.y2kp-row{font-size:10.3cqw;line-height:1.2}
+.y2kp-dial{flex:1;min-height:0;font-size:10.3cqw;line-height:1.22;word-break:break-all}
 .y2kp-prompt{opacity:.62}
 @keyframes y2kp-caret{0%,45%{opacity:1}55%,100%{opacity:0}}
 .y2kp-caret{animation:y2kp-caret 1.05s steps(1,end) infinite}
@@ -661,7 +661,7 @@ const CSS = `
 /* ---- Bandeau d'aide sous le téléphone ---- */
 .y2kp-hint{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
   gap:.55rem;margin-top:.9rem;font-family:var(--mono),ui-monospace,monospace;
-  font-size:.5rem;letter-spacing:.14em;color:rgba(59,29,143,.62);text-align:center}
+  font-size:.8125rem;letter-spacing:.1em;color:rgba(59,29,143,.72);text-align:center}
 .y2kp-mute{appearance:none;border:1px solid #c6c2d8;border-radius:999px;cursor:pointer;
   padding:.3rem .62rem;font:inherit;letter-spacing:.1em;color:#3b1d8f;
   background:linear-gradient(180deg,#fdfdff 0%,#ebe9f4 48%,#d3d0e1 100%);

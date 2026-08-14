@@ -74,7 +74,7 @@ export default async function OrdersPage() {
               {orders.length === 0 ? (
                 <p className="account-orders-empty">
                   Aucune commande pour le moment.<br />
-                  <a href="/" style={{ color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.68rem" }}>
+                  <a href="/" style={{ color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.875rem" }}>
                     Découvrir la boutique →
                   </a>
                 </p>
@@ -87,7 +87,7 @@ export default async function OrdersPage() {
                     gap: "8px",
                     padding: "4px 10px",
                     fontFamily: "var(--mono)",
-                    fontSize: "0.58rem",
+                    fontSize: "0.8125rem",
                     textTransform: "uppercase",
                     letterSpacing: "0.06em",
                     color: "#555",
@@ -119,7 +119,7 @@ export default async function OrdersPage() {
                       <span className="account-order-price">
                         {fmt(order.currentTotalPrice.amount, order.currentTotalPrice.currencyCode)}
                       </span>
-                      <span style={{ fontFamily: "var(--mono)", fontSize: "0.6rem", color: "#000080", textDecoration: "underline" }}>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: "0.8125rem", color: "#000080", textDecoration: "underline" }}>
                         Détail →
                       </span>
                     </a>

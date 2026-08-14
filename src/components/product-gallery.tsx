@@ -65,7 +65,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   };
 
   const navBtn =
-    `${MONO} shrink-0 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-2 text-[0.56rem] font-bold ` +
+    `${MONO} shrink-0 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-2 text-[0.8125rem] font-bold ` +
     `tracking-[0.04em] text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-40 ` +
     `${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105`;
 
@@ -76,8 +76,8 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
       {/* ---- Lecteur ---- */}
       <div className={`overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#f0f0f5] ${HARD_SHADOW}`}>
         <div className="flex items-center gap-2 border-b-2 border-[#2a1370] px-2.5 py-2" style={{ background: NAVY_BAR }}>
-          <span aria-hidden className="shrink-0 text-[0.8rem] leading-none">📷</span>
-          <span className={`${MONO} min-w-0 flex-1 truncate text-[0.6rem] font-bold tracking-[0.1em] text-white uppercase`}>
+          <span aria-hidden className="shrink-0 text-[1rem] leading-none">📷</span>
+          <span className={`${MONO} min-w-0 flex-1 truncate text-[0.8125rem] font-bold tracking-[0.1em] text-white uppercase`}>
             ITEM_VIEWER_V1.0.RAW
           </span>
           <WindowControls />
@@ -103,7 +103,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
           />
           {pics.length > 1 && (
             <span
-              className={`${MONO} absolute right-2 bottom-2 rounded border border-black/30 bg-black/55 px-1.5 py-0.5 text-[0.5rem] font-bold tracking-[0.08em] text-white`}
+              className={`${MONO} absolute right-2 bottom-2 rounded border border-black/30 bg-black/55 px-1.5 py-0.5 text-[0.8125rem] font-bold tracking-[0.08em] text-white`}
             >
               {index + 1}/{pics.length}
             </span>
@@ -165,7 +165,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
             type="button"
             onClick={() => setZoom(false)}
             aria-label="Fermer"
-            className={`${MONO} absolute top-4 right-4 z-10 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-2 text-[0.6rem] font-bold text-[#262626] uppercase ${PLASTIC} ${PLASTIC_PRESS}`}
+            className={`${MONO} absolute top-4 right-4 z-10 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-2 text-[0.8125rem] font-bold text-[#262626] uppercase ${PLASTIC} ${PLASTIC_PRESS}`}
           >
             [ × CLOSE ]
           </button>
@@ -183,7 +183,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
                 type="button"
                 onClick={(e) => { e.stopPropagation(); go(-1); }}
                 aria-label="Photo précédente"
-                className={`${MONO} absolute left-3 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-3 text-[0.7rem] font-bold text-[#262626] ${PLASTIC} ${PLASTIC_PRESS} sm:left-6`}
+                className={`${MONO} absolute left-3 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-3 text-[0.875rem] font-bold text-[#262626] ${PLASTIC} ${PLASTIC_PRESS} sm:left-6`}
               >
                 ◀
               </button>
@@ -191,7 +191,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
                 type="button"
                 onClick={(e) => { e.stopPropagation(); go(1); }}
                 aria-label="Photo suivante"
-                className={`${MONO} absolute right-3 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-3 text-[0.7rem] font-bold text-[#262626] ${PLASTIC} ${PLASTIC_PRESS} sm:right-6`}
+                className={`${MONO} absolute right-3 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-3 text-[0.875rem] font-bold text-[#262626] ${PLASTIC} ${PLASTIC_PRESS} sm:right-6`}
               >
                 ▶
               </button>

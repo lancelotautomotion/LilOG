@@ -143,7 +143,7 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
       role="presentation"
       aria-label={label}
       title={label}
-      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.7rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
+      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.875rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
     >
       {glyph}
     </span>
@@ -241,7 +241,7 @@ function Tray() {
         <TiktokPixel />
       </TrayIcon>
 
-      <span aria-hidden title="Connecté · 56 Kbps" className="liltb-led text-[0.9rem] leading-none">
+      <span aria-hidden title="Connecté · 56 Kbps" className="liltb-led text-[1rem] leading-none">
         💻
       </span>
 
@@ -249,7 +249,7 @@ function Tray() {
 
       <time
         suppressHydrationWarning
-        className={`${LCD} min-w-[58px] text-center text-[1.2rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}
+        className={`${LCD} min-w-[58px] text-center text-[1.25rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}
       >
         {clock ?? "--:--"}
       </time>
@@ -275,7 +275,7 @@ function Newsletter({ className = "" }: { className?: string }) {
   if (sent) {
     return (
       <p
-        className={`${MONO} flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-3.5 py-2 text-[0.58rem] font-bold tracking-[0.04em] text-purple-800 ${className}`}
+        className={`${MONO} flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-3.5 py-2 text-[0.8125rem] font-bold tracking-[0.04em] text-purple-800 ${className}`}
       >
         <span aria-hidden>💾</span> ADRESSE ENREGISTRÉE · À TRÈS VITE
         <span style={{ color: PINK }}>★</span>
@@ -295,11 +295,11 @@ function Newsletter({ className = "" }: { className?: string }) {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="ENTER_EMAIL.EXE"
-        className={`${MONO} h-[42px] w-full min-w-0 rounded-xl border border-gray-300 bg-white px-3.5 text-[0.6rem] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 md:w-[190px]`}
+        className={`${MONO} h-[42px] w-full min-w-0 rounded-xl border border-gray-300 bg-white px-3.5 text-[0.8125rem] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 md:w-[190px]`}
       />
       <button
         type="submit"
-        className={`${MONO} h-[42px] shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-4 text-[0.6rem] font-bold tracking-[0.04em] text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+        className={`${MONO} h-[42px] shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-4 text-[1rem] font-bold tracking-[0.04em] text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
       >
         [ OK ]
       </button>
@@ -372,11 +372,11 @@ export function Footer() {
             style={{ background: VIOLET_BAR }}
           >
             <div className="flex min-w-0 items-center gap-2">
-              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] bg-white/85 text-[0.65rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
+              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] bg-white/85 text-[0.875rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
                 🖥
               </span>
               <h2
-                className={`${MONO} truncate text-[clamp(0.62rem,2.1vw,0.9rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
+                className={`${MONO} truncate text-[clamp(0.875rem,2.1vw,1rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
               >
                 LIL_OG_TASKBAR.EXE
               </h2>
@@ -403,10 +403,10 @@ export function Footer() {
               >
                 <Image src={logoBlack} alt="Lil'OG" className="h-[clamp(30px,4vw,42px)] w-auto" />
                 <span className="hidden lg:block">
-                  <span className={`${MONO} block text-[0.52rem] font-bold tracking-[0.14em] text-[#3b1d8f] uppercase`}>
+                  <span className={`${MONO} block text-[0.8125rem] font-bold tracking-[0.14em] text-[#3b1d8f] uppercase`}>
                     Lil&apos;OG Vintage
                   </span>
-                  <span className={`${MONO} mt-0.5 block text-[0.48rem] tracking-[0.03em] text-[#6b6480]`}>
+                  <span className={`${MONO} mt-0.5 block text-[0.8125rem] tracking-[0.03em] text-[#6b6480]`}>
                     {t.foot.tagline}
                   </span>
                 </span>
@@ -434,9 +434,9 @@ export function Footer() {
                 <Link
                   key={href}
                   href={href}
-                  className={`${MONO} flex h-[clamp(44px,5vw,52px)] min-w-0 items-center justify-center gap-2 rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-3 text-[clamp(0.58rem,1.2vw,0.66rem)] font-bold tracking-[0.04em] text-[#3a3550] no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                  className={`${MONO} flex h-[clamp(44px,5vw,52px)] min-w-0 items-center justify-center gap-2 rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-3 text-[clamp(0.8125rem,1.2vw,0.875rem)] font-bold tracking-[0.04em] text-[#3a3550] no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
                 >
-                  <span aria-hidden className="shrink-0 text-[0.95rem] leading-none">
+                  <span aria-hidden className="shrink-0 text-[1rem] leading-none">
                     {icon}
                   </span>
                   <span className="truncate uppercase">{label}</span>
@@ -455,9 +455,9 @@ export function Footer() {
                   key={href}
                   href={href}
                   {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className={`${MONO} flex h-[30px] items-center gap-1.5 rounded-lg border border-[#c6c2d8] bg-white/70 px-2.5 text-[0.5rem] font-bold tracking-[0.03em] text-[#6b6480] no-underline transition hover:bg-purple-100 hover:text-[#3b1d8f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                  className={`${MONO} flex h-[30px] items-center gap-1.5 rounded-lg border border-[#c6c2d8] bg-white/70 px-2.5 text-[0.8125rem] font-bold tracking-[0.03em] text-[#6b6480] no-underline transition hover:bg-purple-100 hover:text-[#3b1d8f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
                 >
-                  <span aria-hidden className="shrink-0 text-[0.72rem] leading-none">
+                  <span aria-hidden className="shrink-0 text-[0.9375rem] leading-none">
                     {icon}
                   </span>
                   <span className="uppercase">{label}</span>
@@ -468,20 +468,20 @@ export function Footer() {
 
           {/* ---- Barre de statut : copyright + mentions légales ---- */}
           <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-b-[9px] border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
-            <span className={`${MONO} text-[0.5rem] tracking-wider text-[#5a5670]`}>
+            <span className={`${MONO} text-[0.8125rem] tracking-wider text-[#5a5670]`}>
               <span style={{ color: PINK }}>✦</span> © 2026 LIL&apos;OG VINTAGE. ALL RIGHTS RESERVED.
             </span>
             <nav aria-label="Mentions légales" className="flex flex-wrap items-center gap-x-2 gap-y-1">
               {t.footer.legalLinks.map((l, i) => (
                 <span key={l} className="flex items-center gap-2">
                   {i > 0 && (
-                    <span aria-hidden className="text-[0.5rem] text-[#b3aec6]">
+                    <span aria-hidden className="text-[0.8125rem] text-[#b3aec6]">
                       ·
                     </span>
                   )}
                   <Link
                     href={LEGAL_HREFS[l] ?? "#"}
-                    className={`${MONO} text-[0.5rem] tracking-wider text-[#5a5670] transition hover:text-[#3b1d8f]`}
+                    className={`${MONO} text-[0.8125rem] tracking-wider text-[#5a5670] transition hover:text-[#3b1d8f]`}
                   >
                     {l.toUpperCase()}
                   </Link>

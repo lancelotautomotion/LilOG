@@ -240,7 +240,7 @@ export function AccountDashboard({
                     <div className="account-panel-bar">
                       <span className="account-panel-title">📦 Dernières commandes</span>
                       {orders.length > 0 && (
-                        <a href="/account/orders" style={{ fontFamily: "var(--mono)", fontSize: "0.54rem", color: "#fff", opacity: 0.8, textDecoration: "underline" }}>
+                        <a href="/account/orders" style={{ fontFamily: "var(--mono)", fontSize: "0.8125rem", color: "#fff", opacity: 0.8, textDecoration: "underline" }}>
                           Voir tout
                         </a>
                       )}
@@ -268,10 +268,10 @@ export function AccountDashboard({
                                 const st = statusInfo(order.fulfillmentStatus);
                                 return (
                                   <tr key={order.id}>
-                                    <td><span style={{ fontFamily: "var(--mono)", fontWeight: 700, color: "#000080", fontSize: "0.66rem" }}>{order.name}</span></td>
-                                    <td style={{ color: "#555", fontSize: "0.62rem" }}>{fmtDate(order.processedAt)}</td>
+                                    <td><span style={{ fontFamily: "var(--mono)", fontWeight: 700, color: "#000080", fontSize: "0.875rem" }}>{order.name}</span></td>
+                                    <td style={{ color: "#555", fontSize: "0.875rem" }}>{fmtDate(order.processedAt)}</td>
                                     <td><span className={`acct-badge acct-badge-${st.cls}`}>{st.icon} {st.label}</span></td>
-                                    <td style={{ fontWeight: 700, color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.68rem" }}>{fmt(order.currentTotalPrice.amount, order.currentTotalPrice.currencyCode)}</td>
+                                    <td style={{ fontWeight: 700, color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.875rem" }}>{fmt(order.currentTotalPrice.amount, order.currentTotalPrice.currencyCode)}</td>
                                     <td><a href={`/account/orders/${encodeURIComponent(order.id)}`} className="acct-see-btn">Voir →</a></td>
                                   </tr>
                                 );

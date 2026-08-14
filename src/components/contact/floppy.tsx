@@ -448,7 +448,7 @@ export function Floppy({
           />
           <div
             className={`${MONO} absolute inset-x-0 bottom-0 top-[30%] flex items-center justify-center px-[6%] text-center font-bold`}
-            style={{ color: s.title, fontSize: "4.55cqw", letterSpacing: "0.085em" }}
+            style={{ color: s.title, fontSize: "clamp(0.9375rem, 4.55cqw, 1.25rem)", letterSpacing: "0.085em" }}
           >
             {name}
           </div>
@@ -456,7 +456,7 @@ export function Floppy({
         <div className="flex flex-1 items-center px-[7.5%]">
           <p
             className={MONO}
-            style={{ color: s.bodyInk, fontSize: "3.85cqw", lineHeight: 1.78 }}
+            style={{ color: s.bodyInk, fontSize: "clamp(0.8125rem, 3.85cqw, 1.05rem)", lineHeight: 1.78 }}
           >
             {text}
           </p>

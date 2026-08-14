@@ -176,7 +176,7 @@ export function ArcadeSlot() {
 
             <WindowFrame title="HOW_TO_PLAY.TXT" icon="❓" bar={NAVY_BAR}>
               <div className="bg-white px-[clamp(16px,2.6vw,24px)] py-[clamp(16px,2.6vw,22px)]">
-                <p className={`${MONO} text-[0.5rem] font-bold tracking-[0.16em] text-[#5b2fb8] uppercase`}>
+                <p className={`${MONO} text-[0.8125rem] font-bold tracking-[0.16em] text-[#5b2fb8] uppercase`}>
                   <span style={{ color: "#d3016d" }}>▶</span> Machine à looks
                 </p>
                 <h3
@@ -184,7 +184,7 @@ export function ArcadeSlot() {
                 >
                   {t.home.slotIntroTitle}
                 </h3>
-                <p className={`${MONO} mt-3 text-[0.64rem] leading-[1.85] text-[#3b3550]`}>
+                <p className={`${MONO} mt-3 text-[0.875rem] leading-[1.85] text-[#3b3550]`}>
                   {t.home.slotIntroBody}
                 </p>
               </div>
@@ -214,7 +214,7 @@ export function ArcadeSlot() {
                   <Bulb delay="400ms" className="hidden sm:block" />
                 </span>
                 <span
-                  className={`${MONO} min-w-0 flex-1 truncate text-center text-[0.46rem] font-bold tracking-[0.1em] text-white uppercase sm:text-[0.62rem] sm:tracking-[0.18em]`}
+                  className={`${MONO} min-w-0 flex-1 truncate text-center text-[0.8125rem] font-bold tracking-[0.1em] text-white uppercase sm:text-[0.875rem] sm:tracking-[0.18em]`}
                 >
                   ★ LIL&apos;OG DRESSING MACHINE ★
                 </span>
@@ -236,7 +236,7 @@ export function ArcadeSlot() {
 
                 <div className="relative z-20 text-center">
                   <p
-                    className={`${MONO} text-[0.52rem] font-bold tracking-[0.3em] text-[#5affa0] uppercase sm:text-[0.6rem]`}
+                    className={`${MONO} text-[0.8125rem] font-bold tracking-[0.3em] text-[#5affa0] uppercase sm:text-[0.8125rem]`}
                     style={{ textShadow: "0 0 10px rgba(90,255,160,.6)" }}
                   >
                     ▸ INSERT COIN ▸ PULL LEVER ▸ GET DRESSED
@@ -261,7 +261,7 @@ export function ArcadeSlot() {
                   </div>
 
                   <p
-                    className={`${MONO} mt-[clamp(14px,2.4vw,22px)] text-[0.58rem] leading-[1.7] tracking-[0.06em] text-white/75 sm:text-[0.66rem]`}
+                    className={`${MONO} mt-[clamp(14px,2.4vw,22px)] text-[0.8125rem] leading-[1.7] tracking-[0.06em] text-white/75 sm:text-[0.875rem]`}
                   >
                     {t.home.slotSub}
                   </p>
@@ -272,7 +272,7 @@ export function ArcadeSlot() {
               <div className="mt-[clamp(14px,2.4vw,22px)]">
                 <Link
                   href="/dressing-machine"
-                  className={`${MONO} lha-cta block w-full rounded-2xl border-2 border-[#5d0b46] px-4 py-[clamp(14px,2.6vw,22px)] text-center text-[clamp(0.66rem,2.6vw,1.05rem)] font-bold tracking-[0.1em] text-white uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
+                  className={`${MONO} lha-cta block w-full rounded-2xl border-2 border-[#5d0b46] px-4 py-[clamp(14px,2.6vw,22px)] text-center text-[clamp(0.875rem,2.6vw,1.125rem)] font-bold tracking-[0.1em] text-white uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
                   style={{
                     background: "linear-gradient(180deg,#ff9ee4 0%,#ff45b4 42%,#d61f8f 74%,#a6106b 100%)",
                     textShadow: "0 2px 0 rgba(90,0,60,.55)",
@@ -289,7 +289,7 @@ export function ArcadeSlot() {
                       className="h-7 w-3 rounded-full border border-[#7b7792] bg-[#2b2838] shadow-[inset_0_2px_4px_rgba(0,0,0,0.9)]"
                     />
                     <span
-                      className={`${MONO} text-[0.5rem] font-bold tracking-[0.16em] text-[#4b3d7a] uppercase sm:text-[0.56rem]`}
+                      className={`${MONO} text-[0.8125rem] font-bold tracking-[0.16em] text-[#4b3d7a] uppercase sm:text-[0.8125rem]`}
                     >
                       {t.home.slotCoin}
                     </span>

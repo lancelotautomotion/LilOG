@@ -93,7 +93,7 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
       role="presentation"
       aria-label={label}
       title={label}
-      className={`grid h-6 w-7 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.7rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
+      className={`grid h-6 w-7 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.875rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
     >
       {glyph}
     </span>
@@ -103,7 +103,7 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
 /** Paragraphe du lecteur. */
 export function P({ children }: { children: React.ReactNode }) {
   return (
-    <p className={`${MONO} mb-3.5 text-[clamp(0.7rem,1.5vw,0.78rem)] leading-[1.95] text-[#2b2b33] last:mb-0`}>
+    <p className={`${MONO} mb-3.5 text-[clamp(0.875rem,1.5vw,0.9375rem)] leading-[1.95] text-[#2b2b33] last:mb-0`}>
       {children}
     </p>
   );
@@ -131,10 +131,10 @@ export function Bullets({ items }: { items: BulletItem[] }) {
         const simple = typeof item === "string";
         return (
           <li key={simple ? item : item.label} className="flex items-start gap-2.5">
-            <span className={`${LCD} mt-[1px] shrink-0 text-[0.95rem] leading-none`} style={{ color: PINK }}>
+            <span className={`${LCD} mt-[1px] shrink-0 text-[1rem] leading-none`} style={{ color: PINK }}>
               ✦
             </span>
-            <span className={`${MONO} text-[clamp(0.7rem,1.5vw,0.78rem)] leading-[1.8] text-[#2b2b33]`}>
+            <span className={`${MONO} text-[clamp(0.875rem,1.5vw,0.9375rem)] leading-[1.8] text-[#2b2b33]`}>
               {simple ? item : <><strong>{item.label}</strong> {item.text}</>}
             </span>
           </li>
@@ -155,10 +155,10 @@ export function Tldr({ children }: { children: React.ReactNode }) {
         boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 2px 4px rgba(190,80,150,0.15)",
       }}
     >
-      <span className={`${LCD} shrink-0 text-[1.05rem] leading-none`} style={{ color: PINK }}>
+      <span className={`${LCD} shrink-0 text-[1.125rem] leading-none`} style={{ color: PINK }}>
         ✦
       </span>
-      <p className={`${MONO} text-[clamp(0.66rem,1.4vw,0.72rem)] leading-[1.8]`} style={{ color: "#7a0f4b" }}>
+      <p className={`${MONO} text-[clamp(0.875rem,1.4vw,0.9375rem)] leading-[1.8]`} style={{ color: "#7a0f4b" }}>
         <span className="font-bold tracking-[0.06em]" style={{ color: PINK }}>
           EN BREF :{" "}
         </span>
@@ -172,9 +172,9 @@ export function Tldr({ children }: { children: React.ReactNode }) {
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mb-4 flex flex-col gap-1.5">
-      <span className={`${MONO} text-[0.55rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>{label}</span>
+      <span className={`${MONO} text-[0.8125rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>{label}</span>
       <div
-        className={`${MONO} rounded-lg border border-gray-300 bg-white p-3.5 text-[clamp(0.68rem,1.4vw,0.75rem)] leading-[1.9] font-bold text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]`}
+        className={`${MONO} rounded-lg border border-gray-300 bg-white p-3.5 text-[clamp(0.875rem,1.4vw,0.9375rem)] leading-[1.9] font-bold text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]`}
       >
         {children}
       </div>
@@ -203,21 +203,21 @@ export function Notice({
         style={{ background: "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)" }}
       >
         <span
-          className={`${MONO} truncate text-[0.55rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
+          className={`${MONO} truncate text-[0.8125rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
         >
           ⚠️ {title}
         </span>
-        <span className="grid h-4 w-5 shrink-0 place-items-center rounded-[3px] border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#d3d0e1_100%)] text-[0.5rem] font-bold text-[#262626]">
+        <span className="grid h-4 w-5 shrink-0 place-items-center rounded-[3px] border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#d3d0e1_100%)] text-[0.8125rem] font-bold text-[#262626]">
           ×
         </span>
       </div>
       <div className="flex items-start gap-3 px-3.5 py-3">
         <span className="text-[1.4rem] leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]">⚠️</span>
-        <p className={`${MONO} text-[clamp(0.66rem,1.4vw,0.72rem)] leading-[1.85] text-[#2b2b33]`}>{children}</p>
+        <p className={`${MONO} text-[clamp(0.875rem,1.4vw,0.9375rem)] leading-[1.85] text-[#2b2b33]`}>{children}</p>
       </div>
       <div className="flex justify-end px-3.5 pb-3">
         <span
-          className={`${MONO} rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-5 py-1 text-[0.6rem] font-bold text-[#262626] ${PLASTIC}`}
+          className={`${MONO} rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-5 py-1 text-[0.8125rem] font-bold text-[#262626] ${PLASTIC}`}
         >
           OK
         </span>
@@ -397,11 +397,11 @@ export function DocCenter({
               style={{ background: "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)" }}
             >
               <div className="flex min-w-0 items-center gap-2">
-                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] bg-white/85 text-[0.65rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] bg-white/85 text-[0.875rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
                   {icon}
                 </span>
                 <h1
-                  className={`${MONO} truncate text-[clamp(0.62rem,2.1vw,0.9rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
+                  className={`${MONO} truncate text-[clamp(0.875rem,2.1vw,1rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
                 >
                   {appName}
                 </h1>
@@ -425,7 +425,7 @@ export function DocCenter({
                     key={href}
                     href={href}
                     aria-current={on ? "page" : undefined}
-                    className={`${MONO} shrink-0 rounded-t-lg border border-b-0 px-3 py-2 text-[clamp(0.5rem,1.5vw,0.62rem)] font-bold tracking-[0.04em] whitespace-nowrap no-underline transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
+                    className={`${MONO} shrink-0 rounded-t-lg border border-b-0 px-3 py-2 text-[clamp(0.8125rem,1.5vw,0.875rem)] font-bold tracking-[0.04em] whitespace-nowrap no-underline transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
                       on
                         ? "relative top-px border-[#b8b4cc] bg-white text-[#3b1d8f] shadow-[inset_0_3px_7px_rgba(0,0,0,0.16)]"
                         : `border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] text-[#4a4560] hover:bg-purple-100 hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`
@@ -452,7 +452,7 @@ export function DocCenter({
                   {icon}
                 </span>
                 <div className="min-w-[180px] flex-1">
-                  <p className={`${MONO} mb-1 text-[0.55rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
+                  <p className={`${MONO} mb-1 text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
                     C:\LILOG\{root}\ <span style={{ color: PINK }}>★</span> DOCUMENT_OFFICIEL
                   </p>
                   <h2
@@ -460,12 +460,12 @@ export function DocCenter({
                   >
                     {title}
                   </h2>
-                  <p className={`${MONO} mt-1.5 text-[clamp(0.62rem,1.5vw,0.7rem)] leading-relaxed text-[#4a4560]`}>
+                  <p className={`${MONO} mt-1.5 text-[clamp(0.875rem,1.5vw,0.875rem)] leading-relaxed text-[#4a4560]`}>
                     {subtitle}
                   </p>
                 </div>
                 <div
-                  className={`${MONO} w-full shrink-0 basis-full rounded-lg border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_100%)] px-3 py-2 text-[0.55rem] leading-relaxed font-bold tracking-[0.06em] text-[#4a4560] sm:w-auto sm:basis-auto ${PLASTIC}`}
+                  className={`${MONO} w-full shrink-0 basis-full rounded-lg border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_100%)] px-3 py-2 text-[0.8125rem] leading-relaxed font-bold tracking-[0.06em] text-[#4a4560] sm:w-auto sm:basis-auto ${PLASTIC}`}
                 >
                   VERSION : {date}
                   <br />
@@ -491,7 +491,7 @@ export function DocCenter({
                       style={{ background: "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)" }}
                     >
                       <h3
-                        className={`${MONO} flex items-center gap-1.5 text-[0.66rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}
+                        className={`${MONO} flex items-center gap-1.5 text-[0.9375rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}
                       >
                         <Icon.folderOpen className="h-[1.15em] w-auto shrink-0" />
                         SOMMAIRE.DIR ★
@@ -503,18 +503,18 @@ export function DocCenter({
                       type="button"
                       onClick={() => setTreeOpen((v) => !v)}
                       aria-expanded={treeOpen}
-                      className={`${MONO} flex w-full items-center justify-between gap-2 border-b border-[#e2dff0] px-3 py-2.5 text-[0.62rem] font-bold tracking-[0.05em] text-[#3b1d8f] lg:hidden`}
+                      className={`${MONO} flex w-full items-center justify-between gap-2 border-b border-[#e2dff0] px-3 py-2.5 text-[0.875rem] font-bold tracking-[0.05em] text-[#3b1d8f] lg:hidden`}
                     >
                       <span>
                         {treeOpen ? "▼" : "▶"} PARCOURIR ({sections.length})
                       </span>
-                      <span className="text-[0.55rem]" style={{ color: PINK }}>
+                      <span className="text-[0.8125rem]" style={{ color: PINK }}>
                         {treeOpen ? "REPLIER" : "DÉPLIER"}
                       </span>
                     </button>
 
                     <div className={`${treeOpen ? "block" : "hidden"} p-2.5 lg:block`}>
-                      <p className={`${MONO} mb-2 truncate px-1 text-[0.5rem] tracking-[0.08em] text-[#8b86a3]`}>
+                      <p className={`${MONO} mb-2 truncate px-1 text-[0.8125rem] tracking-[0.08em] text-[#8b86a3]`}>
                         C:\LILOG\{root}\{folder}\
                       </p>
                       <div className="flex flex-col gap-1.5">
@@ -527,7 +527,7 @@ export function DocCenter({
                               type="button"
                               onClick={() => openFile(id)}
                               aria-current={on ? "true" : undefined}
-                              className={`${MONO} flex w-full items-center gap-1.5 rounded-xl border px-2.5 py-2 text-left text-[clamp(0.55rem,1.4vw,0.63rem)] font-bold tracking-[0.02em] transition ${PLASTIC_PRESS} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
+                              className={`${MONO} flex w-full items-center gap-1.5 rounded-xl border px-2.5 py-2 text-left text-[clamp(0.8125rem,1.4vw,0.875rem)] font-bold tracking-[0.02em] transition ${PLASTIC_PRESS} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
                                 on
                                   ? `border-purple-700 bg-purple-600 text-white ${PLASTIC_ON}`
                                   : `border-[#c6c2d8] bg-white/80 text-[#3a3550] shadow-md hover:bg-purple-100 ${PLASTIC}`
@@ -536,7 +536,7 @@ export function DocCenter({
                               <span className={`shrink-0 opacity-60 ${on ? "text-white" : "text-[#8b86a3]"}`}>
                                 {last ? "└─" : "├─"}
                               </span>
-                              <span className="flex shrink-0 items-center text-[0.8rem] leading-none">
+                              <span className="flex shrink-0 items-center text-[1rem] leading-none">
                                 {on ? <Icon.folderOpen className="h-[1.05em] w-auto" /> : <Icon.folder className="h-[1.05em] w-auto" />}
                               </span>
                               <span className="truncate">{file}</span>
@@ -552,7 +552,7 @@ export function DocCenter({
                     <button
                       type="button"
                       onClick={print}
-                      className={`${MONO} w-full rounded-full bg-purple-600 px-3 py-3 text-[clamp(0.58rem,1.5vw,0.68rem)] font-bold tracking-[0.04em] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.7),0_4px_6px_rgba(0,0,0,0.15)] transition hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                      className={`${MONO} w-full rounded-full bg-purple-600 px-3 py-3 text-[clamp(0.8125rem,1.5vw,0.875rem)] font-bold tracking-[0.04em] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.7),0_4px_6px_rgba(0,0,0,0.15)] transition hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
                     >
                       [ 🖨️ IMPRIMER_DOC.EXE ]
                     </button>
@@ -560,13 +560,13 @@ export function DocCenter({
                       type="button"
                       onClick={print}
                       title="Ouvre la boîte d'impression : choisis « Enregistrer au format PDF »."
-                      className={`${MONO} w-full rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-3 py-3 text-[clamp(0.58rem,1.5vw,0.68rem)] font-bold tracking-[0.04em] text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                      className={`${MONO} w-full rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-3 py-3 text-[clamp(0.8125rem,1.5vw,0.875rem)] font-bold tracking-[0.04em] text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
                     >
                       [ 💾 TÉLÉCHARGER_PDF.EXE ]
                     </button>
                     <Link
                       href="/contact"
-                      className={`${MONO} w-full rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-3 py-3 text-center text-[clamp(0.58rem,1.5vw,0.68rem)] font-bold tracking-[0.04em] text-[#262626] no-underline transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                      className={`${MONO} w-full rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-3 py-3 text-center text-[clamp(0.8125rem,1.5vw,0.875rem)] font-bold tracking-[0.04em] text-[#262626] no-underline transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
                     >
                       [ ☎ UNE_QUESTION.LNK ]
                     </Link>
@@ -590,7 +590,7 @@ export function DocCenter({
                         {/* Scotch adhésif + titre rétro */}
                         <div className="mb-3">
                           <span
-                            className={`${MONO} inline-block -rotate-1 border border-yellow-200/70 bg-yellow-100/80 px-3 py-1 text-[0.52rem] font-bold tracking-[0.1em] text-[#7a6412] shadow-sm`}
+                            className={`${MONO} inline-block -rotate-1 border border-yellow-200/70 bg-yellow-100/80 px-3 py-1 text-[0.8125rem] font-bold tracking-[0.1em] text-[#7a6412] shadow-sm`}
                           >
                             📎 {file}
                           </span>
@@ -627,7 +627,7 @@ export function DocCenter({
                     ))}
 
                     <p
-                      className={`${MONO} mt-[clamp(26px,4vw,40px)] border-t border-dashed border-[#d8d5e6] pt-4 text-[0.55rem] tracking-[0.08em] text-[#8b86a3]`}
+                      className={`${MONO} mt-[clamp(26px,4vw,40px)] border-t border-dashed border-[#d8d5e6] pt-4 text-[0.8125rem] tracking-[0.08em] text-[#8b86a3]`}
                     >
                       <span style={{ color: PINK }}>✦</span> FIN_DU_DOCUMENT · Version en vigueur : {date} · Lil&apos;OG
                       © 2026
@@ -639,10 +639,10 @@ export function DocCenter({
 
             {/* ---- Barre de statut ---- */}
             <div className="lildoc-noprint flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
-              <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
+              <span className={`${MONO} truncate text-[0.8125rem] tracking-wider text-[#5a5670]`}>
                 <span style={{ color: PINK }}>✦</span> {status}
               </span>
-              <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
+              <span className={`${MONO} shrink-0 text-[0.8125rem] tracking-wider text-[#5a5670]`}>
                 {sections.length} objet(s) · 1.44 Mo
               </span>
             </div>

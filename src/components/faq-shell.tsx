@@ -336,7 +336,7 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
       role="presentation"
       aria-label={label}
       title={label}
-      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.7rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
+      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.875rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
     >
       {glyph}
     </span>
@@ -376,27 +376,27 @@ function FaqCard({
       >
         <span
           aria-hidden
-          className="flex shrink-0 items-center text-[clamp(1.1rem,3vw,1.4rem)] leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.18)]"
+          className="flex shrink-0 items-center text-[clamp(1.25rem,3vw,1.4rem)] leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.18)]"
         >
           {open ? <Icon.folderOpen className="h-[1.05em] w-auto" /> : <Icon.folder className="h-[1.05em] w-auto" />}
         </span>
         <span className="min-w-0 flex-1">
           <span
-            className={`${MONO} block text-[clamp(0.68rem,1.9vw,0.8rem)] leading-[1.5] font-bold tracking-[0.01em] ${
+            className={`${MONO} block text-[clamp(0.875rem,1.9vw,1rem)] leading-[1.5] font-bold tracking-[0.01em] ${
               open ? "text-[#2a1266]" : "text-[#2b2b33]"
             }`}
           >
             <Highlight text={item.q} query={query} />
           </span>
           {cat && (
-            <span className={`${MONO} mt-1 block text-[0.5rem] tracking-[0.1em] text-[#8b86a3]`}>
+            <span className={`${MONO} mt-1 block text-[0.8125rem] tracking-[0.1em] text-[#8b86a3]`}>
               C:\LILOG\AIDE\FAQ\{cat.label}
             </span>
           )}
         </span>
         <span
           aria-hidden
-          className={`grid h-8 w-8 shrink-0 place-items-center rounded-xl border text-[0.95rem] leading-none font-bold transition ${
+          className={`grid h-8 w-8 shrink-0 place-items-center rounded-xl border text-[1rem] leading-none font-bold transition ${
             open
               ? `border-purple-700 text-white ${PLASTIC_ON}`
               : `border-[#8f6ae0] text-white ${PLASTIC}`
@@ -420,7 +420,7 @@ function FaqCard({
             {item.a.map((para, i) => (
               <p
                 key={para}
-                className={`${MONO} text-[clamp(0.66rem,1.6vw,0.74rem)] leading-[1.95] text-[#2b2b33] ${
+                className={`${MONO} text-[clamp(0.875rem,1.6vw,0.9375rem)] leading-[1.95] text-[#2b2b33] ${
                   i > 0 ? "mt-3" : ""
                 }`}
               >
@@ -432,10 +432,10 @@ function FaqCard({
               <ul className="mt-3 flex list-none flex-col gap-2 p-0">
                 {item.bullets.map((b) => (
                   <li key={b} className="flex items-start gap-2.5">
-                    <span className={`${LCD} mt-[1px] shrink-0 text-[0.95rem] leading-none`} style={{ color: PINK }}>
+                    <span className={`${LCD} mt-[1px] shrink-0 text-[1rem] leading-none`} style={{ color: PINK }}>
                       ✦
                     </span>
-                    <span className={`${MONO} text-[clamp(0.66rem,1.6vw,0.74rem)] leading-[1.8] text-[#2b2b33]`}>
+                    <span className={`${MONO} text-[clamp(0.875rem,1.6vw,0.9375rem)] leading-[1.8] text-[#2b2b33]`}>
                       <Highlight text={b} query={query} />
                     </span>
                   </li>
@@ -447,7 +447,7 @@ function FaqCard({
               <Link
                 href={item.link.href}
                 tabIndex={open ? undefined : -1}
-                className={`${MONO} mt-4 inline-block rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-4 py-2 text-[0.58rem] font-bold tracking-[0.04em] text-[#262626] no-underline transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                className={`${MONO} mt-4 inline-block rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-4 py-2 text-[0.8125rem] font-bold tracking-[0.04em] text-[#262626] no-underline transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
               >
                 [ ➜ {item.link.label} ]
               </Link>
@@ -532,11 +532,11 @@ export function FaqShell() {
           {/* ---- Barre de titre ---- */}
           <div className="flex items-center justify-between gap-3 px-3 py-2" style={{ background: VIOLET_BAR }}>
             <div className="flex min-w-0 items-center gap-2">
-              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] bg-white/85 text-[0.65rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
+              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] bg-white/85 text-[0.875rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
                 ❓
               </span>
               <h1
-                className={`${MONO} truncate text-[clamp(0.62rem,2.1vw,0.9rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
+                className={`${MONO} truncate text-[clamp(0.875rem,2.1vw,1rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
               >
                 HELP_CENTER_2000.EXE
               </h1>
@@ -596,18 +596,18 @@ export function FaqShell() {
                   ❓
                 </span>
                 <div className="min-w-[180px] flex-1">
-                  <p className={`${MONO} mb-1 text-[0.55rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
+                  <p className={`${MONO} mb-1 text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
                     C:\LILOG\AIDE\FAQ\ <span style={{ color: PINK }}>★</span> BASE_DE_CONNAISSANCES
                   </p>
                   <h2 className={`${LCD} text-[clamp(1.5rem,5vw,2.4rem)] leading-[1.05] tracking-[0.02em] text-[#2a1266] uppercase`}>
                     Questions fréquentes
                   </h2>
-                  <p className={`${MONO} mt-1.5 text-[clamp(0.62rem,1.5vw,0.7rem)] leading-relaxed text-[#4a4560]`}>
+                  <p className={`${MONO} mt-1.5 text-[clamp(0.875rem,1.5vw,0.875rem)] leading-relaxed text-[#4a4560]`}>
                     Authenticité, tailles, livraison, retours : les réponses, sans blabla.
                   </p>
                 </div>
                 <div
-                  className={`${MONO} w-full shrink-0 basis-full rounded-lg border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_100%)] px-3 py-2 text-[0.55rem] leading-relaxed font-bold tracking-[0.06em] text-[#4a4560] sm:w-auto sm:basis-auto ${PLASTIC}`}
+                  className={`${MONO} w-full shrink-0 basis-full rounded-lg border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_100%)] px-3 py-2 text-[0.8125rem] leading-relaxed font-bold tracking-[0.06em] text-[#4a4560] sm:w-auto sm:basis-auto ${PLASTIC}`}
                 >
                   {FAQS.length} FICHE(S) INDEXÉE(S)
                   <br />
@@ -622,12 +622,12 @@ export function FaqShell() {
                 style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)" }}
               >
                 <div className="px-3 py-2" style={{ background: VIOLET_BAR }}>
-                  <h3 className={`${MONO} text-[0.66rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}>
+                  <h3 className={`${MONO} text-[0.9375rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}>
                     🔎 RECHERCHE.EXE ★
                   </h3>
                 </div>
                 <div className="p-[clamp(12px,2.2vw,20px)]">
-                  <label htmlFor="lilfaq-search" className={`${MONO} mb-1.5 block text-[0.55rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>
+                  <label htmlFor="lilfaq-search" className={`${MONO} mb-1.5 block text-[0.8125rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>
                     MOT-CLÉ
                   </label>
                   <div className="relative">
@@ -637,14 +637,14 @@ export function FaqShell() {
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="🔍 Tape un mot-clé (ex: retours, taille, livraison)..."
-                      className={`${MONO} w-full rounded-xl border border-gray-300 bg-white p-3 pr-11 text-[clamp(0.66rem,1.6vw,0.74rem)] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 [&::-webkit-search-cancel-button]:hidden`}
+                      className={`${MONO} w-full rounded-xl border border-gray-300 bg-white p-3 pr-11 text-[clamp(0.875rem,1.6vw,0.9375rem)] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 [&::-webkit-search-cancel-button]:hidden`}
                     />
                     {query && (
                       <button
                         type="button"
                         onClick={() => setQuery("")}
                         aria-label="Effacer la recherche"
-                        className={`${MONO} absolute top-1/2 right-2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.65rem] font-bold text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                        className={`${MONO} absolute top-1/2 right-2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.875rem] font-bold text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
                       >
                         ×
                       </button>
@@ -669,7 +669,7 @@ export function FaqShell() {
                       type="button"
                       onClick={() => setCat(id)}
                       aria-pressed={on}
-                      className={`${MONO} shrink-0 rounded-t-2xl rounded-b-md border px-3.5 py-2.5 text-[clamp(0.52rem,1.5vw,0.64rem)] font-bold tracking-[0.04em] whitespace-nowrap transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
+                      className={`${MONO} shrink-0 rounded-t-2xl rounded-b-md border px-3.5 py-2.5 text-[clamp(1rem,1.6vw,1.0625rem)] font-bold tracking-[0.04em] whitespace-nowrap transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
                         on
                           ? `border-purple-700 text-white ${PLASTIC_ON}`
                           : `border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] text-[#4a4560] hover:bg-purple-100 hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`
@@ -685,7 +685,7 @@ export function FaqShell() {
 
               {/* ---- Ligne d'état : compteur + tout déplier ---- */}
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-[#c6c2d8] pt-3">
-                <p className={`${MONO} text-[0.55rem] tracking-[0.08em] text-[#5b2fb8]`}>
+                <p className={`${MONO} text-[0.8125rem] tracking-[0.08em] text-[#5b2fb8]`}>
                   <span style={{ color: PINK }}>✦</span> {visible.length} FICHE(S) AFFICHÉE(S)
                   {query.trim() && ` · RECHERCHE : « ${query.trim()} »`}
                 </p>
@@ -693,7 +693,7 @@ export function FaqShell() {
                   <button
                     type="button"
                     onClick={toggleAll}
-                    className={`${MONO} rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-3.5 py-1.5 text-[0.55rem] font-bold tracking-[0.04em] text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                    className={`${MONO} rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-3.5 py-1.5 text-[1rem] font-bold tracking-[0.04em] text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
                   >
                     [ {allOpen ? "▲ TOUT_REPLIER" : "▼ TOUT_DÉPLIER"} ]
                   </button>
@@ -723,16 +723,16 @@ export function FaqShell() {
                   }}
                 >
                   <div className="flex items-center justify-between gap-2 px-2.5 py-1.5" style={{ background: VIOLET_BAR }}>
-                    <span className={`${MONO} truncate text-[0.55rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}>
+                    <span className={`${MONO} truncate text-[0.8125rem] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}>
                       ⚠️ AUCUN_RESULTAT.DLG
                     </span>
-                    <span className="grid h-4 w-5 shrink-0 place-items-center rounded-[3px] border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#d3d0e1_100%)] text-[0.5rem] font-bold text-[#262626]">
+                    <span className="grid h-4 w-5 shrink-0 place-items-center rounded-[3px] border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#d3d0e1_100%)] text-[0.8125rem] font-bold text-[#262626]">
                       ×
                     </span>
                   </div>
                   <div className="flex items-start gap-3 px-3.5 py-4">
                     <span className="text-[1.4rem] leading-none drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]">🔍</span>
-                    <p className={`${MONO} text-[clamp(0.66rem,1.4vw,0.72rem)] leading-[1.85] text-[#2b2b33]`}>
+                    <p className={`${MONO} text-[clamp(0.875rem,1.4vw,0.9375rem)] leading-[1.85] text-[#2b2b33]`}>
                       Aucune fiche ne correspond à ta recherche dans ce dossier.
                       {elsewhere > 0 && (
                         <>
@@ -746,7 +746,7 @@ export function FaqShell() {
                     <button
                       type="button"
                       onClick={reset}
-                      className={`${MONO} rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-4 py-1.5 text-[0.58rem] font-bold text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                      className={`${MONO} rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-4 py-1.5 text-[1rem] font-bold text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
                     >
                       [ 🗂 VOIR TOUTES LES FICHES ]
                     </button>
@@ -764,7 +764,7 @@ export function FaqShell() {
                 }}
               >
                 <div className="flex items-center justify-between gap-2 px-3 py-1.5" style={{ background: VIOLET_BAR }}>
-                  <span className={`${MONO} truncate text-[clamp(0.55rem,1.7vw,0.7rem)] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}>
+                  <span className={`${MONO} truncate text-[clamp(0.8125rem,1.7vw,0.875rem)] font-bold tracking-[0.06em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}>
                     ⚠️ STILL_NEED_HELP.SYS
                   </span>
                   <div className="flex shrink-0 items-center gap-1.5">
@@ -780,19 +780,19 @@ export function FaqShell() {
                   >
                     ☎
                   </span>
-                  <p className={`${LCD} text-[clamp(1.1rem,3.6vw,1.7rem)] leading-tight tracking-[0.02em] text-[#2a1266] uppercase`}>
+                  <p className={`${LCD} text-[clamp(1.25rem,3.6vw,1.7rem)] leading-tight tracking-[0.02em] text-[#2a1266] uppercase`}>
                     Un doute sur une pièce ?
                     <br />
                     Une question sur ta commande ?
                   </p>
-                  <p className={`${MONO} max-w-[46ch] text-[clamp(0.64rem,1.5vw,0.72rem)] leading-[1.9] text-[#4a4560]`}>
+                  <p className={`${MONO} max-w-[46ch] text-[clamp(0.875rem,1.5vw,0.9375rem)] leading-[1.9] text-[#4a4560]`}>
                     On répond du lundi au vendredi, de 10h à 18h. Mesures, état d&apos;une pièce, suivi de colis : écris-nous,
                     on regarde ça tout de suite.
                   </p>
 
                   <Link
                     href="/contact"
-                    className={`${MONO} w-full max-w-[420px] rounded-full bg-purple-600 px-4 py-4 text-[clamp(0.62rem,1.7vw,0.75rem)] font-bold tracking-[0.04em] text-white no-underline shadow-[inset_0_2px_4px_rgba(255,255,255,0.7),0_4px_6px_rgba(0,0,0,0.15)] transition hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                    className={`${MONO} w-full max-w-[420px] rounded-full bg-purple-600 px-4 py-4 text-[clamp(0.875rem,1.7vw,0.9375rem)] font-bold tracking-[0.04em] text-white no-underline shadow-[inset_0_2px_4px_rgba(255,255,255,0.7),0_4px_6px_rgba(0,0,0,0.15)] transition hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
                   >
                     [ 📞 CONTACTER_LA_HOTLINE.EXE ]
                   </Link>
@@ -806,7 +806,7 @@ export function FaqShell() {
                       <Link
                         key={href}
                         href={href}
-                        className={`${MONO} rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-4 py-2 text-[0.58rem] font-bold tracking-[0.04em] text-[#262626] no-underline transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                        className={`${MONO} rounded-full border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-4 py-2 text-[0.8125rem] font-bold tracking-[0.04em] text-[#262626] no-underline transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
                       >
                         [ {label} ]
                       </Link>
@@ -819,10 +819,10 @@ export function FaqShell() {
 
           {/* ---- Barre de statut ---- */}
           <div className="flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
-            <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
+            <span className={`${MONO} truncate text-[0.8125rem] tracking-wider text-[#5a5670]`}>
               <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com · Lun-Ven 10h/18h
             </span>
-            <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
+            <span className={`${MONO} shrink-0 text-[0.8125rem] tracking-wider text-[#5a5670]`}>
               {visible.length} objet(s) · 1.44 Mo
             </span>
           </div>

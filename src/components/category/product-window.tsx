@@ -68,7 +68,7 @@ function lounaPickSticker(product: Product): Sticker | null {
 function StickerChip({ sticker, className = "" }: { sticker: Sticker; className?: string }) {
   return (
     <span
-      className={`${MONO} pointer-events-none absolute z-20 rounded-[5px] border border-black/25 px-1.5 py-[3px] text-[0.46rem] font-bold tracking-[0.06em] whitespace-nowrap uppercase ${PLASTIC} ${className}`}
+      className={`${MONO} pointer-events-none absolute z-20 rounded-[5px] border border-black/25 px-1.5 py-[3px] text-[0.8125rem] font-bold tracking-[0.06em] whitespace-nowrap uppercase ${PLASTIC} ${className}`}
       style={{
         background: `linear-gradient(180deg, ${sticker.from} 0%, ${sticker.to} 100%)`,
         color: sticker.ink,
@@ -88,7 +88,7 @@ function CardControl({ glyph, label }: { glyph: string; label: string }) {
       role="presentation"
       aria-label={label}
       title={label}
-      className={`grid h-[15px] w-[18px] shrink-0 place-items-center rounded-[3px] border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.55rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
+      className={`grid h-[15px] w-[18px] shrink-0 place-items-center rounded-[3px] border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.8125rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
     >
       {glyph}
     </span>
@@ -158,10 +158,10 @@ export function ProductWindow({
 
   const price = (
     <span
-      className={`${MONO} rounded bg-black px-2 py-1.5 text-[0.78rem] leading-none font-bold whitespace-nowrap text-green-400`}
+      className={`${MONO} rounded bg-black px-2 py-1.5 text-[0.9375rem] leading-none font-bold whitespace-nowrap text-green-400`}
       style={{ textShadow: "0 0 8px rgba(74,222,128,.55)" }}
     >
-      {product.was && <s className="mr-1 text-[0.62rem] text-green-400/45">€{product.was}</s>}€{product.price}
+      {product.was && <s className="mr-1 text-[0.875rem] text-green-400/45">€{product.was}</s>}€{product.price}
     </span>
   );
 
@@ -172,7 +172,7 @@ export function ProductWindow({
      est coupée : la vignette fait 170px de large en mobile. */
   const sizeChip = product.sizes.length > 0 && (
     <span
-      className={`${MONO} rounded border border-[#c6c2d8] px-2 py-1.5 text-[0.64rem] leading-none font-bold whitespace-nowrap text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
+      className={`${MONO} rounded border border-[#c6c2d8] px-2 py-1.5 text-[0.875rem] leading-none font-bold whitespace-nowrap text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
       title={`Taille ${product.sizes.join(" / ")}`}
     >
       📏 {product.sizes.slice(0, 3).join(" / ")}
@@ -186,7 +186,7 @@ export function ProductWindow({
       onClick={add}
       disabled={sold}
       aria-label={sold ? "Épuisé" : `Ajouter ${product.name} au panier`}
-      className={`${MONO} shrink-0 rounded-md border border-[#c6c2d8] px-1.5 py-1.5 text-[0.46rem] font-bold tracking-[0.04em] whitespace-nowrap text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 sm:px-2.5 sm:text-[0.52rem] ${
+      className={`${MONO} shrink-0 rounded-md border border-[#c6c2d8] px-1.5 py-1.5 text-[1rem] font-bold tracking-[0.04em] whitespace-nowrap text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 sm:px-2.5 sm:text-[0.8125rem] ${
         added ? "bg-[linear-gradient(180deg,#d8ffe8_0%,#8ce8b4_48%,#4fbe84_100%)]" : PLASTIC_FACE
       } ${PLASTIC} ${sold ? "" : PLASTIC_PRESS} ${sold ? "" : "hover:brightness-105"}`}
     >
@@ -215,7 +215,7 @@ export function ProductWindow({
     >
       <Icon.folder width={12} height={10} className="shrink-0" />
       <span
-        className={`${MONO} min-w-0 flex-1 truncate text-[0.52rem] font-bold tracking-[0.04em] text-white uppercase`}
+        className={`${MONO} min-w-0 flex-1 truncate text-[0.8125rem] font-bold tracking-[0.04em] text-white uppercase`}
       >
         {product.name}
       </span>
@@ -237,10 +237,10 @@ export function ProductWindow({
 
           <div className="flex min-w-0 flex-1 flex-col justify-between gap-2 py-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <Link href={href} className="min-w-0 sm:flex-1">
-              <h3 className={`${MONO} truncate text-[0.72rem] font-bold text-[#1E2430]`}>{product.name}</h3>
+              <h3 className={`${MONO} line-clamp-2 text-[1.125rem] leading-snug font-bold text-[#1E2430]`}>{product.name}</h3>
               {/* Les tailles ne sont plus listées ici : elles ont leur
                   pastille à côté du prix, comme en vue grille. */}
-              <p className={`${MONO} mt-1 truncate text-[0.52rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
+              <p className={`${MONO} mt-1 truncate text-[0.8125rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
                 {[product.productType, product.meta].filter(Boolean).join("  ·  ") || "PIÈCE UNIQUE"}
               </p>
               {pick && (
@@ -271,8 +271,8 @@ export function ProductWindow({
       <div className="p-1.5">{media}</div>
 
       <Link href={href} className="min-w-0 px-2.5 pb-1">
-        <h3 className={`${MONO} truncate text-[0.62rem] font-bold text-[#1E2430]`}>{product.name}</h3>
-        <p className={`${MONO} mt-0.5 truncate text-[0.48rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
+        <h3 className={`${MONO} line-clamp-2 text-[1.125rem] leading-snug font-bold text-[#1E2430]`}>{product.name}</h3>
+        <p className={`${MONO} mt-0.5 truncate text-[0.8125rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
           {product.productType || product.meta || "Pièce unique"}
         </p>
       </Link>

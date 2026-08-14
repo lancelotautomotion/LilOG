@@ -105,11 +105,11 @@ function Tile({
       <span className="lhf-icon block h-[62px] w-[70px] sm:h-[76px] sm:w-[88px]">{children}</span>
 
       <span
-        className={`${MONO} rounded-[3px] border border-transparent px-1.5 py-0.5 text-[0.52rem] font-bold tracking-[0.06em] text-[#1E2430] uppercase transition group-hover:border-dotted group-hover:border-white group-hover:bg-[#1B48CE] group-hover:text-white group-focus-visible:bg-[#1B48CE] group-focus-visible:text-white sm:text-[0.58rem]`}
+        className={`${MONO} rounded-[3px] border border-transparent px-1.5 py-0.5 text-[0.8125rem] font-bold tracking-[0.06em] text-[#1E2430] uppercase transition group-hover:border-dotted group-hover:border-white group-hover:bg-[#1B48CE] group-hover:text-white group-focus-visible:bg-[#1B48CE] group-focus-visible:text-white sm:text-[0.8125rem]`}
       >
         {filename}
       </span>
-      <span className={`${MONO} text-[0.5rem] tracking-[0.08em] text-[#6B7280] uppercase`}>{caption}</span>
+      <span className={`${MONO} text-[0.8125rem] tracking-[0.08em] text-[#6B7280] uppercase`}>{caption}</span>
     </Link>
   );
 }
@@ -181,7 +181,7 @@ export function FileExplorer() {
               className="object-cover"
             />
             <span
-              className={`${MONO} absolute bottom-3 left-3 rounded-sm border border-black/30 bg-black/55 px-2 py-1 text-[0.48rem] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-[2px]`}
+              className={`${MONO} absolute bottom-3 left-3 rounded-sm border border-black/30 bg-black/55 px-2 py-1 text-[0.8125rem] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-[2px]`}
             >
               ▶ VINTAGE_RACK.JPG
             </span>
@@ -199,7 +199,7 @@ export function FileExplorer() {
               {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
                 <span
                   key={m}
-                  className={`${MONO} text-[0.54rem] tracking-[0.06em] text-[#3b3550] uppercase`}
+                  className={`${MONO} text-[0.8125rem] tracking-[0.06em] text-[#3b3550] uppercase`}
                 >
                   {m}
                 </span>
@@ -208,17 +208,17 @@ export function FileExplorer() {
 
             {/* Barre d'adresse */}
             <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-2">
-              <span className={`${MONO} shrink-0 text-[0.52rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
+              <span className={`${MONO} shrink-0 text-[0.8125rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
                 Adresse
               </span>
               <span
-                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.54rem] tracking-[0.04em] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.18)]`}
+                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.8125rem] tracking-[0.04em] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.18)]`}
               >
                 <Icon.folder width={14} height={12} className="shrink-0" />
                 <span className="truncate">C:\LIL_OG\CATEGORIES\</span>
               </span>
               <span
-                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.52rem] font-bold text-[#262626] ${PLASTIC}`}
+                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.8125rem] font-bold text-[#262626] ${PLASTIC}`}
               >
                 [ OK ]
               </span>
@@ -226,10 +226,10 @@ export function FileExplorer() {
 
             {/* En-tête de contenu */}
             <div className="border-b border-[#d8d5e6] px-4 pt-4 pb-3" style={GRID_BG}>
-              <h2 className={`${MONO} text-[0.86rem] font-bold tracking-[0.1em] text-[#3b1d8f] uppercase`}>
+              <h2 className={`${MONO} text-[1.25rem] font-bold tracking-[0.1em] text-[#3b1d8f] uppercase`}>
                 {t.home.filesTitle}
               </h2>
-              <p className={`${MONO} mt-1 text-[0.56rem] tracking-[0.04em] text-[#6B7280]`}>
+              <p className={`${MONO} mt-1 text-[0.8125rem] tracking-[0.04em] text-[#6B7280]`}>
                 {t.home.filesSub}
               </p>
             </div>
@@ -254,10 +254,10 @@ export function FileExplorer() {
 
             {/* Barre d'état */}
             <div className="flex flex-wrap items-center justify-between gap-2 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
-              <span className={`${MONO} text-[0.52rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
                 {count} {t.home.filesObjects}
               </span>
-              <span className={`${MONO} text-[0.52rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
+              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
                 2,3 Go · 100% one of one
               </span>
             </div>

@@ -127,15 +127,15 @@ function StatCell({ icon, label, value }: { icon: string; label: string; value: 
     <div
       className={`flex min-w-0 flex-1 items-center gap-2 rounded-md border border-[#c6c2d8] bg-[#f7f6fc] px-2.5 py-2 ${BEVEL_IN}`}
     >
-      <span aria-hidden className="shrink-0 text-[1.05rem] leading-none">{icon}</span>
+      <span aria-hidden className="shrink-0 text-[1.125rem] leading-none">{icon}</span>
       <span className="min-w-0">
         {/* Mêmes tailles que le bloc de description des catalogues :
             0.58rem pour l'étiquette (comme les #tags), 0.76rem pour la
             valeur (comme le paragraphe). */}
-        <span className={`${MONO} block truncate text-[0.58rem] font-bold tracking-[0.1em] text-[#6B7280] uppercase`}>
+        <span className={`${MONO} block truncate text-[0.8125rem] font-bold tracking-[0.1em] text-[#6B7280] uppercase`}>
           {label}
         </span>
-        <span className={`${MONO} block truncate text-[0.76rem] font-bold text-[#1E2430] uppercase`}>{value}</span>
+        <span className={`${MONO} block truncate text-[0.9375rem] font-bold text-[#1E2430] uppercase`}>{value}</span>
       </span>
     </div>
   );
@@ -195,7 +195,7 @@ function SystemLogs({
        s'étire plus pour rejoindre le bas du lecteur photo, elle
        s'arrête où le texte s'arrête. */
     <div className="mt-6 flex flex-col">
-      <div className={`${MONO} mb-2 text-[0.5rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
+      <div className={`${MONO} mb-2 text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
         ▶ SYSTEM_LOGS
       </div>
 
@@ -223,7 +223,7 @@ function SystemLogs({
                 }}
                 aria-expanded={isOpen}
                 aria-controls={panelId}
-                className={`${MONO} flex w-full items-center gap-2 px-3 py-2.5 text-left text-[0.52rem] font-bold tracking-[0.02em] uppercase transition sm:text-[0.58rem] ${
+                className={`${MONO} flex w-full items-center gap-2 px-3 py-2.5 text-left text-[0.8125rem] font-bold tracking-[0.02em] uppercase transition sm:text-[0.8125rem] ${
                   isOpen
                     ? "border-b border-[#c6c2d8] bg-[#e9e7f2] text-[#1E2430]"
                     : `${PLASTIC_FACE} text-[#3b3550] hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`
@@ -249,7 +249,7 @@ function SystemLogs({
                     {/* Même corps de texte que le bloc de description des
                         catalogues (0.76rem / 1.85) : les deux se lisent de
                         la même façon. */}
-                    <div className={`${MONO} lpi-desc text-[0.76rem] leading-[1.85] text-[#3b3550]`}>
+                    <div className={`${MONO} lpi-desc text-[0.9375rem] leading-[1.85] text-[#3b3550]`}>
                       {tb.body}
                     </div>
                   </div>
@@ -263,7 +263,7 @@ function SystemLogs({
                       />
                       <span
                         aria-hidden
-                        className={`${MONO} pointer-events-none absolute right-4 bottom-1.5 rounded-sm border border-[#c6c2d8] bg-[#eceafa] px-1.5 py-0.5 text-[0.44rem] font-bold tracking-[0.08em] text-[#5b2fb8] uppercase`}
+                        className={`${MONO} pointer-events-none absolute right-4 bottom-1.5 rounded-sm border border-[#c6c2d8] bg-[#eceafa] px-1.5 py-0.5 text-[0.8125rem] font-bold tracking-[0.08em] text-[#5b2fb8] uppercase`}
                       >
                         ▼ SUITE
                       </span>
@@ -328,7 +328,7 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
         />
         {badge && (
           <span
-            className={`${MONO} absolute top-1.5 left-1.5 rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-1.5 py-1 text-[0.44rem] font-bold tracking-[0.04em] text-[#5b2fb8] uppercase ${PLASTIC}`}
+            className={`${MONO} absolute top-1.5 left-1.5 rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-1.5 py-1 text-[0.8125rem] font-bold tracking-[0.04em] text-[#5b2fb8] uppercase ${PLASTIC}`}
           >
             {badge}
           </span>
@@ -337,8 +337,8 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
       </div>
 
       <div className="p-3">
-        <h3 className={`${MONO} truncate text-[0.66rem] font-bold text-[#1E2430]`}>{product.name}</h3>
-        <p className={`${MONO} mt-0.5 truncate text-[0.48rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
+        <h3 className={`${MONO} truncate text-[0.875rem] font-bold text-[#1E2430]`}>{product.name}</h3>
+        <p className={`${MONO} mt-0.5 truncate text-[0.8125rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
           {product.productType || product.meta || "Pièce unique"}
         </p>
 
@@ -350,16 +350,16 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
           {/* Mini écran LED : même famille que PRICE_TAG.SYS au-dessus. */}
           <div className={`lpi-crt relative overflow-hidden rounded-md border-2 border-[#2b2b3d] bg-black px-2 py-1 ${BEVEL_IN}`}>
             <span className="relative z-[2] flex items-baseline gap-1.5">
-              <span className={`${LCD} text-[1.15rem] leading-none tracking-[0.02em]`} style={{ color: NEON, textShadow: `0 0 8px ${NEON}b3` }}>
+              <span className={`${LCD} text-[1.25rem] leading-none tracking-[0.02em]`} style={{ color: NEON, textShadow: `0 0 8px ${NEON}b3` }}>
                 {product.price}€
               </span>
-              {product.was && <s className={`${MONO} text-[0.5rem] text-white/35`}>{product.was}€</s>}
+              {product.was && <s className={`${MONO} text-[0.8125rem] text-white/35`}>{product.was}€</s>}
             </span>
           </div>
 
           {product.sizes.length > 0 && (
             <span
-              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1.5 text-[0.54rem] font-bold tracking-[0.04em] text-[#3b3550] uppercase ${PLASTIC}`}
+              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1.5 text-[0.8125rem] font-bold tracking-[0.04em] text-[#3b3550] uppercase ${PLASTIC}`}
             >
               📏 {product.sizes.join(" / ")}
             </span>
@@ -371,7 +371,7 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
             type="button"
             onClick={add}
             disabled={sold}
-            className={`${MONO} flex-1 rounded-md border-b-[3px] px-2 py-1.5 text-[0.5rem] font-black tracking-[0.04em] text-white uppercase transition active:translate-y-[3px] active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${
+            className={`${MONO} flex-1 rounded-md border-b-[3px] px-2 py-1.5 text-[1rem] font-black tracking-[0.04em] text-white uppercase transition active:translate-y-[3px] active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${
               added ? "border-[#0f5c26] bg-gradient-to-b from-[#4fbe84] to-[#1B8A3C]" : "border-[#7a0a52] bg-gradient-to-b from-[#ff5ec4] to-[#c3128a]"
             }`}
             style={{ boxShadow: "0 3px 0 rgba(0,0,0,0.18)" }}
@@ -494,7 +494,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
           <button
             type="button"
             onClick={() => router.back()}
-            className={`${MONO} mb-4 inline-flex items-center gap-1.5 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.56rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
+            className={`${MONO} mb-4 inline-flex items-center gap-1.5 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.8125rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
           >
             <Icon.arrowL width={13} height={13} className="[transform:scaleX(-1)]" /> {t.pdp.back}
           </button>
@@ -507,7 +507,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
             {/* Barre de menus */}
             <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
               {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
-                <span key={m} className={`${MONO} text-[0.54rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
+                <span key={m} className={`${MONO} text-[0.8125rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
                   {m}
                 </span>
               ))}
@@ -515,17 +515,17 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
 
             {/* Barre d'adresse */}
             <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-2">
-              <span className={`${MONO} shrink-0 text-[0.52rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
+              <span className={`${MONO} shrink-0 text-[0.8125rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
                 Adresse
               </span>
               <span
-                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.54rem] tracking-[0.04em] text-[#1E2430] ${BEVEL_IN}`}
+                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.8125rem] tracking-[0.04em] text-[#1E2430] ${BEVEL_IN}`}
               >
                 <Icon.folder width={14} height={12} className="shrink-0" />
                 <span className="truncate">{`C:\\LIL_OG\\ITEMS\\${product.handle}`}</span>
               </span>
               <span
-                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.52rem] font-bold text-[#262626] ${PLASTIC}`}
+                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.8125rem] font-bold text-[#262626] ${PLASTIC}`}
               >
                 [ OK ]
               </span>
@@ -540,13 +540,13 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   que SYSTEM_LOGS est une pile de menus déroulants, plus rien
                   ne s'étire pour rejoindre le bas du lecteur photo. */}
               <div className="flex min-w-0 flex-col">
-                <div className={`${MONO} mb-2 text-[0.5rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
+                <div className={`${MONO} mb-2 text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
                   ▶ ITEM_STATS.SYS
                 </div>
 
                 {badge && (
                   <span
-                    className={`${MONO} mb-2 inline-block rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.5rem] font-bold tracking-[0.06em] text-[#5b2fb8] uppercase ${PLASTIC}`}
+                    className={`${MONO} mb-2 inline-block rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.8125rem] font-bold tracking-[0.06em] text-[#5b2fb8] uppercase ${PLASTIC}`}
                   >
                     {badge}
                   </span>
@@ -578,7 +578,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                     <div className="relative z-[2] flex flex-wrap items-end gap-x-5 gap-y-1.5">
                       <div className="min-w-0">
                         <span
-                          className={`${MONO} block text-[0.42rem] font-bold tracking-[0.22em] text-white/70 uppercase`}
+                          className={`${MONO} block text-[0.8125rem] font-bold tracking-[0.22em] text-white/70 uppercase`}
                         >
                           PRICE_TAG.SYS
                         </span>
@@ -590,14 +590,14 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                             {product.price}€
                           </span>
                           {product.was && (
-                            <s className={`${MONO} text-[0.72rem] text-white/35`}>{product.was}€</s>
+                            <s className={`${MONO} text-[0.9375rem] text-white/35`}>{product.was}€</s>
                           )}
                         </span>
                       </div>
 
                       {discount !== null && (
                         <span
-                          className={`${LCD} shrink-0 rounded border border-[#5affa0]/50 px-2 py-0.5 text-[1.15rem] leading-none`}
+                          className={`${LCD} shrink-0 rounded border border-[#5affa0]/50 px-2 py-0.5 text-[1.25rem] leading-none`}
                           style={{
                             color: MATRIX,
                             textShadow: `0 0 10px ${MATRIX}8c`,
@@ -626,7 +626,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                         type="button"
                         disabled={!v.availableForSale}
                         onClick={() => setVariant(v)}
-                        className={`${MONO} rounded-md border px-3 py-1.5 text-[0.58rem] font-bold uppercase transition disabled:cursor-not-allowed disabled:opacity-35 disabled:line-through ${
+                        className={`${MONO} rounded-md border px-3 py-1.5 text-[0.8125rem] font-bold uppercase transition disabled:cursor-not-allowed disabled:opacity-35 disabled:line-through ${
                           variant?.id === v.id
                             ? "border-[#1E2430] bg-[#1E2430] text-white"
                             : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#262626] ${PLASTIC} ${PLASTIC_PRESS}`
@@ -641,7 +641,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                 {/* Alerte stock */}
                 {!sold && (
                   <div
-                    className={`lpi-blink ${MONO} mt-4 inline-flex items-center gap-1.5 rounded-sm border border-amber-500 bg-amber-100 px-2.5 py-1.5 text-[0.5rem] font-bold tracking-[0.04em] text-amber-800 uppercase`}
+                    className={`lpi-blink ${MONO} mt-4 inline-flex items-center gap-1.5 rounded-sm border border-amber-500 bg-amber-100 px-2.5 py-1.5 text-[0.8125rem] font-bold tracking-[0.04em] text-amber-800 uppercase`}
                   >
                     ⚠️ WARNING : 1 SINGLE PIECE AVAILABLE
                   </div>
@@ -653,7 +653,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                     type="button"
                     onClick={add}
                     disabled={sold || !variantId}
-                    className={`${MONO} flex-1 rounded-lg border-b-4 border-[#7a0a52] px-4 py-3.5 text-[0.72rem] font-black tracking-[0.06em] text-white uppercase transition active:translate-y-1 active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${
+                    className={`${MONO} flex-1 rounded-lg border-b-4 border-[#7a0a52] px-4 py-3.5 text-[1rem] font-black tracking-[0.06em] text-white uppercase transition active:translate-y-1 active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${
                       added
                         ? "bg-gradient-to-b from-[#4fbe84] to-[#1B8A3C] border-[#0f5c26]"
                         : "bg-gradient-to-b from-[#ff5ec4] to-[#c3128a]"
@@ -684,7 +684,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                 </div>
 
                 {addError && (
-                  <p className={`${MONO} mt-2.5 text-[0.6rem] text-[#d4006e]`}>⚠ {addError}</p>
+                  <p className={`${MONO} mt-2.5 text-[0.8125rem] text-[#d4006e]`}>⚠ {addError}</p>
                 )}
 
                 {/* SYSTEM_LOGS : dans la colonne de droite, sous l'achat :
@@ -697,10 +697,10 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
 
             {/* Barre d'état */}
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
-              <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
                 1 objet · 100% one of one
               </span>
-              <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
+              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
                 {t.pdp.ref} {product.handle}
               </span>
             </div>
@@ -733,10 +733,10 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                 </div>
 
                 <div className="flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
-                  <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+                  <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
                     {related.length} objet(s) suggéré(s)
                   </span>
-                  <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
+                  <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
                     Pour aller avec
                   </span>
                 </div>

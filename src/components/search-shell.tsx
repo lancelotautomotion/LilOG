@@ -50,7 +50,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
             {/* Barre de menus */}
             <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
               {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
-                <span key={m} className={`${MONO} text-[0.54rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
+                <span key={m} className={`${MONO} text-[0.8125rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
                   {m}
                 </span>
               ))}
@@ -58,17 +58,17 @@ export function SearchShell({ query, results }: { query: string; results: Produc
 
             {/* Barre d'adresse */}
             <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-2">
-              <span className={`${MONO} shrink-0 text-[0.52rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
+              <span className={`${MONO} shrink-0 text-[0.8125rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
                 Adresse
               </span>
               <span
-                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.54rem] tracking-[0.04em] text-[#1E2430] ${BEVEL_IN}`}
+                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.8125rem] tracking-[0.04em] text-[#1E2430] ${BEVEL_IN}`}
               >
                 <Icon.search width={12} height={12} className="shrink-0" />
                 <span className="truncate">{`C:\\LIL_OG\\SEARCH\\${query || "..."}`}</span>
               </span>
               <span
-                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.52rem] font-bold text-[#262626] ${PLASTIC}`}
+                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.8125rem] font-bold text-[#262626] ${PLASTIC}`}
               >
                 [ OK ]
               </span>
@@ -76,7 +76,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
 
             {/* Champ de recherche */}
             <div className="border-b border-[#d8d5e6] px-4 py-5 sm:px-6">
-              <h1 className={`${MONO} mb-3 text-[0.62rem] font-bold tracking-[0.1em] text-[#3b1d8f] uppercase`}>
+              <h1 className={`${MONO} mb-3 text-[1.125rem] font-bold tracking-[0.1em] text-[#3b1d8f] uppercase`}>
                 🔍 Rechercher une pièce
               </h1>
               <form onSubmit={submit} className="flex gap-2">
@@ -90,11 +90,11 @@ export function SearchShell({ query, results }: { query: string; results: Produc
                   onChange={(e) => setValue(e.target.value)}
                   placeholder="Ex. jean taille basse, robe slip, mules…"
                   autoFocus
-                  className={`${MONO} min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-[0.68rem] text-[#1E2430] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 ${BEVEL_IN}`}
+                  className={`${MONO} min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-[0.875rem] text-[#1E2430] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 ${BEVEL_IN}`}
                 />
                 <button
                   type="submit"
-                  className={`${MONO} shrink-0 rounded-lg border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2.5 text-[0.6rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
+                  className={`${MONO} shrink-0 rounded-lg border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2.5 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
                 >
                   [ 🔍 OK ]
                 </button>
@@ -103,7 +103,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
 
             {/* Sous-en-tête */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d8d5e6] px-4 py-3 sm:px-6">
-              <h2 className={`${MONO} text-[0.66rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase`}>
+              <h2 className={`${MONO} text-[1rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase`}>
                 MEDIA_GRID · {results.length} RÉSULTAT{results.length !== 1 ? "S" : ""}
               </h2>
             </div>
@@ -112,7 +112,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
             <div className="px-4 py-4 sm:px-6">
               {!query ? (
                 <div
-                  className={`${MONO} mx-auto flex max-w-[420px] flex-col items-center gap-3 rounded-lg border-2 border-[#d8d5e6] bg-[#f7f6fc] px-4 py-16 text-center text-[0.62rem] text-[#3b3550]`}
+                  className={`${MONO} mx-auto flex max-w-[420px] flex-col items-center gap-3 rounded-lg border-2 border-[#d8d5e6] bg-[#f7f6fc] px-4 py-16 text-center text-[0.875rem] text-[#3b3550]`}
                 >
                   <span aria-hidden className="text-[2rem]">
                     🔍
@@ -121,7 +121,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
                 </div>
               ) : results.length === 0 ? (
                 <div
-                  className={`${MONO} mx-auto flex max-w-[420px] flex-col items-center gap-3 rounded-lg border-2 border-[#d8d5e6] bg-[#f7f6fc] px-4 py-16 text-center text-[0.62rem] text-[#3b3550]`}
+                  className={`${MONO} mx-auto flex max-w-[420px] flex-col items-center gap-3 rounded-lg border-2 border-[#d8d5e6] bg-[#f7f6fc] px-4 py-16 text-center text-[0.875rem] text-[#3b3550]`}
                 >
                   <span aria-hidden className="text-[2rem]">
                     🗑️
@@ -141,7 +141,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
 
             {/* Barre d'état */}
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
-              <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
                 {query ? `${results.length} objet(s) trouvé(s)` : "En attente d'une recherche"}
               </span>
             </div>

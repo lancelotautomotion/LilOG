@@ -88,7 +88,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 <div className="account-field">
                   <span className="account-field-label">Statut livraison</span>
                   <div className="account-field-value">
-                    <span className={`account-order-status ${statusClass(order.fulfillmentStatus)}`} style={{ fontSize: "0.6rem" }}>
+                    <span className={`account-order-status ${statusClass(order.fulfillmentStatus)}`} style={{ fontSize: "0.8125rem" }}>
                       {statusLabel(order.fulfillmentStatus)}
                     </span>
                   </div>
@@ -119,14 +119,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                       style={{ objectFit: "cover" }}
                     />
                   ) : (
-                    <div className="account-detail-img" style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem" }}>
+                    <div className="account-detail-img" style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.25rem" }}>
                       🧥
                     </div>
                   )}
                   <div className="account-detail-name">
                     {item.title}
                     {item.variant?.title && item.variant.title !== "Default Title" && (
-                      <div style={{ fontSize: "0.62rem", color: "#555", marginTop: "2px" }}>
+                      <div style={{ fontSize: "0.875rem", color: "#555", marginTop: "2px" }}>
                         {item.variant.title}
                       </div>
                     )}
@@ -151,20 +151,20 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               </div>
               <div className="account-panel-body">
                 {order.subtotalPrice && (
-                  <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: "0.7rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: "0.875rem" }}>
                     <span style={{ color: "#555" }}>Sous-total</span>
                     <span>{fmt(order.subtotalPrice.amount, order.subtotalPrice.currencyCode)}</span>
                   </div>
                 )}
                 {order.totalShippingPrice && (
-                  <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: "0.7rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--mono)", fontSize: "0.875rem" }}>
                     <span style={{ color: "#555" }}>Livraison</span>
                     <span>{fmt(order.totalShippingPrice.amount, order.totalShippingPrice.currencyCode)}</span>
                   </div>
                 )}
                 <div style={{
                   display: "flex", justifyContent: "space-between",
-                  fontFamily: "var(--mono)", fontSize: "0.78rem", fontWeight: 700,
+                  fontFamily: "var(--mono)", fontSize: "0.9375rem", fontWeight: 700,
                   paddingTop: "6px", borderTop: "1px solid #888", marginTop: "4px",
                 }}>
                   <span>Total</span>
@@ -181,7 +181,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 <div className="account-panel-bar">
                   <span className="account-panel-title">📍 Livraison</span>
                 </div>
-                <div className="account-panel-body" style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", lineHeight: 1.6, color: "#000" }}>
+                <div className="account-panel-body" style={{ fontFamily: "var(--mono)", fontSize: "0.875rem", lineHeight: 1.6, color: "#000" }}>
                   <div>{order.shippingAddress.firstName} {order.shippingAddress.lastName}</div>
                   <div>{order.shippingAddress.address1}</div>
                   {order.shippingAddress.address2 && <div>{order.shippingAddress.address2}</div>}

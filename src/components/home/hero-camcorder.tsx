@@ -169,8 +169,8 @@ export function HeroCamcorder() {
   }, []);
 
   const chip =
-    `${MONO} flex items-center gap-2 rounded-sm bg-black/45 px-2.5 py-1.5 text-[0.58rem] ` +
-    "font-bold tracking-[0.14em] text-white uppercase backdrop-blur-[2px] md:text-[0.62rem]";
+    `${MONO} flex items-center gap-2 rounded-sm bg-black/45 px-2.5 py-1.5 text-[0.8125rem] ` +
+    "font-bold tracking-[0.14em] text-white uppercase backdrop-blur-[2px] md:text-[0.875rem]";
 
   return (
     <header
@@ -255,7 +255,7 @@ export function HeroCamcorder() {
           {/* Voile allégé oblige : la lisibilité tient au halo du texte
               lui-même, pas à un fond assombri. */}
           <span
-            className="block text-[clamp(0.72rem,2.2vw,1rem)] tracking-[0.28em] text-white uppercase"
+            className="block text-[clamp(0.9375rem,2.2vw,1.125rem)] tracking-[0.28em] text-white uppercase"
             style={{ textShadow: "0 2px 14px rgba(0,0,0,.85), 0 0 4px rgba(0,0,0,.6)" }}
           >
             {t.hero.line}
@@ -282,7 +282,7 @@ export function HeroCamcorder() {
         </h1>
 
         <p
-          className={`${MONO} mt-6 text-[0.58rem] tracking-[0.24em] text-[#5affa0] uppercase md:text-[0.66rem]`}
+          className={`${MONO} mt-6 text-[0.8125rem] tracking-[0.24em] text-[#5affa0] uppercase md:text-[0.875rem]`}
           style={{ textShadow: "0 0 10px rgba(90,255,160,.5), 0 2px 10px rgba(0,0,0,.8)" }}
         >
           ▸ LIL_OG_DESKTOP.EXE · {t.hero.avail}
@@ -297,7 +297,7 @@ export function HeroCamcorder() {
 
         <a
           href="#slot"
-          className={`${MONO} lhz-bounce hidden text-[0.58rem] font-bold tracking-[0.22em] text-white uppercase transition hover:text-white sm:block`}
+          className={`${MONO} lhz-bounce hidden text-[0.8125rem] font-bold tracking-[0.22em] text-white uppercase transition hover:text-white sm:block`}
           style={{ textShadow: "0 2px 12px rgba(0,0,0,.85)" }}
         >
           {t.home.scroll} ▼

@@ -218,7 +218,7 @@ function Chip({
       onClick={onClick}
       aria-pressed={on}
       title={title}
-      className={`${MONO} rounded-md border px-2.5 py-1.5 text-[0.52rem] font-bold tracking-[0.04em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
+      className={`${MONO} rounded-md border px-2.5 py-1.5 text-[1rem] font-bold tracking-[0.04em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
         on
           ? "border-[#3b1d8f] bg-[linear-gradient(180deg,#a86fe8_0%,#7147d4_48%,#4b2a9e_100%)] text-white shadow-[inset_0_2px_5px_rgba(0,0,0,0.4),inset_0_-1px_0_rgba(255,255,255,0.25)]"
           : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#3b3550] hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`
@@ -233,7 +233,7 @@ function Chip({
 function Section({ n, label, children }: { n: string; label: string; children: React.ReactNode }) {
   return (
     <div className="border-b border-[#d8d5e6] px-3 py-3 last:border-b-0">
-      <p className={`${MONO} mb-2.5 text-[0.5rem] font-bold tracking-[0.16em] text-[#5b2fb8] uppercase`}>
+      <p className={`${MONO} mb-2.5 text-[0.8125rem] font-bold tracking-[0.16em] text-[#5b2fb8] uppercase`}>
         <span className="text-[#d3016d]">▸</span> {n} · {label}
       </p>
       {children}
@@ -357,9 +357,9 @@ function PriceEqualizer({
             key={label}
             className={`flex flex-1 items-center justify-between rounded border-2 border-[#2b2b3d] bg-black px-2 py-1 ${BEVEL_IN}`}
           >
-            <span className={`${MONO} text-[0.44rem] font-bold tracking-[0.1em] text-white/40`}>{label}</span>
+            <span className={`${MONO} text-[0.8125rem] font-bold tracking-[0.1em] text-white/40`}>{label}</span>
             <span
-              className={`${LCD} text-[1.15rem] leading-none text-green-400`}
+              className={`${LCD} text-[1.25rem] leading-none text-green-400`}
               style={{ textShadow: "0 0 8px rgba(74,222,128,.5)" }}
             >
               €{value}
@@ -464,7 +464,7 @@ export function FilterControl({
      bouton RESET doit rester à portée de clic. */
   const statusBar = (
     <div className="flex shrink-0 items-center justify-between gap-2 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
-        <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+        <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
           {activeCount > 0 ? `${activeCount} filtre(s) actif(s)` : "Aucun filtre"}
         </span>
         <div className="flex items-center gap-1.5">
@@ -472,7 +472,7 @@ export function FilterControl({
             type="button"
             onClick={reset}
             disabled={activeCount === 0}
-            className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.48rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+            className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
           >
             [ ⟲ RESET ]
           </button>
@@ -481,7 +481,7 @@ export function FilterControl({
               type="button"
               onClick={onClose}
               aria-label="Fermer les filtres"
-              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.48rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
+              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
             >
               [ × ]
             </button>

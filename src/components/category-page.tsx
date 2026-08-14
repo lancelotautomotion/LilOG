@@ -206,7 +206,7 @@ function ViewToggle({ view, setView }: { view: ViewMode; setView: (v: ViewMode) 
             type="button"
             onClick={() => setView(mode)}
             aria-pressed={on}
-            className={`${MONO} rounded-md border px-2.5 py-1.5 text-[0.5rem] font-bold tracking-[0.06em] whitespace-nowrap uppercase transition active:translate-y-0.5 sm:text-[0.56rem] ${
+            className={`${MONO} rounded-md border px-3 py-2 text-[1rem] font-bold tracking-[0.06em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
               on
                 ? "border-[#3b1d8f] bg-[linear-gradient(180deg,#a86fe8_0%,#7147d4_48%,#4b2a9e_100%)] text-white shadow-[inset_0_2px_5px_rgba(0,0,0,0.4)]"
                 : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#3b3550] hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`
@@ -408,9 +408,9 @@ export function CategoryPage({
             clip={false}
           >
             {/* Barre de menus */}
-            <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1">
+            <div className="flex flex-wrap items-center gap-2.5 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1 sm:gap-4">
               {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
-                <span key={m} className={`${MONO} text-[0.54rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
+                <span key={m} className={`${MONO} text-[0.8125rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
                   {m}
                 </span>
               ))}
@@ -418,17 +418,17 @@ export function CategoryPage({
 
             {/* Barre d'adresse */}
             <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-1.5">
-              <span className={`${MONO} shrink-0 text-[0.52rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
+              <span className={`${MONO} shrink-0 text-[0.8125rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
                 Adresse
               </span>
               <span
-                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.54rem] tracking-[0.04em] text-[#1E2430] ${BEVEL_IN}`}
+                className={`${MONO} flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-[0.8125rem] tracking-[0.04em] text-[#1E2430] ${BEVEL_IN}`}
               >
                 <Icon.folder width={14} height={12} className="shrink-0" />
                 <span className="truncate">{`C:\\LIL_OG\\CATALOG\\${exeName(catKey, label)}`}</span>
               </span>
               <span
-                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.52rem] font-bold text-[#262626] ${PLASTIC}`}
+                className={`${MONO} shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.8125rem] font-bold text-[#262626] ${PLASTIC}`}
               >
                 [ OK ]
               </span>
@@ -451,21 +451,21 @@ export function CategoryPage({
                 {label}
               </h1>
               {vibe && (
-                <p className={`${MONO} mt-1.5 text-[0.74rem] tracking-[0.04em] text-[#5b2fb8] italic`}>
+                <p className={`${MONO} mt-1.5 text-[0.9375rem] tracking-[0.04em] text-[#5b2fb8] italic`}>
                   {vibe.tagline}
                 </p>
               )}
 
               {vibe && (
                 <div className="mt-3 rounded-xl border border-[#d8d5e6] bg-[#f7f6fc] p-[clamp(10px,1.6vw,15px)] text-left">
-                  <p className={`${MONO} max-w-[130ch] text-[0.76rem] leading-[1.85] text-[#3b3550]`}>
+                  <p className={`${MONO} max-w-[130ch] text-[0.9375rem] leading-[1.85] text-[#3b3550]`}>
                     {vibe.desc}
                   </p>
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {vibe.tags.map((tag) => (
                       <span
                         key={tag}
-                        className={`${MONO} rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1 text-[0.58rem] font-bold tracking-[0.04em] text-[#5b2fb8] uppercase ${PLASTIC}`}
+                        className={`${MONO} rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1 text-[0.8125rem] font-bold tracking-[0.04em] text-[#5b2fb8] uppercase ${PLASTIC}`}
                       >
                         #{tag}
                       </span>
@@ -477,7 +477,7 @@ export function CategoryPage({
 
             {/* Sous-en-tête : nom du bloc grille + bascule d'affichage */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d8d5e6] px-4 py-2 sm:px-6">
-              <h2 className={`${MONO} text-[0.66rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase`}>
+              <h2 className={`${MONO} text-[1rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase`}>
                 MEDIA_GRID · {filtered.length} FICHIER(S)
               </h2>
               <ViewToggle view={view} setView={setView} />
@@ -504,7 +504,7 @@ export function CategoryPage({
               <div className="min-w-0 flex-1">
                 {filtered.length === 0 ? (
                   <div
-                    className={`${MONO} mx-auto flex max-w-[420px] flex-col items-center gap-3 rounded-lg border-2 border-[#d8d5e6] bg-[#f7f6fc] px-4 py-16 text-center text-[0.62rem] text-[#3b3550]`}
+                    className={`${MONO} mx-auto flex max-w-[420px] flex-col items-center gap-3 rounded-lg border-2 border-[#d8d5e6] bg-[#f7f6fc] px-4 py-16 text-center text-[0.875rem] text-[#3b3550]`}
                   >
                     <span aria-hidden className="text-[2rem]">
                       🗑️
@@ -514,7 +514,7 @@ export function CategoryPage({
                       <button
                         type="button"
                         onClick={reset}
-                        className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-2 text-[0.52rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
+                        className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-2 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
                       >
                         [ ⟲ RÉINITIALISER LES FILTRES ]
                       </button>
@@ -540,7 +540,7 @@ export function CategoryPage({
                 rounded-b-2xl : clip=false oblige, c'est elle qui ferme
                 proprement le bas du cadre. */}
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
-              <span className={`${MONO} text-[0.5rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
                 {filtered.length} objet(s) · {pageProducts.length} affiché(s)
               </span>
 
@@ -550,12 +550,12 @@ export function CategoryPage({
                     type="button"
                     disabled={safePage === 0}
                     onClick={() => setPage(safePage - 1)}
-                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.5rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.8125rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
                   >
                     [ ◀ ]
                   </button>
                   <span
-                    className={`${LCD} rounded border-2 border-[#2b2b3d] bg-black px-2 py-0.5 text-[1.05rem] leading-none text-green-400 ${BEVEL_IN}`}
+                    className={`${LCD} rounded border-2 border-[#2b2b3d] bg-black px-2 py-0.5 text-[1.125rem] leading-none text-green-400 ${BEVEL_IN}`}
                     style={{ textShadow: "0 0 8px rgba(74,222,128,.5)" }}
                   >
                     {safePage + 1}/{totalPages}
@@ -564,7 +564,7 @@ export function CategoryPage({
                     type="button"
                     disabled={safePage >= totalPages - 1}
                     onClick={() => setPage(safePage + 1)}
-                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.5rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.8125rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
                   >
                     [ ▶ ]
                   </button>
@@ -579,7 +579,7 @@ export function CategoryPage({
       <button
         type="button"
         onClick={() => setFilterOpen(true)}
-        className={`${MONO} fixed bottom-5 left-1/2 z-[70] -translate-x-1/2 rounded-full border-2 border-[#3b1d8f] px-5 py-3 text-[0.58rem] font-bold tracking-[0.08em] text-white uppercase transition active:translate-y-0.5 lg:hidden`}
+        className={`${MONO} fixed bottom-5 left-1/2 z-[70] -translate-x-1/2 rounded-full border-2 border-[#3b1d8f] px-5 py-3 text-[0.8125rem] font-bold tracking-[0.08em] text-white uppercase transition active:translate-y-0.5 lg:hidden`}
         style={{
           background: "linear-gradient(180deg,#a86fe8 0%,#7147d4 48%,#3b1d8f 100%)",
           boxShadow:
@@ -588,7 +588,7 @@ export function CategoryPage({
       >
         [ 🎛️ FILTRES.EXE ]
         {activeCount > 0 && (
-          <span className="ml-2 rounded-full bg-[#ff45b4] px-1.5 py-0.5 text-[0.5rem] text-white">
+          <span className="ml-2 rounded-full bg-[#ff45b4] px-1.5 py-0.5 text-[0.8125rem] text-white">
             {activeCount}
           </span>
         )}

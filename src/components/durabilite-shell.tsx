@@ -111,7 +111,7 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
       role="presentation"
       aria-label={label}
       title={label}
-      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.7rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
+      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.875rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
     >
       {glyph}
     </span>
@@ -160,7 +160,7 @@ function TitleIcon() {
   return (
     <span className="relative grid h-6 w-6 shrink-0 place-items-center rounded-[4px] bg-white/90 shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
       <PixelPlanet className="h-4 w-4" />
-      <span className="absolute -bottom-1.5 -right-1.5 text-[0.6rem] leading-none">♻️</span>
+      <span className="absolute -bottom-1.5 -right-1.5 text-[0.8125rem] leading-none">♻️</span>
     </span>
   );
 }
@@ -189,7 +189,7 @@ function BootLine({ text, delay = 0 }: { text: string; delay?: number }) {
   }, [delay]);
   const { shown, done } = useTypeOnce(start ? text : "");
   return (
-    <p className={`${MONO} text-[0.62rem] leading-relaxed text-emerald-700`}>
+    <p className={`${MONO} text-[0.875rem] leading-relaxed text-emerald-700`}>
       &gt; {shown}
       {start && !done && <span className="durab-cursor">▌</span>}
     </p>
@@ -200,7 +200,7 @@ function BootLine({ text, delay = 0 }: { text: string; delay?: number }) {
  *  fichier chargé par RESCUE_MODE_2000.EXE. */
 function SectionLabel({ n, file }: { n: string; file: string }) {
   return (
-    <p className={`${MONO} mb-3 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#5b2fb8]`}>
+    <p className={`${MONO} mb-3 text-[0.8125rem] font-bold uppercase tracking-[0.14em] text-[#5b2fb8]`}>
       <span style={{ color: PINK }}>▶</span> MODULE_{n} · {file}
     </p>
   );
@@ -253,7 +253,7 @@ function StatRow({ value, label, tone }: Stat & { tone: "danger" | "win" }) {
       >
         {value}
       </span>
-      <span className={`${MONO} text-right text-[0.6rem] uppercase leading-tight tracking-[0.05em] text-white/75`}>
+      <span className={`${MONO} text-right text-[0.8125rem] uppercase leading-tight tracking-[0.05em] text-white/75`}>
         {label}
       </span>
     </div>
@@ -283,15 +283,15 @@ function VsColumn({
       } bg-[#101014] ${PLASTIC}`}
     >
       <div className="px-4 py-3" style={{ background: headerGradient }}>
-        <p className={`${MONO} text-[0.58rem] font-bold uppercase tracking-[0.18em] text-white/80`}>
+        <p className={`${MONO} text-[0.8125rem] font-bold uppercase tracking-[0.18em] text-white/80`}>
           {danger ? "THE PROBLEM" : "THE SOLUTION"}
         </p>
-        <p className={`${LCD} text-[clamp(1.1rem,3.4vw,1.5rem)] leading-none tracking-[0.03em] text-white`}>
+        <p className={`${LCD} text-[clamp(1.25rem,3.4vw,1.5rem)] leading-none tracking-[0.03em] text-white`}>
           {badgeIcon} {badgeLabel}
         </p>
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
-        <p className={`${MONO} text-[0.6rem] font-bold uppercase tracking-[0.08em] text-white/60`}>{name}</p>
+        <p className={`${MONO} text-[0.8125rem] font-bold uppercase tracking-[0.08em] text-white/60`}>{name}</p>
         <Meter tone={tone} />
         <div className="mt-1">
           {stats.map((s) => (
@@ -311,7 +311,7 @@ function VsMode() {
         <p className={`${LCD} text-[clamp(1.9rem,5.4vw,2.7rem)] uppercase leading-none tracking-[0.06em] text-[#2a1266]`}>
           Round 1 · Fight!
         </p>
-        <p className={`${MONO} mt-1 text-[0.58rem] uppercase tracking-[0.24em] text-[#8b86a3]`}>
+        <p className={`${MONO} mt-1 text-[0.8125rem] uppercase tracking-[0.24em] text-[#8b86a3]`}>
           Sélectionne ton camp
         </p>
       </div>
@@ -327,7 +327,7 @@ function VsMode() {
         />
 
         <span
-          className={`${LCD} static mx-auto -my-2 grid h-14 w-14 place-items-center rounded-full border-2 border-[#2a1266] bg-[radial-gradient(circle_at_35%_30%,#fff2fa_0%,#ff9fd6_35%,#d3016d_100%)] text-[1.1rem] text-white md:absolute md:top-1/2 md:left-1/2 md:my-0 md:h-16 md:w-16 md:-translate-x-1/2 md:-translate-y-1/2 md:text-[1.3rem] ${PLASTIC}`}
+          className={`${LCD} static mx-auto -my-2 grid h-14 w-14 place-items-center rounded-full border-2 border-[#2a1266] bg-[radial-gradient(circle_at_35%_30%,#fff2fa_0%,#ff9fd6_35%,#d3016d_100%)] text-[1.25rem] text-white md:absolute md:top-1/2 md:left-1/2 md:my-0 md:h-16 md:w-16 md:-translate-x-1/2 md:-translate-y-1/2 md:text-[1.3rem] ${PLASTIC}`}
           style={{ zIndex: 5 }}
           aria-hidden
         >
@@ -406,7 +406,7 @@ function CounterBox({
         pink ? "border-[#ff2f97]/70" : "border-[#26ff8d]/60"
       } ${PLASTIC}`}
     >
-      <p className={`${MONO} mb-2 text-[0.56rem] font-bold uppercase tracking-[0.16em] ${pink ? "text-[#ff8fca]" : "text-[#7fffb3]"}`}>
+      <p className={`${MONO} mb-2 text-[0.8125rem] font-bold uppercase tracking-[0.16em] ${pink ? "text-[#ff8fca]" : "text-[#7fffb3]"}`}>
         {label}
       </p>
       <p
@@ -529,7 +529,7 @@ function RecycleBin() {
         }}
       >
         <div className="flex items-center justify-between gap-2 px-3 py-2" style={{ background: VIOLET_BAR }}>
-          <span className={`${MONO} truncate text-[0.6rem] font-bold tracking-[0.03em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}>
+          <span className={`${MONO} truncate text-[0.8125rem] font-bold tracking-[0.03em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}>
             🗑️ C:\LILOG\RESCUE_MISSION.TXT
           </span>
           <div className="flex shrink-0 items-center gap-1.5">
@@ -575,16 +575,16 @@ function RecycleBin() {
                 <BootLine text="PÉPITES VINTAGE DÉTECTÉES... 1 247" delay={900} />
                 <BootLine text="CHARGEMENT DU MANIFESTE..." delay={1900} />
               </div>
-              <p className={`${MONO} mb-3 text-[clamp(0.86rem,2.4vw,1.05rem)] font-bold uppercase leading-snug text-[#2a1266]`}>
+              <p className={`${MONO} mb-3 text-[clamp(1rem,2.4vw,1.125rem)] font-bold uppercase leading-snug text-[#2a1266]`}>
                 On n&apos;a rien inventé.
                 <br />
                 On a juste refusé de jeter.
               </p>
-              <p className={`${MONO} mb-3 text-[0.72rem] leading-[1.9] text-[#2b2b33]`}>
+              <p className={`${MONO} mb-3 text-[0.9375rem] leading-[1.9] text-[#2b2b33]`}>
                 Taille basse, fits qui claquent, matières qui ont du répondant : tout ça existe déjà, planqué
                 dans une penderie oubliée. On les retrouve. On les lave. On les remet en scène.
               </p>
-              <p className={`${MONO} text-[0.72rem] leading-[1.9] text-[#2b2b33]`}>
+              <p className={`${MONO} text-[0.9375rem] leading-[1.9] text-[#2b2b33]`}>
                 Du style, du caractère, zéro fibre neuve produite : <strong>c&apos;est toute la mission de
                 RESCUE_MODE_2000.</strong>
               </p>
@@ -594,14 +594,14 @@ function RecycleBin() {
               <div className="h-3 flex-1 overflow-hidden rounded-full border border-[#c6c2d8] bg-white">
                 <div className="h-full w-full rounded-full bg-[repeating-linear-gradient(45deg,#7147d4_0px,#7147d4_8px,#a86fe8_8px,#a86fe8_16px)]" />
               </div>
-              <span className={`${MONO} shrink-0 text-[0.55rem] font-bold tracking-[0.05em] text-[#3b1d8f]`}>100%</span>
+              <span className={`${MONO} shrink-0 text-[0.8125rem] font-bold tracking-[0.05em] text-[#3b1d8f]`}>100%</span>
             </div>
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-              <span className={`${MONO} text-[0.55rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>
+              <span className={`${MONO} text-[0.8125rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>
                 STATUT : MISSION ACCOMPLIE ✔
               </span>
               <span
-                className={`${MONO} rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-6 py-1.5 text-[0.62rem] font-bold text-[#262626] ${PLASTIC}`}
+                className={`${MONO} rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-6 py-1.5 text-[0.875rem] font-bold text-[#262626] ${PLASTIC}`}
               >
                 OK
               </span>
@@ -653,7 +653,7 @@ function Achievements() {
           >
             {popped === i && (
               <span
-                className={`${MONO} durab-pop absolute -top-3 right-2 rounded-full border border-yellow-300 bg-yellow-100 px-2 py-1 text-[0.5rem] font-bold whitespace-nowrap text-yellow-800 shadow-md`}
+                className={`${MONO} durab-pop absolute -top-3 right-2 rounded-full border border-yellow-300 bg-yellow-100 px-2 py-1 text-[0.8125rem] font-bold whitespace-nowrap text-yellow-800 shadow-md`}
               >
                 🏆 UNLOCKED
               </span>
@@ -664,10 +664,10 @@ function Achievements() {
             >
               {a.icon}
             </span>
-            <p className={`${MONO} mb-1 text-[0.66rem] font-bold uppercase tracking-[0.03em] text-[#2a1266]`}>
+            <p className={`${MONO} mb-1 text-[0.875rem] font-bold uppercase tracking-[0.03em] text-[#2a1266]`}>
               [ {a.icon} {a.title} ]
             </p>
-            <p className={`${MONO} text-[0.6rem] leading-relaxed text-[#5a5670]`}>{a.desc}</p>
+            <p className={`${MONO} text-[0.8125rem] leading-relaxed text-[#5a5670]`}>{a.desc}</p>
           </button>
         ))}
       </div>
@@ -738,7 +738,7 @@ export function DurabiliteShell() {
               <div className="flex min-w-0 items-center gap-2">
                 <TitleIcon />
                 <h1
-                  className={`${MONO} truncate text-[clamp(0.66rem,2.2vw,0.95rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
+                  className={`${MONO} truncate text-[clamp(0.875rem,2.2vw,1rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
                 >
                   RESCUE_MODE_2000.EXE
                 </h1>
@@ -757,13 +757,13 @@ export function DurabiliteShell() {
                 className="mb-[clamp(24px,4vw,40px)] rounded-2xl border border-[#c6c2d8] bg-white/85 p-[clamp(14px,2.6vw,24px)] backdrop-blur-[1px]"
                 style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)" }}
               >
-                <p className={`${MONO} mb-1 text-[0.56rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
+                <p className={`${MONO} mb-1 text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
                   C:\LILOG\DURABILITE\ <span style={{ color: PINK }}>★</span> MISSION SAUVETAGE
                 </p>
                 <h2 className={`${LCD} text-[clamp(1.9rem,6vw,3.2rem)] leading-[1.02] tracking-[0.02em] text-[#2a1266] uppercase`}>
                   La mode qui respecte la planète.
                 </h2>
-                <p className={`${MONO} mt-2 max-w-[62ch] text-[clamp(0.68rem,1.6vw,0.78rem)] leading-relaxed text-[#4a4560]`}>
+                <p className={`${MONO} mt-2 max-w-[62ch] text-[clamp(0.875rem,1.6vw,0.9375rem)] leading-relaxed text-[#4a4560]`}>
                   Fast fashion vs. Lil&apos;OG : charge le module, compare les scores, et découvre pourquoi la
                   seconde main gagne à tous les rounds.
                 </p>
@@ -779,10 +779,10 @@ export function DurabiliteShell() {
 
             {/* ---- Barre de statut ---- */}
             <div className="flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
-              <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
+              <span className={`${MONO} truncate text-[0.8125rem] tracking-wider text-[#5a5670]`}>
                 <span style={{ color: PINK }}>✦</span> lilog.shop@gmail.com · SIRET 98014870400011
               </span>
-              <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
+              <span className={`${MONO} shrink-0 text-[0.8125rem] tracking-wider text-[#5a5670]`}>
                 4 module(s) chargé(s)
               </span>
             </div>

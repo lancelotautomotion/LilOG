@@ -54,7 +54,7 @@ const README_CSS = `
 /** Barre de défilement décorative, pour finir la fenêtre. */
 function Scrollbar() {
   const arrow =
-    `grid h-[15px] w-[15px] place-items-center rounded-[3px] border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.5rem] leading-none text-[#3b3550] ${PLASTIC}`;
+    `grid h-[15px] w-[15px] place-items-center rounded-[3px] border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.8125rem] leading-none text-[#3b3550] ${PLASTIC}`;
   return (
     <div
       aria-hidden
@@ -84,7 +84,7 @@ export function ReadmeWindow() {
             {/* Menus */}
             <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
               {["Fichier", "Édition", "Format", "Affichage", "?"].map((m) => (
-                <span key={m} className={`${MONO} text-[0.54rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
+                <span key={m} className={`${MONO} text-[0.8125rem] tracking-[0.06em] text-[#3b3550] uppercase`}>
                   {m}
                 </span>
               ))}
@@ -96,12 +96,12 @@ export function ReadmeWindow() {
                   recouvre : la photo mord sur le cadre de la fenêtre, jamais
                   sur une fin de ligne. */}
               <div className="min-w-0 flex-1 px-[clamp(16px,3.4vw,38px)] py-[clamp(20px,3.6vw,40px)] md:pr-[96px]">
-                <p className={`${MONO} text-[0.52rem] tracking-[0.16em] text-[#9a94b5] uppercase`}>
+                <p className={`${MONO} text-[0.8125rem] tracking-[0.16em] text-[#9a94b5] uppercase`}>
                   · {t.ed.eyebrow} ·
                 </p>
 
                 <h2
-                  className={`${MONO} mt-3 text-[clamp(1.15rem,3.4vw,2rem)] leading-[1.3] font-bold text-[#1E2430]`}
+                  className={`${MONO} mt-3 text-[clamp(1.25rem,3.4vw,2rem)] leading-[1.3] font-bold text-[#1E2430]`}
                 >
                   {t.ed.title.map((s, i) =>
                     typeof s === "string" ? (
@@ -114,17 +114,17 @@ export function ReadmeWindow() {
                   )}
                 </h2>
 
-                <p className={`${MONO} mt-5 text-[0.68rem] leading-[1.95] text-[#3b3550] sm:text-[0.74rem]`}>
+                <p className={`${MONO} mt-5 text-[0.875rem] leading-[1.95] text-[#3b3550] sm:text-[0.9375rem]`}>
                   {t.ed.p1}
                 </p>
-                <p className={`${MONO} mt-4 text-[0.68rem] leading-[1.95] text-[#3b3550] sm:text-[0.74rem]`}>
+                <p className={`${MONO} mt-4 text-[0.875rem] leading-[1.95] text-[#3b3550] sm:text-[0.9375rem]`}>
                   {t.ed.p2}
                   <span className="lhr-caret ml-1 inline-block align-[-0.05em] text-[#1B48CE]">▌</span>
                 </p>
 
                 <Link
                   href="/histoire"
-                  className={`${MONO} mt-7 inline-block rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2 text-[0.56rem] font-bold tracking-[0.1em] text-[#262626] uppercase transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC}`}
+                  className={`${MONO} mt-7 inline-block rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2 text-[0.8125rem] font-bold tracking-[0.1em] text-[#262626] uppercase transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC}`}
                 >
                   [ {t.hero.story}.TXT → ]
                 </Link>
@@ -138,7 +138,7 @@ export function ReadmeWindow() {
                 bas de la fenêtre sans jamais recouvrir un chiffre. */}
             <div className="border-t-2 border-[#2b2838] bg-[#0d0d15] px-[clamp(16px,3.4vw,38px)] pt-4 pb-[76px] md:pb-4">
               <p
-                className={`${MONO} text-[0.5rem] font-bold tracking-[0.22em] text-[#5affa0] uppercase`}
+                className={`${MONO} text-[0.8125rem] font-bold tracking-[0.22em] text-[#5affa0] uppercase`}
                 style={{ textShadow: "0 0 8px rgba(90,255,160,.55)" }}
               >
                 ▸ {t.home.sysStats}
@@ -154,7 +154,7 @@ export function ReadmeWindow() {
                       {n}
                     </div>
                     <div
-                      className={`${MONO} mt-1 text-[0.46rem] leading-[1.5] tracking-[0.08em] text-white/60 uppercase sm:text-[0.52rem]`}
+                      className={`${MONO} mt-1 text-[0.8125rem] leading-[1.5] tracking-[0.08em] text-white/60 uppercase sm:text-[0.8125rem]`}
                     >
                       {l}
                     </div>
@@ -182,7 +182,7 @@ export function ReadmeWindow() {
               />
             </div>
 
-            <p className="mt-2 text-center text-[0.95rem] leading-none text-[#3b3550] font-[family-name:var(--font-hand)]">
+            <p className="mt-2 text-center text-[1rem] leading-none text-[#3b3550] font-[family-name:var(--font-hand)]">
               Lil&apos;OG archive · vol. 001
             </p>
           </div>

@@ -47,7 +47,7 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
       role="presentation"
       aria-label={label}
       title={label}
-      className={`grid h-6 w-7 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.7rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
+      className={`grid h-6 w-7 place-items-center rounded-md border border-[#c6c2d8] bg-[linear-gradient(180deg,#f6f5fb_0%,#e7e5f1_48%,#d3d0e1_100%)] text-[0.875rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
     >
       {glyph}
     </span>
@@ -102,7 +102,7 @@ function Shortcuts() {
       aria-label="Raccourcis"
       className="mt-[clamp(26px,4.5vw,44px)]"
     >
-      <div className={`${MONO} mb-3 flex items-center gap-2 text-[0.58rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>
+      <div className={`${MONO} mb-3 flex items-center gap-2 text-[0.8125rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>
         <span className="h-px flex-1 bg-[#5b2fb8]/20" />
         🖱 RACCOURCIS
         <span className="h-px flex-1 bg-[#5b2fb8]/20" />
@@ -120,7 +120,7 @@ function Shortcuts() {
             <span className="flex h-[clamp(1.7rem,4vw,2.6rem)] items-center justify-center text-[clamp(1.7rem,4vw,2.6rem)] leading-none drop-shadow-[0_3px_3px_rgba(0,0,0,0.25)]">
               {icon}
             </span>
-            <span className={`${MONO} text-[clamp(0.5rem,1.1vw,0.72rem)] leading-tight font-bold break-all tracking-[0.02em] text-[#262626]`}>
+            <span className={`${MONO} text-[clamp(0.8125rem,1.1vw,0.9375rem)] leading-tight font-bold break-all tracking-[0.02em] text-[#262626]`}>
               {label}
             </span>
           </a>
@@ -237,11 +237,11 @@ export default function ContactPage() {
             }}
           >
             <div className="flex min-w-0 items-center gap-2">
-              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] bg-white/85 text-[0.65rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
+              <span className="grid h-5 w-5 shrink-0 place-items-center rounded-[4px] bg-white/85 text-[0.875rem] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),0_1px_2px_rgba(0,0,0,0.3)]">
                 ☎
               </span>
               <h1
-                className={`${MONO} truncate text-[clamp(0.62rem,2.1vw,0.9rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
+                className={`${MONO} truncate text-[clamp(0.875rem,2.1vw,1rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
               >
                 LIL_OG_SUPPORT_CENTER.EXE
               </h1>
@@ -295,7 +295,7 @@ export default function ContactPage() {
                   }}
                 >
                   <h2
-                    className={`${MONO} text-[0.72rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}
+                    className={`${MONO} text-[0.9375rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}
                   >
                     SEND_MESSAGE.SYS ★
                   </h2>
@@ -304,7 +304,7 @@ export default function ContactPage() {
                 <div className="p-[clamp(14px,2.4vw,24px)]">
                   {sent ? (
                     <div
-                      className={`${MONO} rounded-lg border border-purple-200 bg-purple-50 px-4 py-8 text-center text-[0.75rem] leading-relaxed text-purple-800`}
+                      className={`${MONO} rounded-lg border border-purple-200 bg-purple-50 px-4 py-8 text-center text-[0.9375rem] leading-relaxed text-purple-800`}
                     >
                       <div className="mb-2 text-[1.6rem]">💌</div>
                       ★ MESSAGE TRANSMIS !<br />
@@ -330,7 +330,7 @@ export default function ContactPage() {
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div className="flex flex-col gap-1.5">
                           <label
-                            className={`${MONO} text-[0.55rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}
+                            className={`${MONO} text-[0.8125rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}
                             htmlFor="contact-name"
                           >
                             NOM / PRÉNOM
@@ -342,12 +342,12 @@ export default function ContactPage() {
                             onChange={(e) => setName(e.target.value)}
                             required
                             placeholder="Ton petit nom"
-                            className={`${INSET_FIELD} ${MONO} w-full text-[0.72rem] text-[#1E2430] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50`}
+                            className={`${INSET_FIELD} ${MONO} w-full text-[0.9375rem] text-[#1E2430] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50`}
                           />
                         </div>
                         <div className="flex flex-col gap-1.5">
                           <label
-                            className={`${MONO} text-[0.55rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}
+                            className={`${MONO} text-[0.8125rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}
                             htmlFor="contact-email"
                           >
                             EMAIL
@@ -359,7 +359,7 @@ export default function ContactPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             placeholder="toi@mail.com"
-                            className={`${INSET_FIELD} ${MONO} w-full text-[0.72rem] text-[#1E2430] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50`}
+                            className={`${INSET_FIELD} ${MONO} w-full text-[0.9375rem] text-[#1E2430] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50`}
                           />
                         </div>
                       </div>
@@ -367,7 +367,7 @@ export default function ContactPage() {
                       {/* ---- Sélecteur d'objet : pastilles plastique ---- */}
                       <fieldset className="flex flex-col gap-2">
                         <legend
-                          className={`${MONO} mb-1 text-[0.55rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}
+                          className={`${MONO} mb-1 text-[0.8125rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}
                         >
                           OBJET DU MESSAGE
                         </legend>
@@ -383,7 +383,7 @@ export default function ContactPage() {
                                   setSubject(id);
                                   setSubjectError(false);
                                 }}
-                                className={`${MONO} rounded-full border px-4 py-2 text-[0.62rem] font-bold transition ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
+                                className={`${MONO} rounded-full border px-4 py-2 text-[0.875rem] font-bold transition ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
                                   on
                                     ? "border-purple-700 bg-purple-600 text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.45),inset_0_-2px_5px_rgba(0,0,0,0.3),0_2px_4px_rgba(80,30,140,0.35)]"
                                     : `border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] text-[#262626] ${PLASTIC}`
@@ -397,7 +397,7 @@ export default function ContactPage() {
                         {subjectError && (
                           <p
                             role="alert"
-                            className={`${MONO} mt-0.5 text-[0.55rem] font-bold tracking-wide text-rose-600`}
+                            className={`${MONO} mt-0.5 text-[0.8125rem] font-bold tracking-wide text-rose-600`}
                           >
                             ⚠ CHOISIS UN OBJET POUR CONTINUER
                           </p>
@@ -406,7 +406,7 @@ export default function ContactPage() {
 
                       <div className="flex flex-col gap-1.5">
                         <label
-                          className={`${MONO} text-[0.55rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}
+                          className={`${MONO} text-[0.8125rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}
                           htmlFor="contact-msg"
                         >
                           TON MESSAGE
@@ -418,7 +418,7 @@ export default function ContactPage() {
                           required
                           rows={6}
                           placeholder="Raconte-nous tout…"
-                          className={`${INSET_FIELD} ${MONO} w-full resize-y text-[0.72rem] leading-relaxed text-[#1E2430] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50`}
+                          className={`${INSET_FIELD} ${MONO} w-full resize-y text-[0.9375rem] leading-relaxed text-[#1E2430] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50`}
                         />
                       </div>
 
@@ -426,7 +426,7 @@ export default function ContactPage() {
                       <button
                         type="submit"
                         disabled={isPending}
-                        className={`${MONO} mt-1 w-full rounded-full bg-purple-600 p-4 text-[0.7rem] font-bold tracking-[0.04em] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.7),0_4px_6px_rgba(0,0,0,0.15)] transition hover:brightness-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                        className={`${MONO} mt-1 w-full rounded-full bg-purple-600 p-4 text-[1rem] font-bold tracking-[0.04em] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.7),0_4px_6px_rgba(0,0,0,0.15)] transition hover:brightness-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
                       >
                         {isPending
                           ? "[ ⏳ TRANSMISSION_EN_COURS… ]"
@@ -436,7 +436,7 @@ export default function ContactPage() {
                       {sendError && (
                         <p
                           role="alert"
-                          className={`${MONO} rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-[0.6rem] leading-relaxed font-bold text-rose-700`}
+                          className={`${MONO} rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-[0.8125rem] leading-relaxed font-bold text-rose-700`}
                         >
                           ⚠ {sendError}
                         </p>
@@ -453,7 +453,7 @@ export default function ContactPage() {
             {/* ============ DISQUETTES 3.5" ============ */}
             <div className="mt-[clamp(26px,4.5vw,44px)]">
               <FloppyStyles />
-              <div className={`${MONO} mb-3 flex items-center gap-2 text-[0.58rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>
+              <div className={`${MONO} mb-3 flex items-center gap-2 text-[0.8125rem] font-bold tracking-[0.08em] text-[#5b2fb8]`}>
                 <span className="h-px flex-1 bg-[#5b2fb8]/20" />
                 💾 INFOS_PRATIQUES
                 <span className="h-px flex-1 bg-[#5b2fb8]/20" />
@@ -480,10 +480,10 @@ export default function ContactPage() {
 
           {/* ---- Barre de statut ---- */}
           <div className="flex items-center justify-between gap-3 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
-            <span className={`${MONO} truncate text-[0.5rem] tracking-wider text-[#5a5670]`}>
+            <span className={`${MONO} truncate text-[0.8125rem] tracking-wider text-[#5a5670]`}>
               ✦ lilog.shop@gmail.com · Lun-Ven 10h/18h
             </span>
-            <span className={`${MONO} shrink-0 text-[0.5rem] tracking-wider text-[#5a5670]`}>
+            <span className={`${MONO} shrink-0 text-[0.8125rem] tracking-wider text-[#5a5670]`}>
               3 objet(s) · 1.44 Mo
             </span>
           </div>

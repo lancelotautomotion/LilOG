@@ -129,7 +129,7 @@ export function WindowButton({ label, glyph }: { label: string; glyph: string })
       role="presentation"
       aria-label={label}
       title={label}
-      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.7rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
+      className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.875rem] leading-none font-bold text-[#262626] select-none ${PLASTIC}`}
     >
       {glyph}
     </span>
@@ -190,12 +190,12 @@ export function WindowFrame({
         style={{ background: bar }}
       >
         {icon && (
-          <span aria-hidden className="flex shrink-0 items-center text-[0.9rem] leading-none">
+          <span aria-hidden className="flex shrink-0 items-center text-[1rem] leading-none">
             {icon}
           </span>
         )}
         <span
-          className={`${MONO} min-w-0 flex-1 truncate text-[0.62rem] font-bold tracking-[0.12em] text-white uppercase`}
+          className={`${MONO} min-w-0 flex-1 truncate text-[0.9375rem] font-bold tracking-[0.12em] text-white uppercase`}
         >
           {title}
         </span>
@@ -253,7 +253,7 @@ export function SectionLabel({
   const wall = tone === "wallpaper";
   return (
     <p
-      className={`${MONO} mb-3 text-[0.58rem] font-bold tracking-[0.14em] uppercase ${
+      className={`${MONO} mb-3 text-[0.8125rem] font-bold tracking-[0.14em] uppercase ${
         wall ? "text-[#2b0f6b]" : "text-[#5b2fb8]"
       }`}
     >
