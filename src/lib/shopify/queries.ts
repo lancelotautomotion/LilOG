@@ -75,6 +75,76 @@ export const FEATURED_PRODUCTS_QUERY = /* GraphQL */ `
   }
 `;
 
+// Le catalogue entier ("Tout voir"), même sélection de champs que
+// COLLECTION_BY_HANDLE_QUERY mais interrogée à la racine (pas de collection
+// à traverser) : sans les champs méta Couleur/Taille/Matière et les options
+// de variante, FILTER_CONTROL.SYS et la pastille de taille de ProductWindow
+// n'ont rien à afficher, comme pour FEATURED_PRODUCTS_QUERY plus haut.
+export const CATALOG_PRODUCTS_QUERY = /* GraphQL */ `
+  query CatalogProducts($first: Int!) {
+    products(first: $first, sortKey: CREATED_AT, reverse: true) {
+      edges {
+        node {
+          id
+          handle
+          title
+          productType
+          tags
+          availableForSale
+          featuredImage {
+            url
+            altText
+          }
+          images(first: 2) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          compareAtPriceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          options {
+            name
+            values
+          }
+          colorMeta: metafield(namespace: "shopify", key: "color-pattern") { ${RICH_METAFIELD_FIELDS} }
+          colorMeta2: metafield(namespace: "custom", key: "couleur") { ${RICH_METAFIELD_FIELDS} }
+          colorMeta3: metafield(namespace: "shopify", key: "colors") { ${RICH_METAFIELD_FIELDS} }
+          colorMeta4: metafield(namespace: "descriptors", key: "color") { ${RICH_METAFIELD_FIELDS} }
+          sizeMeta: metafield(namespace: "shopify", key: "size") { ${RICH_METAFIELD_FIELDS} }
+          sizeMeta2: metafield(namespace: "custom", key: "taille") { ${RICH_METAFIELD_FIELDS} }
+          sizeMeta3: metafield(namespace: "shopify", key: "clothing-size") { ${RICH_METAFIELD_FIELDS} }
+          sizeMeta4: metafield(namespace: "shopify", key: "shoe-size") { ${RICH_METAFIELD_FIELDS} }
+          materialMeta: metafield(namespace: "shopify", key: "fabric") { ${RICH_METAFIELD_FIELDS} }
+          materialMeta2: metafield(namespace: "custom", key: "matiere") { ${RICH_METAFIELD_FIELDS} }
+          materialMeta3: metafield(namespace: "custom", key: "composition") { ${RICH_METAFIELD_FIELDS} }
+          variants(first: 1) {
+            edges {
+              node {
+                id
+                title
+                availableForSale
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 // Shopify's category (taxonomy) metafields hold the size for products sold
 // without variants, the case for one-of-one vintage. Their value is a
 // metaobject reference, so the human-readable size lives in the referenced
