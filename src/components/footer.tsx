@@ -320,6 +320,7 @@ export function Footer() {
      des tâches suit la langue choisie dans le sélecteur de la nav. */
   const TABS: Tab[] = [
     { href: "/#drops", icon: "🛍", label: t.footer.shop },
+    { href: "/gift-card", icon: "💿", label: "Carte cadeau" },
     { href: "/histoire", icon: "📖", label: t.footer.aboutLinks[0] },
     { href: "/durabilite", icon: "🌿", label: t.footer.aboutLinks[1] },
     { href: "/faq", icon: "❓", label: "FAQ" },

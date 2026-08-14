@@ -264,3 +264,34 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
     size: extractSizeValue(node.sizeMeta, node.options, node.handle),
   };
 }
+
+/**
+ * Écritures possibles du handle de la carte cadeau. L'API Storefront
+ * n'expose pas de type dédié : une carte cadeau est un produit ordinaire,
+ * dont le handle dépend de la langue et du titre choisis à sa création. On
+ * essaie les écritures courantes, la première qui répond gagne.
+ */
+export const GIFT_CARD_HANDLES = [
+  "carte-cadeau",
+  "gift-card",
+  "carte-cadeau-digitale",
+  "digital-gift-card",
+] as const;
+
+/**
+ * Le produit carte cadeau du magasin, ou `null` s'il n'est pas publié — ou
+ * si Shopify est injoignable. L'assistant /gift-card sait se rendre dans cet
+ * état-là : il s'affiche, mais sans graver quoi que ce soit.
+ *
+ * Les handles sont essayés l'un après l'autre, et non en parallèle : au
+ * premier trouvé, les suivants n'ont plus lieu d'être demandés. Les réponses
+ * sont mises en cache 60 s par `shopifyFetch`, la boucle ne coûte donc rien
+ * en régime établi.
+ */
+export async function getGiftCardProduct(): Promise<ProductDetail | null> {
+  for (const handle of GIFT_CARD_HANDLES) {
+    const product = await getProductByHandle(handle).catch(() => null);
+    if (product) return product;
+  }
+  return null;
+}
