@@ -38,7 +38,11 @@ export function CdRom({
 
   return (
     <div
-      className="relative aspect-square w-full max-w-[420px] overflow-hidden rounded-[8px] bg-white/40 p-[4%] backdrop-blur-sm"
+      /* Le ratio suit celui du fichier (1254×1035) : gift-card-cd.png a été
+         recadré pour retirer l'essentiel des marges blanches au-dessus et
+         en dessous du boîtier, un carré aurait sinon réintroduit ce vide en
+         creux plutôt qu'en pixels. */
+      className="relative aspect-[1254/1035] w-full max-w-[420px] overflow-hidden rounded-[8px] bg-white/40 p-[4%] backdrop-blur-sm"
       style={{ boxShadow: "8px 8px 0 rgba(24,12,58,0.38)" }}
     >
       <style>{CD_CSS}</style>
