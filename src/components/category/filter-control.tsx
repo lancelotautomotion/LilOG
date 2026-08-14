@@ -218,7 +218,7 @@ function Chip({
       onClick={onClick}
       aria-pressed={on}
       title={title}
-      className={`${MONO} rounded-md border px-2.5 py-1.5 text-[1rem] font-bold tracking-[0.04em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
+      className={`${MONO} rounded-md border px-2.5 py-1.5 text-[0.875rem] font-bold tracking-[0.04em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
         on
           ? "border-[#3b1d8f] bg-[linear-gradient(180deg,#a86fe8_0%,#7147d4_48%,#4b2a9e_100%)] text-white shadow-[inset_0_2px_5px_rgba(0,0,0,0.4),inset_0_-1px_0_rgba(255,255,255,0.25)]"
           : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#3b3550] hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`
@@ -359,7 +359,7 @@ function PriceEqualizer({
           >
             <span className={`${MONO} text-[0.8125rem] font-bold tracking-[0.1em] text-white/40`}>{label}</span>
             <span
-              className={`${LCD} text-[1.25rem] leading-none text-green-400`}
+              className={`${LCD} text-[1.125rem] leading-none text-green-400`}
               style={{ textShadow: "0 0 8px rgba(74,222,128,.5)" }}
             >
               €{value}
@@ -472,7 +472,7 @@ export function FilterControl({
             type="button"
             onClick={reset}
             disabled={activeCount === 0}
-            className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+            className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.875rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
           >
             [ ⟲ RESET ]
           </button>
@@ -481,7 +481,7 @@ export function FilterControl({
               type="button"
               onClick={onClose}
               aria-label="Fermer les filtres"
-              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
+              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.875rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
             >
               [ × ]
             </button>

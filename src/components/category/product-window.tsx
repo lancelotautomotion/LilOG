@@ -158,10 +158,10 @@ export function ProductWindow({
 
   const price = (
     <span
-      className={`${MONO} rounded bg-black px-2 py-1.5 text-[0.9375rem] leading-none font-bold whitespace-nowrap text-green-400`}
+      className={`${MONO} rounded bg-black px-1.5 py-1.5 text-[0.8125rem] leading-none font-bold whitespace-nowrap text-green-400`}
       style={{ textShadow: "0 0 8px rgba(74,222,128,.55)" }}
     >
-      {product.was && <s className="mr-1 text-[0.875rem] text-green-400/45">€{product.was}</s>}€{product.price}
+      {product.was && <s className="mr-1 text-[0.8125rem] text-green-400/45">€{product.was}</s>}€{product.price}
     </span>
   );
 
@@ -172,7 +172,7 @@ export function ProductWindow({
      est coupée : la vignette fait 170px de large en mobile. */
   const sizeChip = product.sizes.length > 0 && (
     <span
-      className={`${MONO} rounded border border-[#c6c2d8] px-2 py-1.5 text-[0.875rem] leading-none font-bold whitespace-nowrap text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
+      className={`${MONO} rounded border border-[#c6c2d8] px-1.5 py-1.5 text-[0.8125rem] leading-none font-bold whitespace-nowrap text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
       title={`Taille ${product.sizes.join(" / ")}`}
     >
       📏 {product.sizes.slice(0, 3).join(" / ")}
@@ -186,7 +186,7 @@ export function ProductWindow({
       onClick={add}
       disabled={sold}
       aria-label={sold ? "Épuisé" : `Ajouter ${product.name} au panier`}
-      className={`${MONO} shrink-0 rounded-md border border-[#c6c2d8] px-1.5 py-1.5 text-[1rem] font-bold tracking-[0.04em] whitespace-nowrap text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 sm:px-2.5 sm:text-[0.8125rem] ${
+      className={`${MONO} shrink-0 rounded-md border border-[#c6c2d8] px-1.5 py-1.5 text-[0.8125rem] font-bold whitespace-nowrap text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 ${
         added ? "bg-[linear-gradient(180deg,#d8ffe8_0%,#8ce8b4_48%,#4fbe84_100%)]" : PLASTIC_FACE
       } ${PLASTIC} ${sold ? "" : PLASTIC_PRESS} ${sold ? "" : "hover:brightness-105"}`}
     >
@@ -279,15 +279,15 @@ export function ProductWindow({
 
       {/* Barre d'action : sur une carte de deux colonnes en mobile, la place
           est comptée : le pied passe à la ligne plutôt que de déborder. */}
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-1.5 border-t border-[#d8d5e6] bg-[#e9e7f2] px-2 py-2">
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-1 border-t border-[#d8d5e6] bg-[#e9e7f2] px-1.5 py-2 sm:flex-nowrap">
         {/* Prix et taille restent groupés quand le pied passe à la ligne, mais
             peuvent eux-mêmes se séparer : un prix barré suivi d'une pièce en
             quatre tailles déborderait sinon de la vignette en mobile. */}
-        <span className="flex min-w-0 flex-wrap items-center gap-1.5">
+        <span className="flex min-w-0 flex-wrap items-center gap-1 sm:flex-nowrap">
           {price}
           {sizeChip}
         </span>
-        <span className="flex items-center gap-1.5">
+        <span className="flex shrink-0 items-center gap-1">
           {cartButton}
           {favButton}
         </span>
