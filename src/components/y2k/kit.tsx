@@ -55,7 +55,7 @@ export const GRID_BG: React.CSSProperties = {
 };
 
 /** Ombre dure Y2K / web brutalism portée par toutes les fenêtres du site. */
-export const HARD_SHADOW = "shadow-[6px_6px_0_rgba(24,12,58,0.55)] md:shadow-[10px_10px_0_rgba(24,12,58,0.55)]";
+export const HARD_SHADOW = "shadow-[var(--y2k-win-shadow)]";
 
 /**
  * Le fond d'écran du bureau : page d'accueil uniquement. Calé sur

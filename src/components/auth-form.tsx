@@ -186,7 +186,7 @@ export function AuthForm() {
         </span>
       ))}
 
-      <div className={`login-mono overflow-hidden rounded-xl bg-[#ece9d8] shadow-2xl ${BEVEL_OUT}`}>
+      <div className={`login-mono overflow-hidden rounded-xl bg-[#ece9d8] shadow-[var(--y2k-win-shadow)] ${BEVEL_OUT}`}>
 
         {/* ── Barre de titre ── */}
         <div

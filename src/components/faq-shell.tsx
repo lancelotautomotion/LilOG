@@ -523,10 +523,10 @@ export function FaqShell() {
 
         {/* ================= FENÊTRE WINDOWS 95 ================= */}
         <div
-          className="relative z-[1] mx-auto max-w-[1400px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1]"
+          className="relative z-[1] mx-auto max-w-[1400px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1] shadow-[var(--y2k-win-shadow)]"
           style={{
             boxShadow:
-              "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), 0 14px 30px rgba(30,36,48,0.28)",
+              "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), var(--y2k-win-shadow)",
           }}
         >
           {/* ---- Barre de titre ---- */}
@@ -587,7 +587,7 @@ export function FaqShell() {
               {/* ============ EN-TÊTE ============ */}
               <header
                 className="mb-[clamp(16px,2.8vw,26px)] flex flex-wrap items-center gap-[clamp(12px,2.4vw,20px)] rounded-2xl border border-[#c6c2d8] bg-white/85 p-[clamp(14px,2.4vw,22px)] backdrop-blur-[1px]"
-                style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)" }}
+                style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), var(--y2k-win-shadow)" }}
               >
                 <span
                   className={`grid h-[clamp(48px,7vw,62px)] w-[clamp(48px,7vw,62px)] shrink-0 place-items-center rounded-2xl border border-[#8f6ae0] text-[clamp(1.5rem,3.6vw,2rem)] ${PLASTIC}`}
@@ -619,7 +619,7 @@ export function FaqShell() {
               <section
                 aria-label="Rechercher dans la FAQ"
                 className="mb-[clamp(14px,2.4vw,22px)] overflow-hidden rounded-xl border border-[#c6c2d8] bg-white/85 backdrop-blur-[1px]"
-                style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)" }}
+                style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), var(--y2k-win-shadow)" }}
               >
                 <div className="px-3 py-2" style={{ background: VIOLET_BAR }}>
                   <h3 className={`${MONO} text-[0.9375rem] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]`}>
@@ -716,10 +716,10 @@ export function FaqShell() {
               ) : (
                 /* ---- Boîte de dialogue « aucun résultat » ---- */
                 <div
-                  className="overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#eeecf6]"
+                  className="overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#eeecf6] shadow-[var(--y2k-win-shadow)]"
                   style={{
                     boxShadow:
-                      "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.14), 0 5px 12px rgba(30,36,48,0.18)",
+                      "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.14), var(--y2k-win-shadow)",
                   }}
                 >
                   <div className="flex items-center justify-between gap-2 px-2.5 py-1.5" style={{ background: VIOLET_BAR }}>
@@ -757,10 +757,10 @@ export function FaqShell() {
               {/* ============ HOTLINE ============ */}
               <section
                 aria-label="Encore besoin d'aide ?"
-                className="mt-[clamp(22px,4vw,40px)] overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#eeecf6]"
+                className="mt-[clamp(22px,4vw,40px)] overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#eeecf6] shadow-[var(--y2k-win-shadow)]"
                 style={{
                   boxShadow:
-                    "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.14), 0 8px 18px rgba(30,36,48,0.2)",
+                    "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.14), var(--y2k-win-shadow)",
                 }}
               >
                 <div className="flex items-center justify-between gap-2 px-3 py-1.5" style={{ background: VIOLET_BAR }}>

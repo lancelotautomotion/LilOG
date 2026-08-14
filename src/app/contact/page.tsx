@@ -225,7 +225,7 @@ export default function ContactPage() {
           className="relative z-[1] mx-auto max-w-[1400px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1]"
           style={{
             boxShadow:
-              "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), 0 14px 30px rgba(30,36,48,0.28)",
+              "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), var(--y2k-win-shadow)",
           }}
         >
           {/* ---- Barre de titre ---- */}
@@ -284,7 +284,7 @@ export default function ContactPage() {
                 className="overflow-hidden rounded-xl border border-[#c6c2d8] bg-white/85 backdrop-blur-[1px]"
                 style={{
                   boxShadow:
-                    "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)",
+                    "inset 0 2px 3px rgba(255,255,255,0.9), var(--y2k-win-shadow)",
                 }}
               >
                 <div

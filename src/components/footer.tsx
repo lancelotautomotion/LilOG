@@ -109,7 +109,7 @@ const TASKBAR_CSS = `
   50%{transform:translate3d(0,-8%,0) rotate(calc(var(--r,0deg) + 6deg)) scale(1.06)}
 }
 .liltb-sticker{animation:liltb-bob 7.4s ease-in-out infinite;
-  filter:drop-shadow(0 3px 4px rgba(30,36,48,.28))}
+  filter:drop-shadow(var(--y2k-win-shadow))}
 .liltb-s2{animation-duration:8.6s;animation-delay:-3.1s}
 
 /* Les pictogrammes sociaux sont dessinés sur une grille de 16 px :
@@ -360,10 +360,10 @@ export function Footer() {
             angles sont arrondis par la barre de titre et la barre de statut,
             les deux seules bandes qui touchent les coins. */}
         <div
-          className="relative z-[1] rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1]"
+          className="relative z-[1] rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1] shadow-[var(--y2k-win-shadow)]"
           style={{
             boxShadow:
-              "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), 0 14px 30px rgba(30,36,48,0.28)",
+              "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), var(--y2k-win-shadow)",
           }}
         >
           {/* ---- Barre de titre ---- */}

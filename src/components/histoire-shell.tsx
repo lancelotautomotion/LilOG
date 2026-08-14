@@ -207,7 +207,7 @@ function CameraWidget() {
 
           {/* Plaque signalétique + LED : centrée dans l'espace libre au-dessus du boîtier. */}
           <div className="relative z-10 flex w-[clamp(220px,26vw,300px)] items-center justify-center md:h-full">
-            <div className="flex w-full items-center justify-between rounded-full border border-[#c6c2d8] bg-white/90 px-4 py-1.5 backdrop-blur-[1px]" style={{ boxShadow: "inset 0 1px 2px rgba(255,255,255,0.9), 0 3px 8px rgba(30,36,48,0.14)" }}>
+            <div className="flex w-full items-center justify-between rounded-full border border-[#c6c2d8] bg-white/90 px-4 py-1.5 backdrop-blur-[1px]" style={{ boxShadow: "inset 0 1px 2px rgba(255,255,255,0.9), 0 2px 6px rgba(30,36,48,0.16)" }}>
               <span className={`${LCD} text-[1rem] leading-none tracking-[0.06em] text-[#3b1d8f]`}>
                 LOUNA.RAW
               </span>
@@ -397,8 +397,8 @@ const LOGS: LogEntry[] = [
 function LogCard({ log }: { log: LogEntry }) {
   return (
     <div
-      className="overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#eeecf6]"
-      style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.12), 0 6px 16px rgba(30,36,48,0.16)" }}
+      className="overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#eeecf6] shadow-[var(--y2k-win-shadow)]"
+      style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.12), var(--y2k-win-shadow)" }}
     >
       <div className="flex items-center justify-between gap-2 px-4 py-2.5" style={{ background: VIOLET_BAR }}>
         <span className={`${MONO} text-[0.8125rem] font-bold tracking-[0.06em] text-white/85`}>LOG_{log.n}.DAT</span>
@@ -496,9 +496,9 @@ export function HistoireShell() {
 
           {/* ================= FENÊTRE PRINCIPALE ================= */}
           <div
-            className="relative z-[1] overflow-clip rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1]"
+            className="relative z-[1] overflow-clip rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1] shadow-[var(--y2k-win-shadow)]"
             style={{
-              boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), 0 14px 30px rgba(30,36,48,0.28)",
+              boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), var(--y2k-win-shadow)",
             }}
           >
             {/* ---- Barre de titre ---- */}
@@ -525,7 +525,7 @@ export function HistoireShell() {
               {/* ---- Intro ---- */}
               <header
                 className="mb-[clamp(16px,2.8vw,26px)] rounded-2xl border border-[#c6c2d8] bg-white/85 p-[clamp(14px,2.6vw,24px)] text-center backdrop-blur-[1px]"
-                style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)" }}
+                style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), var(--y2k-win-shadow)" }}
               >
                 <p className={`${MONO} mb-1 text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
                   C:\LILOG\HISTOIRE\ <span style={{ color: PINK }}>★</span> JOURNAL PERSONNEL

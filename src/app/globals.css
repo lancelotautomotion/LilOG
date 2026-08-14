@@ -64,7 +64,17 @@
   --acct-titlebar: var(--y2k-titlebar);
   --ldl-shadow: 0 2px 8px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
   --ldl-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.11), 0 2px 4px rgba(0, 0, 0, 0.06);
-  --ldl-shadow-window: 4px 4px 0 rgba(0, 0, 0, 0.85);
+
+  /* ---- L'ombre des fenêtres ----
+     Une seule ombre pour toutes les fenêtres du site : le bloc décalé, net,
+     violet très sombre, celui du catalogue. Le site en portait trois
+     familles différentes, du 4px noir opaque des pages compte au flou léger
+     des pages légales : deux fenêtres côte à côte n'étaient pas posées à la
+     même hauteur. Elle s'épaissit à partir de 768px, la fenêtre étant alors
+     plus grande. Toute règle de fenêtre pointe ici, jamais une valeur en
+     dur, pour que le réglage reste à un seul endroit. */
+  --y2k-win-shadow: 6px 6px 0 rgba(24, 12, 58, 0.55);
+  --ldl-shadow-window: var(--y2k-win-shadow);
   --ldl-btn: #1B48CE;
   --ldl-transition: 180ms ease;
 
@@ -82,6 +92,12 @@
   /* z-index */
   --z-nav: 50;
   --z-drawer: 80;
+}
+
+/* Fenêtre plus grande, ombre plus épaisse : le décalage garde la même
+   proportion qu'en mobile. */
+@media (min-width: 768px) {
+  :root { --y2k-win-shadow: 10px 10px 0 rgba(24, 12, 58, 0.55); }
 }
 
 @theme inline {
@@ -4191,7 +4207,7 @@ html, body {
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
   border-radius: var(--ldl-radius);
-  box-shadow: var(--ldl-shadow);
+  box-shadow: var(--y2k-win-shadow);
   overflow: hidden !important;
 }
 .pdp-win .w95-bar { border-radius: 0; }
@@ -4538,7 +4554,7 @@ html, body {
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
   border-radius: var(--ldl-radius);
-  box-shadow: var(--ldl-shadow);
+  box-shadow: var(--y2k-win-shadow);
   overflow: hidden;
 }
 .legal-win95-hero-body {
@@ -4562,7 +4578,7 @@ html, body {
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
   border-radius: var(--ldl-radius);
-  box-shadow: var(--ldl-shadow);
+  box-shadow: var(--y2k-win-shadow);
   overflow: hidden;
 }
 .legal-win95-main .legal-body { padding: clamp(20px, 3vw, 40px) !important; background: var(--ldl-surface); }
@@ -5270,7 +5286,7 @@ html, body {
   box-shadow:
     inset 0 3px 0 rgba(255, 255, 255, 0.95),
     inset 0 -6px 14px rgba(60, 40, 110, 0.28),
-    10px 10px 0 rgba(24, 12, 58, 0.45);
+    var(--y2k-win-shadow);
   padding: 10px;
   display: flex;
   flex-direction: column;

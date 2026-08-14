@@ -523,9 +523,9 @@ function RecycleBin() {
     <section>
       <SectionLabel n="03" file="RECYCLE_BIN.EXE" />
       <div
-        className="overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#eeecf6]"
+        className="overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#eeecf6] shadow-[var(--y2k-win-shadow)]"
         style={{
-          boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.14), 0 8px 20px rgba(30,36,48,0.2)",
+          boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.14), var(--y2k-win-shadow)",
         }}
       >
         <div className="flex items-center justify-between gap-2 px-3 py-2" style={{ background: VIOLET_BAR }}>
@@ -730,7 +730,7 @@ export function DurabiliteShell() {
           <div
             className="relative z-[1] overflow-clip rounded-xl border-2 border-[#b8b4cc] bg-[#e7e5f1]"
             style={{
-              boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), 0 14px 30px rgba(30,36,48,0.28)",
+              boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), inset 0 -3px 6px rgba(0,0,0,0.18), var(--y2k-win-shadow)",
             }}
           >
             {/* ---- Barre de titre ---- */}
@@ -755,7 +755,7 @@ export function DurabiliteShell() {
               {/* ---- Intro ---- */}
               <header
                 className="mb-[clamp(24px,4vw,40px)] rounded-2xl border border-[#c6c2d8] bg-white/85 p-[clamp(14px,2.6vw,24px)] backdrop-blur-[1px]"
-                style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), 0 6px 14px rgba(30,36,48,0.14)" }}
+                style={{ boxShadow: "inset 0 2px 3px rgba(255,255,255,0.9), var(--y2k-win-shadow)" }}
               >
                 <p className={`${MONO} mb-1 text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8]`}>
                   C:\LILOG\DURABILITE\ <span style={{ color: PINK }}>★</span> MISSION SAUVETAGE
