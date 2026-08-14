@@ -73,9 +73,9 @@ function lounaPickSticker(product: Product): Sticker | null {
    et le pied partait en escalier. Une hauteur fixe, un corps de texte
    commun, un centrage commun : les quatre s'alignent quel que soit leur
    contenu. */
-const CHIP_H = "h-[30px]";
+const CHIP_H = "h-[26px]";
 const CHIP_BASE =
-  `${CHIP_H} inline-flex items-center justify-center text-[0.875rem] leading-none ` +
+  `${CHIP_H} inline-flex items-center justify-center text-[0.75rem] leading-none ` +
   "font-bold whitespace-nowrap";
 
 function StickerChip({ sticker, className = "" }: { sticker: Sticker; className?: string }) {
@@ -171,10 +171,10 @@ export function ProductWindow({
 
   const price = (
     <span
-      className={`${MONO} ${CHIP_BASE} shrink-0 rounded bg-black px-2 text-green-400`}
+      className={`${MONO} ${CHIP_BASE} shrink-0 rounded bg-black px-1.5 text-green-400`}
       style={{ textShadow: "0 0 8px rgba(74,222,128,.55)" }}
     >
-      {product.was && <s className="mr-1 text-[0.875rem] text-green-400/45">{product.was}€</s>}{product.price}€
+      {product.was && <s className="mr-1 text-[0.75rem] text-green-400/45">{product.was}€</s>}{product.price}€
     </span>
   );
 
@@ -182,10 +182,13 @@ export function ProductWindow({
      premier critère de tri d'une friperie, et l'ouvrir fiche par fiche pour
      le connaître n'a pas de sens. Rien pour les pièces sans taille (sacs,
      bijoux), « TU » n'apprendrait rien. Au-delà de trois tailles, la liste
-     est coupée : la vignette fait 170px de large en mobile. */
+     est coupée : la vignette fait 170px de large en mobile. Elle est aussi
+     la seule pastille qui cède du terrain (`min-w-0 shrink truncate`) : sur
+     une carte étroite, mieux vaut une taille tronquée que le panier ou le
+     cœur qui saute de rangée. */
   const sizeChip = product.sizes.length > 0 && (
     <span
-      className={`${MONO} ${CHIP_BASE} min-w-0 shrink truncate rounded border border-[#c6c2d8] px-2 text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
+      className={`${MONO} ${CHIP_BASE} min-w-0 shrink truncate rounded border border-[#c6c2d8] px-1.5 text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
       title={`Taille ${product.sizes.join(" / ")}`}
     >
       📏 {product.sizes.slice(0, 3).join(" / ")}
@@ -199,11 +202,11 @@ export function ProductWindow({
       onClick={add}
       disabled={sold}
       aria-label={sold ? "Épuisé" : `Ajouter ${product.name} au panier`}
-      className={`${MONO} ${CHIP_BASE} shrink-0 rounded-md border border-[#c6c2d8] px-2 text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 ${
+      className={`${MONO} ${CHIP_BASE} shrink-0 rounded-md border border-[#c6c2d8] px-1.5 text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 ${
         added ? "bg-[linear-gradient(180deg,#d8ffe8_0%,#8ce8b4_48%,#4fbe84_100%)]" : PLASTIC_FACE
       } ${PLASTIC} ${sold ? "" : PLASTIC_PRESS} ${sold ? "" : "hover:brightness-105"}`}
     >
-      {sold ? "[ × SOLD ]" : added ? "[ ✓ OK ]" : "[ + CART ]"}
+      {sold ? "[×SOLD]" : added ? "[✓ OK]" : "[+CART]"}
     </button>
   );
 
@@ -213,11 +216,11 @@ export function ProductWindow({
       onClick={toggleFav}
       aria-label={fav ? "Retirer de la wishlist" : "Ajouter à la wishlist"}
       aria-pressed={fav}
-      className={`${CHIP_H} grid w-[30px] shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS} ${
+      className={`${CHIP_H} grid w-[26px] shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS} ${
         fav ? "text-[#d3016d]" : "text-[#6B7280]"
       }`}
     >
-      {fav ? <Icon.heart width={15} height={15} /> : <Icon.heartO width={15} height={15} />}
+      {fav ? <Icon.heart width={13} height={13} /> : <Icon.heartO width={13} height={13} />}
     </button>
   );
 
@@ -290,23 +293,22 @@ export function ProductWindow({
         </p>
       </Link>
 
-      {/* Barre d'action : deux rangées fixes (prix/taille, puis panier/cœur)
-          plutôt qu'un seul flex-wrap. Avec une rangée unique, le point de
-          bascule dépendait du contenu de chaque fiche — une taille ou un
-          prix barré en plus faisait passer le panier à la ligne sur une
-          carte et pas sur sa voisine, et le pied partait en escalier dans
-          la grille. Deux rangées toujours présentes, même vides côté
-          taille : le panier et le cœur tombent au même niveau sur toutes
-          les fiches. */}
-      <div className="mt-auto flex flex-col gap-1 border-t border-[#d8d5e6] bg-[#e9e7f2] px-1.5 py-2">
-        <div className="flex min-w-0 items-center justify-between gap-1">
+      {/* Barre d'action : une seule rangée, jamais de retour à la ligne.
+          Le panier et le cœur (`shrink-0`) gardent toujours leur taille
+          entière et restent collés à droite ; c'est le groupe prix+taille
+          qui absorbe le manque de place (`min-w-0 flex-1`), la pastille de
+          taille se tronquant la première (voir `sizeChip`). Ainsi le panier
+          et le cœur tombent au même endroit sur toutes les fiches, quel
+          que soit le nombre de tailles ou un prix barré en plus. */}
+      <div className="mt-auto flex flex-nowrap items-center justify-between gap-1 border-t border-[#d8d5e6] bg-[#e9e7f2] px-1.5 py-2">
+        <span className="flex min-w-0 flex-1 items-center gap-1">
           {price}
           {sizeChip}
-        </div>
-        <div className="flex items-center justify-between gap-1">
+        </span>
+        <span className="flex shrink-0 items-center gap-1">
           {cartButton}
           {favButton}
-        </div>
+        </span>
       </div>
     </article>
   );
