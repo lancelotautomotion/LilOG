@@ -179,34 +179,42 @@ export function CookieConsent() {
             </div>
           )}
 
-          {/* ── Boutons ── */}
+          {/* ── Boutons ──
+              Exigence CNIL : refuser doit être aussi facile et aussi
+              visible qu'accepter — même taille, même niveau, un seul
+              clic. Les deux actions sont donc deux boutons jumeaux,
+              simplement de couleurs différentes ; CONFIG.SYS reste en
+              retrait, lui, puisque « personnaliser » n'est pas soumis à
+              cette parité. */}
           <div className="mt-3 flex flex-col gap-2">
-            <button
-              type="button"
-              onClick={() => decide(configOpen ? draft : CONSENT_ALL)}
-              className={`${MONO} w-full rounded-xl border-2 border-t-[#ffa6e4] border-l-[#ffa6e4] border-r-[#5b1a9e] border-b-[#5b1a9e] bg-gradient-to-b from-[#ff5cc8] via-[#d63fdd] to-[#7b2ff7] px-4 py-2.5 text-[0.875rem] font-bold tracking-[0.08em] text-white uppercase shadow-[0_4px_0_#4c1d95,0_10px_20px_rgba(76,29,149,0.35)] transition-[transform,box-shadow] active:translate-y-[4px] active:shadow-none`}
-            >
-              [ 💾 {configOpen ? "ENREGISTRER_CHOIX.EXE" : "AUTORISER_TOUT.EXE"} ]
-            </button>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => decide(configOpen ? draft : CONSENT_ALL)}
+                className={`${MONO} w-full truncate rounded-xl border-2 border-t-[#ffa6e4] border-l-[#ffa6e4] border-r-[#5b1a9e] border-b-[#5b1a9e] bg-gradient-to-b from-[#ff5cc8] via-[#d63fdd] to-[#7b2ff7] px-2 py-2.5 text-[0.75rem] font-bold tracking-[0.02em] text-white uppercase shadow-[0_4px_0_#4c1d95,0_10px_20px_rgba(76,29,149,0.35)] transition-[transform,box-shadow] active:translate-y-[4px] active:shadow-none`}
+              >
+                [ 💾 {configOpen ? "ENREGISTRER" : "AUTORISER"} ]
+              </button>
+
+              <button
+                type="button"
+                onClick={() => decide(CONSENT_NONE)}
+                className={`${MONO} w-full cursor-pointer truncate rounded-xl border-2 border-t-[#fdfdff] border-l-[#fdfdff] border-r-[#8783a0] border-b-[#8783a0] ${PLASTIC_FACE} px-2 py-2.5 text-[0.75rem] font-bold tracking-[0.02em] text-[#2b2340] uppercase shadow-[0_4px_0_#8783a0] transition-[transform,box-shadow] active:translate-y-[4px] active:shadow-none`}
+              >
+                [ ⛔ REFUSER ]
+              </button>
+            </div>
 
             {!configOpen && (
               <button
                 type="button"
                 onClick={() => setConfigOpen(true)}
                 aria-expanded={false}
-                className={`${MONO} w-full cursor-pointer rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2 text-[0.875rem] font-bold tracking-[0.08em] text-[#2b2340] uppercase ${PLASTIC} ${PLASTIC_PRESS}`}
+                className={`${MONO} w-full cursor-pointer rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2 text-[0.8125rem] font-bold tracking-[0.06em] text-[#2b2340] uppercase ${PLASTIC} ${PLASTIC_PRESS}`}
               >
                 [ ⚙️ CONFIG.SYS ]
               </button>
             )}
-
-            <button
-              type="button"
-              onClick={() => decide(CONSENT_NONE)}
-              className={`${MONO} w-full cursor-pointer px-2 py-1 text-[0.8125rem] tracking-[0.04em] text-[#5b3fa8] underline decoration-dotted underline-offset-2 transition-colors hover:text-[#ff3fb0]`}
-            >
-              [ Interrompre la requête (Refuser) ]
-            </button>
           </div>
 
           <p className="mt-2 text-center text-[0.75rem] text-[#6B7280]">
