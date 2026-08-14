@@ -65,6 +65,6 @@ et le bouton changent. Les plus utiles à traiter ensuite :
 | Notification Shopify | Ce qu'elle doit viser sur le site |
 | --- | --- |
 | Activation du compte client | `{{ customer.account_activation_url }}` (imposé par Shopify) |
-| Confirmation de commande | `https://lilog.shop/account/orders` |
+| Confirmation de commande | fait : voir [confirmation-commande.md](confirmation-commande.md) |
 | Confirmation d'expédition | l'URL de suivi, puis `…/account/orders` |
 | Panier abandonné | `https://lilog.shop/cart` |
