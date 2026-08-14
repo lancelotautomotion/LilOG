@@ -85,6 +85,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
+      url: `${SITE_URL}/gift-card`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${SITE_URL}/histoire`,
       changeFrequency: "monthly",
       priority: 0.8,

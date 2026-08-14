@@ -57,10 +57,24 @@ export async function getCart(cartId: string): Promise<Cart | null> {
 export interface CartLineInput {
   variantId: string;
   quantity: number;
+  /**
+   * Attributs libres attachés à la ligne, repris tels quels par Shopify sur
+   * la commande. C'est par là que passent les informations de licence de la
+   * carte cadeau (courriel du bénéficiaire, message), qui appartiennent à la
+   * ligne et non au panier : deux cartes dans un même panier ont chacune leur
+   * destinataire.
+   */
+  attributes?: { key: string; value: string }[];
 }
 
 function toMerchandise(lines: CartLineInput[]) {
-  return lines.map((l) => ({ merchandiseId: l.variantId, quantity: l.quantity }));
+  return lines.map((l) => ({
+    merchandiseId: l.variantId,
+    quantity: l.quantity,
+    /* Une liste vide serait acceptée mais inutile : on n'envoie la clé que
+       lorsqu'il y a effectivement quelque chose à joindre. */
+    ...(l.attributes?.length ? { attributes: l.attributes } : {}),
+  }));
 }
 
 export async function createCartWithLines(
