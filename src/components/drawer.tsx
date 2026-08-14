@@ -94,8 +94,8 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
         <nav className="drawer-nav">
           {/* La Dressing Machine n'est pas un rayon : c'est la borne d'arcade
               de l'accueil, réduite à une ligne de menu. Le dossier jaune laisse
-              donc place au joystick, et la ligne d'attente reprend le jeton
-              d'ARCADE_SLOT.EXE, déjà traduit dans les neuf langues. */}
+              donc place au joystick, avec sa propre accroche (dmTagline),
+              traduite dans les neuf langues. */}
           <div className="drawer-item drawer-item-closet">
             <a className="drawer-link drawer-link-closet" href="/dressing-machine" onClick={onClose}>
               <span className="dm-tile-marquee" aria-hidden="true">
@@ -106,7 +106,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               <span className="dm-tile-icon" aria-hidden="true">🕹️</span>
               <span className="dm-tile-text">
                 <span className="dm-tile-title">00. Dressing Machine</span>
-                <span className="dm-tile-sub">{t.home.slotCoin}</span>
+                <span className="dm-tile-sub">{t.menu.dmTagline}</span>
               </span>
               <span className="dm-tile-play" aria-hidden="true">▶ PLAY</span>
             </a>
