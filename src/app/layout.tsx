@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Montserrat, Space_Mono, Great_Vibes, VT323, Caveat } from "next/font/google";
 import localFont from "next/font/local";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
@@ -64,6 +65,8 @@ export const metadata: Metadata = {
   description: "Vintage Y2K de seconde main, une pièce à la fois · Paris.",
 };
 
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const initialCart = await getCartAction().catch(() => null);
 
@@ -76,6 +79,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           </LanguageProvider>
         </SessionProvider>
       </body>
+      {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   );
 }
