@@ -4,8 +4,9 @@
    LIL_OG_DESKTOP.EXE : page d'accueil
    ------------------------------------------------------------
    L'accueil n'est plus une vitrine e-commerce mais un bureau
-   Y2K. Quatre modules, dans cet ordre :
+   Y2K. Un bandeau puis quatre modules, dans cet ordre :
 
+     00  FREE_SHIPPING.EXE la bande défilante de la livraison offerte
      01  CAMCORDER_OS      hero plein écran, viseur de caméscope
      02  ARCADE_SLOT       la borne qui lance la Dressing Machine
      03  FILE_EXPLORER.SYS les rayons en dossiers, pas en grille
@@ -31,7 +32,6 @@ import { ArcadeSlot } from "@/components/home/arcade-slot";
 import { FileExplorer } from "@/components/home/file-explorer";
 import { ReadmeWindow } from "@/components/home/readme-window";
 import { AnnounceBar } from "@/components/home/announce-bar";
-import { ShippingToast } from "@/components/home/shipping-toast";
 
 const SHELL_CSS = `
 @keyframes lhsBob{
@@ -60,7 +60,6 @@ export function HomeShell() {
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
       <HeroCamcorder />
-      <ShippingToast />
 
       <main className="relative overflow-hidden" style={WALLPAPER}>
         <style>{SHELL_CSS}</style>
