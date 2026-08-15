@@ -24,13 +24,14 @@ const REEL = ["👗", "👠", "👜", "🕶️", "💍", "👖", "🎀", "💄"]
 const REEL_SPEEDS = ["2.1s", "2.8s", "3.4s"];
 
 /**
- * Coupe `slotSub` après sa première phrase, quelle que soit la langue (point
- * latin ou 。 CJK) : les deux phrases passent chacune sur leur ligne au lieu
- * de se retrouver coupées au hasard par le retour à la ligne du navigateur.
+ * Découpe un texte en phrases, quelle que soit la langue (point latin ou 。
+ * CJK) : sert à la fois à retourner `slotSub` à la ligne entre ses deux
+ * phrases, et à étaler `slotIntroBody` en petite liste plutôt qu'un seul
+ * pavé de texte.
  */
-function splitFirstSentence(text: string): [string, string] {
-  const match = text.match(/^([\s\S]*?[.。!?！？])\s*([\s\S]*)$/);
-  return match ? [match[1], match[2]] : [text, ""];
+function splitSentences(text: string): string[] {
+  const sentences = text.match(/[^.。!?！？]+[.。!?！？]*/g);
+  return sentences ? sentences.map((s) => s.trim()).filter(Boolean) : [text];
 }
 
 const ARCADE_CSS = `
@@ -151,9 +152,23 @@ export function ArcadeSlot() {
               >
                 {t.home.slotIntroTitle}
               </h3>
-              <p className={`${MONO} mt-4 text-[0.9375rem] leading-[1.9] text-[#3b3550] sm:text-[1rem]`}>
-                {t.home.slotIntroBody}
-              </p>
+              {/* Une phrase par ligne plutôt qu'un seul pavé : ça étale le
+                  texte sur toute la hauteur de la fenêtre (calée sur la
+                  borne, à côté) au lieu de le laisser flotter, minuscule,
+                  au milieu d'un grand vide. */}
+              <div className="mt-6 space-y-4 border-t-2 border-dashed border-[#e4dff2] pt-6">
+                {splitSentences(t.home.slotIntroBody).map((sentence, i) => (
+                  <p
+                    key={i}
+                    className={`${MONO} flex items-start gap-2.5 text-[0.9375rem] leading-[1.7] text-[#3b3550] sm:text-[1.0625rem]`}
+                  >
+                    <span aria-hidden className="mt-[0.2em] shrink-0 text-[#ff5ec4]">
+                      ▸
+                    </span>
+                    <span>{sentence}</span>
+                  </p>
+                ))}
+              </div>
             </WindowFrame>
           </div>
 
@@ -229,20 +244,12 @@ export function ArcadeSlot() {
                   <p
                     className={`${MONO} mt-[clamp(14px,2.4vw,22px)] text-[0.8125rem] leading-[1.7] tracking-[0.06em] text-white/75 sm:text-[0.875rem]`}
                   >
-                    {(() => {
-                      const [first, second] = splitFirstSentence(t.home.slotSub);
-                      return (
-                        <>
-                          {first}
-                          {second && (
-                            <>
-                              <br />
-                              {second}
-                            </>
-                          )}
-                        </>
-                      );
-                    })()}
+                    {splitSentences(t.home.slotSub).map((sentence, i, arr) => (
+                      <span key={i}>
+                        {sentence}
+                        {i < arr.length - 1 && <br />}
+                      </span>
+                    ))}
                   </p>
                 </div>
               </div>
