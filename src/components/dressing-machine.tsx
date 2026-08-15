@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
+import { Footer } from "@/components/footer";
 import { SmartImg } from "@/components/smart-img";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 import { useCart } from "@/lib/cart-context";
@@ -1164,6 +1165,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
           );
         })}
       </main>
+
+      <Footer />
 
       {gateOpen && (
         <SizeGate

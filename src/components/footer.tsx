@@ -429,15 +429,15 @@ export function Footer() {
                 les gros jetons, pas les raccourcis pratiques en dessous. */}
             <nav
               aria-label="Navigation du site"
-              className="mt-[clamp(12px,1.8vw,18px)] grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5"
+              className="mt-[clamp(12px,1.8vw,18px)] grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6"
             >
               {TABS.map(({ href, icon, label }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`${MONO} flex h-[clamp(44px,5vw,52px)] min-w-0 items-center justify-center gap-2 rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-3 text-[clamp(0.8125rem,1.2vw,0.875rem)] font-bold tracking-[0.04em] text-[#3a3550] no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                  className={`${MONO} flex h-[clamp(40px,4.4vw,48px)] min-w-0 items-center justify-center gap-1.5 rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-2 text-[clamp(0.75rem,1vw,0.8125rem)] font-bold tracking-[0.03em] text-[#3a3550] no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
                 >
-                  <span aria-hidden className="shrink-0 text-[1rem] leading-none">
+                  <span aria-hidden className="shrink-0 text-[0.9375rem] leading-none">
                     {icon}
                   </span>
                   <span className="truncate uppercase">{label}</span>
