@@ -173,9 +173,13 @@ export function ArcadeSlot() {
           </div>
 
           {/* ---- Coque de la borne ---- */}
-          <div className="order-1 w-full lg:order-2 lg:ml-auto">
+          <div className="order-1 h-full w-full lg:order-2 lg:ml-auto">
+            {/* `h-full flex flex-col` : la coque suit elle aussi la hauteur
+                de la rangée (celle du mode d'emploi, à côté), l'écran
+                cathodique (flex-1) absorbe l'écart au lieu de laisser la
+                coque plus courte que la fenêtre voisine. */}
             <div
-              className="relative rounded-[26px] border-2 border-[#9b97b3] p-[clamp(14px,2.6vw,26px)]"
+              className="relative flex h-full flex-col rounded-[26px] border-2 border-[#9b97b3] p-[clamp(14px,2.6vw,26px)]"
               style={{
                 background: "linear-gradient(180deg,#f6f5fb 0%,#e2e0ee 34%,#c6c2d8 72%,#a9a5bd 100%)",
                 boxShadow:
@@ -207,7 +211,7 @@ export function ArcadeSlot() {
               </div>
 
               {/* ---- Écran cathodique encastré ---- */}
-              <div className="relative overflow-hidden rounded-xl border-4 border-gray-800 bg-[#07060e] px-4 py-[clamp(20px,4vw,36px)] shadow-[inset_0_0_0_2px_rgba(255,255,255,0.05),inset_0_6px_22px_rgba(0,0,0,0.95)]">
+              <div className="relative flex flex-1 flex-col justify-center overflow-hidden rounded-xl border-4 border-gray-800 bg-[#07060e] px-4 py-[clamp(20px,4vw,36px)] shadow-[inset_0_0_0_2px_rgba(255,255,255,0.05),inset_0_6px_22px_rgba(0,0,0,0.95)]">
                 <div aria-hidden className="lha-crt pointer-events-none absolute inset-0 z-10" />
                 <div
                   aria-hidden
