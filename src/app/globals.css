@@ -5055,20 +5055,6 @@ html, body {
   transition: background 150ms ease, transform 150ms ease;
 }
 .burnbook-remove:hover { background: #fff; transform: scale(1.12); }
-.burnbook-note {
-  position: absolute;
-  max-width: 74%;
-  font-family: var(--font-hand), cursive;
-  font-weight: 700;
-  font-size: 1.125rem;
-  line-height: 1.1;
-  color: #e6007a;
-  z-index: 15;
-  pointer-events: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 .burnbook-doodle {
   position: absolute;
   font-family: var(--font-hand), cursive;
