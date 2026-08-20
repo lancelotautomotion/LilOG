@@ -145,6 +145,71 @@ export const CATALOG_PRODUCTS_QUERY = /* GraphQL */ `
   }
 `;
 
+// Les pièces portant un tag Shopify donné ("tag:louna-pick" pour les coups de
+// cœur de la maison, qui alimentent PLAYLIST_HIGHLIGHTS.EXE sur l'accueil).
+// Même sélection de champs que CATALOG_PRODUCTS_QUERY, champs méta Taille
+// compris : sans eux, l'afficheur du lecteur retomberait sur "ONE SIZE" pour
+// toutes les pièces, alors que la taille est justement l'information que le
+// visiteur cherche. `query` accepte la syntaxe de recherche Storefront, donc
+// `tag:'...'` filtre côté Shopify, sans rapatrier tout le catalogue.
+export const TAGGED_PRODUCTS_QUERY = /* GraphQL */ `
+  query TaggedProducts($query: String!, $first: Int!) {
+    products(first: $first, query: $query, sortKey: CREATED_AT, reverse: true) {
+      edges {
+        node {
+          id
+          handle
+          title
+          productType
+          tags
+          availableForSale
+          featuredImage {
+            url
+            altText
+          }
+          images(first: 2) {
+            edges {
+              node {
+                url
+                altText
+              }
+            }
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          compareAtPriceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          options {
+            name
+            values
+          }
+          sizeMeta: metafield(namespace: "shopify", key: "size") { ${RICH_METAFIELD_FIELDS} }
+          sizeMeta2: metafield(namespace: "custom", key: "taille") { ${RICH_METAFIELD_FIELDS} }
+          sizeMeta3: metafield(namespace: "shopify", key: "clothing-size") { ${RICH_METAFIELD_FIELDS} }
+          sizeMeta4: metafield(namespace: "shopify", key: "shoe-size") { ${RICH_METAFIELD_FIELDS} }
+          variants(first: 1) {
+            edges {
+              node {
+                id
+                title
+                availableForSale
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 // Shopify's category (taxonomy) metafields hold the size for products sold
 // without variants, the case for one-of-one vintage. Their value is a
 // metaobject reference, so the human-readable size lives in the referenced

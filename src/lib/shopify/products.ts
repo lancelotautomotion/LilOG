@@ -6,6 +6,7 @@ import {
   FEATURED_PRODUCTS_QUERY,
   PRODUCT_BY_HANDLE_QUERY,
   SEARCH_PRODUCTS_QUERY,
+  TAGGED_PRODUCTS_QUERY,
 } from "./queries";
 import type {
   CollectionByHandleResponse,
@@ -200,6 +201,79 @@ function mapProduct(node: ShopifyProductNode): Product {
 export async function getFeaturedProducts(count = 8): Promise<Product[]> {
   const data = await shopifyFetch<FeaturedProductsResponse>(FEATURED_PRODUCTS_QUERY, { first: count });
   return data.products.edges.map((e) => mapProduct(e.node));
+}
+
+/* ============================================================
+   LOUNA_PICKS : la sélection hebdomadaire de l'accueil
+   ============================================================ */
+
+/** Le tag Shopify qui désigne un coup de cœur de Louna. */
+const LOUNA_PICK_TAG = "louna-pick";
+
+/**
+ * Identifiant de la semaine ISO 8601 en cours (`AAAASS`), qui sert de graine
+ * au tirage. Le découpage ISO est celui du calendrier français : la semaine
+ * commence le lundi, et c'est le jeudi qui décide de l'année à laquelle une
+ * semaine à cheval sur deux années appartient.
+ */
+function isoWeekSeed(now: Date): number {
+  const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const isoDay = d.getUTCDay() || 7; // dimanche vaut 7, pas 0.
+  d.setUTCDate(d.getUTCDate() + 4 - isoDay); // On se place sur le jeudi.
+  const yearStart = Date.UTC(d.getUTCFullYear(), 0, 1);
+  const week = Math.ceil(((d.getTime() - yearStart) / 86_400_000 + 1) / 7);
+  return d.getUTCFullYear() * 100 + week;
+}
+
+/**
+ * Générateur pseudo-aléatoire déterministe (mulberry32) : à graine égale, même
+ * suite de nombres. C'est ce qui garantit que tous les visiteurs d'une même
+ * semaine voient exactement la même sélection — `Math.random()` en donnerait
+ * une différente à chaque rendu, et donc une à chaque instance serveur.
+ */
+function seededRandom(seed: number): () => number {
+  let state = seed;
+  return () => {
+    state = (state + 0x6d2b79f5) | 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4_294_967_296;
+  };
+}
+
+/**
+ * Tire `count` pièces au hasard dans `pool`, de façon stable sur toute la
+ * semaine : mélange de Fisher-Yates alimenté par la graine hebdomadaire. La
+ * sélection bascule d'elle-même le lundi à 00 h 00 UTC, sans tâche planifiée.
+ */
+function weeklySample<T>(pool: T[], count: number, now = new Date()): T[] {
+  if (pool.length <= count) return pool;
+
+  const rand = seededRandom(isoWeekSeed(now));
+  const shuffled = [...pool];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, count);
+}
+
+/**
+ * Les coups de cœur de Louna qui alimentent PLAYLIST_HIGHLIGHTS.EXE : toutes
+ * les pièces tagguées `louna-pick` dans Shopify, dont `count` sont tirées au
+ * sort pour la semaine en cours. Aucun repli sur le reste du catalogue : si
+ * rien n'est taggué, la section ne s'affiche pas, plutôt que de mettre en
+ * avant des pièces qui n'ont pas été choisies.
+ */
+export async function getLounaPicks(count = 10): Promise<Product[]> {
+  const data = await shopifyFetch<FeaturedProductsResponse>(TAGGED_PRODUCTS_QUERY, {
+    query: `tag:'${LOUNA_PICK_TAG}'`,
+    first: 250,
+  });
+  return weeklySample(
+    data.products.edges.map((e) => mapProduct(e.node)),
+    count,
+  );
 }
 
 /**
