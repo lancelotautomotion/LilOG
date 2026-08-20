@@ -346,10 +346,6 @@ export function CartPage() {
                   <span className={`oc-ship-status${shippingFree ? " oc-ship-status-done" : ""}`}>
                     {shippingFree ? "Livraison offerte ♥" : `Plus que ${remaining.toFixed(2)}€`}
                   </span>
-
-                  <p className="oc-ship-count">
-                    {subtotal.toFixed(2)}€ / {FREE_SHIPPING_TARGET.toFixed(2)}€ · {pct}%
-                  </p>
                 </div>
               )}
 

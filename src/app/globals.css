@@ -1801,15 +1801,6 @@ textarea {
 }
 .oc-ship-status.oc-ship-status-done { color: #6852F6; }
 
-/* Compteur discret sous le verdict : 35.00€ / 90.00€ · 39%. */
-.oc-ship-count {
-  font-family: var(--mono);
-  font-size: 0.8125rem;
-  letter-spacing: 0.06em;
-  color: var(--ldl-muted);
-  margin: 0;
-}
-
 /* Full-page layout : machine + summary side by side */
 .oc-page {
   position: relative;
@@ -1905,11 +1896,11 @@ textarea {
   align-items: center;
   justify-content: center;
   aspect-ratio: 3/4;
-  /* 54vh poussait la fenêtre au-delà de la hauteur d'un écran de laptop,
-     forçant un scroll pour voir le bouton de checkout. Plafonné à 420px
-     en plus du pourcentage, pour que la photo n'explose pas non plus sur
-     un moniteur très haut. */
-  max-height: min(44vh, 420px);
+  /* Le Style Scan en dessous a été resserré (voir .oc-style-meter) pour
+     laisser plus de place à la photo sans repousser le bouton de
+     checkout hors du viewport. Plafonné en plus du pourcentage, pour que
+     la photo n'explose pas non plus sur un moniteur très haut. */
+  max-height: min(54vh, 500px);
   overflow: hidden;
   position: relative;
   border-bottom: 1px solid var(--ldl-border);
@@ -1983,8 +1974,10 @@ textarea {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 16px;
+  gap: 6px;
+  /* Resserré : la photo au-dessus est montée à 54vh (contre 44vh), ce
+     bloc lui cède la place plutôt que de forcer la fenêtre à grandir. */
+  padding: 10px;
   background: #fff;
   flex: 1;          /* prend tout l'espace restant après la photo + label */
   text-align: center;
@@ -1993,17 +1986,17 @@ textarea {
 /* "STYLE SCAN" */
 .oc-scan-header {
   font-family: var(--font-lcd), monospace;
-  font-size: 1.125rem;
+  font-size: 0.9375rem;
   color: var(--ldl-primary);
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   user-select: none;
 }
 
 /* Barre : segments bleu roi sur piste claire */
 .oc-scan-bar-track {
-  width: 88%;
-  height: 12px;
+  width: 82%;
+  height: 9px;
   border: 1px solid var(--ldl-border);
   background: var(--ldl-bg);
   position: relative;
@@ -2046,7 +2039,7 @@ textarea {
 /* Curseur clignotant pendant le scan */
 .oc-scan-cursor {
   font-family: var(--mono);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--ldl-primary);
   animation: ocCursorBlink 500ms step-end infinite;
 }
@@ -2054,7 +2047,7 @@ textarea {
 /* Phrase finale : police LCD (VT323) */
 .oc-scan-phrase {
   font-family: var(--font-lcd), monospace;
-  font-size: 1.55rem;
+  font-size: 1.125rem;
   color: var(--ldl-text);
   font-style: normal;
   text-transform: uppercase;
