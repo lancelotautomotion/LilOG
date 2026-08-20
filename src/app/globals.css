@@ -2400,6 +2400,7 @@ textarea {
    fiche produit (voir LeopardBackdrop dans components/y2k/kit.tsx). */
 .account-desktop--leo {
   position: relative;
+  justify-content: center;
   background-image: url('/leo.jpeg');
   background-size: cover;
   background-position: center;
