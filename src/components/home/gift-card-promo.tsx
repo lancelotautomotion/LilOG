@@ -1,5 +1,5 @@
 /* ============================================================
-   LICENCE_CADEAU.ISO : module 02 de l'accueil
+   LICENCE_CADEAU.ISO : module 05 de l'accueil
    ------------------------------------------------------------
    L'encart promotionnel de la carte cadeau, dans l'esprit des
    pochettes CD-ROM que les magazines et AOL glissaient dans les
@@ -68,9 +68,11 @@ const PROMO_CSS = `
 
 export function GiftCardPromo() {
   return (
-    <section id="gift-card" className="px-4 py-[clamp(48px,8vw,96px)] sm:px-6">
+    /* Padding bas seul : PLAYLIST_HIGHLIGHTS.EXE, premier module de la
+       page, porte seul le retrait d'après le hero. */
+    <section id="gift-card" className="px-4 pb-[clamp(48px,8vw,96px)] sm:px-6">
       <div className="mx-auto w-full max-w-[1200px]">
-        <SectionLabel n="02" file="LICENCE_CADEAU.ISO" tone="wallpaper" />
+        <SectionLabel n="05" file="LICENCE_CADEAU.ISO" tone="wallpaper" />
 
         <style>{PROMO_CSS}</style>
 

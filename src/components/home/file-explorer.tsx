@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   FILE_EXPLORER.SYS : module 05 de l'accueil
+   FILE_EXPLORER.SYS : module 04 de l'accueil
    ------------------------------------------------------------
    Les rayons de la boutique ne sont pas présentés en grille de
    produits mais en icônes de bureau : onze dossiers et une
@@ -144,7 +144,7 @@ export function FileExplorer() {
           `max-w` d'origine la laissait flotter au milieu de l'écran depuis
           que le module s'étire d'un bord à l'autre. */}
       <div className="px-4 sm:px-6">
-        <SectionLabel n="05" file="FILE_EXPLORER.SYS" tone="wallpaper" />
+        <SectionLabel n="04" file="FILE_EXPLORER.SYS" tone="wallpaper" />
       </div>
 
       <style>{EXPLORER_CSS}</style>
