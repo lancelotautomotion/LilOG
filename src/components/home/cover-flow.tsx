@@ -65,12 +65,11 @@ const COVER_CSS = `
   box-shadow:0 5px 0 #6f6b86, 0 11px 16px rgba(20,6,40,.42), inset 0 2px 0 rgba(255,255,255,.95), inset 0 -4px 10px rgba(60,40,110,.28);
   transition:transform 90ms ease, box-shadow 90ms ease, filter 160ms ease;
 }
-.lhh-key:hover:not(:disabled){ filter:brightness(1.05) }
-.lhh-key:active:not(:disabled){
+.lhh-key:hover{ filter:brightness(1.05) }
+.lhh-key:active{
   transform:translateY(5px);
   box-shadow:0 0 0 #6f6b86, 0 3px 7px rgba(20,6,40,.45), inset 0 2px 0 rgba(255,255,255,.55), inset 0 -3px 8px rgba(60,40,110,.35);
 }
-.lhh-key:disabled{ opacity:.4; filter:grayscale(.55); cursor:default }
 
 /* Bouton d'achat : même course, mais en rose maison. */
 .lhh-cta{
@@ -89,6 +88,20 @@ const COVER_CSS = `
   .lhh-crt{ animation:none }
 }
 `;
+
+/**
+ * Écart circulaire entre la pochette `i` et la pochette active : le chemin le
+ * plus court autour de la boucle plutôt que la simple soustraction. Sans ça,
+ * au démarrage (active = 0), la dernière pochette se retrouverait tout à
+ * droite au lieu d'apparaître juste à gauche du centre — l'éventail ne
+ * boucle pas, il se contente de recommencer.
+ */
+function loopOffset(i: number, active: number, count: number): number {
+  let offset = i - active;
+  if (offset > count / 2) offset -= count;
+  else if (offset < -count / 2) offset += count;
+  return offset;
+}
 
 /** Position, rotation, échelle et assombrissement d'une pochette. */
 function slideStyle(offset: number): React.CSSProperties {
@@ -161,23 +174,21 @@ function Reflection({ src }: { src: string }) {
   );
 }
 
-/** Touche de transport biseautée de la console (⏪ / ⏩). */
+/** Touche de transport biseautée de la console (⏪ / ⏩) : jamais désactivée,
+ *  la navigation boucle d'un bout à l'autre de la sélection. */
 function TransportKey({
   glyph,
   label,
   onClick,
-  disabled,
 }: {
   glyph: string;
   label: string;
   onClick: () => void;
-  disabled: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={disabled}
       aria-label={label}
       title={label}
       className={`${MONO} lhh-key shrink-0 rounded-lg border-2 border-[#9b97b3] ${PLASTIC_FACE} px-[clamp(12px,2.4vw,20px)] py-[clamp(8px,1.6vw,13px)] text-[clamp(0.8rem,2vw,1rem)] leading-none font-bold text-[#262626] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
@@ -204,7 +215,10 @@ export function CoverFlow({ products }: { products: Product[] }) {
   // long : l'afficheur garde le même corps quelle que soit la piste en cours.
   const titleSize = trackTitleSize(products.reduce((max, p) => Math.max(max, p.name.length), 0));
 
-  const go = (next: number) => setActive(Math.min(Math.max(next, 0), products.length - 1));
+  // Modulo qui reste positif même pour `next` négatif (JS renvoie un reste
+  // du signe du dividende) : c'est ce qui boucle de la première pièce vers
+  // la dernière, et inversement, plutôt que de s'arrêter aux bords.
+  const go = (next: number) => setActive(((next % products.length) + products.length) % products.length);
 
   const add = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -284,7 +298,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
 
             <div className="relative h-[clamp(300px,46vw,480px)] w-full">
               {products.map((p, i) => {
-                const offset = i - active;
+                const offset = loopOffset(i, active, products.length);
                 const isActive = offset === 0;
 
                 // Habillage commun aux deux formes de pochette : seul l'élément
@@ -378,7 +392,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
 
           {/* ---- Console de transport ---- */}
           <div className="mt-[clamp(10px,2vw,18px)] flex items-center justify-center gap-[clamp(8px,2vw,18px)] rounded-lg border border-[#b0acc4] bg-[#d8d5e6] px-[clamp(8px,2vw,18px)] py-[clamp(10px,2vw,16px)] shadow-[inset_1px_1px_0_rgba(90,86,120,0.55),inset_-1px_-1px_0_rgba(255,255,255,0.9),inset_2px_2px_5px_rgba(0,0,0,0.16)]">
-            <TransportKey glyph="⏪" label="Pièce précédente" onClick={() => go(active - 1)} disabled={active === 0} />
+            <TransportKey glyph="⏪" label="Pièce précédente" onClick={() => go(active - 1)} />
 
             <button
               type="button"
@@ -393,12 +407,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
               {sold ? "[ ✕ SOLD OUT ]" : added ? "[ ✓ ADDED ]" : "[ ▶ ADD TO CART ]"}
             </button>
 
-            <TransportKey
-              glyph="⏩"
-              label="Pièce suivante"
-              onClick={() => go(active + 1)}
-              disabled={active === products.length - 1}
-            />
+            <TransportKey glyph="⏩" label="Pièce suivante" onClick={() => go(active + 1)} />
           </div>
         </WindowFrame>
       </div>
