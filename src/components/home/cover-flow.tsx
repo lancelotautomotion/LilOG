@@ -85,6 +85,20 @@ function slideStyle(offset: number): React.CSSProperties {
   };
 }
 
+/**
+ * Taille du titre de piste, calée sur la longueur du nom du produit : plus le
+ * nom est long, plus le corps (et son plancher `vw`, pour les petits écrans)
+ * rétrécit, afin que "TRACK 0X : [ NOM ]" tienne toujours sur une seule
+ * ligne, crochet fermant compris — jamais renvoyé seul à la ligne suivante.
+ */
+function trackTitleSize(len: number): string {
+  if (len <= 22) return "clamp(0.85rem, 2.4vw, 1.125rem)";
+  if (len <= 36) return "clamp(0.72rem, 2vw, 0.95rem)";
+  if (len <= 52) return "clamp(0.62rem, 1.7vw, 0.8rem)";
+  if (len <= 72) return "clamp(0.52rem, 1.4vw, 0.6875rem)";
+  return "clamp(0.44rem, 1.15vw, 0.575rem)";
+}
+
 /** Copie inversée de la pochette active : le reflet "Apple 2000". */
 function Reflection({ src, alt }: { src: string; alt: string }) {
   return (
@@ -214,13 +228,14 @@ export function CoverFlow({ products }: { products: Product[] }) {
           </div>
 
           {/* ---- Piste en cours de lecture ---- */}
-          <div className="mx-auto mt-6 max-w-[560px] border-t-2 border-dashed border-[#e4dff2] pt-5 text-center sm:mt-8">
+          <div className="mx-auto mt-6 max-w-[880px] border-t-2 border-dashed border-[#e4dff2] pt-5 text-center sm:mt-8">
             <p className={`${MONO} text-[0.6875rem] font-bold tracking-[0.18em] text-[#5b2fb8] uppercase`}>
               <span style={{ color: PINK }}>▶</span> Now playing · {String(active + 1).padStart(2, "0")}/
               {String(products.length).padStart(2, "0")}
             </p>
             <h3
-              className={`${MONO} mt-1.5 text-[clamp(0.9rem,2vw,1.125rem)] leading-tight font-extrabold text-[#1E2430] uppercase`}
+              className={`${MONO} mt-1.5 leading-tight font-extrabold text-[#1E2430] uppercase whitespace-nowrap`}
+              style={{ fontSize: trackTitleSize(current.name.length) }}
             >
               Track {String(active + 1).padStart(2, "0")} : [ {current.name} ]
             </h3>
