@@ -164,7 +164,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
-            <div className="relative h-[clamp(220px,34vw,360px)] w-full">
+            <div className="relative h-[clamp(300px,46vw,480px)] w-full">
               {products.map((p, i) => {
                 const offset = i - active;
                 const isActive = offset === 0;
@@ -175,7 +175,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
                     onClick={() => go(i)}
                     aria-current={isActive}
                     aria-label={p.name}
-                    className={`lhh-slide absolute top-1/2 left-1/2 aspect-[3/4] w-[clamp(140px,18vw,220px)] overflow-hidden rounded-lg border-2 ${
+                    className={`lhh-slide absolute top-1/2 left-1/2 aspect-[3/4] w-[clamp(190px,24vw,300px)] overflow-hidden rounded-lg border-2 ${
                       isActive ? "lhh-active border-white" : "border-[#b8b4cc]"
                     } bg-[#0d0d15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
                     style={{
@@ -214,17 +214,17 @@ export function CoverFlow({ products }: { products: Product[] }) {
           </div>
 
           {/* ---- Piste en cours de lecture ---- */}
-          <div className="mx-auto mt-6 max-w-[560px] border-t-2 border-dashed border-[#e4dff2] pt-6 text-center sm:mt-8">
-            <p className={`${MONO} text-[0.8125rem] font-bold tracking-[0.2em] text-[#5b2fb8] uppercase`}>
+          <div className="mx-auto mt-6 max-w-[560px] border-t-2 border-dashed border-[#e4dff2] pt-5 text-center sm:mt-8">
+            <p className={`${MONO} text-[0.6875rem] font-bold tracking-[0.18em] text-[#5b2fb8] uppercase`}>
               <span style={{ color: PINK }}>▶</span> Now playing · {String(active + 1).padStart(2, "0")}/
               {String(products.length).padStart(2, "0")}
             </p>
             <h3
-              className={`${MONO} mt-2 text-[clamp(1.1rem,3vw,1.5rem)] leading-tight font-extrabold text-[#1E2430] uppercase`}
+              className={`${MONO} mt-1.5 text-[clamp(0.9rem,2vw,1.125rem)] leading-tight font-extrabold text-[#1E2430] uppercase`}
             >
               Track {String(active + 1).padStart(2, "0")} : [ {current.name} ]
             </h3>
-            <p className={`${MONO} mt-1.5 text-[0.875rem] tracking-[0.08em] text-[#6B7280] uppercase`}>
+            <p className={`${MONO} mt-1 text-[0.75rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
               Price : {current.was && <s className="mr-1 opacity-70">{current.was}€</s>}
               {current.price}€ // Size : {sizeLabel}
             </p>
@@ -233,7 +233,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
               type="button"
               onClick={add}
               disabled={sold}
-              className={`${MONO} lhh-cta mt-5 inline-block rounded-2xl border-2 border-[#5d0b46] px-6 py-3 text-[0.875rem] font-bold tracking-[0.1em] text-white uppercase`}
+              className={`${MONO} lhh-cta mt-4 inline-block rounded-2xl border-2 border-[#5d0b46] px-5 py-2.5 text-[0.75rem] font-bold tracking-[0.1em] text-white uppercase`}
               style={{
                 background: "linear-gradient(180deg,#ff9ee4 0%,#ff45b4 42%,#d61f8f 74%,#a6106b 100%)",
                 textShadow: "0 2px 0 rgba(90,0,60,.55)",
