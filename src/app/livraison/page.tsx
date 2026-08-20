@@ -56,13 +56,13 @@ const SECTIONS: DocSection[] = [
     title: "Frais de livraison",
     content: (
       <>
-        <Tldr>livraison offerte dès 150 € d&apos;achat en France métropolitaine.</Tldr>
+        <Tldr>livraison offerte dès 90 € d&apos;achat en France métropolitaine.</Tldr>
         <P>
           Les frais de livraison sont calculés en fonction du mode choisi et affichés clairement lors du passage de
           commande. <strong>Aucun frais caché.</strong>
         </P>
         <P>
-          La livraison est offerte pour toute commande supérieure à <strong>150 €</strong> en France métropolitaine.
+          La livraison est offerte pour toute commande supérieure à <strong>90 €</strong> en France métropolitaine.
         </P>
       </>
     ),

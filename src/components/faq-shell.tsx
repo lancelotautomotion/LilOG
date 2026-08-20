@@ -210,7 +210,7 @@ const FAQS: Faq[] = [
     q: "Quels sont les frais de livraison ?",
     a: [
       "Ils dépendent du mode choisi et sont affichés clairement au moment du passage de commande. Aucun frais caché.",
-      "La livraison est offerte dès 150 € d'achat en France métropolitaine.",
+      "La livraison est offerte dès 90 € d'achat en France métropolitaine.",
     ],
   },
   {

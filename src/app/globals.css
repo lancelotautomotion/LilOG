@@ -1703,9 +1703,106 @@ textarea {
   background-position: 0 0;
 }
 
-/* Curseur clignotant de l'écran de transfert (MON_PANIER.EXE). */
-.oc-term-caret {
-  animation: ocCursorBlink 500ms step-end infinite;
+/* ============================================================
+   Colonne d'icônes du bureau
+   ------------------------------------------------------------
+   Les raccourcis sont posés en colonne le long du bord gauche,
+   comme sur un bureau. La colonne est dans le flux plutôt qu'en
+   `absolute` : les marges latérales varient trop d'une largeur
+   d'écran à l'autre pour qu'une bande flottante y tienne sans
+   passer sous les fenêtres.
+
+   Sous 1180px, `.oc-page` passe en colonne : la bande d'icônes
+   se remet alors à plat au-dessus des fenêtres, sur toute la
+   largeur. Le point de bascule est celui de `.oc-page`, pas un
+   palier Tailwind, sinon les deux se croisent et la colonne se
+   retrouve compressée sur une largeur d'icône.
+   ============================================================ */
+.oc-desktop-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+@media (max-width: 1180px) {
+  .oc-desktop-icons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    flex-basis: 100%;
+  }
+}
+
+/* ============================================================
+   Jauge de livraison offerte (MON_PANIER.EXE)
+   ------------------------------------------------------------
+   Exactement le vocabulaire du STYLE SCAN de la fenêtre de
+   gauche : en-tête LCD bleu roi, piste claire, blocs bleus,
+   verdict en grosses lettres LCD. Les deux fenêtres affichent
+   ainsi la même famille d'instrument de mesure.
+   ============================================================ */
+.oc-ship-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--ldl-border);
+  text-align: center;
+}
+.oc-ship-meter .oc-scan-bar-track { width: 92%; }
+
+/* Le remplissage part de 0 et rejoint la largeur posée en style
+   inline : une keyframe qui ne déclare que `from` prend la valeur
+   calculée de l'élément comme arrivée. Pas de minuterie côté React,
+   et l'animation se rejoue via la `key` quand le total change. */
+.oc-ship-bar-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ldl-primary) 0px,
+    var(--ldl-primary) 10px,
+    transparent 10px,
+    transparent 12px
+  );
+  animation: ocShipFill 800ms ease-out both;
+}
+/* Seuil atteint : les blocs passent au violet vif, comme le scan plein. */
+.oc-ship-bar-fill.oc-ship-bar-full {
+  background: repeating-linear-gradient(
+    90deg,
+    #6852F6 0px,
+    #6852F6 10px,
+    transparent 10px,
+    transparent 12px
+  );
+}
+@keyframes ocShipFill {
+  from { width: 0%; }
+}
+
+/* Verdict : même typo LCD que la phrase du STYLE SCAN. */
+.oc-ship-status {
+  font-family: var(--font-lcd), monospace;
+  font-size: 1.55rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ldl-text);
+}
+.oc-ship-status.oc-ship-status-done { color: #6852F6; }
+
+/* Compteur discret sous le verdict : 35.00€ / 90.00€ · 39%. */
+.oc-ship-count {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  color: var(--ldl-muted);
+  margin: 0;
 }
 
 /* Full-page layout : machine + summary side by side */
@@ -2025,9 +2122,13 @@ textarea {
 .oc-nav-remove:hover:not(:disabled) .oc-btn-face { background: #c00; border-color: #c00; color: #fff; }
 
 /* ── Summary panel (fenêtre Win95, toujours visible, à droite de la machine) ── */
+/* `flex` plutôt qu'une largeur figée : la colonne d'icônes prend sa
+   place à gauche, et la fenêtre du panier se resserre jusqu'à 440px
+   au lieu de passer à la ligne sur les écrans intermédiaires. */
 .oc-summary {
-  width: min(620px, 94vw);
-  flex-shrink: 0;
+  flex: 1 1 440px;
+  max-width: 620px;
+  min-width: 0;
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -2167,11 +2268,11 @@ textarea {
 @media (max-width: 1180px) {
   .oc-page { flex-direction: column; align-items: center; }
   .oc-center { width: min(420px, 92vw); }
-  .oc-summary { width: min(560px, 92vw); }
+  .oc-summary { flex: none; width: min(560px, 92vw); }
 }
 @media (max-width: 480px) {
   .oc-center { width: 92vw; }
-  .oc-summary { width: 92vw; }
+  .oc-summary { flex: none; width: 92vw; }
   .oc-btn-face { padding: 9px 14px; min-width: 40px; }
   .oc-btn-face-wide { padding: 9px 16px; }
 }
