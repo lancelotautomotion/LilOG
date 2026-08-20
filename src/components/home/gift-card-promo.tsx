@@ -26,10 +26,11 @@ import Link from "next/link";
 import { CdRom } from "@/components/gift-card/cd-rom";
 import { GRID_BG, MONO, PLASTIC, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
 
-/** Les trois raccourcis de montant. Les capacités réelles vivent dans Shopify :
- *  si l'une d'elles disparaissait du catalogue, le lien reste valide et
- *  l'assistant retombe simplement sur sa première capacité disponible. */
-const AMOUNTS = [20, 50, 100] as const;
+/** Les six raccourcis de montant, alignés sur les capacités réelles du
+ *  produit Shopify. Si l'une d'elles disparaissait du catalogue, le lien
+ *  reste valide et l'assistant retombe simplement sur sa première capacité
+ *  disponible. */
+const AMOUNTS = [20, 50, 100, 150, 200, 250] as const;
 
 const PROMO_CSS = `
 /* Lévitation du boîtier. */
@@ -130,13 +131,16 @@ export function GiftCardPromo() {
                 d&apos;activation instantanée par email.
               </p>
 
-              {/* Accès rapide : trois montants qui amorcent le graveur. */}
-              <div className="mt-6 flex flex-wrap justify-center gap-2.5 lg:justify-start">
+              {/* Accès rapide : les six montants, toujours sur une seule ligne —
+                  capsules et espacement rétrécissent avec l'écran (`clamp`)
+                  plutôt que de passer à la ligne ; `overflow-x-auto` ne sert
+                  que de filet pour les tout premiers mobiles. */}
+              <div className="mt-6 flex flex-nowrap justify-center gap-[clamp(4px,1.4vw,10px)] overflow-x-auto pb-1 lg:justify-start">
                 {AMOUNTS.map((amount) => (
                   <Link
                     key={amount}
                     href={`/gift-card?montant=${amount}`}
-                    className={`${MONO} lhg-chip rounded-lg border-2 border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2.5 text-[0.9375rem] font-bold tracking-[0.04em] text-[#262626] uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC}`}
+                    className={`${MONO} lhg-chip shrink-0 rounded-lg border-2 border-[#c6c2d8] ${PLASTIC_FACE} px-[clamp(7px,1.8vw,16px)] py-[clamp(6px,1.2vw,10px)] text-[clamp(0.6875rem,2.1vw,0.9375rem)] font-bold whitespace-nowrap tracking-[0.04em] text-[#262626] uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC}`}
                     style={{ boxShadow: "0 3px 0 rgba(0,0,0,0.18)" }}
                   >
                     [ {amount}€ ]
