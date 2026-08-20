@@ -1722,7 +1722,7 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Étirée à la hauteur des fenêtres (`stretch` hérité de .oc-page) et
+  /* Étirée à la hauteur des fenêtres (`stretch` hérité de .oc-row) et
      `space-between` : les 4 icônes se répartissent sur toute la hauteur
      du bloc au lieu de rester tassées en haut avec un grand vide dessous. */
   justify-content: space-between;
@@ -1816,23 +1816,32 @@ textarea {
   z-index: 1;
   min-height: 100dvh;
   display: flex;
-  flex-direction: row;
-  /* `flex-start`, pas `stretch` : les deux fenêtres gardent chacune la
-     hauteur de leur propre contenu au lieu de s'étirer à la taille de
-     l'autre. Sans ça, ajouter des articles dans MON_PANIER.EXE allongeait
-     aussi DRESSING (bien que son contenu n'ait pas changé), et sur un
-     écran plus haut que le contenu, les deux fenêtres s'étiraient jusqu'au
-     bord de la page en avalant le vide qu'on veut voir en dessous. La
-     colonne d'icônes garde son propre `align-self: stretch` (elle, on
-     veut qu'elle épouse la hauteur de la fenêtre la plus haute). */
+  /* `flex-start`, pas `stretch` : sur un écran plus haut que le contenu,
+     min-height:100dvh donne à .oc-page une hauteur "définie" — et un
+     conteneur flex à une seule ligne avec une hauteur définie étire cette
+     ligne (donc ses items) jusqu'à la remplir, quel que soit align-items.
+     Résultat : .oc-row (ligne unique, un seul enfant ici) reste à sa
+     hauteur naturelle plutôt que d'être tirée jusqu'au bas de la page,
+     ce qui laisse le vide voulu sous les fenêtres. Le VRAI alignement des
+     trois colonnes (icônes/DRESSING/MON_PANIER) se fait DANS .oc-row, un
+     conteneur à hauteur naturelle (pas de min-height) : là, le même piège
+     ne joue pas, et `align-items: stretch` s'y comporte normalement —
+     chaque colonne s'étire à la hauteur de la plus haute des trois. */
   align-items: flex-start;
   justify-content: center;
   /* Marges resserrées : au format desktop, le bloc doit tenir dans la
      hauteur d'un écran de laptop sans scroll. Le padding vertical
      n'a plus qu'à séparer la nav (fixed, hors flux) du contenu. */
   padding: clamp(56px, 6vw, 84px) clamp(16px, 4vw, 60px) clamp(24px, 4vw, 56px);
+}
+.oc-row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
   gap: clamp(16px, 3vw, 40px);
   flex-wrap: wrap;
+  width: 100%;
 }
 
 /* Center machine */
@@ -2149,17 +2158,31 @@ textarea {
   flex: 1 1 440px;
   max-width: 620px;
   min-width: 0;
+  /* `align-items: stretch` de .oc-row épouse déjà la hauteur de DRESSING
+     (l'autre colonne de la ligne) — explicite ici pour ne pas dépendre
+     d'un défaut qui pourrait changer ailleurs. Ça ne marche dans ce sens
+     (DRESSING reste la référence) que parce que .oc-summary-body plafonne
+     sa propre contribution : sans ce plafond, une longue liste d'articles
+     redeviendrait la plus haute des deux et étirerait DRESSING à sa
+     place — le bug du tour précédent. */
+  align-self: stretch;
   display: flex;
   flex-direction: column;
 }
 .oc-summary-win { width: 100%; height: 100%; display: flex; flex-direction: column; }
 .oc-summary-body {
   padding: 12px;
-  /* Plafond fixe (pas un %/vh) : la fenêtre MON_PANIER.EXE garde une
-     hauteur stable quel que soit le nombre d'articles. Au-delà de ce qui
-     tient, la liste défile sur elle-même plutôt que d'agrandir la
-     fenêtre — et par ricochet, via .oc-page, la fenêtre DRESSING d'à côté. */
-  max-height: 340px;
+  flex: 1;
+  min-height: 0;   /* laisse flex:1 rétrécir sous le contenu, sinon overflow-y n'a rien à faire */
+  /* Plafond volontairement bas : DRESSING mesure au moins ~590px de haut
+     (photo + Style Scan) sur les écrans les plus courts qu'on supporte
+     encore sans scroll. En restant sous ce plancher, MON_PANIER.EXE ne
+     redevient jamais la plus haute des deux fenêtres, quel que soit le
+     nombre d'articles — c'est ce qui permet à .oc-summary de s'étirer à
+     la hauteur de DRESSING (voir son `align-self: stretch`) sans jamais
+     inverser qui tire qui. Au-delà de ce plafond, la liste défile sur
+     elle-même plutôt que d'agrandir la fenêtre.  */
+  max-height: 260px;
   overflow-y: auto;
   background: #fff;
 }
@@ -2288,9 +2311,9 @@ textarea {
 }
 
 @media (max-width: 1180px) {
-  .oc-page { flex-direction: column; align-items: center; }
+  .oc-row { flex-direction: column; align-items: center; }
   .oc-center { width: min(420px, 92vw); }
-  .oc-summary { flex: none; width: min(560px, 92vw); }
+  .oc-summary { flex: none; align-self: auto; width: min(560px, 92vw); }
 }
 @media (max-width: 480px) {
   .oc-center { width: 92vw; }

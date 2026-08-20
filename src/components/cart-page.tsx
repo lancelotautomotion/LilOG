@@ -212,6 +212,7 @@ export function CartPage() {
       <main className="oc-root bg-grid-pattern">
 
         <div className="oc-page">
+        <div className="oc-row">
 
           {/* ── Bureau : colonne de raccourcis le long du bord gauche.
               Elle se remet à plat au-dessus des fenêtres quand .oc-page
@@ -437,7 +438,7 @@ export function CartPage() {
               </div>
 
               {total > 0 && (
-                <div className="flex shrink-0 flex-col gap-2.5 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 pt-3 pb-3.5">
+                <div className="mt-auto flex shrink-0 flex-col gap-2.5 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 pt-3 pb-3.5">
                   {/* Afficheur de caisse : encadré gris, chiffres LCD */}
                   <div
                     className={`${MONO} border-2 border-gray-400 bg-gray-100 p-3 shadow-[inset_0_2px_5px_rgba(0,0,0,0.16),inset_0_-1px_0_rgba(255,255,255,0.9)]`}
@@ -471,6 +472,7 @@ export function CartPage() {
             </div>
           </div>
 
+        </div>
         </div>
 
         {/* ── CORBEILLE.EXE : petite fenêtre de restauration ──
