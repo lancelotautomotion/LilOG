@@ -1658,22 +1658,54 @@ textarea {
    OUTFIT COMPUTER : Clueless cart
    ============================================================ */
 
-/* ── Outfit machine root ── */
+/* ── Bureau Y2K : fond du panier ──
+   Le léopard plein cadre a laissé place à un bureau : lilas clair,
+   papier millimétré, deux halos très doux. Les fenêtres et les
+   icônes se lisent alors sans lutter contre la texture du fond,
+   et la page respire le même air que /contact, /faq et le footer,
+   qui posent déjà leur contenu sur du papier millimétré. */
 .oc-root {
   position: relative;
   min-height: 100dvh;
-  background-image: url('/leo.jpeg');
-  background-size: cover;
-  background-position: center;
   overflow: hidden;
 }
+/* Halos de bureau : rose en haut à droite, violet en bas à gauche.
+   En `absolute` (et non `fixed`) pour ne pas suivre le scroll et
+   rester derrière la grille du bureau. */
 .oc-root::before {
   content: '';
-  position: fixed;
+  position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.18);
+  background:
+    radial-gradient(60vw 45vh at 82% 8%,  rgba(255, 63, 176, 0.16), transparent 70%),
+    radial-gradient(65vw 50vh at 12% 92%, rgba(113, 71, 212, 0.18), transparent 72%);
   pointer-events: none;
   z-index: 0;
+}
+
+/* ============================================================
+   .bg-grid-pattern : papier millimétré du bureau
+   ------------------------------------------------------------
+   Deux trames superposées : la fine (22px), celle du footer et
+   des pages documentaires, et une trame large (110px) qui donne
+   la profondeur d'un bureau plutôt que d'un cahier. Utilitaire
+   volontairement générique : réutilisable sur toute page qui
+   veut la même métaphore de bureau.
+   ============================================================ */
+.bg-grid-pattern {
+  background-color: #ece8fa;
+  background-image:
+    linear-gradient(rgba(113, 71, 212, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(113, 71, 212, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(113, 71, 212, 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(113, 71, 212, 0.13) 1px, transparent 1px);
+  background-size: 22px 22px, 22px 22px, 110px 110px, 110px 110px;
+  background-position: 0 0;
+}
+
+/* Curseur clignotant de l'écran de transfert (MON_PANIER.EXE). */
+.oc-term-caret {
+  animation: ocCursorBlink 500ms step-end infinite;
 }
 
 /* Full-page layout : machine + summary side by side */
@@ -2016,35 +2048,6 @@ textarea {
   padding: 16px 0;
   margin: 0;
 }
-.oc-summary-list {
-  list-style: none;
-  margin: 0 0 12px;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-/* Carte blanche minimale, bordure fine */
-.oc-summary-line {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 10px;
-  background: #fff;
-  border: 1px solid var(--ldl-border);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color var(--ldl-transition), background var(--ldl-transition);
-}
-.oc-summary-line:hover { border-color: var(--ldl-primary); }
-.oc-summary-line-active {
-  background: var(--ldl-primary);
-  border-color: var(--ldl-primary);
-}
-.oc-summary-line-active .oc-summary-name,
-.oc-summary-line-active .oc-summary-price,
-.oc-summary-line-active .oc-summary-meta-item { color: #fff; }
-.oc-summary-line-active .oc-summary-meta-item { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.14); }
 .oc-summary-thumb {
   width: 64px;
   height: 80px;
@@ -2062,111 +2065,6 @@ textarea {
   object-fit: cover !important;
   display: block !important;
 }
-.oc-summary-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.oc-summary-name {
-  font-family: var(--mono);
-  font-size: 0.9375rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--ldl-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-/* Taille / État / Marque : infos étendues de la ligne produit */
-.oc-summary-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-.oc-summary-meta-item {
-  font-family: var(--mono);
-  font-size: 0.8125rem;
-  letter-spacing: 0.02em;
-  color: var(--ldl-muted);
-  background: var(--ldl-bg);
-  border: 1px solid var(--ldl-border);
-  border-radius: 4px;
-  padding: 2px 7px;
-  white-space: nowrap;
-}
-.oc-summary-price {
-  font-family: var(--mono);
-  font-size: 0.9375rem;
-  font-weight: 700;
-  color: var(--ldl-primary);
-}
-/* Bouton de suppression : discret */
-.oc-summary-remove {
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  font-family: var(--mono);
-  font-size: 0.875rem;
-  color: var(--ldl-muted);
-  cursor: pointer;
-  padding: 4px 7px;
-  flex-shrink: 0;
-  line-height: 1;
-  transition: color var(--ldl-transition), border-color var(--ldl-transition), background var(--ldl-transition);
-}
-.oc-summary-line:hover .oc-summary-remove { color: #c00; border-color: rgba(204,0,0,0.25); }
-.oc-summary-line-active .oc-summary-remove { color: rgba(255,255,255,0.85); }
-.oc-summary-remove:hover:not(:disabled) { background: #fff0f0; color: #c00 !important; border-color: #c00; }
-.oc-summary-remove:disabled { opacity: 0.4; cursor: not-allowed; }
-.oc-summary-footer {
-  border-top: 1px solid var(--ldl-border);
-  padding: 12px 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex-shrink: 0;
-  background: #fff;
-}
-.oc-summary-total {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--mono);
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ldl-text);
-}
-.oc-summary-note {
-  font-family: var(--mono);
-  font-size: 0.8125rem;
-  color: var(--ldl-muted);
-  margin: 0;
-}
-/* CTA principal : harmonisé avec SETUP_MY_LOOK.EXE (/account) */
-.oc-checkout-btn {
-  display: block;
-  width: 100%;
-  text-align: center;
-  background: linear-gradient(135deg, #1B48CE 0%, #8B5CF6 100%);
-  color: #fff;
-  font-family: var(--mono);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 16px 20px;
-  text-decoration: none;
-  border: none;
-  border-radius: 8px;
-  margin-top: 6px;
-  cursor: pointer;
-  transition: filter 0.15s, transform 0.15s;
-}
-.oc-checkout-btn:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
-.oc-checkout-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ── Checkout flying heart ── */
 .ch-overlay {
