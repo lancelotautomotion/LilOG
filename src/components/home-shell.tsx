@@ -6,14 +6,16 @@
    L'accueil n'est plus une vitrine e-commerce mais un bureau
    Y2K. Un bandeau puis quatre modules, dans cet ordre :
 
-     00  FREE_SHIPPING.EXE la bande défilante de la livraison offerte
-     01  CAMCORDER_OS      hero plein écran, viseur de caméscope
-     02  ARCADE_SLOT       la borne qui lance la Dressing Machine
-     03  FILE_EXPLORER.SYS les rayons en dossiers, pas en grille
-     04  README.TXT        l'histoire de la maison en Bloc-notes
+     00  FREE_SHIPPING.EXE  la bande défilante de la livraison offerte
+     01  CAMCORDER_OS       hero plein écran, viseur de caméscope
+     02  ARCADE_SLOT        la borne qui lance la Dressing Machine
+     03  PLAYLIST_HIGHLIGHTS.EXE  Cover Flow 3D des pièces mises en avant
+     04  FILE_EXPLORER.SYS  les rayons en dossiers, pas en grille
+     05  README.TXT         l'histoire de la maison en Bloc-notes
 
-   Aucune grille de produits : la marchandise se découvre par la
-   Dressing Machine ou par les dossiers de l'explorateur.
+   Pas de grille de produits classique : hormis le Cover Flow des
+   highlights, la marchandise se découvre par la Dressing Machine
+   ou par les dossiers de l'explorateur.
 
    ⚠ PAREFEU : les modules vivent dans `components/home/` et
    n'utilisent que Tailwind + leurs feuilles locales préfixées.
@@ -29,9 +31,11 @@ import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/sticker
 import { WALLPAPER, WALLPAPER_GRID } from "@/components/y2k/kit";
 import { HeroCamcorder } from "@/components/home/hero-camcorder";
 import { ArcadeSlot } from "@/components/home/arcade-slot";
+import { CoverFlow } from "@/components/home/cover-flow";
 import { FileExplorer } from "@/components/home/file-explorer";
 import { ReadmeWindow } from "@/components/home/readme-window";
 import { AnnounceBar } from "@/components/home/announce-bar";
+import type { Product } from "@/lib/shopify/types";
 
 const SHELL_CSS = `
 @keyframes lhsBob{
@@ -45,7 +49,7 @@ const SHELL_CSS = `
 @media (prefers-reduced-motion: reduce){ .lhs-sticker{animation:none} }
 `;
 
-export function HomeShell() {
+export function HomeShell({ highlights = [] }: { highlights?: Product[] }) {
   const [menu, setMenu] = useState(false);
 
   return (
@@ -89,6 +93,7 @@ export function HomeShell() {
 
         <div className="relative">
           <ArcadeSlot />
+          <CoverFlow products={highlights} />
           <FileExplorer />
           <ReadmeWindow />
         </div>

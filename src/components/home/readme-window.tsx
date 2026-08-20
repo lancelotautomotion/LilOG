@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   README.TXT : module 04 de l'accueil
+   README.TXT : module 05 de l'accueil
    ------------------------------------------------------------
    « Notre histoire » n'est plus un bloc texte + photo : c'est un
    Bloc-notes ouvert sur le bureau. Barre de titre bleue avec
@@ -73,7 +73,7 @@ export function ReadmeWindow() {
   return (
     <section id="story" className="px-4 pb-[clamp(24px,4vw,48px)] sm:px-6">
       <div className="mx-auto w-full max-w-[1120px]">
-        <SectionLabel n="04" file="README.TXT" tone="wallpaper" />
+        <SectionLabel n="05" file="README.TXT" tone="wallpaper" />
 
         <style>{README_CSS}</style>
 
