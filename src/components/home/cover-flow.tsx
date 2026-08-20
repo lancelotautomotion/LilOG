@@ -4,85 +4,119 @@
    PLAYLIST_HIGHLIGHTS.EXE : module 02 de l'accueil
    ------------------------------------------------------------
    Cover Flow 3D façon iTunes (2003-2007) pour les pièces mises
-   en avant : les pochettes (photos mannequin, format portrait)
-   pivotent en perspective autour d'une pochette centrale, avec
-   reflet inversé sous l'image active et un bandeau "piste en
-   cours de lecture" pour le produit sélectionné.
+   en avant, monté dans un vrai lecteur multimédia Y2K façon
+   Winamp : coque de plastique gris biseautée, écran cathodique
+   encastré pour les pochettes, afficheur LCD vert « piste en
+   cours de lecture », et une console de transport en bas
+   (⏪ / ADD TO CART / ⏩) dont les touches s'enfoncent.
 
    L'angle de rotation (±48°) et l'échelle des pochettes latérales
    sont constants quel que soit leur éloignement, comme sur
    l'original iTunes ; seuls l'écart horizontal, la profondeur
-   (translateZ) et l'opacité augmentent avec la distance au
-   centre, pour donner l'illusion de l'éventail qui s'éloigne.
+   (translateZ), l'opacité et l'assombrissement augmentent avec la
+   distance au centre, pour donner l'illusion de l'éventail qui
+   s'éloigne et pour concentrer l'œil sur la pochette active.
 
-   ⚠ PAREFEU : Tailwind + feuille locale préfixée `lhh-`.
+   ⚠ PAREFEU : Tailwind + feuille locale préfixée `lhh-`. La coque
+   reprend exactement les valeurs de plastique et d'écran de la
+   borne ARCADE_SLOT, aucune nouvelle couleur n'est inventée.
    ============================================================ */
 
 import { useRef, useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import { SmartImg } from "@/components/smart-img";
-import { MONO, PINK, PLASTIC, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
+import { MATRIX, MONO, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
+
+/** Lueur verte des afficheurs, commune à l'écran LCD et à ses libellés. */
+const GLOW = "0 0 10px rgba(90,255,160,.55)";
 
 const COVER_CSS = `
 .lhh-stage{ perspective: 1400px; perspective-origin: 50% 42%; }
+
+/* L'assombrissement des pochettes passe par une variable : le style en ligne
+   pose la valeur de repos (calculée depuis la distance au centre) et le survol
+   n'a qu'à la relever, sans avoir à lutter contre la spécificité du inline. */
 .lhh-slide{
-  transition: transform 500ms cubic-bezier(.22,.61,.36,1), opacity 500ms ease-out, filter 500ms ease-out;
+  filter: brightness(var(--b,1));
+  transition: transform 500ms cubic-bezier(.22,.61,.36,1), opacity 500ms ease-out, filter 300ms ease-out;
   transform-style: flat;
   backface-visibility: hidden;
 }
 .lhh-slide:hover:not(.lhh-active),
-.lhh-slide:focus-visible:not(.lhh-active){ filter: brightness(1.15); }
+.lhh-slide:focus-visible:not(.lhh-active){ --b: .92 }
 
 .lhh-reflect{
-  transition: opacity 500ms ease-out;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.08) 55%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.08) 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.09) 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.09) 55%, transparent 100%);
 }
 
-.lhh-nav{ transition: transform 120ms ease, opacity 200ms ease; }
-.lhh-nav:active:not(:disabled){ transform: scale(0.9); }
-.lhh-nav:disabled{ opacity: 0.35; cursor: default; }
+/* Battement de balayage des deux écrans (pochettes + LCD). */
+@keyframes lhhFlicker{0%,100%{opacity:.4}50%{opacity:.26}}
+.lhh-crt{
+  background-image:repeating-linear-gradient(to bottom,rgba(0,0,0,.55) 0 1px,rgba(0,0,0,0) 1px 3px);
+  animation:lhhFlicker 3.4s ease-in-out infinite
+}
+.lhh-scan{ background-image:repeating-linear-gradient(to bottom,rgba(0,0,0,.35) 0 1px,rgba(0,0,0,0) 1px 3px) }
 
+/* Touches de transport : course de 5 px, la pile d'ombres se referme. */
+.lhh-key{
+  box-shadow:0 5px 0 #6f6b86, 0 11px 16px rgba(20,6,40,.42), inset 0 2px 0 rgba(255,255,255,.95), inset 0 -4px 10px rgba(60,40,110,.28);
+  transition:transform 90ms ease, box-shadow 90ms ease, filter 160ms ease;
+}
+.lhh-key:hover:not(:disabled){ filter:brightness(1.05) }
+.lhh-key:active:not(:disabled){
+  transform:translateY(5px);
+  box-shadow:0 0 0 #6f6b86, 0 3px 7px rgba(20,6,40,.45), inset 0 2px 0 rgba(255,255,255,.55), inset 0 -3px 8px rgba(60,40,110,.35);
+}
+.lhh-key:disabled{ opacity:.4; filter:grayscale(.55); cursor:default }
+
+/* Bouton d'achat : même course, mais en rose maison. */
 .lhh-cta{
-  box-shadow: 0 6px 0 #7d0f56, 0 14px 22px rgba(20,6,40,.4), inset 0 2px 0 rgba(255,255,255,.9), inset 0 -5px 12px rgba(120,0,80,.42);
-  transition: transform 90ms ease, box-shadow 90ms ease, filter 160ms ease;
+  box-shadow:0 5px 0 #7d0f56, 0 12px 20px rgba(20,6,40,.4), inset 0 2px 0 rgba(255,255,255,.9), inset 0 -5px 12px rgba(120,0,80,.42);
+  transition:transform 90ms ease, box-shadow 90ms ease, filter 160ms ease;
 }
-.lhh-cta:hover:not(:disabled){ filter: brightness(1.06); }
+.lhh-cta:hover:not(:disabled){ filter:brightness(1.06) }
 .lhh-cta:active:not(:disabled){
-  transform: translateY(6px);
-  box-shadow: 0 0 0 #7d0f56, 0 3px 8px rgba(20,6,40,.45), inset 0 2px 0 rgba(255,255,255,.55), inset 0 -3px 8px rgba(120,0,80,.5);
+  transform:translateY(5px);
+  box-shadow:0 0 0 #7d0f56, 0 3px 8px rgba(20,6,40,.45), inset 0 2px 0 rgba(255,255,255,.55), inset 0 -3px 8px rgba(120,0,80,.5);
 }
-.lhh-cta:disabled{ filter: grayscale(0.6); cursor: default; }
+.lhh-cta:disabled{ filter:grayscale(.6); cursor:default }
 
 @media (prefers-reduced-motion: reduce){
-  .lhh-slide, .lhh-reflect, .lhh-nav, .lhh-cta{ transition: none !important; }
+  .lhh-slide,.lhh-key,.lhh-cta{ transition:none !important }
+  .lhh-crt{ animation:none }
 }
 `;
 
-/** Position/rotation/échelle d'une pochette, calculées depuis sa distance au centre. */
+/** Position, rotation, échelle et assombrissement d'une pochette. */
 function slideStyle(offset: number): React.CSSProperties {
   if (offset === 0) {
     return {
       transform: "translate(-50%, -50%) translateZ(60px) rotateY(0deg) scale(1)",
       zIndex: 60,
       opacity: 1,
-    };
+      ["--b" as string]: "1",
+    } as React.CSSProperties;
   }
   const dist = Math.abs(offset);
   const dir = offset > 0 ? 1 : -1;
   const xPercent = offset * 46;
   const z = -50 - (dist - 1) * 44;
-  // Droite → pivotée vers la gauche (-45°). Gauche → pivotée vers la droite (+45°).
+  // Droite → pivotée vers la gauche (-48°). Gauche → pivotée vers la droite (+48°).
   const rotate = dir > 0 ? -48 : 48;
   const scale = Math.max(0.75 - (dist - 1) * 0.09, 0.4);
-  const opacity = Math.max(0.6 - (dist - 1) * 0.17, 0);
+  const opacity = Math.max(0.62 - (dist - 1) * 0.17, 0);
+  // Les voisines sont nettement assombries : sur l'écran noir, c'est ce
+  // contraste qui fait ressortir la pochette centrale, pas seulement sa taille.
+  const brightness = Math.max(0.62 - (dist - 1) * 0.12, 0.3);
   return {
     transform: `translate(-50%, -50%) translateX(${xPercent}%) translateZ(${z}px) rotateY(${rotate}deg) scale(${scale})`,
     zIndex: 60 - dist,
     opacity,
     pointerEvents: opacity <= 0.04 ? "none" : "auto",
-  };
+    ["--b" as string]: String(brightness),
+  } as React.CSSProperties;
 }
 
 /**
@@ -99,8 +133,12 @@ function trackTitleSize(len: number): string {
   return "clamp(0.44rem, 1.15vw, 0.575rem)";
 }
 
-/** Copie inversée de la pochette active : le reflet "Apple 2000". */
-function Reflection({ src, alt }: { src: string; alt: string }) {
+/**
+ * Copie inversée de la pochette active : le reflet « Apple 2000 ».
+ * Un vrai élément miroir plutôt que `-webkit-box-reflect`, qui n'existe
+ * toujours pas dans Firefox : rendu identique, mais visible partout.
+ */
+function Reflection({ src }: { src: string }) {
   return (
     <div
       aria-hidden
@@ -109,11 +147,37 @@ function Reflection({ src, alt }: { src: string; alt: string }) {
       {/* eslint-disable-next-line @next/next/no-img-element -- copie miroir de la pochette, jamais une vraie image de contenu. */}
       <img
         src={src}
-        alt={alt}
+        alt=""
         className="h-[200%] w-full object-cover blur-[1.5px]"
         style={{ transform: "scaleY(-1)" }}
       />
     </div>
+  );
+}
+
+/** Touche de transport biseautée de la console (⏪ / ⏩). */
+function TransportKey({
+  glyph,
+  label,
+  onClick,
+  disabled,
+}: {
+  glyph: string;
+  label: string;
+  onClick: () => void;
+  disabled: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      title={label}
+      className={`${MONO} lhh-key shrink-0 rounded-lg border-2 border-[#9b97b3] ${PLASTIC_FACE} px-[clamp(12px,2.4vw,20px)] py-[clamp(8px,1.6vw,13px)] text-[clamp(0.8rem,2vw,1rem)] leading-none font-bold text-[#262626] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+    >
+      {glyph}
+    </button>
   );
 }
 
@@ -162,14 +226,20 @@ export function CoverFlow({ products }: { products: Product[] }) {
 
         <style>{COVER_CSS}</style>
 
+        {/* La fenêtre garde la barre de titre commune du site ; c'est son corps
+            qui devient la coque du lecteur, en plastique gris biseauté. */}
         <WindowFrame
-          title="PLAYLIST_HIGHLIGHTS.EXE"
-          icon="▶"
-          bodyClassName="bg-white px-[clamp(12px,3vw,32px)] pt-[clamp(24px,4vw,40px)] pb-[clamp(28px,4.5vw,44px)]"
+          title="LIL_OG_MEDIA_PLAYER.EXE"
+          icon="🎵"
+          bodyClassName="p-[clamp(10px,2.2vw,22px)]"
+          bodyStyle={{
+            background: "linear-gradient(180deg,#f6f5fb 0%,#e2e0ee 34%,#c6c2d8 72%,#a9a5bd 100%)",
+            boxShadow: "inset 0 3px 0 rgba(255,255,255,0.95), inset 0 -6px 14px rgba(60,40,110,0.28)",
+          }}
         >
-          {/* ---- Scène 3D ---- */}
+          {/* ---- Écran cathodique : la scène 3D ---- */}
           <div
-            className="lhh-stage relative"
+            className="lhh-stage relative overflow-hidden rounded-xl border-4 border-gray-800 bg-[#07060e] shadow-[inset_0_0_0_2px_rgba(255,255,255,0.05),inset_0_6px_22px_rgba(0,0,0,0.95)]"
             tabIndex={0}
             role="group"
             aria-roledescription="carousel"
@@ -178,6 +248,13 @@ export function CoverFlow({ products }: { products: Product[] }) {
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
+            <div aria-hidden className="lhh-crt pointer-events-none absolute inset-0 z-[65]" />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-[64]"
+              style={{ background: "radial-gradient(ellipse at center, transparent 48%, rgba(0,0,0,0.8) 100%)" }}
+            />
+
             <div className="relative h-[clamp(300px,46vw,480px)] w-full">
               {products.map((p, i) => {
                 const offset = i - active;
@@ -190,65 +267,66 @@ export function CoverFlow({ products }: { products: Product[] }) {
                     aria-current={isActive}
                     aria-label={p.name}
                     className={`lhh-slide absolute top-1/2 left-1/2 aspect-[3/4] w-[clamp(190px,24vw,300px)] overflow-hidden rounded-lg border-2 ${
-                      isActive ? "lhh-active border-white" : "border-[#b8b4cc]"
+                      isActive ? "lhh-active border-white" : "border-[#4a4560]"
                     } bg-[#0d0d15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
                     style={{
                       ...slideStyle(offset),
                       boxShadow: isActive
-                        ? "0 30px 50px -14px rgba(20,6,40,.6), 0 14px 26px rgba(211,1,109,.3)"
-                        : "0 10px 20px rgba(20,6,40,.35)",
+                        ? "0 30px 50px -14px rgba(0,0,0,.85), 0 14px 30px rgba(211,1,109,.4)"
+                        : "0 10px 20px rgba(0,0,0,.6)",
                     }}
                   >
                     <SmartImg className="h-full w-full object-cover" src={p.imageA} alt={p.name} tone={i} />
-                    {isActive && <Reflection src={p.imageA} alt="" />}
+                    {isActive && <Reflection src={p.imageA} />}
                   </button>
                 );
               })}
             </div>
-
-            {/* ---- Précédent / Suivant, discrets ---- */}
-            <button
-              type="button"
-              onClick={() => go(active - 1)}
-              disabled={active === 0}
-              aria-label="Pièce précédente"
-              className={`lhh-nav absolute top-1/2 left-1 z-[70] -translate-y-1/2 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} p-2 text-[#262626] sm:left-3 ${PLASTIC}`}
-            >
-              ◀
-            </button>
-            <button
-              type="button"
-              onClick={() => go(active + 1)}
-              disabled={active === products.length - 1}
-              aria-label="Pièce suivante"
-              className={`lhh-nav absolute top-1/2 right-1 z-[70] -translate-y-1/2 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} p-2 text-[#262626] sm:right-3 ${PLASTIC}`}
-            >
-              ▶
-            </button>
           </div>
 
-          {/* ---- Piste en cours de lecture ---- */}
-          <div className="mx-auto mt-6 max-w-[880px] border-t-2 border-dashed border-[#e4dff2] pt-5 text-center sm:mt-8">
-            <p className={`${MONO} text-[0.6875rem] font-bold tracking-[0.18em] text-[#5b2fb8] uppercase`}>
-              <span style={{ color: PINK }}>▶</span> Now playing · {String(active + 1).padStart(2, "0")}/
-              {String(products.length).padStart(2, "0")}
-            </p>
-            <h3
-              className={`${MONO} mt-1.5 leading-tight font-extrabold text-[#1E2430] uppercase whitespace-nowrap`}
-              style={{ fontSize: trackTitleSize(current.name.length) }}
-            >
-              Track {String(active + 1).padStart(2, "0")} : [ {current.name} ]
-            </h3>
-            <p className={`${MONO} mt-1 text-[0.75rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
-              Price : {current.was && <s className="mr-1 opacity-70">{current.was}€</s>}
-              {current.price}€ // Size : {sizeLabel}
-            </p>
+          {/* ---- Afficheur LCD : la piste en cours de lecture ---- */}
+          <div className="relative mt-[clamp(10px,2vw,18px)] overflow-hidden rounded-lg border-2 border-[#0c2a1b] bg-[#04140c] px-[clamp(10px,2.4vw,22px)] py-[clamp(10px,2vw,16px)] text-center shadow-[inset_0_0_0_2px_rgba(90,255,160,0.06),inset_0_4px_16px_rgba(0,0,0,0.95)]">
+            <div aria-hidden className="lhh-scan pointer-events-none absolute inset-0 z-10" />
+
+            <div className="relative z-20">
+              <p
+                className={`${MONO} text-[0.6875rem] font-bold tracking-[0.18em] uppercase`}
+                style={{ color: MATRIX, textShadow: GLOW }}
+              >
+                ▶ Now playing · {String(active + 1).padStart(2, "0")}/
+                {String(products.length).padStart(2, "0")}
+              </p>
+
+              <h3
+                className={`${MONO} mt-1.5 leading-tight font-extrabold whitespace-nowrap uppercase`}
+                style={{
+                  fontSize: trackTitleSize(current.name.length),
+                  color: "#c9ffe2",
+                  textShadow: "0 0 12px rgba(90,255,160,.75)",
+                }}
+              >
+                Track {String(active + 1).padStart(2, "0")} : [ {current.name} ]
+              </h3>
+
+              <p
+                className={`${MONO} mt-1 text-[0.75rem] tracking-[0.06em] uppercase`}
+                style={{ color: "rgba(90,255,160,.72)", textShadow: GLOW }}
+              >
+                Price : {current.was && <s className="mr-1 opacity-70">{current.was}€</s>}
+                {current.price}€ // Size : {sizeLabel}
+              </p>
+            </div>
+          </div>
+
+          {/* ---- Console de transport ---- */}
+          <div className="mt-[clamp(10px,2vw,18px)] flex items-center justify-center gap-[clamp(8px,2vw,18px)] rounded-lg border border-[#b0acc4] bg-[#d8d5e6] px-[clamp(8px,2vw,18px)] py-[clamp(10px,2vw,16px)] shadow-[inset_1px_1px_0_rgba(90,86,120,0.55),inset_-1px_-1px_0_rgba(255,255,255,0.9),inset_2px_2px_5px_rgba(0,0,0,0.16)]">
+            <TransportKey glyph="⏪" label="Pièce précédente" onClick={() => go(active - 1)} disabled={active === 0} />
 
             <button
               type="button"
               onClick={add}
               disabled={sold}
-              className={`${MONO} lhh-cta mt-4 inline-block rounded-2xl border-2 border-[#5d0b46] px-5 py-2.5 text-[0.75rem] font-bold tracking-[0.1em] text-white uppercase`}
+              className={`${MONO} lhh-cta min-w-0 rounded-xl border-2 border-[#5d0b46] px-[clamp(12px,3vw,28px)] py-[clamp(9px,1.8vw,14px)] text-[clamp(0.65rem,1.8vw,0.8125rem)] font-bold tracking-[0.1em] text-white uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
               style={{
                 background: "linear-gradient(180deg,#ff9ee4 0%,#ff45b4 42%,#d61f8f 74%,#a6106b 100%)",
                 textShadow: "0 2px 0 rgba(90,0,60,.55)",
@@ -256,6 +334,13 @@ export function CoverFlow({ products }: { products: Product[] }) {
             >
               {sold ? "[ ✕ SOLD OUT ]" : added ? "[ ✓ ADDED ]" : "[ ▶ ADD TO CART ]"}
             </button>
+
+            <TransportKey
+              glyph="⏩"
+              label="Pièce suivante"
+              onClick={() => go(active + 1)}
+              disabled={active === products.length - 1}
+            />
           </div>
         </WindowFrame>
       </div>
