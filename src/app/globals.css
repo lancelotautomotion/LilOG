@@ -1722,17 +1722,22 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  /* Étirée à la hauteur des fenêtres (`stretch` hérité de .oc-page) et
+     `space-between` : les 4 icônes se répartissent sur toute la hauteur
+     du bloc au lieu de rester tassées en haut avec un grand vide dessous. */
+  justify-content: space-between;
+  align-self: stretch;
   flex-shrink: 0;
-  align-self: flex-start;
 }
 @media (max-width: 1180px) {
   .oc-desktop-icons {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+    align-self: auto;
     width: 100%;
     flex-basis: 100%;
+    gap: 10px;
   }
 }
 
@@ -1814,7 +1819,10 @@ textarea {
   flex-direction: row;
   align-items: stretch;
   justify-content: center;
-  padding: clamp(80px, 10vw, 110px) clamp(16px, 4vw, 60px) clamp(40px, 6vw, 80px);
+  /* Marges resserrées : au format desktop, le bloc doit tenir dans la
+     hauteur d'un écran de laptop sans scroll. Le padding vertical
+     n'a plus qu'à séparer la nav (fixed, hors flux) du contenu. */
+  padding: clamp(56px, 6vw, 84px) clamp(16px, 4vw, 60px) clamp(24px, 4vw, 56px);
   gap: clamp(16px, 3vw, 40px);
   flex-wrap: wrap;
 }
@@ -1880,7 +1888,11 @@ textarea {
   align-items: center;
   justify-content: center;
   aspect-ratio: 3/4;
-  max-height: 54vh;
+  /* 54vh poussait la fenêtre au-delà de la hauteur d'un écran de laptop,
+     forçant un scroll pour voir le bouton de checkout. Plafonné à 420px
+     en plus du pourcentage, pour que la photo n'explose pas non plus sur
+     un moniteur très haut. */
+  max-height: min(44vh, 420px);
   overflow: hidden;
   position: relative;
   border-bottom: 1px solid var(--ldl-border);
