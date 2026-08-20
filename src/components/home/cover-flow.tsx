@@ -198,9 +198,19 @@ function TransportKey({
   );
 }
 
+/**
+ * Cette pièce doit être la première pochette visible en arrivant sur la
+ * page, quand elle fait partie de la sélection de la semaine — comparaison
+ * insensible à la casse, l'affichage MAJUSCULE vient d'un `uppercase` CSS,
+ * la valeur stockée reste celle de Shopify. Absente de la sélection (elle
+ * change chaque semaine, voir getLounaPicks), l'index retombe sur 0.
+ */
+const PINNED_FIRST = "sac porte-monnaie patchwork glacé coloré";
+
 export function CoverFlow({ products }: { products: Product[] }) {
   const { addItem } = useCart();
-  const [active, setActive] = useState(0);
+  const pinnedIndex = products.findIndex((p) => p.name.toLowerCase() === PINNED_FIRST);
+  const [active, setActive] = useState(pinnedIndex >= 0 ? pinnedIndex : 0);
   const [added, setAdded] = useState(false);
   const touchX = useRef<number | null>(null);
   const swiped = useRef(false);
