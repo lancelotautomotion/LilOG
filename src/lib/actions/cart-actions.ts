@@ -49,6 +49,23 @@ export async function getCartAction(): Promise<Cart | null> {
 }
 
 /**
+ * Ce qu'une tentative d'ajout au panier renvoie : le panier à jour, ou un
+ * message d'erreur — jamais les deux. Une Server Action qui *lève* une
+ * exception en production voit son message effacé par Next.js (remplacé par
+ * « An error occurred in the Server Components render… », sans lien avec la
+ * cause réelle) : c'est un filet de sécurité générique contre la fuite de
+ * détails internes, qui ne sait pas distinguer un message Shopify parfaitement
+ * présentable (« Rupture de stock », un userError de mutation…) d'une vraie
+ * fuite. Renvoyer l'erreur comme donnée plutôt que la lever la fait passer la
+ * frontière serveur → client intacte ; c'est alors au code client de la
+ * relever, ce qui, lui, n'est jamais assaini.
+ */
+export interface AddToCartResult {
+  cart: Cart | null;
+  error: string | null;
+}
+
+/**
  * Ajoute plusieurs lignes d'un coup.
  *
  * Un appel par pièce ne marche pas pour un look complet : le tout premier
@@ -57,8 +74,8 @@ export async function getCartAction(): Promise<Cart | null> {
  * sans identifiant et recréent chacun leur panier. Une seule mutation Shopify
  * pour tout le look supprime la course.
  */
-export async function addLinesToCartAction(lines: CartLineInput[]): Promise<Cart> {
-  if (lines.length === 0) throw new Error("Aucune ligne à ajouter au panier.");
+export async function addLinesToCartAction(lines: CartLineInput[]): Promise<AddToCartResult> {
+  if (lines.length === 0) return { cart: null, error: "Aucune ligne à ajouter au panier." };
 
   const jar = await cookies();
   const cartId = jar.get(CART_COOKIE)?.value;
@@ -70,26 +87,32 @@ export async function addLinesToCartAction(lines: CartLineInput[]): Promise<Cart
     return cart;
   };
 
-  if (!cartId) return createFresh();
-
   try {
-    const cart = await addCartLines(cartId, lines);
-    return (await ensureLinkedToCustomer(cartId, token)) ?? cart;
+    if (!cartId) return { cart: await createFresh(), error: null };
+
+    try {
+      const cart = await addCartLines(cartId, lines);
+      return { cart: (await ensureLinkedToCustomer(cartId, token)) ?? cart, error: null };
+    } catch (err) {
+      // Only recreate the cart when the cart itself is invalid/expired.
+      // Other errors (invalid variant, sold out, etc.) should propagate.
+      const msg = err instanceof Error ? err.message.toLowerCase() : "";
+      const isStaleCart =
+        msg.includes("cart not found") ||
+        msg.includes("cart does not exist") ||
+        msg.includes("invalid cart") ||
+        msg.includes("provided invalid value");
+      if (!isStaleCart) throw err;
+      return { cart: await createFresh(), error: null };
+    }
   } catch (err) {
-    // Only recreate the cart when the cart itself is invalid/expired.
-    // Other errors (invalid variant, sold out, etc.) should propagate.
-    const msg = err instanceof Error ? err.message.toLowerCase() : "";
-    const isStaleCart =
-      msg.includes("cart not found") ||
-      msg.includes("cart does not exist") ||
-      msg.includes("invalid cart") ||
-      msg.includes("provided invalid value");
-    if (!isStaleCart) throw err;
-    return createFresh();
+    const message = err instanceof Error ? err.message : "Échec de l'ajout au panier.";
+    console.error("[cart] échec de l'ajout au panier:", message);
+    return { cart: null, error: message };
   }
 }
 
-export async function addToCartAction(variantId: string, quantity = 1): Promise<Cart> {
+export async function addToCartAction(variantId: string, quantity = 1): Promise<AddToCartResult> {
   return addLinesToCartAction([{ variantId, quantity }]);
 }
 

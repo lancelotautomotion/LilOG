@@ -36,7 +36,12 @@ export function CartProvider({
   const addItem = useCallback(async (variantId: string, quantity = 1) => {
     setPending(true);
     try {
-      setCart(await addToCartAction(variantId, quantity));
+      const { cart, error } = await addToCartAction(variantId, quantity);
+      // Levée ici, côté client : contrairement à un throw dans la Server
+      // Action elle-même, ce message n'est pas assaini par Next.js en
+      // production (voir AddToCartResult dans cart-actions.ts).
+      if (error) throw new Error(error);
+      setCart(cart);
     } finally {
       setPending(false);
     }
@@ -46,7 +51,9 @@ export function CartProvider({
     if (lines.length === 0) return;
     setPending(true);
     try {
-      setCart(await addLinesToCartAction(lines));
+      const { cart, error } = await addLinesToCartAction(lines);
+      if (error) throw new Error(error);
+      setCart(cart);
     } finally {
       setPending(false);
     }
