@@ -1817,7 +1817,15 @@ textarea {
   min-height: 100dvh;
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  /* `flex-start`, pas `stretch` : les deux fenêtres gardent chacune la
+     hauteur de leur propre contenu au lieu de s'étirer à la taille de
+     l'autre. Sans ça, ajouter des articles dans MON_PANIER.EXE allongeait
+     aussi DRESSING (bien que son contenu n'ait pas changé), et sur un
+     écran plus haut que le contenu, les deux fenêtres s'étiraient jusqu'au
+     bord de la page en avalant le vide qu'on veut voir en dessous. La
+     colonne d'icônes garde son propre `align-self: stretch` (elle, on
+     veut qu'elle épouse la hauteur de la fenêtre la plus haute). */
+  align-items: flex-start;
   justify-content: center;
   /* Marges resserrées : au format desktop, le bloc doit tenir dans la
      hauteur d'un écran de laptop sans scroll. Le padding vertical
@@ -2141,16 +2149,18 @@ textarea {
   flex: 1 1 440px;
   max-width: 620px;
   min-width: 0;
-  align-self: stretch;
   display: flex;
   flex-direction: column;
 }
 .oc-summary-win { width: 100%; height: 100%; display: flex; flex-direction: column; }
 .oc-summary-body {
   padding: 12px;
-  flex: 1;
+  /* Plafond fixe (pas un %/vh) : la fenêtre MON_PANIER.EXE garde une
+     hauteur stable quel que soit le nombre d'articles. Au-delà de ce qui
+     tient, la liste défile sur elle-même plutôt que d'agrandir la
+     fenêtre — et par ricochet, via .oc-page, la fenêtre DRESSING d'à côté. */
+  max-height: 340px;
   overflow-y: auto;
-  max-height: 70vh;
   background: #fff;
 }
 .oc-summary-empty {
