@@ -23,6 +23,7 @@
    ============================================================ */
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { SmartImg } from "@/components/smart-img";
 import { MATRIX, MONO, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
@@ -191,6 +192,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
   const [active, setActive] = useState(0);
   const [added, setAdded] = useState(false);
   const touchX = useRef<number | null>(null);
+  const swiped = useRef(false);
 
   if (products.length === 0) return null;
 
@@ -214,13 +216,27 @@ export function CoverFlow({ products }: { products: Product[] }) {
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchX.current = e.touches[0].clientX;
+    swiped.current = false;
   };
   const onTouchEnd = (e: React.TouchEvent) => {
     if (touchX.current === null) return;
     const delta = e.changedTouches[0].clientX - touchX.current;
     touchX.current = null;
-    if (delta > 40) go(active - 1);
-    else if (delta < -40) go(active + 1);
+    if (Math.abs(delta) <= 40) return;
+    swiped.current = true;
+    go(delta > 0 ? active - 1 : active + 1);
+  };
+
+  /**
+   * Un balayage qui part de la pochette centrale ne doit pas ouvrir la fiche
+   * produit : les navigateurs n'émettent en principe pas de `click` après un
+   * glissement, mais le garde-fou ne coûte rien et évite une navigation subie
+   * sur mobile. Le drapeau est remis à zéro au contact suivant.
+   */
+  const onCoverClick = (e: React.MouseEvent) => {
+    if (!swiped.current) return;
+    e.preventDefault();
+    swiped.current = false;
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -268,25 +284,52 @@ export function CoverFlow({ products }: { products: Product[] }) {
               {products.map((p, i) => {
                 const offset = i - active;
                 const isActive = offset === 0;
-                return (
+
+                // Habillage commun aux deux formes de pochette : seul l'élément
+                // change (lien ou bouton), jamais l'aspect.
+                const skin = {
+                  className: `lhh-slide absolute top-1/2 left-1/2 aspect-[3/4] w-[clamp(190px,24vw,300px)] overflow-hidden rounded-lg border-2 ${
+                    isActive ? "lhh-active border-white" : "border-[#4a4560]"
+                  } bg-[#0d0d15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`,
+                  style: {
+                    ...slideStyle(offset),
+                    boxShadow: isActive
+                      ? "0 30px 50px -14px rgba(0,0,0,.85), 0 14px 30px rgba(211,1,109,.4)"
+                      : "0 10px 20px rgba(0,0,0,.6)",
+                  } as React.CSSProperties,
+                };
+
+                const cover = (
+                  <>
+                    <SmartImg className="h-full w-full object-cover" src={p.imageA} alt={p.name} tone={i} />
+                    {isActive && <Reflection src={p.imageA} />}
+                  </>
+                );
+
+                // La pochette au centre ouvre la fiche produit ; les latérales
+                // se contentent de venir au centre. Un clic ne peut donc jamais
+                // emmener le visiteur sur une pièce qu'il n'était pas en train
+                // de regarder.
+                return isActive ? (
+                  <Link
+                    key={p.id}
+                    href={`/products/${p.handle}`}
+                    aria-current="true"
+                    aria-label={`${p.name} — voir la fiche produit`}
+                    onClick={onCoverClick}
+                    {...skin}
+                  >
+                    {cover}
+                  </Link>
+                ) : (
                   <button
                     key={p.id}
                     type="button"
                     onClick={() => go(i)}
-                    aria-current={isActive}
-                    aria-label={p.name}
-                    className={`lhh-slide absolute top-1/2 left-1/2 aspect-[3/4] w-[clamp(190px,24vw,300px)] overflow-hidden rounded-lg border-2 ${
-                      isActive ? "lhh-active border-white" : "border-[#4a4560]"
-                    } bg-[#0d0d15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
-                    style={{
-                      ...slideStyle(offset),
-                      boxShadow: isActive
-                        ? "0 30px 50px -14px rgba(0,0,0,.85), 0 14px 30px rgba(211,1,109,.4)"
-                        : "0 10px 20px rgba(0,0,0,.6)",
-                    }}
+                    aria-label={`${p.name} — mettre au centre`}
+                    {...skin}
                   >
-                    <SmartImg className="h-full w-full object-cover" src={p.imageA} alt={p.name} tone={i} />
-                    {isActive && <Reflection src={p.imageA} />}
+                    {cover}
                   </button>
                 );
               })}
