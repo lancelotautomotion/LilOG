@@ -2417,7 +2417,15 @@ textarea {
   position: relative;
   z-index: 1;
 }
-.account-win95--wide { max-width: 1200px; }
+.account-win95--wide {
+  max-width: 1200px;
+  /* --ldl-radius vaut 0 : les fenêtres .account-win95 (partagées avec
+     /account/orders et /account/orders/[id]) sont d'ordinaire à bords
+     carrés. Celle-ci reprend l'arrondi commun aux fenêtres du site
+     (WindowFrame, rounded-2xl = 16px, voir components/y2k/kit.tsx) ;
+     l'ombre dure (--y2k-win-shadow) était déjà la même des deux côtés. */
+  border-radius: 16px;
+}
 
 /* Title bar */
 .account-win95-bar {
