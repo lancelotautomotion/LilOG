@@ -8,8 +8,8 @@
 
      00  FREE_SHIPPING.EXE  la bande défilante de la livraison offerte
      01  CAMCORDER_OS       hero plein écran, viseur de caméscope
-     02  ARCADE_SLOT        la borne qui lance la Dressing Machine
-     03  PLAYLIST_HIGHLIGHTS.EXE  Cover Flow 3D des pièces mises en avant
+     02  PLAYLIST_HIGHLIGHTS.EXE  Cover Flow 3D des pièces mises en avant
+     03  ARCADE_SLOT        la borne qui lance la Dressing Machine
      04  FILE_EXPLORER.SYS  les rayons en dossiers, pas en grille
      05  README.TXT         l'histoire de la maison en Bloc-notes
 
@@ -92,8 +92,8 @@ export function HomeShell({ highlights = [] }: { highlights?: Product[] }) {
         </div>
 
         <div className="relative">
-          <ArcadeSlot />
           <CoverFlow products={highlights} />
+          <ArcadeSlot />
           <FileExplorer />
           <ReadmeWindow />
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   PLAYLIST_HIGHLIGHTS.EXE : module 03 de l'accueil
+   PLAYLIST_HIGHLIGHTS.EXE : module 02 de l'accueil
    ------------------------------------------------------------
    Cover Flow 3D façon iTunes (2003-2007) pour les pièces mises
    en avant : les pochettes (photos mannequin, format portrait)
@@ -21,7 +21,7 @@
 import { useRef, useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import { SmartImg } from "@/components/smart-img";
-import { MONO, PINK, PLASTIC, PLASTIC_FACE, SectionLabel } from "@/components/y2k/kit";
+import { MONO, PINK, PLASTIC, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
 
 const COVER_CSS = `
@@ -143,98 +143,106 @@ export function CoverFlow({ products }: { products: Product[] }) {
 
   return (
     <section id="highlights" className="px-4 py-[clamp(48px,8vw,96px)] sm:px-6">
-      <div className="mx-auto w-full max-w-[1400px]">
-        <SectionLabel n="03" file="PLAYLIST_HIGHLIGHTS.EXE // LATEST_DROPS" tone="wallpaper" />
+      <div className="mx-auto w-full max-w-[1200px]">
+        <SectionLabel n="02" file="PLAYLIST_HIGHLIGHTS.EXE // LATEST_DROPS" tone="wallpaper" />
 
         <style>{COVER_CSS}</style>
 
-        {/* ---- Scène 3D ---- */}
-        <div
-          className="lhh-stage relative"
-          tabIndex={0}
-          role="group"
-          aria-roledescription="carousel"
-          aria-label="Pièces mises en avant"
-          onKeyDown={onKeyDown}
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
+        <WindowFrame
+          title="PLAYLIST_HIGHLIGHTS.EXE"
+          icon="▶"
+          bodyClassName="bg-white px-[clamp(12px,3vw,32px)] pt-[clamp(24px,4vw,40px)] pb-[clamp(28px,4.5vw,44px)]"
         >
-          <div className="relative h-[clamp(240px,38vw,400px)] w-full">
-            {products.map((p, i) => {
-              const offset = i - active;
-              const isActive = offset === 0;
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => go(i)}
-                  aria-current={isActive}
-                  aria-label={p.name}
-                  className={`lhh-slide absolute top-1/2 left-1/2 aspect-[3/4] w-[clamp(150px,20vw,240px)] overflow-hidden rounded-lg border-2 ${
-                    isActive ? "lhh-active border-white" : "border-[#b8b4cc]"
-                  } bg-[#0d0d15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
-                  style={{
-                    ...slideStyle(offset),
-                    boxShadow: isActive
-                      ? "0 30px 50px -14px rgba(20,6,40,.6), 0 14px 26px rgba(211,1,109,.3)"
-                      : "0 10px 20px rgba(20,6,40,.35)",
-                  }}
-                >
-                  <SmartImg className="h-full w-full object-cover" src={p.imageA} alt={p.name} tone={i} />
-                  {isActive && <Reflection src={p.imageA} alt="" />}
-                </button>
-              );
-            })}
+          {/* ---- Scène 3D ---- */}
+          <div
+            className="lhh-stage relative"
+            tabIndex={0}
+            role="group"
+            aria-roledescription="carousel"
+            aria-label="Pièces mises en avant"
+            onKeyDown={onKeyDown}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
+            <div className="relative h-[clamp(220px,34vw,360px)] w-full">
+              {products.map((p, i) => {
+                const offset = i - active;
+                const isActive = offset === 0;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => go(i)}
+                    aria-current={isActive}
+                    aria-label={p.name}
+                    className={`lhh-slide absolute top-1/2 left-1/2 aspect-[3/4] w-[clamp(140px,18vw,220px)] overflow-hidden rounded-lg border-2 ${
+                      isActive ? "lhh-active border-white" : "border-[#b8b4cc]"
+                    } bg-[#0d0d15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
+                    style={{
+                      ...slideStyle(offset),
+                      boxShadow: isActive
+                        ? "0 30px 50px -14px rgba(20,6,40,.6), 0 14px 26px rgba(211,1,109,.3)"
+                        : "0 10px 20px rgba(20,6,40,.35)",
+                    }}
+                  >
+                    <SmartImg className="h-full w-full object-cover" src={p.imageA} alt={p.name} tone={i} />
+                    {isActive && <Reflection src={p.imageA} alt="" />}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* ---- Précédent / Suivant, discrets ---- */}
+            <button
+              type="button"
+              onClick={() => go(active - 1)}
+              disabled={active === 0}
+              aria-label="Pièce précédente"
+              className={`lhh-nav absolute top-1/2 left-1 z-[70] -translate-y-1/2 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} p-2 text-[#262626] sm:left-3 ${PLASTIC}`}
+            >
+              ◀
+            </button>
+            <button
+              type="button"
+              onClick={() => go(active + 1)}
+              disabled={active === products.length - 1}
+              aria-label="Pièce suivante"
+              className={`lhh-nav absolute top-1/2 right-1 z-[70] -translate-y-1/2 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} p-2 text-[#262626] sm:right-3 ${PLASTIC}`}
+            >
+              ▶
+            </button>
           </div>
 
-          {/* ---- Précédent / Suivant, discrets ---- */}
-          <button
-            type="button"
-            onClick={() => go(active - 1)}
-            disabled={active === 0}
-            aria-label="Pièce précédente"
-            className={`lhh-nav absolute top-1/2 left-1 z-[70] -translate-y-1/2 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} p-2 text-[#262626] sm:left-3 ${PLASTIC}`}
-          >
-            ◀
-          </button>
-          <button
-            type="button"
-            onClick={() => go(active + 1)}
-            disabled={active === products.length - 1}
-            aria-label="Pièce suivante"
-            className={`lhh-nav absolute top-1/2 right-1 z-[70] -translate-y-1/2 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} p-2 text-[#262626] sm:right-3 ${PLASTIC}`}
-          >
-            ▶
-          </button>
-        </div>
+          {/* ---- Piste en cours de lecture ---- */}
+          <div className="mx-auto mt-6 max-w-[560px] border-t-2 border-dashed border-[#e4dff2] pt-6 text-center sm:mt-8">
+            <p className={`${MONO} text-[0.8125rem] font-bold tracking-[0.2em] text-[#5b2fb8] uppercase`}>
+              <span style={{ color: PINK }}>▶</span> Now playing · {String(active + 1).padStart(2, "0")}/
+              {String(products.length).padStart(2, "0")}
+            </p>
+            <h3
+              className={`${MONO} mt-2 text-[clamp(1.1rem,3vw,1.5rem)] leading-tight font-extrabold text-[#1E2430] uppercase`}
+            >
+              Track {String(active + 1).padStart(2, "0")} : [ {current.name} ]
+            </h3>
+            <p className={`${MONO} mt-1.5 text-[0.875rem] tracking-[0.08em] text-[#6B7280] uppercase`}>
+              Price : {current.was && <s className="mr-1 opacity-70">{current.was}€</s>}
+              {current.price}€ // Size : {sizeLabel}
+            </p>
 
-        {/* ---- Piste en cours de lecture ---- */}
-        <div className="mx-auto mt-8 max-w-[560px] text-center sm:mt-10">
-          <p className={`${MONO} text-[0.8125rem] font-bold tracking-[0.2em] text-[#2b0f6b] uppercase`}>
-            <span style={{ color: PINK }}>▶</span> Now playing · {String(active + 1).padStart(2, "0")}/
-            {String(products.length).padStart(2, "0")}
-          </p>
-          <h3 className={`${MONO} mt-2 text-[clamp(1.1rem,3vw,1.5rem)] leading-tight font-extrabold text-white uppercase`}>
-            Track {String(active + 1).padStart(2, "0")} : [ {current.name} ]
-          </h3>
-          <p className={`${MONO} mt-1.5 text-[0.875rem] tracking-[0.08em] text-white/70 uppercase`}>
-            Price : {current.was && <s className="mr-1 opacity-60">{current.was}€</s>}
-            {current.price}€ // Size : {sizeLabel}
-          </p>
-
-          <button
-            type="button"
-            onClick={add}
-            disabled={sold}
-            className={`${MONO} lhh-cta mt-5 inline-block rounded-2xl border-2 border-[#5d0b46] px-6 py-3 text-[0.875rem] font-bold tracking-[0.1em] text-white uppercase`}
-            style={{
-              background: "linear-gradient(180deg,#ff9ee4 0%,#ff45b4 42%,#d61f8f 74%,#a6106b 100%)",
-              textShadow: "0 2px 0 rgba(90,0,60,.55)",
-            }}
-          >
-            {sold ? "[ ✕ SOLD OUT ]" : added ? "[ ✓ ADDED ]" : "[ ▶ ADD TO CART ]"}
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={add}
+              disabled={sold}
+              className={`${MONO} lhh-cta mt-5 inline-block rounded-2xl border-2 border-[#5d0b46] px-6 py-3 text-[0.875rem] font-bold tracking-[0.1em] text-white uppercase`}
+              style={{
+                background: "linear-gradient(180deg,#ff9ee4 0%,#ff45b4 42%,#d61f8f 74%,#a6106b 100%)",
+                textShadow: "0 2px 0 rgba(90,0,60,.55)",
+              }}
+            >
+              {sold ? "[ ✕ SOLD OUT ]" : added ? "[ ✓ ADDED ]" : "[ ▶ ADD TO CART ]"}
+            </button>
+          </div>
+        </WindowFrame>
       </div>
     </section>
   );

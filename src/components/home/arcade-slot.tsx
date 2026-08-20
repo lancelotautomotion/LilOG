@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   ARCADE_SLOT : module 02 de l'accueil
+   ARCADE_SLOT : module 03 de l'accueil
    ------------------------------------------------------------
    La borne d'arcade qui envoie sur /dressing-machine : coque de
    plastique gris biseautée, fronton lumineux, écran cathodique
@@ -111,7 +111,7 @@ export function ArcadeSlot() {
           centre : un texte de présentation prend la colonne de gauche, elle
           se retrouve décalée à droite. */}
       <div className="mx-auto w-full max-w-[1400px]">
-        <SectionLabel n="02" file="ARCADE_SLOT.EXE" tone="wallpaper" />
+        <SectionLabel n="03" file="ARCADE_SLOT.EXE" tone="wallpaper" />
 
         <style>{ARCADE_CSS}</style>
 
