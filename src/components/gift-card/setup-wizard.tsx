@@ -20,9 +20,14 @@
    même mais refuse de graver, et le dit.
 
    Le courriel du bénéficiaire et le message voyagent en
-   attributs de la ligne de panier : ils appartiennent à la
-   ligne, pas au panier, deux cartes dans une même commande ont
-   donc chacune leur destinataire.
+   attributs de la ligne de panier, sous les clés réservées du
+   thème Dawn (__shopify_send_gift_card_to_recipient, Recipient
+   email, Message — voir gift-card-recipient-form.liquid) : ce
+   sont les seules que Shopify lit pour envoyer nativement le
+   code au bon destinataire plutôt qu'à l'e-mail du compte qui
+   paie. Ils appartiennent à la ligne, pas au panier : deux
+   cartes dans une même commande ont donc chacune leur
+   destinataire.
 
    ⚠ PAREFEU : Tailwind + une feuille locale préfixée `gc-`.
    Aucune classe de globals.css n'est touchée.
@@ -181,8 +186,15 @@ export function SetupWizard({
         {
           variantId: picked.variantId,
           quantity: 1,
+          // Clés réservées du thème Dawn (gift-card-recipient-form.liquid) :
+          // ce sont les seules que Shopify reconnaît pour dérouter l'envoi
+          // natif de la carte cadeau vers ce destinataire. Un intitulé libre
+          // ("E-mail du bénéficiaire", par ex.) n'est qu'une note visible
+          // sur la commande — Shopify continue alors d'envoyer le code à
+          // l'e-mail du compte qui paie, sans jamais lire cet attribut-là.
           attributes: [
-            { key: "E-mail du bénéficiaire", value: email.trim() },
+            { key: "__shopify_send_gift_card_to_recipient", value: "if_present" },
+            { key: "Recipient email", value: email.trim() },
             ...(message.trim() ? [{ key: "Message", value: message.trim() }] : []),
           ],
         },
