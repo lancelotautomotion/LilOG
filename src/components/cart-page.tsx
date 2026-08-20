@@ -25,15 +25,11 @@ const LCD = "font-[family-name:var(--font-lcd)]";
    Seuil de livraison offerte
    ------------------------------------------------------------
    ⚠ Valeur commerciale, pas un réglage graphique : elle doit
-   rester alignée sur /livraison (03_FRAIS.SYS), qui annonce la
-   livraison offerte dès 150 € en France métropolitaine. Changer
-   l'une sans l'autre affiche deux promesses différentes au même
+   rester alignée sur /livraison (03_FRAIS.SYS). Changer l'une
+   sans l'autre affiche deux promesses différentes au même
    client. Un seul endroit à modifier ici.
    ============================================================ */
-const FREE_SHIPPING_TARGET = 150;
-
-/** Nombre de blocs de la barre de transfert ████░░░░░░. */
-const PROGRESS_BLOCKS = 10;
+const FREE_SHIPPING_TARGET = 90;
 
 const MSN_MESSAGES = [
   "♥ Thanks Queen!",
@@ -176,38 +172,13 @@ export function CartPage() {
   const total = lines.length;
   const item = lines[Math.min(current, Math.max(0, total - 1))];
 
-  /* ---- Transfert « livraison gratuite » ---- */
+  /* ---- Jauge « livraison offerte » ----
+     Le remplissage est animé en CSS (voir .oc-ship-bar-fill) : rien à
+     cadencer côté React, la largeur posée en style inline suffit. */
   const subtotal = cart?.subtotal ?? 0;
   const ratio = Math.min(1, subtotal / FREE_SHIPPING_TARGET);
   const pct = Math.round(ratio * 100);
-  const targetBlocks = Math.round(ratio * PROGRESS_BLOCKS);
   const remaining = Math.max(0, FREE_SHIPPING_TARGET - subtotal);
-  const [filledBlocks, setFilledBlocks] = useState(0);
-
-  /* Les blocs se remplissent un par un, comme un téléchargement 90s,
-     à chaque fois que le sous-total change. La remise à zéro passe par un
-     timer plutôt que par un setState synchrone : appeler setState dans le
-     corps d'un effet déclenche des rendus en cascade (la règle
-     react-hooks/set-state-in-effect du lint le refuse). */
-  useEffect(() => {
-    const reset = setTimeout(() => setFilledBlocks(0), 0);
-    if (targetBlocks <= 0) return () => clearTimeout(reset);
-    let n = 0;
-    const id = setInterval(() => {
-      n += 1;
-      setFilledBlocks(n);
-      if (n >= targetBlocks) clearInterval(id);
-    }, 70);
-    return () => { clearTimeout(reset); clearInterval(id); };
-  }, [targetBlocks]);
-
-  /* Le compteur peut dépasser d'un cran le temps que la remise à zéro
-     s'applique : on borne à la cible pour que la barre ne montre jamais
-     plus de blocs que le panier n'en a gagné. */
-  const shownBlocks = Math.min(filledBlocks, targetBlocks);
-  const transferDone = shownBlocks >= targetBlocks;
-  const shownPct = transferDone ? pct : Math.round((shownBlocks / PROGRESS_BLOCKS) * 100);
-  const bar = "█".repeat(shownBlocks) + "░".repeat(Math.max(0, PROGRESS_BLOCKS - shownBlocks));
   const shippingFree = subtotal >= FREE_SHIPPING_TARGET;
 
   const prev = () => setCurrent((i) => (i - 1 + total) % total);
@@ -225,12 +196,12 @@ export function CartPage() {
     await addItem(line.variantId, line.quantity);
   };
 
-  /* Icônes de bureau : 4 raccourcis posés autour des fenêtres. */
+  /* Icônes de bureau : 4 raccourcis en colonne le long du bord gauche. */
   const desktopIcons = [
-    { key: "favoris", icon: "📂", label: "MES_FAVORIS.SYS", href: "/wishlist", pos: "top-[130px] left-3" },
-    { key: "dressing", icon: "👗", label: "DRESSING.EXE", href: "/dressing-machine", pos: "top-[130px] right-3" },
-    { key: "drive", icon: "💾", label: "LIL_OG_DRIVE", href: "/catalogue", pos: "bottom-8 left-3" },
-    { key: "corbeille", icon: "🗑️", label: "CORBEILLE.EXE", onClick: () => setTrashOpen((o) => !o), badge: trash.length, pos: "bottom-8 right-3" },
+    { key: "favoris", icon: "📂", label: "MES_FAVORIS.SYS", href: "/wishlist" },
+    { key: "dressing", icon: "👗", label: "DRESSING.EXE", href: "/dressing-machine" },
+    { key: "drive", icon: "💾", label: "LIL_OG_DRIVE", href: "/catalogue" },
+    { key: "corbeille", icon: "🗑️", label: "CORBEILLE.EXE", onClick: () => setTrashOpen((o) => !o), badge: trash.length },
   ];
 
   return (
@@ -240,21 +211,12 @@ export function CartPage() {
 
       <main className="oc-root bg-grid-pattern">
 
-        {/* ── Bureau : icônes posées autour des fenêtres (grands écrans) ── */}
-        <div aria-hidden={false} className="pointer-events-none absolute inset-0 z-[2] hidden 2xl:block">
-          {desktopIcons.map((ic) => (
-            <div key={ic.key} className={`pointer-events-auto absolute ${ic.pos}`}>
-              <DesktopIcon icon={ic.icon} label={ic.label} href={ic.href} onClick={ic.onClick} badge={ic.badge} />
-            </div>
-          ))}
-        </div>
-
         <div className="oc-page">
 
-          {/* Sous 2xl, les mêmes raccourcis passent en barre au-dessus des
-              fenêtres : les marges du bureau sont alors plus étroites qu'une
-              icône, qui se ferait rogner par l'overflow de .oc-root. */}
-          <div className="flex w-full basis-full flex-wrap items-start justify-center gap-1 2xl:hidden">
+          {/* ── Bureau : colonne de raccourcis le long du bord gauche.
+              Elle se remet à plat au-dessus des fenêtres quand .oc-page
+              passe en colonne (voir .oc-desktop-icons). ── */}
+          <div className="oc-desktop-icons">
             {desktopIcons.map((ic) => (
               <DesktopIcon key={ic.key} icon={ic.icon} label={ic.label} href={ic.href} onClick={ic.onClick} badge={ic.badge} />
             ))}
@@ -364,29 +326,29 @@ export function CartPage() {
                 </div>
               </div>
 
-              {/* ---- Écran de transfert : progression vers la livraison offerte ----
-                  Terminal 90s : blocs pleins qui se remplissent un par un dès que
-                  le sous-total change. Le seuil vient de FREE_SHIPPING_TARGET. */}
+              {/* ---- Jauge de livraison offerte ----
+                  Même instrument que le STYLE SCAN de la fenêtre de gauche :
+                  en-tête LCD, piste à blocs bleus, verdict en grandes lettres.
+                  Le seuil vient de FREE_SHIPPING_TARGET. */}
               {total > 0 && (
-                <div className="shrink-0 border-b-2 border-[#b8b4cc] bg-[#e7e5f1] p-2">
-                  <div
-                    role="status"
-                    className={`${MONO} border-2 border-gray-400 bg-black p-2 text-[0.8125rem] text-green-400`}
-                  >
-                    <p className="m-0 tracking-[0.04em]">
-                      TRANSFERT LIVRAISON GRATUITE : {subtotal.toFixed(2)}€ / {FREE_SHIPPING_TARGET.toFixed(2)}€
-                    </p>
-                    <p className="m-0 mt-1.5 flex items-center gap-2" aria-hidden>
-                      <span className="tracking-[0.06em] text-[1rem] leading-none text-[#3bff88]">{bar}</span>
-                      <span className="text-[0.8125rem] font-bold">{shownPct}%</span>
-                      {!transferDone && <span className="oc-term-caret">_</span>}
-                    </p>
-                    <p className={`m-0 mt-1.5 tracking-[0.02em] ${shippingFree ? "text-[#7cff9e]" : "text-green-400/80"}`}>
-                      {shippingFree
-                        ? "> TRANSFERT TERMINÉ · LIVRAISON OFFERTE ✓"
-                        : `> PLUS QUE ${remaining.toFixed(2)}€ POUR DÉBLOQUER LA LIVRAISON OFFERTE`}
-                    </p>
+                <div className="oc-ship-meter" role="status">
+                  <span className="oc-scan-header">Livraison offerte</span>
+
+                  <div className="oc-scan-bar-track">
+                    <div
+                      key={pct}
+                      className={`oc-ship-bar-fill${shippingFree ? " oc-ship-bar-full" : ""}`}
+                      style={{ width: `${pct}%` }}
+                    />
                   </div>
+
+                  <span className={`oc-ship-status${shippingFree ? " oc-ship-status-done" : ""}`}>
+                    {shippingFree ? "Livraison offerte ♥" : `Plus que ${remaining.toFixed(2)}€`}
+                  </span>
+
+                  <p className="oc-ship-count">
+                    {subtotal.toFixed(2)}€ / {FREE_SHIPPING_TARGET.toFixed(2)}€ · {pct}%
+                  </p>
                 </div>
               )}
 
@@ -429,17 +391,17 @@ export function CartPage() {
 
                               <div className="flex flex-wrap gap-1.5">
                                 {(line.variantTitle || line.size) && (
-                                  <span className={`${MONO} rounded border border-[#c6c2d8] bg-[#f0eefa] px-1.5 py-0.5 text-[0.8125rem] whitespace-nowrap text-[#6b6480]`}>
+                                  <span className={`${MONO} max-w-full rounded border border-[#c6c2d8] bg-[#f0eefa] px-1.5 py-0.5 text-[0.8125rem] text-[#6b6480] [overflow-wrap:anywhere]`}>
                                     Taille : {line.variantTitle || line.size}
                                   </span>
                                 )}
                                 {line.etat && (
-                                  <span className={`${MONO} rounded border border-[#c6c2d8] bg-[#f0eefa] px-1.5 py-0.5 text-[0.8125rem] whitespace-nowrap text-[#6b6480]`}>
+                                  <span className={`${MONO} max-w-full rounded border border-[#c6c2d8] bg-[#f0eefa] px-1.5 py-0.5 text-[0.8125rem] text-[#6b6480] [overflow-wrap:anywhere]`}>
                                     État : {line.etat}
                                   </span>
                                 )}
                                 {line.vendor && (
-                                  <span className={`${MONO} rounded border border-[#c6c2d8] bg-[#f0eefa] px-1.5 py-0.5 text-[0.8125rem] whitespace-nowrap text-[#6b6480]`}>
+                                  <span className={`${MONO} max-w-full rounded border border-[#c6c2d8] bg-[#f0eefa] px-1.5 py-0.5 text-[0.8125rem] text-[#6b6480] [overflow-wrap:anywhere]`}>
                                     Marque : {line.vendor}
                                   </span>
                                 )}
@@ -518,7 +480,7 @@ export function CartPage() {
           <div
             role="dialog"
             aria-label="Corbeille"
-            className="fixed right-4 bottom-4 left-4 z-[60] mx-auto w-auto max-w-[380px] rounded-xl border border-[#b8b4cc] bg-white shadow-[var(--ldl-shadow-window)] sm:left-auto sm:w-[380px] 2xl:bottom-[132px]"
+            className="fixed right-4 bottom-4 left-4 z-[60] mx-auto w-auto max-w-[380px] rounded-xl border border-[#b8b4cc] bg-white shadow-[var(--ldl-shadow-window)] sm:left-auto sm:w-[380px]"
           >
             <div className="oc-win95-titlebar rounded-t-xl">
               <span className="oc-win95-title">🗑️ CORBEILLE.EXE</span>
