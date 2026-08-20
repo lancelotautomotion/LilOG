@@ -120,17 +120,22 @@ function slideStyle(offset: number): React.CSSProperties {
 }
 
 /**
- * Taille du titre de piste, calée sur la longueur du nom du produit : plus le
- * nom est long, plus le corps (et son plancher `vw`, pour les petits écrans)
- * rétrécit, afin que "TRACK 0X : [ NOM ]" tienne toujours sur une seule
- * ligne, crochet fermant compris — jamais renvoyé seul à la ligne suivante.
+ * Taille du titre de piste, commune à TOUTES les pièces du lecteur : elle est
+ * calée une fois pour toutes sur le nom le plus long de la sélection, jamais
+ * sur celui de la pièce affichée. Sinon l'afficheur changerait de corps à
+ * chaque changement de piste, ce qui saute aux yeux d'un produit à l'autre.
+ *
+ * Le calcul : "TRACK 0X : [ " + nom + " ]" tient sur une ligne tant que sa
+ * largeur reste sous celle de l'écran. En monospace, une chasse vaut ~0,62 em,
+ * et la largeur utile de l'afficheur vaut ~82 vw une fois retirées les
+ * gouttières de la page, de la coque et de l'écran. Le corps qui remplit
+ * exactement cette largeur vaut donc `82vw / (nb de caractères × 0,62)`,
+ * borné en haut pour ne pas devenir énorme sur grand écran, et en bas pour
+ * rester lisible sur mobile — au-delà, `truncate` prend le relais.
  */
-function trackTitleSize(len: number): string {
-  if (len <= 22) return "clamp(0.85rem, 2.4vw, 1.125rem)";
-  if (len <= 36) return "clamp(0.72rem, 2vw, 0.95rem)";
-  if (len <= 52) return "clamp(0.62rem, 1.7vw, 0.8rem)";
-  if (len <= 72) return "clamp(0.52rem, 1.4vw, 0.6875rem)";
-  return "clamp(0.44rem, 1.15vw, 0.575rem)";
+function trackTitleSize(longestName: number): string {
+  const chars = longestName + 15; // "Track 07 : [ " et " ]", de longueur fixe.
+  return `clamp(0.6rem, calc(82vw / ${(chars * 0.62).toFixed(1)}), 1.05rem)`;
 }
 
 /**
@@ -192,6 +197,10 @@ export function CoverFlow({ products }: { products: Product[] }) {
   const current = products[active];
   const sold = current.tag === "SOLD" || !current.variantId;
   const sizeLabel = current.sizes.length ? current.sizes.join(" / ") : current.meta || "ONE SIZE";
+
+  // Une seule taille de titre pour tout le lecteur, dictée par le nom le plus
+  // long : l'afficheur garde le même corps quelle que soit la piste en cours.
+  const titleSize = trackTitleSize(products.reduce((max, p) => Math.max(max, p.name.length), 0));
 
   const go = (next: number) => setActive(Math.min(Math.max(next, 0), products.length - 1));
 
@@ -297,10 +306,14 @@ export function CoverFlow({ products }: { products: Product[] }) {
                 {String(products.length).padStart(2, "0")}
               </p>
 
+              {/* `truncate` : dernier filet de sécurité pour un nom
+                  exceptionnellement long sur un écran étroit — le titre reste
+                  sur sa ligne et se termine en points de suspension, plutôt
+                  que de descendre son crochet fermant à la ligne suivante. */}
               <h3
-                className={`${MONO} mt-1.5 leading-tight font-extrabold whitespace-nowrap uppercase`}
+                className={`${MONO} mt-1.5 truncate leading-tight font-extrabold uppercase`}
                 style={{
-                  fontSize: trackTitleSize(current.name.length),
+                  fontSize: titleSize,
                   color: "#c9ffe2",
                   textShadow: "0 0 12px rgba(90,255,160,.75)",
                 }}
