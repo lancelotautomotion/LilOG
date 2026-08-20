@@ -2393,6 +2393,31 @@ textarea {
   overflow: hidden;
 }
 
+/* Modificateurs de /account/edit uniquement : classes distinctes de
+   .account-desktop/.account-win95, partagées avec /account/orders et
+   /account/orders/[id], pour ne changer que la page « Modifier le profil ».
+   Fenêtre agrandie + léopard maison en fond, comme /histoire, /contact et la
+   fiche produit (voir LeopardBackdrop dans components/y2k/kit.tsx). */
+.account-desktop--leo {
+  position: relative;
+  background-image: url('/leo.jpeg');
+  background-size: cover;
+  background-position: center;
+}
+.account-desktop--leo::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 0;
+}
+.account-desktop--leo > .account-win95 {
+  position: relative;
+  z-index: 1;
+}
+.account-win95--wide { max-width: 1200px; }
+
 /* Title bar */
 .account-win95-bar {
   background: var(--acct-titlebar);

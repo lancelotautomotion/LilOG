@@ -37,8 +37,8 @@ export default async function EditProfilePage() {
   }
 
   return (
-    <main className="account-desktop">
-      <div className="account-win95">
+    <main className="account-desktop account-desktop--leo">
+      <div className="account-win95 account-win95--wide">
         {/* Title bar */}
         <div className="account-win95-bar">
           <span className="account-win95-title">♛ Lil&apos;OG · Modifier le profil</span>
