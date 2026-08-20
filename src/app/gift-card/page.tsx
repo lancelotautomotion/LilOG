@@ -46,15 +46,33 @@ function toCapacities(product: ProductDetail | null): Capacity[] {
   return [];
 }
 
-export default async function GiftCardPage() {
-  /* Shopify injoignable ou carte cadeau non publiée : l'assistant s'affiche
-     quand même, en annonçant qu'aucun disque n'est chargé. Une page 404
-     n'apprendrait rien à personne. */
-  const product = await getGiftCardProduct().catch(() => null);
+export default async function GiftCardPage({
+  searchParams,
+}: {
+  /** `?montant=50` : les raccourcis de l'encart de l'accueil amorcent
+   *  l'assistant sur une capacité plutôt que de le laisser sur son défaut. */
+  searchParams: Promise<{ montant?: string }>;
+}) {
+  const [{ montant }, product] = await Promise.all([
+    searchParams,
+    /* Shopify injoignable ou carte cadeau non publiée : l'assistant s'affiche
+       quand même, en annonçant qu'aucun disque n'est chargé. Une page 404
+       n'apprendrait rien à personne. */
+    getGiftCardProduct().catch(() => null),
+  ]);
+
+  // Number("") vaut 0 et Number(undefined) vaut NaN : le test sur le signe
+  // écarte les deux, ainsi que tout paramètre trafiqué.
+  const asked = Number(montant);
+  const initialAmount = Number.isFinite(asked) && asked > 0 ? asked : null;
 
   return (
     <PageShell>
-      <SetupWizard capacities={toCapacities(product)} productName={product?.name ?? null} />
+      <SetupWizard
+        capacities={toCapacities(product)}
+        productName={product?.name ?? null}
+        initialAmount={initialAmount}
+      />
     </PageShell>
   );
 }

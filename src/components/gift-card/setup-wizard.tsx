@@ -133,17 +133,30 @@ const FIELD =
 export function SetupWizard({
   capacities,
   productName,
+  initialAmount = null,
 }: {
   capacities: Capacity[];
   /** Titre du produit Shopify, affiché dans la barre d'état. */
   productName: string | null;
+  /**
+   * Montant demandé en arrivant (?montant=50), pour les raccourcis de
+   * l'encart de l'accueil. Un montant qui ne correspond à aucune capacité
+   * disponible est ignoré sans bruit : mieux vaut un formulaire amorcé sur
+   * une autre valeur qu'une page en erreur parce qu'une variante a changé
+   * de prix dans Shopify.
+   */
+  initialAmount?: number | null;
 }) {
   const { addItems } = useCart();
 
   /* Le disque le plus vendu est celui du milieu : l'assistant arrive avec
      une capacité déjà choisie plutôt qu'un formulaire vide. */
   const firstAvailable = capacities.find((c) => c.available) ?? null;
-  const [picked, setPicked] = useState<Capacity | null>(firstAvailable);
+  const requested =
+    initialAmount == null
+      ? null
+      : (capacities.find((c) => c.available && c.amount === initialAmount) ?? null);
+  const [picked, setPicked] = useState<Capacity | null>(requested ?? firstAvailable);
 
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");

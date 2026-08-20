@@ -8,10 +8,11 @@
 
      00  FREE_SHIPPING.EXE  la bande défilante de la livraison offerte
      01  CAMCORDER_OS       hero plein écran, viseur de caméscope
-     02  PLAYLIST_HIGHLIGHTS.EXE  Cover Flow 3D des pièces mises en avant
-     03  ARCADE_SLOT        la borne qui lance la Dressing Machine
-     04  FILE_EXPLORER.SYS  les rayons en dossiers, pas en grille
-     05  README.TXT         l'histoire de la maison en Bloc-notes
+     02  LICENCE_CADEAU.ISO l'encart CD-ROM de la carte cadeau
+     03  PLAYLIST_HIGHLIGHTS.EXE  Cover Flow 3D des pièces mises en avant
+     04  ARCADE_SLOT        la borne qui lance la Dressing Machine
+     05  FILE_EXPLORER.SYS  les rayons en dossiers, pas en grille
+     06  README.TXT         l'histoire de la maison en Bloc-notes
 
    Pas de grille de produits classique : hormis le Cover Flow des
    highlights, la marchandise se découvre par la Dressing Machine
@@ -31,6 +32,7 @@ import { ChromeStar, GemSticker, HoloSmiley } from "@/components/contact/sticker
 import { WALLPAPER, WALLPAPER_GRID } from "@/components/y2k/kit";
 import { HeroCamcorder } from "@/components/home/hero-camcorder";
 import { ArcadeSlot } from "@/components/home/arcade-slot";
+import { GiftCardPromo } from "@/components/home/gift-card-promo";
 import { CoverFlow } from "@/components/home/cover-flow";
 import { FileExplorer } from "@/components/home/file-explorer";
 import { ReadmeWindow } from "@/components/home/readme-window";
@@ -92,6 +94,7 @@ export function HomeShell({ highlights = [] }: { highlights?: Product[] }) {
         </div>
 
         <div className="relative">
+          <GiftCardPromo />
           <CoverFlow products={highlights} />
           <ArcadeSlot />
           <FileExplorer />

@@ -46,8 +46,25 @@ const CD_CSS = `
 export function CdRom({
   /** Le graveur travaille : reflet et halo s'animent. */
   spinning = false,
+  /**
+   * L'étirement `lg:flex-1` décrit plus haut n'a de sens que dans
+   * l'assistant, où la colonne du disque doit égaler la hauteur du
+   * formulaire voisin. Hors de ce contexte (bannière de l'accueil), il
+   * faudrait un parent flex pour lui donner quelque chose à occuper :
+   * sans cela, `lg:aspect-auto` retire le ratio et le cadre s'écrase à sa
+   * hauteur plancher. Ces écrans-là gardent donc le ratio du fichier.
+   */
+  stretch = true,
+  /**
+   * Le disque est l'image d'en-tête de /gift-card, mais bien en dessous de
+   * la ligne de flottaison sur l'accueil : l'y précharger disputerait la
+   * bande passante au vrai visuel principal de la page.
+   */
+  priority = true,
 }: {
   spinning?: boolean;
+  stretch?: boolean;
+  priority?: boolean;
 }) {
   const spin = spinning ? " spin" : "";
 
@@ -57,7 +74,9 @@ export function CdRom({
          grandit au-delà de l'image (voir plus haut) et ce fond devient la
          marge visible au-dessus et en dessous — un blanc/40 y prenait la
          teinte du papier millimétré derrière et lisait comme du gris. */
-      className="relative aspect-[1254/1035] w-full max-w-[420px] shrink-0 overflow-hidden rounded-[8px] bg-white p-[4%] lg:aspect-auto lg:min-h-[200px] lg:flex-1"
+      className={`relative aspect-[1254/1035] w-full max-w-[420px] shrink-0 overflow-hidden rounded-[8px] bg-white p-[4%]${
+        stretch ? " lg:aspect-auto lg:min-h-[200px] lg:flex-1" : ""
+      }`}
       style={{ boxShadow: "8px 8px 0 rgba(24,12,58,0.38)" }}
     >
       <style>{CD_CSS}</style>
@@ -75,7 +94,7 @@ export function CdRom({
         fill
         sizes="(min-width: 1024px) 400px, 90vw"
         className="relative object-contain"
-        priority
+        priority={priority}
       />
 
       {/* Reflet qui balaie le boîtier pendant la gravure. */}
