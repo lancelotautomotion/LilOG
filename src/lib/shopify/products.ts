@@ -259,21 +259,31 @@ function weeklySample<T>(pool: T[], count: number, now = new Date()): T[] {
 }
 
 /**
- * Les coups de cœur de Louna qui alimentent PLAYLIST_HIGHLIGHTS.EXE : toutes
- * les pièces tagguées `louna-pick` dans Shopify, dont `count` sont tirées au
- * sort pour la semaine en cours. Aucun repli sur le reste du catalogue : si
- * rien n'est taggué, la section ne s'affiche pas, plutôt que de mettre en
- * avant des pièces qui n'ont pas été choisies.
+ * Les coups de cœur de Louna qui alimentent PLAYLIST_HIGHLIGHTS.EXE : les
+ * pièces tagguées `louna-pick` dans Shopify **et encore disponibles**, dont
+ * `count` sont tirées au sort pour la semaine en cours.
+ *
+ * Le filtre de disponibilité est posé deux fois, et ce n'est pas un oubli :
+ * `available_for_sale:true` évite de rapatrier les pièces vendues, et le
+ * second passage en JavaScript écarte en plus celles dont Shopify ne renvoie
+ * aucune variante achetable — un cas que la recherche ne couvre pas, et que
+ * le lecteur afficherait sinon en « SOLD OUT ». C'est exactement la règle
+ * qu'applique <CoverFlow> pour griser son bouton d'achat.
+ *
+ * Aucun repli sur le reste du catalogue : si rien n'est taggué (ou si tout
+ * est vendu), la section ne s'affiche pas, plutôt que de mettre en avant des
+ * pièces qui n'ont pas été choisies.
  */
 export async function getLounaPicks(count = 10): Promise<Product[]> {
   const data = await shopifyFetch<FeaturedProductsResponse>(TAGGED_PRODUCTS_QUERY, {
-    query: `tag:'${LOUNA_PICK_TAG}'`,
+    query: `tag:'${LOUNA_PICK_TAG}' AND available_for_sale:true`,
     first: 250,
   });
-  return weeklySample(
-    data.products.edges.map((e) => mapProduct(e.node)),
-    count,
-  );
+  const available = data.products.edges
+    .map((e) => mapProduct(e.node))
+    .filter((p) => p.tag !== "SOLD" && p.variantId);
+
+  return weeklySample(available, count);
 }
 
 /**
