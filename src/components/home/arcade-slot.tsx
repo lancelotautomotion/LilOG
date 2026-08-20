@@ -105,7 +105,12 @@ export function ArcadeSlot() {
   const { t } = useLanguage();
 
   return (
-    <section id="slot" className="px-4 py-[clamp(48px,8vw,96px)] sm:px-6">
+    /* Padding bas seul, comme FILE_EXPLORER.SYS et README.TXT : sur cette page
+       chaque module ne réserve que l'espace qui le suit, et c'est le premier
+       bloc (PLAYLIST_HIGHLIGHTS.EXE) qui porte le retrait d'après le hero.
+       Un `py` ici ajouterait son padding haut à celui du bloc précédent et
+       creuserait un écart deux fois plus grand qu'ailleurs sur l'accueil. */
+    <section id="slot" className="px-4 pb-[clamp(48px,8vw,96px)] sm:px-6">
       {/* Conteneur élargi (980px → 1400px, la largeur des autres fenêtres du
           site) : la borne garde sa taille propre mais n'est plus seule au
           centre : un texte de présentation prend la colonne de gauche, elle
