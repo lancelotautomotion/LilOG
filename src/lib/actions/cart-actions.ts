@@ -96,12 +96,20 @@ export async function addLinesToCartAction(lines: CartLineInput[]): Promise<AddT
     } catch (err) {
       // Only recreate the cart when the cart itself is invalid/expired.
       // Other errors (invalid variant, sold out, etc.) should propagate.
+      //
+      // Shopify localise le message de userError selon la langue de la
+      // requête Storefront (la boutique est en français) : ne reconnaître
+      // que les tournures anglaises laissait passer tout droit le vrai motif
+      // ("Le panier spécifié n'existe pas."), qui remontait alors comme une
+      // erreur générique au lieu de déclencher la recréation automatique.
       const msg = err instanceof Error ? err.message.toLowerCase() : "";
       const isStaleCart =
         msg.includes("cart not found") ||
         msg.includes("cart does not exist") ||
         msg.includes("invalid cart") ||
-        msg.includes("provided invalid value");
+        msg.includes("provided invalid value") ||
+        msg.includes("n'existe pas") ||
+        msg.includes("introuvable");
       if (!isStaleCart) throw err;
       return { cart: await createFresh(), error: null };
     }
