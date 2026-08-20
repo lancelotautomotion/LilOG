@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { shopifyGetCustomer, shopifyUpdateCustomer } from "@/lib/shopify/customers";
-import { EditProfileForm } from "./edit-form";
+import { EditProfileShell } from "./edit-profile-shell";
 
 export const metadata: Metadata = { title: "Modifier le profil · Lil'OG" };
 
@@ -36,38 +36,5 @@ export default async function EditProfilePage() {
     return { error };
   }
 
-  return (
-    <main className="account-desktop account-desktop--leo">
-      <div className="account-win95 account-win95--wide">
-        {/* Title bar */}
-        <div className="account-win95-bar">
-          <span className="account-win95-title">♛ Lil&apos;OG · Modifier le profil</span>
-          <div className="account-win95-chrome">
-            <span>_</span>
-            <span>□</span>
-            <a href="/account" title="Fermer">×</a>
-          </div>
-        </div>
-
-        {/* Toolbar */}
-        <div className="account-win95-toolbar">
-          <a href="/account" className="account-toolbar-btn">← Retour</a>
-          <div className="account-toolbar-sep" />
-          <a href="/account/orders" className="account-toolbar-btn">📦 Commandes</a>
-        </div>
-
-        {/* Content */}
-        <div className="account-win95-full-content">
-          <EditProfileForm customer={customer} updateAction={updateProfile} />
-        </div>
-
-        {/* Status bar */}
-        <div className="account-win95-statusbar">
-          <div className="account-status-cell">Modifications sécurisées</div>
-          <div className="account-status-cell grow"></div>
-          <div className="account-status-cell">♛ Lil&apos;OG © 2025</div>
-        </div>
-      </div>
-    </main>
-  );
+  return <EditProfileShell customer={customer} updateAction={updateProfile} />;
 }
