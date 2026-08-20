@@ -370,7 +370,9 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
  * essaie les écritures courantes, la première qui répond gagne.
  */
 export const GIFT_CARD_HANDLES = [
-  // Handle confirmé du produit "Carte cadeau Lil'OG" créé dans Shopify.
+  // Handle confirmé du produit "Carte-Cadeau Lil'OG" créé dans Shopify
+  // (Admin → Produits → aperçu moteurs de recherche → /products/carte-cadeau-lilog).
+  "carte-cadeau-lilog",
   "carte-cadeau-lil-og",
   "carte-cadeau",
   "gift-card",
