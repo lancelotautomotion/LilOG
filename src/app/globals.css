@@ -1810,18 +1810,19 @@ textarea {
   z-index: 1;
   min-height: 100dvh;
   display: flex;
-  /* `flex-start`, pas `stretch` : sur un écran plus haut que le contenu,
+  /* `center`, pas `stretch` : sur un écran plus haut que le contenu,
      min-height:100dvh donne à .oc-page une hauteur "définie" — et un
      conteneur flex à une seule ligne avec une hauteur définie étire cette
      ligne (donc ses items) jusqu'à la remplir, quel que soit align-items.
-     Résultat : .oc-row (ligne unique, un seul enfant ici) reste à sa
-     hauteur naturelle plutôt que d'être tirée jusqu'au bas de la page,
-     ce qui laisse le vide voulu sous les fenêtres. Le VRAI alignement des
-     trois colonnes (icônes/DRESSING/MON_PANIER) se fait DANS .oc-row, un
-     conteneur à hauteur naturelle (pas de min-height) : là, le même piège
-     ne joue pas, et `align-items: stretch` s'y comporte normalement —
-     chaque colonne s'étire à la hauteur de la plus haute des trois. */
-  align-items: flex-start;
+     `center` évite ce piège (seul `stretch` étire) tout en répartissant
+     le vide au-dessus ET en dessous des fenêtres, plutôt que de le
+     laisser s'accumuler uniquement en bas comme avec `flex-start`. Le
+     VRAI alignement des trois colonnes (icônes/DRESSING/MON_PANIER) se
+     fait DANS .oc-row, un conteneur à hauteur naturelle (pas de
+     min-height) : là, le même piège ne joue pas, et `align-items: stretch`
+     s'y comporte normalement — chaque colonne s'étire à la hauteur de la
+     plus haute des trois. */
+  align-items: center;
   justify-content: center;
   /* Marges resserrées : au format desktop, le bloc doit tenir dans la
      hauteur d'un écran de laptop sans scroll. Le padding vertical
