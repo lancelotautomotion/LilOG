@@ -2372,17 +2372,24 @@ textarea {
   from { transform: translateY(26px) scaleY(0.25); opacity: 0; }
   to   { transform: translateY(0)    scaleY(1);    opacity: 1; }
 }
+/* Même gris que les pastilles du header (--nav-plastic, posé plus bas
+   dans la feuille — une custom property de :root est visible partout,
+   peu importe l'ordre des règles) : le ticket sort de la même matière
+   que les boutons plutôt que d'un papier thermique crème. */
 .ok-receipt-paper {
-  background: linear-gradient(180deg, #fffdf7 0%, #f4f1e8 100%);
+  background: var(--nav-plastic, linear-gradient(180deg, #f6f5fb 0%, #e7e5f1 48%, #d3d0e1 100%));
+  border: 1px solid var(--nav-plastic-border, #c6c2d8);
+  border-bottom: none;
   padding: 12px 14px 14px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
   font-family: var(--mono), monospace;
   color: #241f2e;
 }
-/* Bord bas déchiré : une frise de triangles découpée dans le papier. */
+/* Bord bas déchiré : une frise de triangles découpée dans le papier,
+   même ton que le bas du dégradé du papier pour rester raccord. */
 .ok-receipt-tear {
   height: 8px;
-  background: #f4f1e8;
+  background: #d3d0e1;
   filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.35));
   clip-path: polygon(
     0 0, 100% 0, 100% 0,
@@ -2391,12 +2398,12 @@ textarea {
     32% 100%, 28% 0, 24% 100%, 20% 0, 16% 100%, 12% 0, 8% 100%, 4% 0, 0 100%
   );
 }
-.ok-r-head {
-  margin: 0;
-  text-align: center;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+/* Logo du header plutôt qu'un nom de boutique retapé en texte. */
+.ok-r-logo {
+  display: block;
+  height: 26px;
+  width: auto;
+  margin: 0 auto;
 }
 .ok-r-sub {
   margin: 2px 0 0;
@@ -2458,32 +2465,27 @@ textarea {
   color: #c4106b;
 }
 
-/* ---- Bouton Windows ---- */
+/* ---- Bouton : même pastille « chunky plastic » que le header
+   (panier, wishlist, connexion…) — gris/violet moulé, entièrement
+   arrondi, plutôt que le bouton Windows rectangulaire d'origine. */
 .ok-btn {
   font-family: var(--mono), monospace;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #1c1830;
-  background: #c0c0c0;
-  padding: 8px 14px;
+  color: var(--nav-plastic-ink, #262626);
+  background: var(--nav-plastic, linear-gradient(180deg, #f6f5fb 0%, #e7e5f1 48%, #d3d0e1 100%));
+  border: 1px solid var(--nav-plastic-border, #c6c2d8);
+  border-radius: 999px;
+  padding: 10px 20px;
   cursor: pointer;
-  /* Biseau Win95 : clair en haut/gauche, sombre en bas/droite. */
-  border-top: 2px solid #ffffff;
-  border-left: 2px solid #ffffff;
-  border-right: 2px solid #4a4a55;
-  border-bottom: 2px solid #4a4a55;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+  box-shadow: var(--nav-plastic-lift, inset 0 2px 4px rgba(255, 255, 255, 0.95), inset 0 -2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(30, 36, 48, 0.16));
+  transition: filter 130ms ease, box-shadow 90ms ease, transform 90ms ease;
 }
-.ok-btn:hover { background: #d4d4d4; }
-/* Enfoncé : le biseau s'inverse et le bouton descend d'un pixel. */
+.ok-btn:hover { filter: brightness(1.05); }
 .ok-btn:active {
-  border-top-color: #4a4a55;
-  border-left-color: #4a4a55;
-  border-right-color: #ffffff;
-  border-bottom-color: #ffffff;
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.55);
+  transform: scale(0.95);
+  box-shadow: var(--nav-plastic-press, inset 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 -1px 0 rgba(255, 255, 255, 0.7));
 }
 .ok-btn:focus-visible {
   outline: 2px dotted #00ff66;
