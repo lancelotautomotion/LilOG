@@ -2817,6 +2817,57 @@ textarea {
 .account-detail-qty { font-family: var(--mono); font-size: 0.875rem; color: var(--ldl-muted); flex-shrink: 0; }
 .account-detail-price { font-family: var(--mono); font-size: 0.875rem; font-weight: 700; color: var(--ldl-accent); flex-shrink: 0; }
 
+/* ============================================================
+   Détail commande : suivi du colis + bas de page
+   ------------------------------------------------------------
+   Le panneau de suivi n'apparaît qu'une fois la commande
+   expédiée (voir OrderDetailShell). Une commande peut avoir
+   plusieurs colis : chaque ligne porte son transporteur, son
+   numéro et son lien.
+   ============================================================ */
+.acct-tracking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.acct-tracking-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.acct-tracking-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.acct-tracking-company {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ldl-text);
+}
+.acct-tracking-number {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--ldl-muted);
+  word-break: break-all;
+}
+
+/* Montants + adresse côte à côte, l'un sous l'autre sur mobile :
+   deux colonnes figées se retrouvaient illisibles sur un écran de
+   téléphone. */
+.acct-detail-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+@media (max-width: 640px) {
+  .acct-detail-bottom { grid-template-columns: 1fr; }
+}
+
 /* Form feedback */
 .account-success {
   font-family: var(--mono);

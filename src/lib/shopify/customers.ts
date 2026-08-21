@@ -79,6 +79,15 @@ const CUSTOMER_ORDER_QUERY = /* GraphQL */ `
             shippingAddress {
               firstName lastName address1 address2 city province zip country
             }
+            /* Suivi du colis : le transporteur et son lien de tracking
+               une fois la commande expédiée. statusUrl (page de suivi
+               Shopify) sert de repli quand le transporteur ne fournit
+               pas d'URL — il existe toujours. */
+            statusUrl
+            successfulFulfillments(first: 10) {
+              trackingCompany
+              trackingInfo(first: 10) { number url }
+            }
             lineItems(first: 50) {
               edges {
                 node {
@@ -129,6 +138,11 @@ export interface ShopifyLineItem {
   originalTotalPrice?: { amount: string; currencyCode: string };
 }
 
+export interface ShopifyFulfillment {
+  trackingCompany: string | null;
+  trackingInfo: { number: string | null; url: string | null }[];
+}
+
 export interface ShopifyOrder {
   id: string;
   name: string;
@@ -137,6 +151,10 @@ export interface ShopifyOrder {
   fulfillmentStatus: string;
   financialStatus: string;
   currentTotalPrice: { amount: string; currencyCode: string };
+  /* Optionnels : seule la requête de détail les demande, la liste des
+     dernières commandes de /account ne les remonte pas. */
+  statusUrl?: string;
+  successfulFulfillments?: ShopifyFulfillment[] | null;
   subtotalPrice?: { amount: string; currencyCode: string };
   totalShippingPrice?: { amount: string; currencyCode: string };
   shippingAddress?: {
