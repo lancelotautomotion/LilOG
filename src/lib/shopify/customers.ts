@@ -56,10 +56,15 @@ const CUSTOMER_WITH_ORDERS_QUERY = /* GraphQL */ `
   }
 `;
 
-const CUSTOMER_ORDERS_QUERY = /* GraphQL */ `
-  query CustomerOrders($token: String!, $cursor: String) {
+/* ⚠ Le Storefront API n'expose PAS de `customer.order(id:)` : le type
+   Customer n'a qu'une connexion `orders`. L'ancienne requête interrogeait
+   ce champ inexistant, la validation GraphQL échouait et CHAQUE page de
+   détail répondait 404. On pagine donc la liste des commandes du client et
+   on retient celle qui porte l'id demandé (voir shopifyGetCustomerOrder). */
+const CUSTOMER_ORDER_QUERY = /* GraphQL */ `
+  query CustomerOrder($token: String!, $cursor: String) {
     customer(customerAccessToken: $token) {
-      orders(first: 20, after: $cursor, sortKey: PROCESSED_AT, reverse: true) {
+      orders(first: 30, after: $cursor, sortKey: PROCESSED_AT, reverse: true) {
         edges {
           node {
             id
@@ -69,53 +74,28 @@ const CUSTOMER_ORDERS_QUERY = /* GraphQL */ `
             fulfillmentStatus
             financialStatus
             currentTotalPrice { amount currencyCode }
-            lineItems(first: 3) {
+            subtotalPrice { amount currencyCode }
+            totalShippingPrice { amount currencyCode }
+            shippingAddress {
+              firstName lastName address1 address2 city province zip country
+            }
+            lineItems(first: 50) {
               edges {
                 node {
                   title
                   quantity
-                  variant { image { url altText } }
+                  variant {
+                    title
+                    price { amount currencyCode }
+                    image { url altText }
+                  }
+                  originalTotalPrice { amount currencyCode }
                 }
               }
             }
           }
         }
         pageInfo { hasNextPage endCursor }
-      }
-    }
-  }
-`;
-
-const CUSTOMER_ORDER_QUERY = /* GraphQL */ `
-  query CustomerOrder($token: String!, $id: ID!) {
-    customer(customerAccessToken: $token) {
-      order(id: $id) {
-        id
-        name
-        orderNumber
-        processedAt
-        fulfillmentStatus
-        financialStatus
-        currentTotalPrice { amount currencyCode }
-        subtotalPrice { amount currencyCode }
-        totalShippingPrice { amount currencyCode }
-        shippingAddress {
-          firstName lastName address1 address2 city province zip country
-        }
-        lineItems(first: 50) {
-          edges {
-            node {
-              title
-              quantity
-              variant {
-                title
-                price { amount currencyCode }
-                image { url altText }
-              }
-              originalTotalPrice { amount currencyCode }
-            }
-          }
-        }
       }
     }
   }
@@ -231,35 +211,62 @@ export async function shopifyGetCustomerWithOrders(token: string): Promise<{
   };
 }
 
-export async function shopifyGetCustomerOrders(
-  token: string,
-  cursor?: string,
-): Promise<{ orders: ShopifyOrder[]; hasNextPage: boolean; endCursor: string | null }> {
-  const data = await shopifyFetch<{
-    customer: {
-      orders: {
-        edges: { node: ShopifyOrder }[];
-        pageInfo: { hasNextPage: boolean; endCursor: string | null };
-      };
-    } | null;
-  }>(CUSTOMER_ORDERS_QUERY, { token, cursor: cursor ?? null }, 0).catch(() => null);
+/* L'id Storefront d'une commande porte une signature en query string
+   (`gid://shopify/Order/123?key=…`). On compare donc sur le GID nu, pour
+   que le lien reste valable même si la signature change d'une requête à
+   l'autre. */
+function sameOrderId(a: string, b: string): boolean {
+  return a.split("?")[0] === b.split("?")[0];
+}
 
-  if (!data?.customer) return { orders: [], hasNextPage: false, endCursor: null };
-  return {
-    orders: data.customer.orders.edges.map((e) => e.node),
-    hasNextPage: data.customer.orders.pageInfo.hasNextPage,
-    endCursor: data.customer.orders.pageInfo.endCursor,
-  };
+/* Nombre de pages parcourues au maximum : 30 commandes par page, soit les
+   300 dernières. Au-delà, la commande est considérée introuvable plutôt
+   que d'enchaîner les allers-retours à l'infini. */
+const ORDER_LOOKUP_MAX_PAGES = 10;
+
+interface CustomerOrdersPage {
+  customer: {
+    orders: {
+      edges: { node: ShopifyOrder }[];
+      pageInfo: { hasNextPage: boolean; endCursor: string | null };
+    };
+  } | null;
+}
+
+/* Une page de commandes. Fonction séparée, au type de retour explicite :
+   dans la boucle ci-dessous, `cursor` est réassigné depuis la réponse, et
+   inférer le tout sur place rendrait `cursor` et la réponse mutuellement
+   dépendants — TS abandonne alors sur un `any` implicite. */
+function fetchOrdersPage(
+  token: string,
+  cursor: string | null,
+): Promise<CustomerOrdersPage | null> {
+  return shopifyFetch<CustomerOrdersPage>(
+    CUSTOMER_ORDER_QUERY,
+    { token, cursor },
+    0,
+  ).catch(() => null);
 }
 
 export async function shopifyGetCustomerOrder(
   token: string,
   orderId: string,
 ): Promise<ShopifyOrder | null> {
-  const data = await shopifyFetch<{
-    customer: { order: ShopifyOrder | null } | null;
-  }>(CUSTOMER_ORDER_QUERY, { token, id: orderId }, 0).catch(() => null);
-  return data?.customer?.order ?? null;
+  let cursor: string | null = null;
+
+  for (let page = 0; page < ORDER_LOOKUP_MAX_PAGES; page++) {
+    const data = await fetchOrdersPage(token, cursor);
+    if (!data?.customer) return null;
+
+    const { edges, pageInfo } = data.customer.orders;
+    const match = edges.find((e) => sameOrderId(e.node.id, orderId));
+    if (match) return match.node;
+
+    if (!pageInfo.hasNextPage) return null;
+    cursor = pageInfo.endCursor;
+  }
+
+  return null;
 }
 
 /* ── Addresses ─────────────────────────────────────────────────────────── */

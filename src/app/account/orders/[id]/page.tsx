@@ -2,7 +2,11 @@ import { auth } from "@/auth";
 import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { shopifyGetCustomerOrder } from "@/lib/shopify/customers";
-import Image from "next/image";
+/* Les visuels produits viennent du CDN Shopify, non déclaré dans
+   `images.remotePatterns` : next/image lèverait « Invalid src prop ». On
+   passe par SmartImg, comme partout ailleurs pour les images Shopify —
+   il retombe en plus sur un placeholder maison si l'URL casse. */
+import { SmartImg } from "@/components/smart-img";
 
 export const metadata: Metadata = { title: "Détail commande · Lil'OG" };
 
@@ -57,15 +61,15 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <div className="account-win95-chrome">
             <span>_</span>
             <span>□</span>
-            <a href="/account/orders" title="Fermer">×</a>
+            <a href="/account" title="Fermer">×</a>
           </div>
         </div>
 
         {/* Toolbar */}
         <div className="account-win95-toolbar">
-          <a href="/account/orders" className="account-toolbar-btn">← Retour</a>
+          <a href="/account" className="account-toolbar-btn">← Retour</a>
           <div className="account-toolbar-sep" />
-          <a href="/account" className="account-toolbar-btn">Mon compte</a>
+          <a href="/" className="account-toolbar-btn">🛍 Boutique</a>
         </div>
 
         {/* Content */}
@@ -110,13 +114,10 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               {items.map((item, i) => (
                 <div key={i} className="account-detail-row">
                   {item.variant?.image?.url ? (
-                    <Image
+                    <SmartImg
                       src={item.variant.image.url}
                       alt={item.variant.image.altText ?? item.title}
-                      width={40}
-                      height={52}
                       className="account-detail-img"
-                      style={{ objectFit: "cover" }}
                     />
                   ) : (
                     <div className="account-detail-img" style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.25rem" }}>

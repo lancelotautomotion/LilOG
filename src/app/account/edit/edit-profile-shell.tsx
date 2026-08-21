@@ -49,7 +49,7 @@ export function EditProfileShell({
           <div className="account-win95-toolbar">
             <a href="/account" className="account-toolbar-btn">← Retour</a>
             <div className="account-toolbar-sep" />
-            <a href="/account/orders" className="account-toolbar-btn">📦 Commandes</a>
+            <a href="/account" className="account-toolbar-btn">📦 Commandes</a>
           </div>
 
           {/* Content */}
