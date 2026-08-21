@@ -2213,102 +2213,310 @@ textarea {
   display: block !important;
 }
 
-/* ── Checkout flying heart ── */
-.ch-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ============================================================
+   CHECKOUT_PROTOCOL.EXE — modale de validation Y2K arcade
+   ------------------------------------------------------------
+   Voir components/checkout-modal.tsx. Le pixel art est en SVG
+   (carrés + crispEdges), tout le reste — balayage CRT, rebond
+   d'entrée, scintillement, sortie du ticket — est en keyframes
+   CSS pures : rien à cadencer côté React.
+   ============================================================ */
+
+/* Voile + centrage. `overflow-y: auto` et `my-auto` côté JSX : sur un
+   petit écran en paysage, la modale défile au lieu d'être rognée. */
+.ok-overlay {
+  animation: okFade 180ms ease-out both;
+}
+@keyframes okFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-.ch-scene {
-  display: flex;
-  align-items: center;
-  animation: chFly 2000ms cubic-bezier(0.22, 0.9, 0.36, 1) forwards;
+/* Balayage CRT : lignes horizontales fines + léger vignettage, comme une
+   télé cathodique filmée. Décoratif, jamais cliquable. */
+.ok-crt {
+  z-index: 1;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.28) 0px,
+      rgba(0, 0, 0, 0.28) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(20, 0, 30, 0.55) 100%);
+  mix-blend-mode: multiply;
+  animation: okRoll 7s linear infinite;
+}
+/* La trame descend lentement : le défilement d'une image mal synchronisée. */
+@keyframes okRoll {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 0 96px, 0 0; }
 }
 
-/* Heart container */
-.ch-heart {
+/* Entrée de la modale : montée en échelle avec un petit dépassement. */
+.ok-modal {
   position: relative;
-  width: 200px;
-  flex-shrink: 0;
   z-index: 2;
+  animation: okPop 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+@keyframes okPop {
+  from { transform: scale(0.55); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
 }
 
-.ch-heart-svg {
+/* ---- Insigne cœur ailé ---- */
+.ok-heart {
+  width: 104px;
+  height: auto;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 15px rgba(255, 0, 128, 0.8));
+  animation: okBeat 900ms ease-in-out infinite;
+}
+/* Battement discret : l'insigne respire sans sautiller. */
+@keyframes okBeat {
+  0%, 100% { transform: scale(1);    }
+  45%      { transform: scale(1.07); }
+}
+
+.ok-wing {
+  display: block;
+  width: 96px;
+  flex-shrink: 0;
+  z-index: 1;
+  /* Halo volontairement discret : un flou marqué empâte les pixels et
+     l'aile perd ses contours nets, tout l'intérêt du sprite. */
+  filter: drop-shadow(0 0 3px rgba(190, 170, 255, 0.4));
+}
+.ok-wing svg {
+  display: block;
   width: 100%;
   height: auto;
-  display: block;
-  filter: drop-shadow(0 10px 28px rgba(160, 20, 90, 0.5));
+}
+/* Les deux ailes partagent la même grille : la droite est simplement
+   retournée, donc la symétrie ne peut pas dériver. Le retournement vit
+   sur le <svg>, le battement sur le conteneur : aucun conflit de
+   transform entre les deux. */
+.ok-wing-r svg { transform: scaleX(-1); }
+
+.ok-wing-l {
+  transform-origin: 100% 55%;
+  margin-right: -10px;
+  animation: okFlapL 420ms steps(2, end) infinite;
+}
+.ok-wing-r {
+  transform-origin: 0% 55%;
+  margin-left: -10px;
+  animation: okFlapR 420ms steps(2, end) infinite;
+}
+/* steps() : un battement saccadé de sprite, pas un mouvement fluide.
+   Les deux sens sont opposés pour que les ailes s'ouvrent ensemble. */
+@keyframes okFlapL {
+  0%, 100% { transform: rotate(-7deg); }
+  50%      { transform: rotate(5deg);  }
+}
+@keyframes okFlapR {
+  0%, 100% { transform: rotate(7deg);  }
+  50%      { transform: rotate(-5deg); }
 }
 
-.ch-heart-msg {
-  position: absolute;
-  top: 46%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 118px;
-  text-align: center;
+/* Étoiles : elles scintillent en décalé (delay posé en style inline). */
+.ok-star {
+  z-index: 3;
+  pointer-events: none;
+  animation: okTwinkle 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+}
+@keyframes okTwinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.6) rotate(0deg);  }
+  50%      { opacity: 1;    transform: scale(1.15) rotate(45deg); }
+}
+
+/* ---- Verdict ---- */
+.ok-title {
   font-family: var(--font-lcd), monospace;
-  font-weight: 400;
-  font-size: 1.65rem;
-  line-height: 1.1;
+  font-size: clamp(2rem, 9vw, 2.75rem);
+  line-height: 1;
   letter-spacing: 0.06em;
+  color: #00ff66;
+  text-shadow:
+    0 0 6px rgba(0, 255, 102, 0.9),
+    0 0 18px rgba(0, 255, 102, 0.55),
+    0 2px 0 rgba(0, 60, 25, 0.9);
+  user-select: none;
+}
+.ok-sub {
+  font-family: var(--mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: #d9d4e8;
+  animation: okBlink 1s steps(1, end) infinite;
+  user-select: none;
+}
+@keyframes okBlink {
+  0%, 60%  { opacity: 1;    }
+  61%, 100% { opacity: 0.25; }
+}
+
+/* ---- Ticket de caisse ----
+   Il sort de l'imprimante : glisse depuis le bas en se dépliant, après
+   que l'insigne et le verdict soient posés. */
+.ok-receipt {
+  position: relative;
+  transform-origin: top center;
+  animation: okPrint 520ms cubic-bezier(0.2, 0.7, 0.3, 1) 380ms both;
+}
+@keyframes okPrint {
+  from { transform: translateY(26px) scaleY(0.25); opacity: 0; }
+  to   { transform: translateY(0)    scaleY(1);    opacity: 1; }
+}
+.ok-receipt-paper {
+  background: linear-gradient(180deg, #fffdf7 0%, #f4f1e8 100%);
+  padding: 12px 14px 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  font-family: var(--mono), monospace;
+  color: #241f2e;
+}
+/* Bord bas déchiré : une frise de triangles découpée dans le papier. */
+.ok-receipt-tear {
+  height: 8px;
+  background: #f4f1e8;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.35));
+  clip-path: polygon(
+    0 0, 100% 0, 100% 0,
+    96% 100%, 92% 0, 88% 100%, 84% 0, 80% 100%, 76% 0, 72% 100%, 68% 0,
+    64% 100%, 60% 0, 56% 100%, 52% 0, 48% 100%, 44% 0, 40% 100%, 36% 0,
+    32% 100%, 28% 0, 24% 100%, 20% 0, 16% 100%, 12% 0, 8% 100%, 4% 0, 0 100%
+  );
+}
+.ok-r-head {
+  margin: 0;
+  text-align: center;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+.ok-r-sub {
+  margin: 2px 0 0;
+  text-align: center;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  color: #6b6480;
+}
+.ok-r-rule {
+  border-top: 1px dashed #9a93ad;
+  margin: 8px 0;
+}
+.ok-r-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ok-r-lines li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.6875rem;
+  line-height: 1.3;
+}
+.ok-r-more {
+  justify-content: center !important;
+  color: #6b6480;
+  font-style: italic;
+  letter-spacing: 0.06em;
+}
+.ok-r-name {
   text-transform: uppercase;
-  color: #fff;
-  text-shadow: 0 1px 4px rgba(80, 0, 40, 0.8);
+  overflow-wrap: anywhere;
+}
+.ok-r-price { white-space: nowrap; }
+.ok-r-total {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.ok-r-meta {
+  margin: 8px 0 0;
+  text-align: center;
+  font-size: 0.5625rem;
+  letter-spacing: 0.14em;
+  color: #6b6480;
+}
+.ok-r-msn {
+  margin: 6px 0 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #c4106b;
+}
+
+/* ---- Bouton Windows ---- */
+.ok-btn {
+  font-family: var(--mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #1c1830;
+  background: #c0c0c0;
+  padding: 8px 14px;
+  cursor: pointer;
+  /* Biseau Win95 : clair en haut/gauche, sombre en bas/droite. */
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #4a4a55;
+  border-bottom: 2px solid #4a4a55;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+}
+.ok-btn:hover { background: #d4d4d4; }
+/* Enfoncé : le biseau s'inverse et le bouton descend d'un pixel. */
+.ok-btn:active {
+  border-top-color: #4a4a55;
+  border-left-color: #4a4a55;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.55);
+}
+.ok-btn:focus-visible {
+  outline: 2px dotted #00ff66;
+  outline-offset: 2px;
+}
+
+/* ---- Ligne de redirection ---- */
+.ok-redir {
+  font-family: var(--mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  color: #b9b2cc;
+  animation: okBlink 1.2s steps(1, end) infinite;
   user-select: none;
 }
 
-/* Wings */
-.ch-wing {
-  width: 138px;
-  height: auto;
-  flex-shrink: 0;
-  z-index: 1;
+/* Écrans courts : l'insigne cède la place au ticket plutôt que de forcer
+   un défilement dans la modale. */
+@media (max-width: 400px) {
+  .ok-sub { font-size: 0.6875rem; letter-spacing: 0.08em; }
 }
 
-.ch-wing-l {
-  transform-origin: 100% 58%;
-  margin-right: -8px;
-  animation: chWingL 320ms steps(3, end) infinite;
+@media (max-height: 720px) {
+  .ok-heart { width: 78px; }
+  .ok-wing  { width: 74px; }
+  .ok-badge { height: 96px; }
 }
 
-.ch-wing-r {
-  transform-origin: 0% 58%;
-  margin-left: -8px;
-  animation: chWingR 320ms steps(3, end) infinite;
-}
-
-/* Fly from below to center, hover, then drift up and vanish */
-@keyframes chFly {
-  0%   { transform: translateY(52vh) scale(0.38); opacity: 0; }
-  10%  { opacity: 1; }
-  32%  { transform: translateY(0) scale(1); }
-  68%  { transform: translateY(0) scale(1); opacity: 1; }
-  82%  { transform: translateY(-7vh) scale(0.96); opacity: 0.75; }
-  100% { transform: translateY(-13vh) scale(0.88); opacity: 0; }
-}
-
-/* Jerky wing flaps : steps() gives the sacadé effect */
-@keyframes chWingR {
-  0%   { transform: rotateZ(-10deg); }
-  33%  { transform: rotateZ(20deg);  }
-  66%  { transform: rotateZ(6deg);   }
-}
-@keyframes chWingL {
-  0%   { transform: rotateZ(10deg);  }
-  33%  { transform: rotateZ(-20deg); }
-  66%  { transform: rotateZ(-6deg);  }
-}
-
-@media (max-width: 640px) {
-  .ch-wing  { width: 88px; }
-  .ch-heart { width: 155px; }
-  .ch-heart-msg { font-size: 1.125rem; width: 92px; }
+/* Mouvement réduit : on garde l'affichage, on coupe ce qui bouge. */
+@media (prefers-reduced-motion: reduce) {
+  .ok-modal, .ok-receipt, .ok-overlay { animation-duration: 1ms; }
+  .ok-heart, .ok-wing-l, .ok-wing-r, .ok-star, .ok-crt { animation: none; }
+  .ok-sub, .ok-redir { animation: none; opacity: 1; }
 }
 
 @media (max-width: 1180px) {
