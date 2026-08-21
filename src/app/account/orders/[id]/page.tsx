@@ -31,6 +31,22 @@ function statusLabel(s: string) {
   return map[s.toUpperCase()] ?? s;
 }
 
+/* Statut de paiement (OrderFinancialStatus). Les 7 valeurs de l'énum sont
+   couvertes : sans traduction, Shopify renvoie le libellé brut en anglais
+   (« PAID ») au milieu d'une page en français. */
+function paymentLabel(s: string) {
+  const map: Record<string, string> = {
+    PAID: "Payé",
+    PENDING: "En attente",
+    AUTHORIZED: "Autorisé",
+    PARTIALLY_PAID: "Partiellement payé",
+    PARTIALLY_REFUNDED: "Partiellement remboursé",
+    REFUNDED: "Remboursé",
+    VOIDED: "Annulé",
+  };
+  return map[s.toUpperCase()] ?? s;
+}
+
 function statusClass(s: string) {
   const l = s.toLowerCase();
   if (l === "fulfilled") return "fulfilled";
@@ -99,7 +115,11 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 </div>
                 <div className="account-field">
                   <span className="account-field-label">Statut paiement</span>
-                  <div className="account-field-value">{order.financialStatus}</div>
+                  {/* Capitales, comme le badge « EXPÉDIÉ » juste à côté :
+                      ce champ-là n'a pas le text-transform du badge. */}
+                  <div className="account-field-value" style={{ textTransform: "uppercase" }}>
+                    {paymentLabel(order.financialStatus)}
+                  </div>
                 </div>
               </div>
             </div>
