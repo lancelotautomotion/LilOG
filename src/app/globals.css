@@ -2154,31 +2154,22 @@ textarea {
   flex: 1 1 440px;
   max-width: 620px;
   min-width: 0;
-  /* `align-items: stretch` de .oc-row épouse déjà la hauteur de DRESSING
-     (l'autre colonne de la ligne) — explicite ici pour ne pas dépendre
-     d'un défaut qui pourrait changer ailleurs. Ça ne marche dans ce sens
-     (DRESSING reste la référence) que parce que .oc-summary-body plafonne
-     sa propre contribution : sans ce plafond, une longue liste d'articles
-     redeviendrait la plus haute des deux et étirerait DRESSING à sa
-     place — le bug du tour précédent. */
-  align-self: stretch;
+  /* Pas de `stretch` : MON_PANIER.EXE garde sa hauteur naturelle plutôt
+     que d'épouser celle de DRESSING (l'autre colonne de .oc-row). Coller
+     les deux hauteurs forçait sinon un vide en bas dès que le panier a
+     peu d'articles — la fenêtre est aussi haute qu'il lui faut, pas plus. */
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
 }
-.oc-summary-win { width: 100%; height: 100%; display: flex; flex-direction: column; }
+.oc-summary-win { width: 100%; display: flex; flex-direction: column; }
 .oc-summary-body {
   padding: 12px;
-  flex: 1;
-  min-height: 0;   /* laisse flex:1 rétrécir sous le contenu, sinon overflow-y n'a rien à faire */
-  /* Plafond volontairement bas : DRESSING mesure au moins ~590px de haut
-     (photo + Style Scan) sur les écrans les plus courts qu'on supporte
-     encore sans scroll. En restant sous ce plancher, MON_PANIER.EXE ne
-     redevient jamais la plus haute des deux fenêtres, quel que soit le
-     nombre d'articles — c'est ce qui permet à .oc-summary de s'étirer à
-     la hauteur de DRESSING (voir son `align-self: stretch`) sans jamais
-     inverser qui tire qui. Au-delà de ce plafond, la liste défile sur
-     elle-même plutôt que d'agrandir la fenêtre.  */
-  max-height: 260px;
+  min-height: 0;
+  /* Assez haut pour montrer 2 articles complets sans scroll (le cas
+     courant) ; au-delà, la liste défile sur elle-même plutôt que
+     d'agrandir indéfiniment la fenêtre. */
+  max-height: 420px;
   overflow-y: auto;
   background: #fff;
 }
