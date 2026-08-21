@@ -14,7 +14,9 @@
    déchiffrer des coordonnées SVG.
    ============================================================ */
 
+import Image from "next/image";
 import type { CartLine } from "@/lib/shopify/types";
+import logoBlack from "../../public/logo-black.png";
 
 /* ---- Palettes ---------------------------------------------------------- */
 
@@ -198,8 +200,9 @@ export function CheckoutModal({
         {/* ---- Ticket de caisse thermique ---- */}
         <div className="ok-receipt mx-auto mt-4 w-[min(320px,86vw)]">
           <div className="ok-receipt-paper">
-            <p className="ok-r-head">LIL&apos;OG VINTAGE</p>
-            <p className="ok-r-sub">SECONDE MAIN DEPUIS LE Y2K · PARIS</p>
+            {/* Même logo que le header, pas un nom retapé à la main. */}
+            <Image src={logoBlack} alt="Lil'OG" className="ok-r-logo" priority />
+            <p className="ok-r-sub">Seconde main Y2K - Paris</p>
             <div className="ok-r-rule" />
 
             <ul className="ok-r-lines">
