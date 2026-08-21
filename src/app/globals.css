@@ -6053,10 +6053,10 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   animation: dm-strass-bob 7s ease-in-out infinite;
 }
 
-/* Les quatre du rail. La cellule ne fait que 4px de large : le recentrage
-   passe par la propriété `translate`, et non par `transform` (que
-   l'animation occupe déjà), et reste correct pour des pastilles bien plus
-   larges que leur conteneur. */
+/* Les deux étoiles d'extrémité, seules ancrées au rail en absolu. La
+   cellule ne fait que 4px de large : le recentrage passe par la propriété
+   `translate`, et non par `transform` (que l'animation occupe déjà), et
+   reste correct pour des pastilles bien plus larges que leur conteneur. */
 .dm-strass-rail {
   position: absolute;
   left: 50%;
@@ -6068,22 +6068,6 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   height: clamp(20px, 1.9vw, 28px);
   --r: -12deg;
 }
-.dm-strass-2 {
-  top: 22%;
-  width: clamp(15px, 1.4vw, 21px);
-  height: clamp(15px, 1.4vw, 21px);
-  --r: 11deg;
-  animation-duration: 8.4s;
-  animation-delay: -2.2s;
-}
-.dm-strass-3 {
-  bottom: 22%;
-  width: clamp(15px, 1.4vw, 21px);
-  height: clamp(15px, 1.4vw, 21px);
-  --r: -9deg;
-  animation-duration: 6.2s;
-  animation-delay: -3.7s;
-}
 .dm-strass-4 {
   bottom: 7%;
   width: clamp(20px, 1.9vw, 28px);
@@ -6091,6 +6075,27 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   --r: 13deg;
   animation-duration: 9s;
   animation-delay: -5.1s;
+}
+
+/* Les deux cœurs : dans le flux avec la bulle et ses étoiles plutôt
+   qu'ancrés en % du hublot, pour que leur espacement vienne du même `gap`
+   que le reste de la colonne au lieu de dépendre de la hauteur du hublot —
+   ce qui les faisait chevaucher les étoiles de la bulle sur un écran
+   compact. */
+.dm-strass-heart {
+  flex: 0 0 auto;
+  width: clamp(15px, 1.4vw, 21px);
+  height: clamp(15px, 1.4vw, 21px);
+}
+.dm-strass-heart-up {
+  --r: 11deg;
+  animation-duration: 8.4s;
+  animation-delay: -2.2s;
+}
+.dm-strass-heart-down {
+  --r: -9deg;
+  animation-duration: 6.2s;
+  animation-delay: -3.7s;
 }
 
 /* Les deux qui encadrent la bulle, dans le flux de la colonne. */
@@ -6265,11 +6270,17 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 /* ---- Modules, encastrés dans la console ---- */
 /* Le bloc s'aligne sur les autres boutons de la console : pas de libellé
    au-dessus, contenu centré verticalement. */
-.dm-modules { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
-/* Déployé, l'écran prend la place qu'il lui faut : la console grandit et
-   l'écran cède quelques pixels, plutôt que d'écraser le texte. */
-.dm-modules-screen { display: flex; flex-direction: column; gap: 4px; }
-.dm-modules-head { display: flex; align-items: center; gap: 8px; }
+.dm-modules { display: flex; flex-direction: column; justify-content: center; min-width: 0; min-height: 0; }
+/* Hauteur fixe, calée sur celle du bouton fermé : la console ne bouge plus
+   quand le terminal s'ouvre, on scrolle la liste des modules à la place. */
+.dm-modules-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 64px;
+  overflow: hidden;
+}
+.dm-modules-head { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .dm-modules-head .dm-term-boot { flex: 1; min-width: 0; }
 .dm-term-close {
   flex-shrink: 0;
@@ -6299,7 +6310,15 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   white-space: nowrap;
   overflow: hidden;
 }
-.dm-term-options { display: flex; flex-wrap: wrap; gap: 2px 12px; }
+.dm-term-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 2px 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
 .dm-term-opt {
   display: inline-flex;
   align-items: center;
@@ -6713,7 +6732,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     background: linear-gradient(90deg, #2a1266 0%, #7147d4 50%, #2a1266 100%);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(20, 6, 50, 0.6);
   }
-  .dm-strass-rail { display: none; }
+  .dm-strass-rail, .dm-strass-heart { display: none; }
   .dm-style-me { width: 104px; }
   .dm-style-me:active { transform: translateY(4px); }
   .dm-console { grid-template-columns: 1fr; }

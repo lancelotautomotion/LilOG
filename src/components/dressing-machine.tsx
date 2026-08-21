@@ -1050,19 +1050,18 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               <span className="dm-strass dm-strass-rail dm-strass-1" aria-hidden>
                 <ChromeStar uid="dm-strass-1" />
               </span>
-              <span className="dm-strass dm-strass-rail dm-strass-2" aria-hidden>
-                <GemSticker uid="dm-strass-2" shape="heart" hue={STRASS_HEART} />
-              </span>
-              <span className="dm-strass dm-strass-rail dm-strass-3" aria-hidden>
-                <GemSticker uid="dm-strass-3" shape="heart" hue={STRASS_HEART} />
-              </span>
               <span className="dm-strass dm-strass-rail dm-strass-4" aria-hidden>
                 <ChromeStar uid="dm-strass-4" />
               </span>
 
-              {/* Les deux qui encadrent la bulle restent dans le flux :
-                  elles tiennent la place des anciens chevrons, y compris
-                  en pile sur mobile où l'arête devient horizontale. */}
+              {/* Les cœurs et les étoiles qui encadrent la bulle restent
+                  tous dans le flux, avec la bulle : leur espacement vient
+                  du même `gap` que le reste de la colonne, donc ne se
+                  chevauche jamais, y compris en pile sur mobile où l'arête
+                  devient horizontale. */}
+              <span className="dm-strass dm-strass-heart dm-strass-heart-up" aria-hidden>
+                <GemSticker uid="dm-strass-2" shape="heart" hue={STRASS_HEART} />
+              </span>
               <span className="dm-strass dm-strass-cap dm-strass-cap-up" aria-hidden>
                 <GemSticker uid="dm-strass-up" shape="star" hue={STRASS_STAR} />
               </span>
@@ -1076,6 +1075,9 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               </button>
               <span className="dm-strass dm-strass-cap dm-strass-cap-down" aria-hidden>
                 <GemSticker uid="dm-strass-down" shape="star" hue={STRASS_STAR} />
+              </span>
+              <span className="dm-strass dm-strass-heart dm-strass-heart-down" aria-hidden>
+                <GemSticker uid="dm-strass-3" shape="heart" hue={STRASS_HEART} />
               </span>
             </div>
 
