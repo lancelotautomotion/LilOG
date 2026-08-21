@@ -2166,13 +2166,26 @@ textarea {
 .oc-summary-body {
   padding: 12px;
   min-height: 0;
-  /* Assez haut pour montrer 2 articles complets sans scroll (le cas
-     courant) ; au-delà, la liste défile sur elle-même plutôt que
-     d'agrandir indéfiniment la fenêtre. */
-  max-height: 420px;
+  /* Calé sur 2 articles (même longs, 2 lignes de titre + 3 tags) : la
+     fenêtre grandit avec le contenu jusque-là, puis se fige — à partir
+     du 3e article, c'est la liste qui défile sur elle-même, plus la
+     fenêtre. */
+  max-height: 340px;
   overflow-y: auto;
   background: #fff;
+  /* Barre de scroll fine mais visible en permanence (pas "overlay") :
+     sans elle, la coupure à mi-carte du 3e article ressemble à un bug
+     plutôt qu'à une liste qu'on peut faire défiler. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--ldl-border) transparent;
 }
+.oc-summary-body::-webkit-scrollbar { width: 8px; }
+.oc-summary-body::-webkit-scrollbar-track { background: transparent; }
+.oc-summary-body::-webkit-scrollbar-thumb {
+  background: var(--ldl-border);
+  border-radius: 4px;
+}
+.oc-summary-body::-webkit-scrollbar-thumb:hover { background: var(--ldl-muted); }
 .oc-summary-empty {
   font-family: var(--mono);
   font-size: 0.9375rem;
