@@ -434,7 +434,7 @@ export function CartPage() {
               </div>
 
               {total > 0 && (
-                <div className="mt-auto flex shrink-0 flex-col gap-2.5 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 pt-3 pb-3.5">
+                <div className="flex shrink-0 flex-col gap-2.5 border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 pt-3 pb-3.5">
                   {/* Afficheur de caisse : encadré gris, chiffres LCD */}
                   <div
                     className={`${MONO} border-2 border-gray-400 bg-gray-100 p-3 shadow-[inset_0_2px_5px_rgba(0,0,0,0.16),inset_0_-1px_0_rgba(255,255,255,0.9)]`}
