@@ -79,10 +79,13 @@ const CUSTOMER_ORDER_QUERY = /* GraphQL */ `
             shippingAddress {
               firstName lastName address1 address2 city province zip country
             }
-            /* Suivi du colis : le transporteur et son lien de tracking
-               une fois la commande expédiée. statusUrl (page de suivi
-               Shopify) sert de repli quand le transporteur ne fournit
-               pas d'URL — il existe toujours. */
+            # Suivi du colis : le transporteur et son lien de tracking une
+            # fois la commande expédiée. statusUrl (page de suivi Shopify)
+            # sert de repli quand le transporteur ne fournit pas d'URL.
+            # NB : dans une requête, seul le commentaire « # » est valide.
+            # Un commentaire de style JS casse le parsing du document
+            # entier — la requête part quand même, Shopify la rejette, et
+            # la page finit en 404 silencieux (déjà arrivé ici).
             statusUrl
             successfulFulfillments(first: 10) {
               trackingCompany
