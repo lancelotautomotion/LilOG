@@ -1722,10 +1722,13 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Étirée à la hauteur des fenêtres (`stretch` hérité de .oc-row) et
-     `space-between` : les 4 icônes se répartissent sur toute la hauteur
-     du bloc au lieu de rester tassées en haut avec un grand vide dessous. */
-  justify-content: space-between;
+  /* Étirée à la hauteur des fenêtres (`stretch` hérité de .oc-row) mais
+     groupées et centrées : les 4 icônes restent resserrées les unes sur
+     les autres au milieu de la colonne plutôt que de s'écarteler sur
+     toute la hauteur (rendu `space-between` trop aéré sur les grandes
+     fenêtres). */
+  justify-content: center;
+  gap: 28px;
   align-self: stretch;
   flex-shrink: 0;
 }
