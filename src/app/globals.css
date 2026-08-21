@@ -1900,11 +1900,11 @@ textarea {
   align-items: center;
   justify-content: center;
   aspect-ratio: 3/4;
-  /* Le Style Scan en dessous a été resserré (voir .oc-style-meter) pour
-     laisser plus de place à la photo sans repousser le bouton de
-     checkout hors du viewport. Plafonné en plus du pourcentage, pour que
-     la photo n'explose pas non plus sur un moniteur très haut. */
-  max-height: min(54vh, 500px);
+  /* 54vh poussait la fenêtre au-delà de la hauteur d'un écran de laptop,
+     ne laissant plus aucune marge visible sous les fenêtres (et forçant
+     un scroll sur les écrans les plus courts). Replafonné à 44vh/420px
+     pour garder une marge visible en bas sans scroller. */
+  max-height: min(44vh, 420px);
   overflow: hidden;
   position: relative;
   border-bottom: 1px solid var(--ldl-border);
