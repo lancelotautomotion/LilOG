@@ -24,7 +24,7 @@
 
 import Link from "next/link";
 import { CdRom } from "@/components/gift-card/cd-rom";
-import { GRID_BG, MONO, PLASTIC, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
+import { GRID_BG, MONO, PLASTIC, PLASTIC_FACE, WindowFrame } from "@/components/y2k/kit";
 
 /** Les six raccourcis de montant, alignés sur les capacités réelles du
  *  produit Shopify. Si l'une d'elles disparaissait du catalogue, le lien
@@ -73,8 +73,6 @@ export function GiftCardPromo() {
        page, porte seul le retrait d'après le hero. */
     <section id="gift-card" className="px-4 pb-[clamp(48px,8vw,96px)] sm:px-6">
       <div className="mx-auto w-full max-w-[1200px]">
-        <SectionLabel n="05" file="LICENCE_CADEAU.ISO" tone="wallpaper" />
-
         <style>{PROMO_CSS}</style>
 
         <WindowFrame

@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { Icon } from "@/components/icons";
 import { CATEGORIES } from "@/lib/categories";
-import { GRID_BG, HARD_SHADOW, MONO, PLASTIC, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
+import { GRID_BG, HARD_SHADOW, MONO, PLASTIC, PLASTIC_FACE, WindowFrame } from "@/components/y2k/kit";
 
 /** Nom de fichier affiché sous chaque dossier, par clé de catégorie. */
 const FILENAMES: Record<string, string> = {
@@ -138,15 +138,6 @@ export function FileExplorer() {
        de l'autre. Sur mobile, la photo passe en bandeau au-dessus (`order`)
        plutôt que serrée entre deux blocs de texte. */
     <section id="drops" className="pb-[clamp(48px,8vw,96px)]">
-      {/* Étiquette calée sur la gouttière de la ligne ci-dessous, donc sur
-          le bord gauche de la fenêtre, comme ARCADE_SLOT et README.TXT qui
-          posent la leur au-dessus de leur propre bloc. Le conteneur centré
-          `max-w` d'origine la laissait flotter au milieu de l'écran depuis
-          que le module s'étire d'un bord à l'autre. */}
-      <div className="px-4 sm:px-6">
-        <SectionLabel n="04" file="FILE_EXPLORER.SYS" tone="wallpaper" />
-      </div>
-
       <style>{EXPLORER_CSS}</style>
 
       {/* `px-4 sm:px-6` sur la ligne elle-même : la photo touchait le bord

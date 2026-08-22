@@ -26,7 +26,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { SmartImg } from "@/components/smart-img";
-import { MATRIX, MONO, PLASTIC_FACE, SectionLabel, WindowFrame } from "@/components/y2k/kit";
+import { MATRIX, MONO, PLASTIC_FACE, WindowFrame } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
 
 /** Lueur verte des afficheurs, commune à l'écran LCD et à ses libellés. */
@@ -290,8 +290,6 @@ export function CoverFlow({ products }: { products: Product[] }) {
        retrait d'après le hero (les suivants n'ont qu'un padding bas). */
     <section id="highlights" className="px-4 py-[clamp(48px,8vw,96px)] sm:px-6">
       <div className="mx-auto w-full max-w-[1200px]">
-        <SectionLabel n="02" file="PLAYLIST_HIGHLIGHTS.EXE // LATEST_DROPS" tone="wallpaper" />
-
         <style>{COVER_CSS}</style>
 
         {/* La fenêtre garde la barre de titre commune du site ; c'est son corps

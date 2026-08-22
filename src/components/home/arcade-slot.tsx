@@ -15,7 +15,7 @@
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { GemSticker } from "@/components/contact/stickers";
-import { LCD, MONO, NAVY_BAR, SectionLabel, WindowFrame } from "@/components/y2k/kit";
+import { LCD, MONO, NAVY_BAR, WindowFrame } from "@/components/y2k/kit";
 
 /** Les symboles qui défilent dans les rouleaux. */
 const REEL = ["👗", "👠", "👜", "🕶️", "💍", "👖", "🎀", "💄"];
@@ -116,8 +116,6 @@ export function ArcadeSlot() {
           centre : un texte de présentation prend la colonne de gauche, elle
           se retrouve décalée à droite. */}
       <div className="mx-auto w-full max-w-[1400px]">
-        <SectionLabel n="03" file="ARCADE_SLOT.EXE" tone="wallpaper" />
-
         <style>{ARCADE_CSS}</style>
 
         {/* `justify-between` collait chaque colonne à un bord du conteneur :
