@@ -77,7 +77,7 @@ export function ReadmeWindow() {
         {/* En desktop, la colonne de droite est réservée au polaroid :
             la fenêtre s'arrête avant, la photo la chevauche. */}
         <div className="relative md:pr-[168px]">
-          <WindowFrame title="README.TXT · Bloc-notes" icon="📝" bar={NAVY_BAR}>
+          <WindowFrame title="README.TXT" icon="📝" bar={NAVY_BAR}>
             {/* Menus */}
             <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
               {["Fichier", "Édition", "Format", "Affichage", "?"].map((m) => (
