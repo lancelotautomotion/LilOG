@@ -22,7 +22,7 @@
    fenêtre.
    ============================================================ */
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
@@ -73,6 +73,11 @@ const SHORTCUTS = [
   { href: "/cart", icon: "🛒", label: "PANIER.EXE", external: false },
   { href: SOCIALS.instagram, icon: "📸", label: "INSTAGRAM.LNK", external: true },
 ];
+
+/** Même liste sur mobile, moins panier et wishlist : déjà accessibles
+ *  depuis les icônes fixes de la nav, les répéter ici n'ajoutait que de
+ *  la hauteur. Desktop garde `SHORTCUTS` au complet. */
+const MOBILE_SHORTCUTS = SHORTCUTS.filter((s) => s.href !== "/wishlist" && s.href !== "/cart");
 
 /* Les mentions légales de la barre de statut réutilisent les libellés traduits. */
 const LEGAL_HREFS: Record<string, string> = {
@@ -202,7 +207,7 @@ function TrayIcon({ href, label, children }: { href: string; label: string; chil
    Zone de notification : panneau encastré, comme les champs du site
    ============================================================ */
 
-function Tray() {
+function Tray({ compact = false }: { compact?: boolean }) {
   /* L'heure ne peut pas être rendue côté serveur : le HTML livré serait
      figé à l'heure du build et différerait de celui du client (erreur
      d'hydratation). On affiche donc un cadran vide jusqu'au montage. */
@@ -232,8 +237,18 @@ function Tray() {
     };
   }, []);
 
+  /* `compact` : même contenu (icônes sociales, diode, horloge), sans le
+     panneau encastré bordé — utilisé dans la barre de statut mobile, où
+     un second caisson « chunky plastic » ferait doublon avec la fenêtre
+     qui l'entoure déjà. */
   return (
-    <div className="flex h-[42px] shrink-0 items-center gap-1.5 rounded-xl border border-gray-300 bg-white px-2.5 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]">
+    <div
+      className={
+        compact
+          ? "flex shrink-0 items-center gap-1"
+          : "flex h-[42px] shrink-0 items-center gap-1.5 rounded-xl border border-gray-300 bg-white px-2.5 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)]"
+      }
+    >
       <TrayIcon href={SOCIALS.instagram} label="Instagram">
         <InstagramPixel />
       </TrayIcon>
@@ -262,6 +277,10 @@ function Tray() {
    ============================================================ */
 
 function Newsletter({ className = "" }: { className?: string }) {
+  /* Id unique par instance : le composant est monté deux fois (desktop
+     `hidden md:flex` + mobile `md:hidden`), un id figé en dur aurait
+     dupliqué "liltb-email" dans le DOM et cassé l'association du label. */
+  const id = useId();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
 
@@ -285,17 +304,17 @@ function Newsletter({ className = "" }: { className?: string }) {
 
   return (
     <form onSubmit={submit} className={`flex items-center gap-1.5 ${className}`}>
-      <label htmlFor="liltb-email" className="sr-only">
+      <label htmlFor={id} className="sr-only">
         Email
       </label>
       <input
-        id="liltb-email"
+        id={id}
         type="email"
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="ENTER_EMAIL.EXE"
-        className={`${MONO} h-[42px] w-full min-w-0 rounded-xl border border-gray-300 bg-white px-3.5 text-[0.8125rem] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 md:w-[190px]`}
+        className={`${MONO} h-[42px] w-full min-w-0 rounded-xl border border-gray-300 bg-white px-2.5 text-[0.8125rem] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 md:px-3.5 md:w-[190px]`}
       />
       <button
         type="submit"
@@ -304,6 +323,58 @@ function Newsletter({ className = "" }: { className?: string }) {
         [ OK ]
       </button>
     </form>
+  );
+}
+
+/* ============================================================
+   Accordéon rétro (mobile uniquement) : les onglets de navigation
+   repliés dans deux tiroirs [ + ] SHOP.DIR / [ + ] SUPPORT.DOC, fermés
+   par défaut. Pas de transition sur le corps : un dépliage qui claque
+   d'un coup, comme un menu Windows 95, plutôt qu'un fondu moderne.
+   ============================================================ */
+
+function TaskbarAccordion({
+  label,
+  items,
+  open,
+  onToggle,
+}: {
+  label: string;
+  items: Tab[];
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div className="rounded-xl border border-[#c6c2d8] bg-white/70">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className={`${MONO} flex h-[34px] w-full items-center justify-between gap-2 px-3 text-[0.8125rem] font-bold tracking-[0.05em] text-[#3a3550] uppercase`}
+      >
+        {label}
+        <span aria-hidden className="shrink-0">
+          [ {open ? "−" : "+"} ]
+        </span>
+      </button>
+
+      {open && (
+        <div className="flex flex-col gap-0.5 border-t border-[#c6c2d8] px-3 py-1.5">
+          {items.map(({ href, icon, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`${MONO} flex h-[30px] items-center gap-2 text-[0.8125rem] font-bold tracking-[0.03em] text-[#3a3550] no-underline uppercase transition hover:text-[#7147d4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+            >
+              <span aria-hidden className="shrink-0 text-[0.9375rem] leading-none">
+                {icon}
+              </span>
+              {label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -327,8 +398,12 @@ export function Footer() {
     { href: "/contact", icon: "☎", label: "Contact" },
   ];
 
+  /* Accordéons mobiles : un seul tiroir ouvert à la fois, fermés par
+     défaut. Desktop garde sa grille de 6 onglets, jamais concernée. */
+  const [openSection, setOpenSection] = useState<"shop" | "support" | null>(null);
+
   return (
-    <footer className="liltb relative z-30 px-[clamp(10px,1.6vw,22px)] pt-[clamp(26px,4vw,48px)] pb-[clamp(20px,3vw,36px)]">
+    <footer className="liltb relative z-30 px-[clamp(10px,1.6vw,22px)] pt-5 pb-4 md:pt-[clamp(26px,4vw,48px)] md:pb-[clamp(20px,3vw,36px)]">
       <style>{TASKBAR_CSS}</style>
 
       {/* Le conteneur relatif porte les pastilles : elles débordent de la
@@ -390,13 +465,14 @@ export function Footer() {
           </div>
 
           {/* ---- Corps : papier millimétré + barre des tâches ---- */}
-          <div className="p-[clamp(12px,2vw,22px)]" style={GRID_BG}>
+          <div className="p-2.5 md:p-[clamp(12px,2vw,22px)]" style={GRID_BG}>
 
             {/* ---------- LIGNE 1 : marque, newsletter, notifications ----------
-                Le logo n'est plus enfermé dans un bouton : il a sa propre
-                plaque blanche, à la taille d'une enseigne, et renvoie à
-                l'accueil. C'est le premier élément de la barre. */}
-            <div className="flex flex-wrap items-center gap-2.5 md:flex-nowrap">
+                Desktop, inchangée : logo, zone de notification (Tray) et
+                newsletter sur la même ligne. Le logo n'est plus enfermé
+                dans un bouton : il a sa propre plaque blanche, à la
+                taille d'une enseigne, et renvoie à l'accueil. */}
+            <div className="hidden flex-wrap items-center gap-2.5 md:flex md:flex-nowrap">
               <Link
                 href="/"
                 aria-label="Lil'OG, accueil"
@@ -413,29 +489,102 @@ export function Footer() {
                 </span>
               </Link>
 
-              {/* En mobile la zone de notification remonte à côté du logo ;
-                  en desktop elle reprend sa place tout à droite. */}
-              <div className="order-2 ml-auto md:order-4 md:ml-0">
+              <div className="order-4 ml-0">
                 <Tray />
               </div>
 
-              <Newsletter className="order-3 w-full md:order-2 md:w-auto md:min-w-0 md:flex-1" />
+              <Newsletter className="order-2 w-auto min-w-0 flex-1" />
 
-              <span aria-hidden className="order-2 hidden h-7 w-px bg-[#c6c2d8] md:order-3 md:block" />
+              <span aria-hidden className="order-3 hidden h-7 w-px bg-[#c6c2d8] md:block" />
             </div>
 
-            {/* ---------- LIGNE 2 : navigation principale ----------
-                Les vraies destinations du site : ce sont elles qui portent
-                les gros jetons, pas les raccourcis pratiques en dessous. */}
-            <nav
-              aria-label="Navigation du site"
-              className="mt-[clamp(12px,1.8vw,18px)] grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6"
-            >
-              {TABS.map(({ href, icon, label }) => (
+            {/* ---------- LIGNE 1 : mobile, compacte ----------
+                Une seule ligne : logo réduit à sa plaque, newsletter juste
+                à côté. La Tray (réseaux, diode, horloge) descend dans la
+                barre de statut mobile, où elle rejoint copyright et
+                mentions légales plutôt que d'ouvrir un second caisson en
+                haut de fenêtre. */}
+            <div className="flex items-center gap-2 md:hidden">
+              <Link
+                href="/"
+                aria-label="Lil'OG, accueil"
+                className={`grid shrink-0 place-items-center rounded-xl border border-[#c6c2d8] bg-white p-1.5 no-underline transition hover:brightness-[1.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+              >
+                <Image src={logoBlack} alt="Lil'OG" className="h-[26px] w-auto" />
+              </Link>
+
+              <Newsletter className="min-w-0 flex-1" />
+            </div>
+
+            {/* ---------- LIGNE 2 + 3 : desktop, inchangées ----------
+                Grille de 6 onglets puis rangée de raccourcis, exactement
+                comme avant. `md:` (768px), la même frontière que le reste
+                du composant (Tray, Newsletter) : rien ne bouge ici sur
+                grand écran, tout passe par le bloc mobile ci-dessous. */}
+            <div className="hidden md:block">
+              <nav
+                aria-label="Navigation du site"
+                className="mt-[clamp(12px,1.8vw,18px)] grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6"
+              >
+                {TABS.map(({ href, icon, label }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`${MONO} flex h-[clamp(40px,4.4vw,48px)] min-w-0 items-center justify-center gap-1.5 rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-2 text-[clamp(0.75rem,1vw,0.8125rem)] font-bold tracking-[0.03em] text-[#3a3550] no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                  >
+                    <span aria-hidden className="shrink-0 text-[0.9375rem] leading-none">
+                      {icon}
+                    </span>
+                    <span className="truncate uppercase">{label}</span>
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="mt-[clamp(10px,1.6vw,14px)] flex flex-wrap items-center gap-1.5">
+                {SHORTCUTS.map(({ href, icon, label, external }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className={`${MONO} flex h-[30px] items-center gap-1.5 rounded-lg border border-[#c6c2d8] bg-white/70 px-2.5 text-[0.8125rem] font-bold tracking-[0.03em] text-[#6b6480] no-underline transition hover:bg-purple-100 hover:text-[#3b1d8f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                  >
+                    <span aria-hidden className="shrink-0 text-[0.9375rem] leading-none">
+                      {icon}
+                    </span>
+                    <span className="uppercase">{label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* ---------- LIGNE 2 + 3 : mobile, compactes ----------
+                Les 6 onglets se replient dans deux tiroirs [ + ] fermés
+                par défaut plutôt qu'une grille de 6 boutons de 48px de
+                haut. Les raccourcis perdent leurs jetons encadrés au
+                profit d'une simple grille de texte : panier et wishlist
+                disparaissent, déjà dans la nav fixe. */}
+            <div className="mt-2 flex flex-col gap-1.5 md:hidden">
+              <TaskbarAccordion
+                label="SHOP.DIR"
+                items={TABS.slice(0, 3)}
+                open={openSection === "shop"}
+                onToggle={() => setOpenSection((s) => (s === "shop" ? null : "shop"))}
+              />
+              <TaskbarAccordion
+                label="SUPPORT.DOC"
+                items={TABS.slice(3)}
+                open={openSection === "support"}
+                onToggle={() => setOpenSection((s) => (s === "support" ? null : "support"))}
+              />
+            </div>
+
+            <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 md:hidden">
+              {MOBILE_SHORTCUTS.map(({ href, icon, label, external }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`${MONO} flex h-[clamp(40px,4.4vw,48px)] min-w-0 items-center justify-center gap-1.5 rounded-xl border border-[#c6c2d8] ${PLASTIC_FACE} px-2 text-[clamp(0.75rem,1vw,0.8125rem)] font-bold tracking-[0.03em] text-[#3a3550] no-underline transition hover:bg-purple-100 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+                  {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className={`${MONO} flex items-center gap-1.5 py-0.5 text-[0.8125rem] font-bold tracking-[0.03em] text-[#6b6480] no-underline transition hover:text-[#3b1d8f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
                 >
                   <span aria-hidden className="shrink-0 text-[0.9375rem] leading-none">
                     {icon}
@@ -443,32 +592,12 @@ export function Footer() {
                   <span className="truncate uppercase">{label}</span>
                 </Link>
               ))}
-            </nav>
-
-            {/* ---------- LIGNE 3 : raccourcis pratiques ----------
-                Volontairement plus petits que la navigation ci-dessus : ce
-                sont des liens de service, pas les rayons de la boutique.
-                Plus de filet en pointillés ni d'intertitre : la différence
-                de taille suffit à les distinguer. */}
-            <div className="mt-[clamp(10px,1.6vw,14px)] flex flex-wrap items-center gap-1.5">
-              {SHORTCUTS.map(({ href, icon, label, external }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className={`${MONO} flex h-[30px] items-center gap-1.5 rounded-lg border border-[#c6c2d8] bg-white/70 px-2.5 text-[0.8125rem] font-bold tracking-[0.03em] text-[#6b6480] no-underline transition hover:bg-purple-100 hover:text-[#3b1d8f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
-                >
-                  <span aria-hidden className="shrink-0 text-[0.9375rem] leading-none">
-                    {icon}
-                  </span>
-                  <span className="uppercase">{label}</span>
-                </Link>
-              ))}
             </div>
           </div>
 
-          {/* ---- Barre de statut : copyright + mentions légales ---- */}
-          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-b-[9px] border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5">
+          {/* ---- Barre de statut : copyright + mentions légales ----
+              Desktop, inchangée. */}
+          <div className="hidden flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-b-[9px] border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-1.5 md:flex">
             <span className={`${MONO} text-[0.8125rem] tracking-wider text-[#5a5670]`}>
               <span style={{ color: PINK }}>✦</span> © 2026 LIL&apos;OG VINTAGE. ALL RIGHTS RESERVED.
             </span>
@@ -483,6 +612,38 @@ export function Footer() {
                   <Link
                     href={LEGAL_HREFS[l] ?? "#"}
                     className={`${MONO} text-[0.8125rem] tracking-wider text-[#5a5670] transition hover:text-[#3b1d8f]`}
+                  >
+                    {l.toUpperCase()}
+                  </Link>
+                </span>
+              ))}
+            </nav>
+          </div>
+
+          {/* ---- Barre de statut : mobile, compacte ----
+              Même contenu (copyright, réseaux, horloge, mentions légales),
+              sur son propre plein-largeur plutôt qu'un `justify-between`
+              qui les faisait chacun se scinder sur deux lignes. La Tray
+              (icônes + horloge), retirée de la LIGNE 1, rejoint ici le
+              reste du « système » de la barre des tâches. */}
+          <div className="flex flex-col gap-1.5 rounded-b-[9px] border-t-2 border-[#b8b4cc] bg-[#e7e5f1] px-3 py-2 md:hidden">
+            <div className="flex items-center justify-between gap-2">
+              <span className={`${MONO} text-[0.75rem] tracking-wider text-[#5a5670]`}>
+                <span style={{ color: PINK }}>✦</span> © 2026 LIL&apos;OG VINTAGE
+              </span>
+              <Tray compact />
+            </div>
+            <nav aria-label="Mentions légales" className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              {t.footer.legalLinks.map((l, i) => (
+                <span key={l} className="flex items-center gap-2">
+                  {i > 0 && (
+                    <span aria-hidden className="text-[0.75rem] text-[#b3aec6]">
+                      ·
+                    </span>
+                  )}
+                  <Link
+                    href={LEGAL_HREFS[l] ?? "#"}
+                    className={`${MONO} text-[0.75rem] tracking-wider text-[#5a5670] transition hover:text-[#3b1d8f]`}
                   >
                     {l.toUpperCase()}
                   </Link>
