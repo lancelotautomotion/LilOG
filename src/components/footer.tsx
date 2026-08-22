@@ -141,8 +141,13 @@ const TASKBAR_CSS = `
    Briques d'interface
    ============================================================ */
 
-/** Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ × ] */
-function WindowButton({ label, glyph }: { label: string; glyph: string }) {
+/**
+ * Boutons de contrôle de fenêtre  [ _ ] [ 🗖 ] [ × ]
+ * `glyph` accepte un `ReactNode` : le bouton « Agrandir » passe un tracé
+ * SVG plutôt que l'emoji 🗖, dont la police système de certains
+ * téléphones (Samsung notamment) rend une forme cassée.
+ */
+function WindowButton({ label, glyph }: { label: string; glyph: React.ReactNode }) {
   return (
     <span
       role="presentation"
@@ -152,6 +157,15 @@ function WindowButton({ label, glyph }: { label: string; glyph: string }) {
     >
       {glyph}
     </span>
+  );
+}
+
+/** Carré du bouton « Agrandir », en trait plutôt qu'en emoji 🗖. */
+function MaximizeGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden>
+      <rect x="4" y="4" width="16" height="16" rx="1.5" />
+    </svg>
   );
 }
 
@@ -459,7 +473,7 @@ export function Footer() {
             </div>
             <div className="flex shrink-0 items-center gap-1.5">
               <WindowButton label="Réduire" glyph="_" />
-              <WindowButton label="Agrandir" glyph="🗖" />
+              <WindowButton label="Agrandir" glyph={<MaximizeGlyph />} />
               <WindowButton label="Fermer" glyph="×" />
             </div>
           </div>
