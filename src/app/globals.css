@@ -131,7 +131,11 @@ html, body {
   text-rendering: optimizeLegibility;
 }
 
-body { overflow-x: hidden; }
+/* `html` est l'élément réellement défilant (pas `body`) : sans son propre
+   `overflow-x: hidden`, un débordement de quelques pixels ailleurs sur le
+   site (pastille décorative, etc.) reste glissable horizontalement au
+   doigt sur mobile même si `body` affiche déjà `overflow-x: hidden`. */
+html, body { overflow-x: hidden; }
 
 img { display: block; max-width: 100%; }
 button { font-family: inherit; cursor: pointer; }

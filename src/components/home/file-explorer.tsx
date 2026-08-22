@@ -174,7 +174,7 @@ export function FileExplorer() {
               porter son ombre décalée de 10px vers le bas, semblait
               descendre plus bas que la photo. */}
           <div
-            className={`relative h-full min-h-[240px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] sm:min-h-[320px] lg:min-h-0 ${HARD_SHADOW}`}
+            className={`relative aspect-video overflow-hidden rounded-xl border-2 border-[#b8b4cc] lg:aspect-auto lg:h-full ${HARD_SHADOW}`}
           >
             <Image
               src="/histoire/look-16.jpeg"
