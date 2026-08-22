@@ -1917,7 +1917,7 @@ textarea {
 .oc-img-wrap img, .oc-img-wrap span {
   width: 100% !important;
   height: 100% !important;
-  object-fit: cover !important;
+  object-fit: contain !important;
   display: block !important;
 }
 /* Scan beam overlay : sweeps top→bottom over the photo during 'filling' phase */
