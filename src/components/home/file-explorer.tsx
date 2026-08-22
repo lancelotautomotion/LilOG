@@ -153,7 +153,7 @@ export function FileExplorer() {
           droit de l'écran à zéro alors que la fenêtre gardait la marge du
           reste du site à gauche. Même gouttière posée des deux côtés,
           `gap` entre les deux colonnes pour ne pas les souder au milieu. */}
-      <div className="grid gap-4 px-4 sm:gap-6 sm:px-6 lg:grid-cols-2 lg:items-stretch">
+      <div className="grid grid-cols-1 gap-4 px-4 sm:gap-6 sm:px-6 lg:grid-cols-2 lg:items-stretch">
         {/* Même retrait vertical que la colonne fenêtre : sans lui, l'image
             remplissait toute la cellule de grille pendant que la fenêtre,
             elle, était rentrée de son `py`, et dépassait donc en haut comme
