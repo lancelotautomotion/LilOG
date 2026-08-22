@@ -131,14 +131,11 @@ export function GiftCardPromo() {
                 d&apos;activation instantanée par email.
               </p>
 
-              {/* Accès rapide : les six montants, toujours sur une seule ligne.
-                  Tailles fixes plutôt que `vw` : la rangée vit dans la colonne
-                  étroite de droite (≈45% du conteneur à partir de `lg`), pas
-                  dans la pleine largeur de la fenêtre — un `clamp` calé sur le
-                  viewport y sature à sa valeur max bien avant que 6 capsules
-                  n'aient la place. `overflow-x-auto` ne sert que de filet pour
-                  les tout premiers mobiles. */}
-              <div className="mt-6 flex flex-nowrap justify-center gap-1.5 overflow-x-auto pb-1 sm:gap-2 lg:justify-start">
+              {/* Accès rapide : les six montants, tous visibles sans défiler.
+                  `flex-wrap` plutôt que `flex-nowrap` + `overflow-x-auto` :
+                  sur les écrans étroits, la rangée se scinde en deux lignes
+                  au lieu de forcer un défilement horizontal caché. */}
+              <div className="mt-6 flex flex-wrap justify-center gap-1.5 sm:gap-2 lg:justify-start">
                 {AMOUNTS.map((amount) => (
                   <Link
                     key={amount}
