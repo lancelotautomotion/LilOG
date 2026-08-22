@@ -633,17 +633,17 @@ export function Footer() {
               </span>
               <Tray compact />
             </div>
-            <nav aria-label="Mentions légales" className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <nav aria-label="Mentions légales" className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
               {t.footer.legalLinks.map((l, i) => (
-                <span key={l} className="flex items-center gap-2">
+                <span key={l} className="flex items-center gap-1.5">
                   {i > 0 && (
-                    <span aria-hidden className="text-[0.75rem] text-[#b3aec6]">
+                    <span aria-hidden className="text-[0.6875rem] text-[#b3aec6]">
                       ·
                     </span>
                   )}
                   <Link
                     href={LEGAL_HREFS[l] ?? "#"}
-                    className={`${MONO} text-[0.75rem] tracking-wider text-[#5a5670] transition hover:text-[#3b1d8f]`}
+                    className={`${MONO} text-[0.6875rem] tracking-normal text-[#5a5670] transition hover:text-[#3b1d8f]`}
                   >
                     {l.toUpperCase()}
                   </Link>
