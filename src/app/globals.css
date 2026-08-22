@@ -1847,6 +1847,14 @@ textarea {
 .oc-center {
   width: min(420px, 92vw);
   flex-shrink: 0;
+  /* DRESSING est la référence de hauteur pour MON_PANIER (voir
+     .oc-summary) : il doit toujours garder sa propre taille naturelle,
+     jamais être étiré par la colonne d'à côté. Sans ce `flex-start`,
+     `align-items: stretch` (posé sur .oc-row) revient au même calcul —
+     la hauteur "naturelle" (max-content) de la ligne compte le contenu
+     intégral de MON_PANIER même quand LUI ne s'étire pas (voir son
+     propre commentaire), et DRESSING se retrouvait étiré à sa place. */
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
 }
@@ -2159,23 +2167,36 @@ textarea {
   flex: 1 1 440px;
   max-width: 620px;
   min-width: 0;
-  /* Pas de `stretch` : MON_PANIER.EXE garde sa hauteur naturelle plutôt
-     que d'épouser celle de DRESSING (l'autre colonne de .oc-row). Coller
-     les deux hauteurs forçait sinon un vide en bas dès que le panier a
-     peu d'articles — la fenêtre est aussi haute qu'il lui faut, pas plus. */
+  /* La hauteur exacte de MON_PANIER.EXE est calée en JS sur celle de
+     DRESSING (mesure ResizeObserver dans cart-page.tsx, posée ici en style
+     inline — voir `panierHeight`) : DRESSING sert de référence, et cette
+     hauteur ne dépend donc jamais du nombre d'articles du panier.
+     Le CSS seul ne suffit pas : avec align-items:stretch et deux colonnes
+     sans hauteur fixée, un flex-basis:0 sur la liste (.oc-summary-body)
+     ne l'empêche pas de compter pour sa taille de contenu "naturelle"
+     (max-content) quand le navigateur calcule la hauteur de la ligne —
+     une longue liste entraîne alors les DEUX colonnes vers le haut.
+     Pire : ça contaminerait aussi la MESURE elle-même (DRESSING serait
+     lu déjà gonflé au moment du ResizeObserver). D'où `align-self:
+     flex-start` ci-dessous plutôt que le `stretch` hérité de .oc-row :
+     tant que la hauteur mesurée n'est pas encore posée en style inline
+     (premier rendu, JS lent/coupé), MON_PANIER garde sa hauteur naturelle
+     courte et ne fausse jamais la hauteur de DRESSING. Le style inline,
+     une fois posé, prime de toute façon sur ce fallback. */
   align-self: flex-start;
   display: flex;
   flex-direction: column;
 }
+.oc-summary > .oc-win95-outer { flex: 1; }
 .oc-summary-win { width: 100%; display: flex; flex-direction: column; }
 .oc-summary-body {
   padding: 12px;
+  /* flex-basis: 0 (via `flex: 1`) plutôt qu'une hauteur pilotée par le
+     contenu : cette zone se contente de l'espace restant une fois header
+     et footer posés, et défile sur elle-même au-delà — la carte entière ne
+     grandit jamais avec le nombre d'articles. */
+  flex: 1;
   min-height: 0;
-  /* Calé sur 2 articles (même longs, 2 lignes de titre + 3 tags) : la
-     fenêtre grandit avec le contenu jusque-là, puis se fige — à partir
-     du 3e article, c'est la liste qui défile sur elle-même, plus la
-     fenêtre. */
-  max-height: 340px;
   overflow-y: auto;
   background: #fff;
   /* Barre de scroll fine mais visible en permanence (pas "overlay") :

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
@@ -150,6 +150,24 @@ export function CartPage() {
   const [trash, setTrash] = useState<CartLine[]>([]);
   const [trashOpen, setTrashOpen] = useState(false);
 
+  /* Alignement des deux fenêtres : DRESSING sert de référence, MON_PANIER
+     doit se caler EXACTEMENT sur sa hauteur, quel que soit le nombre
+     d'articles. Le CSS seul ne peut pas garantir ça (voir le commentaire
+     sur .oc-summary dans globals.css) : on mesure donc la hauteur réelle
+     de DRESSING et on la repose en style inline sur MON_PANIER, qui gère
+     ensuite en interne le header/scroll-body/footer via flex. */
+  const dressingWinRef = useRef<HTMLDivElement>(null);
+  const [panierHeight, setPanierHeight] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    const el = dressingWinRef.current;
+    if (!el) return;
+    const update = () => setPanierHeight(el.getBoundingClientRect().height);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   /* Départ vers le paiement Shopify. Le minuteur est purgé au passage :
      que le client clique « continuer » ou laisse filer les 3 secondes, la
      redirection ne part qu'une fois. */
@@ -236,7 +254,7 @@ export function CartPage() {
           </div>
           {/* ── Win95 machine ── */}
           <div className="oc-center">
-            <div className="oc-win95-outer">
+            <div className="oc-win95-outer" ref={dressingWinRef}>
               <div className="oc-win95-titlebar">
                 <span className="oc-win95-title">
                   {firstName ? `Dressing de ${firstName}` : "Dressing"}
@@ -328,7 +346,7 @@ export function CartPage() {
           </div>
 
           {/* ── MON_PANIER.EXE ── */}
-          <div className="oc-summary">
+          <div className="oc-summary" style={panierHeight != null ? { height: panierHeight } : undefined}>
             <div className="oc-win95-outer oc-summary-win">
               <div className="oc-win95-titlebar">
                 <span className="oc-win95-title">MON PANIER · {total} article{total !== 1 ? "s" : ""}</span>
