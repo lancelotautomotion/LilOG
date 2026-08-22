@@ -295,7 +295,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
         {/* La fenêtre garde la barre de titre commune du site ; c'est son corps
             qui devient la coque du lecteur, en plastique gris biseauté. */}
         <WindowFrame
-          title="LIL_OG_MEDIA_PLAYER.EXE"
+          title="Les favoris.txt"
           icon="🎵"
           bodyClassName="p-[clamp(10px,2.2vw,22px)]"
           bodyStyle={{
