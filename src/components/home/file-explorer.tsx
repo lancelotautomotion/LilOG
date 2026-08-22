@@ -184,7 +184,7 @@ export function FileExplorer() {
 
         <div className="order-2 flex lg:order-1 lg:items-center">
           <WindowFrame
-            title="C:\\ LIL_OG \\ CATEGORIES"
+            title="Catégories.TXT"
             icon={<Icon.folderOpen width={16} height={13} />}
             className="w-full"
           >
