@@ -176,12 +176,29 @@ function Reflection({ src }: { src: string }) {
 
 /** Touche de transport biseautée de la console (⏪ / ⏩) : jamais désactivée,
  *  la navigation boucle d'un bout à l'autre de la sélection. */
+/**
+ * Double chevron « avance/retour rapide », en trait plutôt qu'en emoji
+ * ⏪/⏩ : la police emoji de certains téléphones (Samsung notamment) rend
+ * ces glyphes dans ses propres couleurs figées (orange), impossibles à
+ * teinter en CSS. Un tracé `currentColor` reprend la couleur voulue.
+ */
+function SkipGlyph({ direction }: { direction: "prev" | "next" }) {
+  const points =
+    direction === "prev" ? ["20,5 12,12 20,19", "12,5 4,12 12,19"] : ["4,5 12,12 4,19", "12,5 20,12 12,19"];
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden>
+      <polygon points={points[0]} />
+      <polygon points={points[1]} />
+    </svg>
+  );
+}
+
 function TransportKey({
-  glyph,
+  direction,
   label,
   onClick,
 }: {
-  glyph: string;
+  direction: "prev" | "next";
   label: string;
   onClick: () => void;
 }) {
@@ -191,9 +208,9 @@ function TransportKey({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={`${MONO} lhh-key shrink-0 rounded-lg border-2 border-[#9b97b3] ${PLASTIC_FACE} px-[clamp(12px,2.4vw,20px)] py-[clamp(8px,1.6vw,13px)] text-[clamp(0.8rem,2vw,1rem)] leading-none font-bold text-[#262626] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+      className={`lhh-key shrink-0 grid place-items-center rounded-lg border-2 border-[#9b97b3] ${PLASTIC_FACE} px-[clamp(12px,2.4vw,20px)] py-[clamp(8px,1.6vw,13px)] text-[#7147d4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
     >
-      {glyph}
+      <SkipGlyph direction={direction} />
     </button>
   );
 }
@@ -402,7 +419,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
 
           {/* ---- Console de transport ---- */}
           <div className="mt-[clamp(10px,2vw,18px)] flex items-center justify-center gap-[clamp(8px,2vw,18px)] rounded-lg border border-[#b0acc4] bg-[#d8d5e6] px-[clamp(8px,2vw,18px)] py-[clamp(10px,2vw,16px)] shadow-[inset_1px_1px_0_rgba(90,86,120,0.55),inset_-1px_-1px_0_rgba(255,255,255,0.9),inset_2px_2px_5px_rgba(0,0,0,0.16)]">
-            <TransportKey glyph="⏪" label="Pièce précédente" onClick={() => go(active - 1)} />
+            <TransportKey direction="prev" label="Pièce précédente" onClick={() => go(active - 1)} />
 
             <button
               type="button"
@@ -417,7 +434,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
               {sold ? "[ ✕ SOLD OUT ]" : added ? "[ ✓ ADDED ]" : "[ ▶ ADD TO CART ]"}
             </button>
 
-            <TransportKey glyph="⏩" label="Pièce suivante" onClick={() => go(active + 1)} />
+            <TransportKey direction="next" label="Pièce suivante" onClick={() => go(active + 1)} />
           </div>
         </WindowFrame>
       </div>
