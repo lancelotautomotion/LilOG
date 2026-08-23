@@ -437,41 +437,49 @@ export function CategoryPage({
 
             {/* Barre d'état + pagination, au pied de la fenêtre unique,
                 rounded-b-2xl : clip=false oblige, c'est elle qui ferme
-                proprement le bas du cadre. Colonnes 1fr/auto/1fr : la
-                pagination reste centrée sur toute la largeur de la barre,
-                quelle que soit la longueur du texte à gauche, la colonne
-                de droite ne servant qu'à équilibrer l'espace. */}
-            <div className="flex flex-col items-center gap-2.5 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2.5 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-3">
-              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase sm:justify-self-start`}>
-                {filtered.length} objet(s) · {pageProducts.length} affiché(s)
-              </span>
+                proprement le bas du cadre.
 
-              {totalPages > 1 && (
-                <div className="flex items-center gap-3 sm:justify-self-center">
-                  <button
-                    type="button"
-                    disabled={safePage === 0}
-                    onClick={() => setPage(safePage - 1)}
-                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2.5 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
-                  >
-                    [ ◀ ]
-                  </button>
-                  <span
-                    className={`${LCD} rounded border-2 border-[#2b2b3d] bg-black px-3 py-1 text-[1.375rem] leading-none text-green-400 ${BEVEL_IN}`}
-                    style={{ textShadow: "0 0 8px rgba(74,222,128,.5)" }}
-                  >
-                    {safePage + 1}/{totalPages}
-                  </span>
-                  <button
-                    type="button"
-                    disabled={safePage >= totalPages - 1}
-                    onClick={() => setPage(safePage + 1)}
-                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2.5 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
-                  >
-                    [ ▶ ]
-                  </button>
-                </div>
-              )}
+                Le rembourrage (gap-5, px-4 sm:px-6) et le faux rail
+                w-[270px] reproduisent exactement ceux de la rangée
+                filtres+grille juste au-dessus : sans ce rail fantôme, le
+                centrage 1fr/auto/1fr portait sur toute la largeur de la
+                barre, colonne de filtres comprise, et la pagination
+                tombait décalée vers la gauche par rapport aux fiches. */}
+            <div className="flex items-center gap-5 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-4 py-2.5 sm:px-6">
+              <div aria-hidden className="hidden w-[270px] shrink-0 lg:block" />
+
+              <div className="flex min-w-0 flex-1 flex-col items-center gap-2.5 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-3">
+                <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase sm:justify-self-start`}>
+                  {filtered.length} objet(s) · {pageProducts.length} affiché(s)
+                </span>
+
+                {totalPages > 1 && (
+                  <div className="flex items-center gap-3 sm:justify-self-center">
+                    <button
+                      type="button"
+                      disabled={safePage === 0}
+                      onClick={() => setPage(safePage - 1)}
+                      className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2.5 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+                    >
+                      [ ◀ ]
+                    </button>
+                    <span
+                      className={`${LCD} rounded border-2 border-[#2b2b3d] bg-black px-3 py-1 text-[1.375rem] leading-none text-green-400 ${BEVEL_IN}`}
+                      style={{ textShadow: "0 0 8px rgba(74,222,128,.5)" }}
+                    >
+                      {safePage + 1}/{totalPages}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={safePage >= totalPages - 1}
+                      onClick={() => setPage(safePage + 1)}
+                      className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2.5 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+                    >
+                      [ ▶ ]
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </WindowFrame>
         </div>
