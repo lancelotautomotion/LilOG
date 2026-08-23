@@ -512,15 +512,15 @@ export function FilterControl({
      bouton RESET doit rester à portée de clic. */
   const statusBar = (
     <div className="flex shrink-0 items-center justify-between gap-2 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
-        <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+        <span className={`${MONO} min-w-0 flex-1 truncate text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
           {activeCount > 0 ? `${activeCount} filtre(s) actif(s)` : "Aucun filtre"}
         </span>
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1.5">
           <button
             type="button"
             onClick={reset}
             disabled={activeCount === 0}
-            className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.875rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+            className={`${MONO} shrink-0 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.8125rem] font-bold whitespace-nowrap text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
           >
             [ ⟲ RESET ]
           </button>
@@ -529,7 +529,7 @@ export function FilterControl({
               type="button"
               onClick={onClose}
               aria-label="Fermer les filtres"
-              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.875rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
+              className={`${MONO} shrink-0 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.8125rem] font-bold whitespace-nowrap text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
             >
               [ × ]
             </button>

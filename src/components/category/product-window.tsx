@@ -10,9 +10,6 @@
    le prix s'affiche en afficheur vert sur noir à côté du bouton
    d'ajout rapide.
 
-   Deux présentations, même composant : `grid` (vignette) et
-   `list` (rangée), pour la bascule [ 🗔 GRILLE ] / [ ☰ LISTE ].
-
    ⚠ PAREFEU : Tailwind + feuille locale préfixée `lde-`, servie
    une seule fois par la page. Aucune classe de globals.css.
    ============================================================ */
@@ -25,8 +22,6 @@ import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { BEVEL_IN, MONO, NAVY_BAR, PLASTIC, PLASTIC_FACE, PLASTIC_PRESS } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
-
-export type ViewMode = "grid" | "list";
 
 /* ---- Stickers d'état ---- */
 
@@ -112,15 +107,7 @@ function CardControl({ glyph, label }: { glyph: string; label: string }) {
    Fiche
    ============================================================ */
 
-export function ProductWindow({
-  product,
-  idx,
-  view = "grid",
-}: {
-  product: Product;
-  idx: number;
-  view?: ViewMode;
-}) {
+export function ProductWindow({ product, idx }: { product: Product; idx: number }) {
   const { addItem } = useCart();
   const { has, toggle } = useWishlist();
   const [added, setAdded] = useState(false);
@@ -130,7 +117,6 @@ export function ProductWindow({
   const href = `/products/${product.handle}`;
   const badge = primarySticker(product, sold);
   const pick = lounaPickSticker(product);
-  const list = view === "list";
 
   const add = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -156,15 +142,13 @@ export function ProductWindow({
   const media = (
     <Link
       href={href}
-      className={`lde-media group/media relative block shrink-0 overflow-hidden bg-[#e7e5f1] ${BEVEL_IN} ${
-        list ? "aspect-square w-[92px] sm:w-[120px]" : "aspect-[3/4] w-full"
-      }`}
+      className={`lde-media group/media relative block shrink-0 overflow-hidden bg-[#e7e5f1] aspect-[3/4] w-full ${BEVEL_IN}`}
     >
       <SmartImg className="lde-img lde-img-a" src={product.imageA} alt={product.name} tone={idx} />
       <SmartImg className="lde-img lde-img-b" src={product.imageB} alt={product.name} tone={idx + 1} />
 
       {badge && <StickerChip sticker={badge} className="top-1.5 left-1.5 -rotate-3" />}
-      {!list && pick && <StickerChip sticker={pick} className="right-1.5 bottom-1.5 rotate-2" />}
+      {pick && <StickerChip sticker={pick} className="right-1.5 bottom-1.5 rotate-2" />}
       {sold && <span className="pointer-events-none absolute inset-0 z-10 bg-white/45" />}
     </Link>
   );
@@ -239,46 +223,6 @@ export function ProductWindow({
       <CardControl glyph="×" label="Fermer" />
     </div>
   );
-
-  /* ---- Rangée (mode LISTE) ---- */
-
-  if (list) {
-    return (
-      <article className="lde-card overflow-hidden rounded-lg border-2 border-[#b8b4cc] bg-[#f0f0f5] shadow-[4px_4px_0_rgba(24,12,58,0.45)]">
-        {titleBar}
-        {/* Trois colonnes à partir de sm : visuel, informations, actions,
-            pour que la rangée se remplisse au lieu de s'étirer dans le vide. */}
-        <div className="flex items-stretch gap-3 p-2.5">
-          {media}
-
-          <div className="flex min-w-0 flex-1 flex-col justify-between gap-2 py-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-            <Link href={href} className="min-w-0 sm:flex-1">
-              <h3 className={`${MONO} line-clamp-2 text-[1.125rem] leading-snug font-bold text-[#1E2430]`}>{product.name}</h3>
-              {/* Les tailles ne sont plus listées ici : elles ont leur
-                  pastille à côté du prix, comme en vue grille. */}
-              <p className={`${MONO} mt-1 truncate text-[0.8125rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
-                {[product.productType, product.meta].filter(Boolean).join("  ·  ") || "PIÈCE UNIQUE"}
-              </p>
-              {pick && (
-                <span className="relative mt-2 hidden sm:inline-block">
-                  <StickerChip sticker={pick} className="relative top-0 left-0 rotate-0" />
-                </span>
-              )}
-            </Link>
-
-            <div className="flex shrink-0 flex-wrap items-center gap-2">
-              {price}
-              {sizeChip}
-              {cartButton}
-              {favButton}
-            </div>
-          </div>
-        </div>
-      </article>
-    );
-  }
-
-  /* ---- Vignette (mode GRILLE) ---- */
 
   return (
     <article className="lde-card flex flex-col overflow-hidden rounded-lg border-2 border-[#b8b4cc] bg-[#f0f0f5] shadow-[4px_4px_0_rgba(24,12,58,0.45)]">

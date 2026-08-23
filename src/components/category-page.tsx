@@ -27,7 +27,7 @@ import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { Icon } from "@/components/icons";
 import { FilterControl, type FilterState, type Sort } from "@/components/category/filter-control";
-import { ProductWindow, type ViewMode } from "@/components/category/product-window";
+import { ProductWindow } from "@/components/category/product-window";
 import {
   BEVEL_IN,
   LCD,
@@ -128,40 +128,6 @@ const EXPLORER_CSS = `
 `;
 
 /* ============================================================
-   Briques d'en-tête
-   ============================================================ */
-
-/** Bascule d'affichage : le mode actif reste enfoncé. */
-function ViewToggle({ view, setView }: { view: ViewMode; setView: (v: ViewMode) => void }) {
-  const modes: [ViewMode, string][] = [
-    ["grid", "🗔 GRILLE"],
-    ["list", "☰ LISTE"],
-  ];
-  return (
-    <div className="flex shrink-0 gap-1.5">
-      {modes.map(([mode, label]) => {
-        const on = view === mode;
-        return (
-          <button
-            key={mode}
-            type="button"
-            onClick={() => setView(mode)}
-            aria-pressed={on}
-            className={`${MONO} rounded-md border px-2.5 py-1.5 text-[0.875rem] font-bold tracking-[0.06em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
-              on
-                ? "border-[#3b1d8f] bg-[linear-gradient(180deg,#a86fe8_0%,#7147d4_48%,#4b2a9e_100%)] text-white shadow-[inset_0_2px_5px_rgba(0,0,0,0.4)]"
-                : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#3b3550] hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`
-            }`}
-          >
-            [ {label} ]
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ============================================================
    Page
    ============================================================ */
 
@@ -180,7 +146,6 @@ export function CategoryPage({
 
   const [menu, setMenu] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [view, setView] = useState<ViewMode>("grid");
 
   const label = t.cat[catKey] ?? catKey;
   const vibe = CAT_VIBES[catKey];
@@ -417,11 +382,10 @@ export function CategoryPage({
             </div>
 
             {/* Sous-en-tête : nom du bloc grille + bascule d'affichage */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d8d5e6] px-4 py-2 sm:px-6">
+            <div className="border-b border-[#d8d5e6] px-4 py-2 sm:px-6">
               <h2 className={`${MONO} text-[1rem] font-bold tracking-[0.08em] text-[#3b1d8f] uppercase`}>
                 MEDIA_GRID · {filtered.length} FICHIER(S)
               </h2>
-              <ViewToggle view={view} setView={setView} />
             </div>
 
             {/* Corps : panneau de filtres + grille, dans le même bloc blanc.
@@ -462,15 +426,9 @@ export function CategoryPage({
                     )}
                   </div>
                 ) : (
-                  <div
-                    className={
-                      view === "grid"
-                        ? "grid grid-cols-2 gap-[clamp(8px,1.4vw,14px)] md:grid-cols-3 xl:grid-cols-4"
-                        : "flex flex-col gap-2.5"
-                    }
-                  >
+                  <div className="grid grid-cols-2 gap-[clamp(8px,1.4vw,14px)] md:grid-cols-3 xl:grid-cols-4">
                     {pageProducts.map((p, idx) => (
-                      <ProductWindow key={p.id} product={p} idx={idx} view={view} />
+                      <ProductWindow key={p.id} product={p} idx={idx} />
                     ))}
                   </div>
                 )}
@@ -479,24 +437,27 @@ export function CategoryPage({
 
             {/* Barre d'état + pagination, au pied de la fenêtre unique,
                 rounded-b-2xl : clip=false oblige, c'est elle qui ferme
-                proprement le bas du cadre. */}
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
-              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
+                proprement le bas du cadre. Colonnes 1fr/auto/1fr : la
+                pagination reste centrée sur toute la largeur de la barre,
+                quelle que soit la longueur du texte à gauche, la colonne
+                de droite ne servant qu'à équilibrer l'espace. */}
+            <div className="flex flex-col items-center gap-2.5 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2.5 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-3">
+              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase sm:justify-self-start`}>
                 {filtered.length} objet(s) · {pageProducts.length} affiché(s)
               </span>
 
               {totalPages > 1 && (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 sm:justify-self-center">
                   <button
                     type="button"
                     disabled={safePage === 0}
                     onClick={() => setPage(safePage - 1)}
-                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.8125rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2.5 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
                   >
                     [ ◀ ]
                   </button>
                   <span
-                    className={`${LCD} rounded border-2 border-[#2b2b3d] bg-black px-2 py-0.5 text-[1.125rem] leading-none text-green-400 ${BEVEL_IN}`}
+                    className={`${LCD} rounded border-2 border-[#2b2b3d] bg-black px-3 py-1 text-[1.375rem] leading-none text-green-400 ${BEVEL_IN}`}
                     style={{ textShadow: "0 0 8px rgba(74,222,128,.5)" }}
                   >
                     {safePage + 1}/{totalPages}
@@ -505,7 +466,7 @@ export function CategoryPage({
                     type="button"
                     disabled={safePage >= totalPages - 1}
                     onClick={() => setPage(safePage + 1)}
-                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-1.5 text-[0.8125rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
+                    className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-4 py-2.5 text-[1rem] font-bold text-[#262626] uppercase transition hover:brightness-105 disabled:opacity-40 ${PLASTIC} ${PLASTIC_PRESS}`}
                   >
                     [ ▶ ]
                   </button>
