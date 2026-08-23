@@ -306,10 +306,14 @@ export function CategoryPage({
           {/* clip=false : FILTER_CONTROL.SYS doit rester figé au scroll
               (position: sticky), ce qui ne fonctionne sous aucun ancêtre en
               overflow-hidden. La barre d'état, dernier bloc du corps, reçoit
-              donc elle-même `rounded-b-2xl` pour garder le bas du cadre net. */}
+              donc elle-même `rounded-b-2xl` pour garder le bas du cadre net —
+              et le corps de la fenêtre (bodyClassName) aussi : sans quoi son
+              propre coin carré, blanc, dépasse derrière l'arrondi de la
+              barre d'état et y laissait un fin croissant visible. */}
           <WindowFrame
             title={`C:\\ LIL_OG \\ CATALOG \\ ${exeName(catKey, label)}`}
             icon={<Icon.folderOpen width={15} height={12} />}
+            bodyClassName="rounded-b-2xl"
             bodyStyle={{ backgroundColor: "#ffffff" }}
             clip={false}
           >
@@ -437,7 +441,9 @@ export function CategoryPage({
 
             {/* Barre d'état + pagination, au pied de la fenêtre unique,
                 rounded-b-2xl : clip=false oblige, c'est elle qui ferme
-                proprement le bas du cadre.
+                proprement le bas du cadre (voir aussi bodyClassName plus
+                haut, sur WindowFrame, sans quoi le coin carré du corps de
+                la fenêtre dépasse derrière l'arrondi de cette barre).
 
                 Le rembourrage (gap-5, px-4 sm:px-6) et le faux rail
                 w-[270px] reproduisent exactement ceux de la rangée
@@ -445,16 +451,20 @@ export function CategoryPage({
                 centrage 1fr/auto/1fr portait sur toute la largeur de la
                 barre, colonne de filtres comprise, et la pagination
                 tombait décalée vers la gauche par rapport aux fiches. */}
-            <div className="flex items-center gap-5 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-4 py-2.5 sm:px-6">
+            <div className="flex items-center gap-5 overflow-hidden rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-4 py-2.5 sm:px-6">
               <div aria-hidden className="hidden w-[270px] shrink-0 lg:block" />
 
+              {/* Emplacement de la pagination fixé en colonne 2 (`col-start-2`)
+                  et le compte de pièces en colonne 3 (`col-start-3`, à
+                  droite), plutôt que de suivre l'ordre du DOM : la pagination
+                  reste centrée que le texte soit affiché ou non. */}
               <div className="flex min-w-0 flex-1 flex-col items-center gap-2.5 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-3">
-                <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase sm:justify-self-start`}>
+                <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase sm:col-start-3 sm:justify-self-end`}>
                   {filtered.length} objet(s) · {pageProducts.length} affiché(s)
                 </span>
 
                 {totalPages > 1 && (
-                  <div className="flex items-center gap-3 sm:justify-self-center">
+                  <div className="flex items-center gap-3 sm:col-start-2 sm:justify-self-center">
                     <button
                       type="button"
                       disabled={safePage === 0}
