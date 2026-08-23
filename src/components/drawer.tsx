@@ -222,24 +222,17 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
             </a>
           </div>
 
-          {/* Liens système secondaires : discrets, fond transparent, pour
-              ne pas rivaliser avec les gros boutons du dessus. Même bleu de
-              survol que .drawer-link ailleurs dans ce menu, même gris violacé
-              que les taglines du footer (#6b6480), plutôt qu'un gris neutre
-              étranger à la palette du site. */}
-          <div className="mt-1 flex flex-col gap-0.5">
-            {UTILITY_LINKS.map((u) => (
-              <a
-                key={u.href}
-                href={u.href}
-                onClick={onClose}
-                className="flex items-center gap-2 rounded px-2 py-1.5 font-[family-name:var(--mono)] text-[12px] font-bold tracking-tight text-[#6b6480] uppercase transition-colors duration-150 hover:text-[#1D35D9] hover:underline"
-              >
-                <span aria-hidden className="shrink-0 text-[13px] leading-none">{u.icon}</span>
-                {u.label}
+          {/* Liens système secondaires : mêmes cartes .drawer-link que
+              Catégories / Carte cadeau / Contact au-dessus, pour rester
+              dans la même famille de boutons plutôt qu'une liste de texte
+              à part. */}
+          {UTILITY_LINKS.map((u) => (
+            <div className="drawer-item" key={u.href}>
+              <a className="drawer-link" href={u.href} onClick={onClose}>
+                <span aria-hidden="true">{u.icon}</span> {u.label}
               </a>
-            ))}
-          </div>
+            </div>
+          ))}
 
           {/* Réseaux sociaux : même plastique chromé que les boutons du
               footer (dégradé + relief PLASTIC/PLASTIC_PRESS), pas un bevel
