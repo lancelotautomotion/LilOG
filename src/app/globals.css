@@ -485,8 +485,8 @@ textarea {
 /* Contact : bouton en couleur inversée (permanent) */
 .drawer-link-contact,
 .drawer-link-contact:hover {
-  background: #1D35D9;
-  border-color: #1D35D9;
+  background: #3d2090;
+  border-color: #3d2090;
   color: #fff;
 }
 .drawer-link-contact:hover { filter: brightness(1.1); }
