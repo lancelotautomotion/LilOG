@@ -216,16 +216,10 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               <span aria-hidden="true">💳</span> Carte cadeau
             </a>
           </div>
-          <div className="drawer-item">
-            <a className="drawer-link drawer-link-contact" href="/contact" onClick={onClose}>
-              <span aria-hidden="true">📞</span> Contact
-            </a>
-          </div>
 
           {/* Liens système secondaires : mêmes cartes .drawer-link que
-              Catégories / Carte cadeau / Contact au-dessus, pour rester
-              dans la même famille de boutons plutôt qu'une liste de texte
-              à part. */}
+              Catégories / Carte cadeau / Contact, pour rester dans la même
+              famille de boutons plutôt qu'une liste de texte à part. */}
           {UTILITY_LINKS.map((u) => (
             <div className="drawer-item" key={u.href}>
               <a className="drawer-link" href={u.href} onClick={onClose}>
@@ -233,6 +227,12 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               </a>
             </div>
           ))}
+
+          <div className="drawer-item">
+            <a className="drawer-link drawer-link-contact" href="/contact" onClick={onClose}>
+              <span aria-hidden="true">📞</span> Contact
+            </a>
+          </div>
 
           {/* Réseaux sociaux : même plastique chromé que les boutons du
               footer (dégradé + relief PLASTIC/PLASTIC_PRESS), pas un bevel
