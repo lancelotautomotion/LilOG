@@ -43,18 +43,7 @@ const DRAWER_LABELS: Partial<Record<LangCode, Record<string, string>>> = {
   },
 };
 
-const LINKS = CATEGORIES.map((c) => ({
-  key: c.catKey,
-  href: `/category/${c.handle}`,
-  sub: c.sub?.map((s) => ({
-    label: s.label,
-    href: s.type ? `/category/${c.handle}?sub=${s.type}` : `/category/${c.handle}`,
-    sub: s.sub?.map((ss) => ({
-      label: ss.label,
-      href: `/category/${c.handle}?sub=${ss.type}`,
-    })),
-  })),
-}));
+const LINKS = CATEGORIES.map((c) => ({ key: c.catKey, href: `/category/${c.handle}` }));
 
 export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t, lang } = useLanguage();
@@ -63,13 +52,12 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
   const fileLabel = (key: string, i: number) =>
     `${String(i + 1).padStart(2, "0")}. ${DRAWER_LABELS[lang]?.[key] ?? t.cat[key] ?? key}`;
 
-  const [expanded, setExpanded] = useState<number | null>(null);
-  const [expandedSub, setExpandedSub] = useState<string | null>(null);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
 
   const [prevOpen, setPrevOpen] = useState(open);
   if (open !== prevOpen) {
     setPrevOpen(open);
-    if (!open) { setExpanded(null); setExpandedSub(null); }
+    if (!open) setCategoriesOpen(false);
   }
 
   useEffect(() => {
@@ -96,7 +84,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               de l'accueil, réduite à une ligne de menu. Le dossier jaune laisse
               donc place au joystick, avec sa propre accroche (dmTagline),
               traduite dans les neuf langues. */}
-          <div className="drawer-item drawer-item-closet">
+          <div className="drawer-item">
             <a className="drawer-link drawer-link-closet" href="/dressing-machine" onClick={onClose}>
               <span className="dm-tile-marquee" aria-hidden="true">
                 <span className="dm-tile-bulb" />
@@ -111,74 +99,42 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
               <span className="dm-tile-play" aria-hidden="true">▶ PLAY</span>
             </a>
           </div>
+          {/* Catégories : un seul accordéon qui regroupe "Tout voir" et les
+              rayons, là où chaque rayon dépliait auparavant ses propres
+              sous-catégories. Plus dense à refermé, plus simple à parcourir
+              une fois ouvert. */}
+          <div className={"drawer-item" + (categoriesOpen ? " open" : "")}>
+            <button
+              type="button"
+              className="drawer-link drawer-parent"
+              aria-expanded={categoriesOpen}
+              onClick={() => setCategoriesOpen((o) => !o)}
+            >
+              <Icon.folder className="drawer-folder-icon" aria-hidden="true" />
+              Catégories
+              <Icon.chevD className="caret" />
+            </button>
+            <div className="drawer-sub">
+              <div className="drawer-sub-inner">
+                <a href="/catalogue" onClick={onClose}>
+                  <span className="drawer-file-icon" aria-hidden="true">🗂️</span>
+                  Tout voir
+                </a>
+                {LINKS.map((l, i) => (
+                  <a key={l.key} href={l.href} onClick={onClose}>
+                    <span className="drawer-file-icon" aria-hidden="true">📄</span>
+                    {fileLabel(l.key, i)}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
           <div className="drawer-item">
-            <a className="drawer-link" href="/catalogue" onClick={onClose}>
-              <span aria-hidden="true">🗂️</span> Tout voir
+            <a className="drawer-link" href="/gift-card" onClick={onClose}>
+              <span aria-hidden="true">💳</span> Carte cadeau
             </a>
           </div>
-          {LINKS.map((l, i) => (
-            <div className={"drawer-item" + (l.sub && expanded === i ? " open" : "")} key={l.key}>
-              {l.sub ? (
-                <>
-                  <div className="drawer-parent">
-                    <a href={l.href} onClick={onClose} className="drawer-parent-link">
-                      <Icon.folder className="drawer-folder-icon" aria-hidden="true" />
-                      {fileLabel(l.key, i)}
-                    </a>
-                    <button
-                      className="drawer-parent-toggle"
-                      aria-expanded={expanded === i}
-                      onClick={() => { setExpanded(expanded === i ? null : i); setExpandedSub(null); }}
-                      aria-label="Ouvrir le sous-menu"
-                    >
-                      <Icon.chevD className="caret" />
-                    </button>
-                  </div>
-                  <div className="drawer-sub">
-                    <div className="drawer-sub-inner">
-                      {l.sub.map((s) =>
-                        s.sub ? (
-                          <div key={s.href} className={"drawer-subsub-wrap" + (expandedSub === s.href ? " open" : "")}>
-                            <button
-                              className="drawer-subsub-toggle"
-                              onClick={() => setExpandedSub(expandedSub === s.href ? null : s.href)}
-                            >
-                              <span className="drawer-file-icon" aria-hidden="true">📄</span>
-                              {s.label}
-                              <Icon.chevD className="caret-sm" />
-                            </button>
-                            <div className="drawer-subsub">
-                              <a href={s.href} onClick={onClose} className="drawer-subsub-all">
-                                <span className="drawer-file-icon" aria-hidden="true">📄</span>
-                                Tout voir
-                              </a>
-                              {s.sub.map((ss) => (
-                                <a key={ss.href} href={ss.href} onClick={onClose}>
-                                  <span className="drawer-file-icon" aria-hidden="true">📄</span>
-                                  {ss.label}
-                                </a>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <a key={s.href} href={s.href} onClick={onClose}>
-                            <span className="drawer-file-icon" aria-hidden="true">📄</span>
-                            {s.label}
-                          </a>
-                        )
-                      )}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <a className="drawer-link" href={l.href} onClick={onClose}>
-                  <Icon.folder className="drawer-folder-icon" aria-hidden="true" />
-                  {fileLabel(l.key, i)}
-                </a>
-              )}
-            </div>
-          ))}
-          <div className="drawer-item drawer-item-contact">
+          <div className="drawer-item">
             <a className="drawer-link drawer-link-contact" href="/contact" onClick={onClose}>
               <span aria-hidden="true">📞</span> Contact
             </a>
