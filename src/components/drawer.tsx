@@ -47,9 +47,11 @@ const LINKS = CATEGORIES.map((c) => ({ key: c.catKey, href: `/category/${c.handl
 
 /**
  * Une pastille de la grille "Catégories" : dossier système sélectionnable,
- * façon explorateur Windows. Hauteur, padding et gap identiques sur toutes
- * les cases (`h-11`), `truncate` sur le libellé pour qu'un nom trop long ne
- * grandisse jamais la ligne au détriment de sa voisine dans la grille.
+ * façon explorateur Windows. `min-h-11` plutôt qu'une hauteur figée : un
+ * libellé long (« Pantalons & pantacourts ») passe sur deux lignes au lieu
+ * d'être coupé, et l'étirement par défaut des grilles CSS aligne quand même
+ * sa voisine de rangée sur la même hauteur — la régularité vient de la
+ * grille, pas d'une troncature qui aurait mangé le nom du rayon.
  *
  * L'icône reste le dossier jaune vintage au repos ; au survol elle bascule
  * sur sa variante blanche (fills figés dans le SVG, `currentColor` n'aurait
@@ -71,13 +73,13 @@ function DrawerCategoryLink({
     <a
       href={href}
       onClick={onClick}
-      className="group flex h-11 items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-3 font-[family-name:var(--mono)] text-[11px] font-bold tracking-tight text-gray-800 uppercase transition-all duration-150 hover:border-dashed hover:border-white/50 hover:bg-pink-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]"
+      className="group flex min-h-11 items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 font-[family-name:var(--mono)] text-[11px] font-bold tracking-tight text-gray-800 uppercase transition-all duration-150 hover:border-dashed hover:border-white/50 hover:bg-pink-500 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]"
     >
-      <span aria-hidden className="relative grid h-3.5 w-4 shrink-0 place-items-center">
+      <span aria-hidden className="relative mt-0.5 grid h-3.5 w-4 shrink-0 place-items-center self-start">
         <FolderIcon className="absolute inset-0 h-full w-full transition-opacity duration-150 group-hover:opacity-0" />
         <FolderIcon className="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-150 group-hover:opacity-100 [&_path]:!fill-white [&_path]:!stroke-white" />
       </span>
-      <span className="min-w-0 flex-1 truncate">{children}</span>
+      <span className="min-w-0 flex-1 leading-snug break-words">{children}</span>
     </a>
   );
 }
