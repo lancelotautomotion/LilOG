@@ -71,7 +71,6 @@ const SHORTCUTS = [
   { href: "/dressing-machine", icon: "👗", label: "DRESSING.EXE", external: false },
   { href: "/wishlist", icon: "💖", label: "WISHLIST.LNK", external: false },
   { href: "/cart", icon: "🛒", label: "PANIER.EXE", external: false },
-  { href: SOCIALS.instagram, icon: "📸", label: "INSTAGRAM.LNK", external: true },
 ];
 
 /** Même liste sur mobile, moins panier et wishlist : déjà accessibles
@@ -404,7 +403,7 @@ export function Footer() {
   /* Les onglets reprennent les libellés déjà traduits du site : la barre
      des tâches suit la langue choisie dans le sélecteur de la nav. */
   const TABS: Tab[] = [
-    { href: "/#drops", icon: "🛍", label: t.footer.shop },
+    { href: "/catalogue", icon: "🛍", label: t.footer.shop },
     { href: "/gift-card", icon: "💿", label: "Carte cadeau" },
     { href: "/histoire", icon: "📖", label: t.footer.aboutLinks[0] },
     { href: "/durabilite", icon: "🌿", label: t.footer.aboutLinks[1] },
