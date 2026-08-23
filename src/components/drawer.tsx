@@ -45,6 +45,50 @@ const DRAWER_LABELS: Partial<Record<LangCode, Record<string, string>>> = {
 
 const LINKS = CATEGORIES.map((c) => ({ key: c.catKey, href: `/category/${c.handle}` }));
 
+/* Liens système secondaires : mêmes destinations que les raccourcis du
+   footer (LIVRAISON.DOC, FAQ), sous un habillage "fichier système" plus
+   discret que les gros boutons du menu, pour combler la fin de la liste
+   sans reproduire les mêmes cartes qu'au-dessus. */
+const UTILITY_LINKS = [
+  { href: "/histoire", icon: "📄", label: "README.TXT" },
+  { href: "/faq", icon: "❓", label: "HELP_DESK.EXE" },
+  { href: "/livraison", icon: "📦", label: "SHIPPING_PROTOCOL.SYS" },
+];
+
+/* Réseaux sociaux : mêmes comptes que le footer (LIL_OG_TASKBAR.EXE). */
+const SOCIAL_LINKS = [
+  { href: "https://www.instagram.com/lounaliliguitton/", icon: "📸", label: "[ CONECT TO INSTA ]" },
+  { href: "https://www.tiktok.com/", icon: "🎵", label: "[ CONECT TO TIKTOK ]" },
+];
+
+/**
+ * Horloge locale du system tray. Ne peut pas être rendue côté serveur (le
+ * HTML livré figerait l'heure du build), donc cadran vide jusqu'au montage,
+ * puis recalage sur la minute pleine — même logique que la Tray du footer.
+ */
+function useDrawerClock(): string | null {
+  const [clock, setClock] = useState<string | null>(null);
+
+  useEffect(() => {
+    const render = () =>
+      setClock(new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }));
+    render();
+
+    let interval: ReturnType<typeof setInterval> | undefined;
+    const timeout = setTimeout(() => {
+      render();
+      interval = setInterval(render, 60_000);
+    }, 60_000 - (Date.now() % 60_000));
+
+    return () => {
+      clearTimeout(timeout);
+      if (interval) clearInterval(interval);
+    };
+  }, []);
+
+  return clock;
+}
+
 /**
  * Une pastille de la grille "Catégories" : dossier système sélectionnable,
  * façon explorateur Windows. `min-h-11` plutôt qu'une hauteur figée : un
@@ -92,6 +136,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
     `${String(i + 1).padStart(2, "0")}. ${DRAWER_LABELS[lang]?.[key] ?? t.cat[key] ?? key}`;
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const clock = useDrawerClock();
 
   const [prevOpen, setPrevOpen] = useState(open);
   if (open !== prevOpen) {
@@ -175,6 +220,52 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
             <a className="drawer-link drawer-link-contact" href="/contact" onClick={onClose}>
               <span aria-hidden="true">📞</span> Contact
             </a>
+          </div>
+
+          {/* Liens système secondaires : discrets, fond transparent, pour
+              ne pas rivaliser avec les gros boutons du dessus. */}
+          <div className="mt-1 flex flex-col gap-0.5">
+            {UTILITY_LINKS.map((u) => (
+              <a
+                key={u.href}
+                href={u.href}
+                onClick={onClose}
+                className="flex items-center gap-2 rounded px-2 py-1.5 font-[family-name:var(--mono)] text-[12px] font-bold tracking-tight text-gray-600 uppercase transition-colors duration-150 hover:text-[#1D35D9] hover:underline"
+              >
+                <span aria-hidden className="shrink-0 text-[13px] leading-none">{u.icon}</span>
+                {u.label}
+              </a>
+            ))}
+          </div>
+
+          {/* Réseaux sociaux : boutons biseautés façon interface Windows,
+              relief inversé à l'appui (active:). */}
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            {SOCIAL_LINKS.map((s) => (
+              <a
+                key={s.href}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 border-2 border-gray-400 bg-gray-100 px-2 py-2 font-[family-name:var(--mono)] text-[10px] font-bold tracking-tight text-gray-700 uppercase shadow-[inset_1px_1px_0_#fff,inset_-1px_-1px_0_#808080] transition-all duration-100 hover:bg-gray-50 active:shadow-[inset_-1px_-1px_0_#fff,inset_1px_1px_0_#808080]"
+              >
+                <span aria-hidden>{s.icon}</span>
+                <span className="truncate">{s.label}</span>
+              </a>
+            ))}
+          </div>
+
+          {/* System tray : ancré en bas du menu (mt-auto), même quand la
+              liste au-dessus est courte — c'est lui qui comble le vide
+              plutôt que d'étirer les boutons eux-mêmes. */}
+          <div className="mt-auto flex items-center justify-between gap-2 rounded border border-gray-400 bg-gray-200 px-2.5 py-2 shadow-inner">
+            <div className="rounded-sm border border-black/40 bg-black px-2 py-1 font-[family-name:var(--font-lcd)] text-[13px] tracking-[0.08em] text-[#39ff6a]">
+              VISITEURS : 012458
+            </div>
+            <div className="flex items-center gap-1.5 font-[family-name:var(--mono)] text-[11px] font-bold text-gray-700">
+              <span aria-hidden>🌐</span>
+              <time suppressHydrationWarning>{clock ?? "--:--"}</time>
+            </div>
           </div>
         </nav>
       </aside>
