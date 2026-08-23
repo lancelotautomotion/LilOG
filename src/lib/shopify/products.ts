@@ -296,7 +296,9 @@ export async function getLounaPicks(count = 10): Promise<Product[]> {
  */
 export async function getAllProducts(count = 250): Promise<Product[]> {
   const data = await shopifyFetch<FeaturedProductsResponse>(CATALOG_PRODUCTS_QUERY, { first: count });
-  return data.products.edges.map((e) => mapProduct(e.node));
+  return data.products.edges
+    .map((e) => mapProduct(e.node))
+    .filter((p) => !(GIFT_CARD_HANDLES as readonly string[]).includes(p.handle));
 }
 
 /**
