@@ -445,7 +445,7 @@ textarea {
   padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   flex: 1;
   background: #fff;
 }
@@ -482,8 +482,7 @@ textarea {
   color: #fff;
 }
 
-/* Contact : bouton en couleur inversée (permanent), léger espace au-dessus */
-.drawer-item-contact { margin-top: 10px; }
+/* Contact : bouton en couleur inversée (permanent) */
 .drawer-link-contact,
 .drawer-link-contact:hover {
   background: #1D35D9;
@@ -496,30 +495,6 @@ textarea {
 
 .drawer-folder-icon { flex-shrink: 0; }
 .drawer-file-icon { flex-shrink: 0; }
-
-/* Nom de catégorie : lien qui navigue vers "tout voir" */
-.drawer-parent-link {
-  font: inherit;
-  color: inherit;
-  text-decoration: none;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Bouton chevron (déplie/replie le sous-menu) */
-.drawer-parent-toggle {
-  background: none;
-  border: none;
-  padding: 4px 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  color: var(--ldl-muted);
-  flex-shrink: 0;
-}
-.drawer-parent:hover .drawer-parent-toggle { color: #fff; }
 
 .drawer-parent .caret {
   width: 16px; height: 16px;
@@ -563,36 +538,6 @@ textarea {
   gap: 6px;
 }
 .drawer-sub-inner a:hover { color: #fff; background: #1D35D9; }
-
-/* 3ᵉ niveau (ex. Bijoux) */
-.drawer-subsub-toggle {
-  display: flex; align-items: center; gap: 6px; width: 100%;
-  background: none; border: none; cursor: pointer; text-align: left;
-  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700;
-  font-size: 1rem; color: var(--ldl-muted); padding: 7px 8px;
-  border-radius: 4px;
-  transition: color 0.15s, background 0.15s;
-}
-.drawer-subsub-toggle:hover { color: #fff; background: #1D35D9; }
-.drawer-subsub-toggle .caret-sm { width: 9px; height: 9px; transition: transform 0.3s; color: inherit; margin-left: auto; }
-.drawer-subsub-wrap.open .drawer-subsub-toggle .caret-sm { transform: rotate(180deg); }
-.drawer-subsub {
-  overflow: hidden; max-height: 0;
-  transition: max-height 0.35s cubic-bezier(.76,0,.24,1);
-  display: flex; flex-direction: column; padding-left: 8px;
-}
-.drawer-subsub-wrap.open .drawer-subsub { max-height: 400px; }
-.drawer-subsub a {
-  font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700;
-  font-size: 1rem; color: var(--ldl-muted); padding: 6px 8px;
-  border-radius: 4px;
-  transition: color 0.15s, background 0.15s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.drawer-subsub a:hover { color: #fff; background: #1D35D9; }
-.drawer-subsub-all { color: var(--ldl-muted) !important; }
 
 /* Footer links */
 .drawer-foot {
@@ -5448,11 +5393,6 @@ html, body {
    matériau (les onze rayons sont en papier, celle-ci est allumée) et
    à peine à la taille : seize pixels de plus que les autres lignes,
    pris par la ligne d'attente du bas. */
-/* Respiration sous la borne : elle n'est pas le premier des rayons mais
-   un raccourci à part, et la pile de douze cartes le disait mal quand
-   l'écart valait celui de deux dossiers voisins. */
-.drawer-item-closet { margin-bottom: 12px; }
-
 .drawer-link-closet,
 .drawer-link-closet:hover {
   position: relative;
