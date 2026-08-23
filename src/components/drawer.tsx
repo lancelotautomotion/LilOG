@@ -57,8 +57,8 @@ const UTILITY_LINKS = [
 
 /* Réseaux sociaux : mêmes comptes que le footer (LIL_OG_TASKBAR.EXE). */
 const SOCIAL_LINKS = [
-  { href: "https://www.instagram.com/lounaliliguitton/", icon: "📸", label: "[ CONECT TO INSTA ]" },
-  { href: "https://www.tiktok.com/", icon: "🎵", label: "[ CONECT TO TIKTOK ]" },
+  { href: "https://www.instagram.com/lounaliliguitton/", icon: "📸", label: "[ CONNECT TO INSTA ]" },
+  { href: "https://www.tiktok.com/", icon: "🎵", label: "[ CONNECT TO TIKTOK ]" },
 ];
 
 /**
@@ -223,14 +223,17 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
           </div>
 
           {/* Liens système secondaires : discrets, fond transparent, pour
-              ne pas rivaliser avec les gros boutons du dessus. */}
+              ne pas rivaliser avec les gros boutons du dessus. Même bleu de
+              survol que .drawer-link ailleurs dans ce menu, même gris violacé
+              que les taglines du footer (#6b6480), plutôt qu'un gris neutre
+              étranger à la palette du site. */}
           <div className="mt-1 flex flex-col gap-0.5">
             {UTILITY_LINKS.map((u) => (
               <a
                 key={u.href}
                 href={u.href}
                 onClick={onClose}
-                className="flex items-center gap-2 rounded px-2 py-1.5 font-[family-name:var(--mono)] text-[12px] font-bold tracking-tight text-gray-600 uppercase transition-colors duration-150 hover:text-[#1D35D9] hover:underline"
+                className="flex items-center gap-2 rounded px-2 py-1.5 font-[family-name:var(--mono)] text-[12px] font-bold tracking-tight text-[#6b6480] uppercase transition-colors duration-150 hover:text-[#1D35D9] hover:underline"
               >
                 <span aria-hidden className="shrink-0 text-[13px] leading-none">{u.icon}</span>
                 {u.label}
@@ -238,8 +241,9 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
             ))}
           </div>
 
-          {/* Réseaux sociaux : boutons biseautés façon interface Windows,
-              relief inversé à l'appui (active:). */}
+          {/* Réseaux sociaux : même plastique chromé que les boutons du
+              footer (dégradé + relief PLASTIC/PLASTIC_PRESS), pas un bevel
+              Windows gris qui jurerait avec le reste du menu. */}
           <div className="mt-2 grid grid-cols-2 gap-2">
             {SOCIAL_LINKS.map((s) => (
               <a
@@ -247,7 +251,7 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 border-2 border-gray-400 bg-gray-100 px-2 py-2 font-[family-name:var(--mono)] text-[10px] font-bold tracking-tight text-gray-700 uppercase shadow-[inset_1px_1px_0_#fff,inset_-1px_-1px_0_#808080] transition-all duration-100 hover:bg-gray-50 active:shadow-[inset_-1px_-1px_0_#fff,inset_1px_1px_0_#808080]"
+                className="flex items-center justify-center gap-1.5 rounded-lg border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-2 py-2.5 font-[family-name:var(--mono)] text-[10px] font-bold tracking-tight text-[#3b1d8f] uppercase shadow-[inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_5px_rgba(0,0,0,0.25),0_2px_3px_rgba(30,36,48,0.18)] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] active:scale-95 active:shadow-[inset_0_3px_6px_rgba(0,0,0,0.32),inset_0_-1px_0_rgba(255,255,255,0.7)]"
               >
                 <span aria-hidden>{s.icon}</span>
                 <span className="truncate">{s.label}</span>
@@ -256,13 +260,15 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
           </div>
 
           {/* System tray : ancré en bas du menu (mt-auto), même quand la
-              liste au-dessus est courte — c'est lui qui comble le vide
-              plutôt que d'étirer les boutons eux-mêmes. */}
-          <div className="mt-auto flex items-center justify-between gap-2 rounded border border-gray-400 bg-gray-200 px-2.5 py-2 shadow-inner">
-            <div className="rounded-sm border border-black/40 bg-black px-2 py-1 font-[family-name:var(--font-lcd)] text-[13px] tracking-[0.08em] text-[#39ff6a]">
+              liste au-dessus est courte. Même coque plastique que le reste
+              du site (dégradé lilas + relief), l'écran LCD noir/vert du
+              compteur ressort dessus comme un vrai boîtier rétro plutôt que
+              de flotter sur un gris plat Windows 95. */}
+          <div className="mt-auto flex items-center justify-between gap-2 rounded-xl border border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] px-2.5 py-2 shadow-[inset_0_2px_4px_rgba(255,255,255,0.95),inset_0_-2px_5px_rgba(0,0,0,0.25),0_2px_3px_rgba(30,36,48,0.18)]">
+            <div className="rounded-md border border-black/50 bg-black px-2 py-1 font-[family-name:var(--font-lcd)] text-[13px] tracking-[0.08em] text-[#39ff6a] shadow-[inset_0_1px_3px_rgba(0,0,0,0.8)]">
               VISITEURS : 012458
             </div>
-            <div className="flex items-center gap-1.5 font-[family-name:var(--mono)] text-[11px] font-bold text-gray-700">
+            <div className="flex items-center gap-1.5 font-[family-name:var(--mono)] text-[11px] font-bold text-[#3b1d8f]">
               <span aria-hidden>🌐</span>
               <time suppressHydrationWarning>{clock ?? "--:--"}</time>
             </div>
