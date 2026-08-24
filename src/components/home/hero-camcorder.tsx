@@ -5,9 +5,9 @@
    ------------------------------------------------------------
    Plein écran (100svh), pensé pour accueillir une vidéo de fond.
    Tant qu'aucune vidéo n'est déposée dans /public/hero, le fond
-   reste la bande de stills de la marque : le <video> ne se
-   révèle que lorsqu'il est réellement lisible, donc un fichier
-   absent ne laisse jamais de trou noir.
+   reste le still de la marque : le <video> ne se révèle que
+   lorsqu'il est réellement lisible, donc un fichier absent ne
+   laisse jamais de trou noir.
 
    Par-dessus : l'habillage d'un caméscope des années 2000,
    témoin [REC] clignotant, timecode, jauge de batterie, date,
@@ -24,24 +24,14 @@ import { MONO, NEON } from "@/components/y2k/kit";
 /**
  * Vidéo de fond. Le fichier n'est pas versionné (poids) : dépose
  * `camcorder.mp4` dans `public/hero/` et il est pris en compte
- * automatiquement, sinon la bande de stills ci-dessous tient le rôle.
+ * automatiquement, sinon le still ci-dessous tient le rôle.
  */
 const HERO_VIDEO = "/hero/camcorder.mp4";
 
-/** Stills de repli : photographie maison, pas de banque d'images. */
-const HERO_STILLS = [
-  { src: "/Design sans titre.png", pos: "50% 42%" },
-  { src: "/histoire/look-11.jpg", pos: "50% 30%" },
-  { src: "/histoire/look-15.jpeg", pos: "50% 35%" },
-];
+/** Still de repli : photographie maison, pas de banque d'images. */
+const HERO_STILL = "/Design sans titre.png";
 
 const HERO_CSS = `
-/* Bande de stills : fondu lent + très léger zoom, façon rushes. */
-.lhz-still{opacity:0;transition:opacity 1400ms ease;transform:scale(1.06);animation:lhzDrift 26s ease-in-out infinite alternate}
-.lhz-still.on{opacity:1}
-
-@keyframes lhzDrift{from{transform:scale(1.04)}to{transform:scale(1.14)}}
-
 /* Lignes de balayage du viseur. */
 .lhz-scan{
   background-image:repeating-linear-gradient(to bottom,rgba(0,0,0,.26) 0 1px,rgba(0,0,0,0) 1px 3px);
@@ -80,7 +70,7 @@ const HERO_CSS = `
 }
 
 @media (prefers-reduced-motion: reduce){
-  .lhz-still,.lhz-track,.lhz-rec,.lhz-caret,.lhz-bounce{animation:none!important}
+  .lhz-track,.lhz-rec,.lhz-caret,.lhz-bounce{animation:none!important}
 }
 `;
 
@@ -153,7 +143,6 @@ function Brackets() {
 
 export function HeroCamcorder() {
   const { t } = useLanguage();
-  const [still, setStill] = useState(0);
   const [videoOn, setVideoOn] = useState(false);
   const [date, setDate] = useState<string | null>(null);
 
@@ -173,11 +162,6 @@ export function HeroCamcorder() {
     stamp();
   }, []);
 
-  useEffect(() => {
-    const id = setInterval(() => setStill((i) => (i + 1) % HERO_STILLS.length), 6500);
-    return () => clearInterval(id);
-  }, []);
-
   const chip =
     `${MONO} flex items-center gap-2 rounded-sm bg-black/45 px-2.5 py-1.5 text-[0.8125rem] ` +
     "font-bold tracking-[0.14em] text-white uppercase backdrop-blur-[2px] md:text-[0.875rem]";
@@ -189,21 +173,9 @@ export function HeroCamcorder() {
     >
       <style>{HERO_CSS}</style>
 
-      {/* ---- Fond : stills de la marque, puis vidéo si elle existe ---- */}
+      {/* ---- Fond : still de la marque, puis vidéo si elle existe ---- */}
       <div aria-hidden className="absolute inset-0">
-        {HERO_STILLS.map((s, i) => (
-          <div key={s.src} className={"lhz-still absolute inset-0" + (i === still ? " on" : "")}>
-            <Image
-              src={s.src}
-              alt=""
-              fill
-              priority={i === 0}
-              sizes="100vw"
-              className="object-cover"
-              style={{ objectPosition: s.pos }}
-            />
-          </div>
-        ))}
+        <Image src={HERO_STILL} alt="" fill priority sizes="100vw" className="object-contain" />
 
         <video
           className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
