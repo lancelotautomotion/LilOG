@@ -168,8 +168,8 @@ export function FileExplorer() {
             className={`relative aspect-[3/4] overflow-hidden rounded-xl border-2 border-[#b8b4cc] lg:aspect-auto lg:h-full ${HARD_SHADOW}`}
           >
             <Image
-              src="/histoire/look-16.jpeg"
-              alt="Portant de vêtements de l'archive Lil'OG"
+              src="/5.png"
+              alt="Look Lil'OG porté, sac à main en avant"
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover"
@@ -177,7 +177,7 @@ export function FileExplorer() {
             <span
               className={`${MONO} absolute bottom-3 left-3 rounded-sm border border-black/30 bg-black/55 px-2 py-1 text-[0.8125rem] font-bold tracking-[0.08em] text-white uppercase backdrop-blur-[2px]`}
             >
-              ▶ VINTAGE_RACK.JPG
+              ▶ LOOK_05.PNG
             </span>
           </div>
         </div>
