@@ -30,7 +30,7 @@ const HERO_VIDEO = "/hero/camcorder.mp4";
 
 /** Stills de repli : photographie maison, pas de banque d'images. */
 const HERO_STILLS = [
-  { src: "/histoire/look-12.jpg", pos: "50% 42%" },
+  { src: "/Design sans titre.png", pos: "50% 42%" },
   { src: "/histoire/look-11.jpg", pos: "50% 30%" },
   { src: "/histoire/look-15.jpeg", pos: "50% 35%" },
 ];
