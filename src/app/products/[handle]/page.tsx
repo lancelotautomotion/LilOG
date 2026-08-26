@@ -85,7 +85,10 @@ export default async function ProductPage({
   const { handle: rawHandle } = await params;
   const handle = decodeURIComponent(rawHandle);
   const product = await getProductByHandle(handle).catch(() => null);
-  if (!product) notFound();
+  // Pièce vendue = fiche introuvable : chaque pièce est unique, une fois
+  // vendue elle ne redeviendra jamais disponible, la fiche ne sert donc plus
+  // à rien (ni pour le SEO, ni pour un lien resté dans la nature).
+  if (!product || !product.available) notFound();
 
   const isTops = product.collections.some((h) => TOPS_HANDLES.includes(h));
   const isBottoms = product.collections.some((h) => BOTTOMS_HANDLES.includes(h));

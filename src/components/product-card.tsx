@@ -25,8 +25,35 @@ export function ProductCard({ product, idx }: { product: Product; idx: number })
 
   const toggleFav = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (sold) return;
     toggle({ handle: product.handle, title: product.name, price: product.price, image: product.imageA, variantId: product.variantId });
   };
+
+  const mediaContent = (
+    <>
+      {product.tag && <span className={"card-tag" + (sold ? " sold" : "")}>{product.tag}</span>}
+      <button className={"card-fav" + (fav ? " on" : "")} aria-label="Save" onClick={toggleFav} disabled={sold}>
+        {fav ? <Icon.heart /> : <Icon.heartO />}
+      </button>
+      <SmartImg className="img-a" src={product.imageA} alt={product.name} tone={idx} />
+      <SmartImg className="img-b" src={product.imageB} alt={product.name} tone={idx + 1} />
+      <button className={"quick-add" + (added ? " added" : "")} onClick={add} disabled={sold}>
+        {sold ? "Sold out" : added ? "Added ✓" : "Quick add"}
+      </button>
+    </>
+  );
+
+  const infoContent = (
+    <>
+      <div className="card-text">
+        <div className="card-name">{product.name}</div>
+        {product.meta && <div className="card-meta">{product.meta}</div>}
+      </div>
+      <div className="card-price">
+        {product.was && <s>{product.was}€</s>}{product.price}€
+      </div>
+    </>
+  );
 
   return (
     <article className="card">
@@ -35,26 +62,22 @@ export function ProductCard({ product, idx }: { product: Product; idx: number })
         <span className="card-w95-title">{product.name}</span>
         <div className="card-w95-dots"><span /><span /><span /></div>
       </div>
-      <Link href={`/products/${product.handle}`} className="card-media">
-        {product.tag && <span className={"card-tag" + (sold ? " sold" : "")}>{product.tag}</span>}
-        <button className={"card-fav" + (fav ? " on" : "")} aria-label="Save" onClick={toggleFav}>
-          {fav ? <Icon.heart /> : <Icon.heartO />}
-        </button>
-        <SmartImg className="img-a" src={product.imageA} alt={product.name} tone={idx} />
-        <SmartImg className="img-b" src={product.imageB} alt={product.name} tone={idx + 1} />
-        <button className={"quick-add" + (added ? " added" : "")} onClick={add} disabled={sold}>
-          {sold ? "Sold out" : added ? "Added ✓" : "Quick add"}
-        </button>
-      </Link>
-      <Link href={`/products/${product.handle}`} className="card-info">
-        <div className="card-text">
-          <div className="card-name">{product.name}</div>
-          {product.meta && <div className="card-meta">{product.meta}</div>}
-        </div>
-        <div className="card-price">
-          {product.was && <s>{product.was}€</s>}{product.price}€
-        </div>
-      </Link>
+      {/* Vendue = fiche introuvable (404) : inutile de faire pointer la carte
+          vers un lien mort. */}
+      {sold ? (
+        <div className="card-media">{mediaContent}</div>
+      ) : (
+        <Link href={`/products/${product.handle}`} className="card-media">
+          {mediaContent}
+        </Link>
+      )}
+      {sold ? (
+        <div className="card-info">{infoContent}</div>
+      ) : (
+        <Link href={`/products/${product.handle}`} className="card-info">
+          {infoContent}
+        </Link>
+      )}
     </article>
   );
 }

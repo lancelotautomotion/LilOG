@@ -128,6 +128,7 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
 
   const toggleFav = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (sold) return;
     toggle({
       handle: product.handle,
       title: product.name,
@@ -139,17 +140,24 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
 
   /* ---- Briques réutilisées par les deux présentations ---- */
 
-  const media = (
-    <Link
-      href={href}
-      className={`lde-media group/media relative block shrink-0 overflow-hidden bg-[#e7e5f1] aspect-[3/4] w-full ${BEVEL_IN}`}
-    >
+  const mediaClassName = `lde-media group/media relative block shrink-0 overflow-hidden bg-[#e7e5f1] aspect-[3/4] w-full ${BEVEL_IN}`;
+  const mediaContent = (
+    <>
       <SmartImg className="lde-img lde-img-a" src={product.imageA} alt={product.name} tone={idx} />
       <SmartImg className="lde-img lde-img-b" src={product.imageB} alt={product.name} tone={idx + 1} />
 
       {badge && <StickerChip sticker={badge} className="top-1.5 left-1.5 -rotate-3" />}
       {pick && <StickerChip sticker={pick} className="right-1.5 bottom-1.5 rotate-2" />}
       {sold && <span className="pointer-events-none absolute inset-0 z-10 bg-white/45" />}
+    </>
+  );
+  // Vendue = fiche introuvable (404) : inutile de faire pointer la fenêtre
+  // vers un lien mort, on rend simplement le média/titre non cliquables.
+  const media = sold ? (
+    <div className={mediaClassName}>{mediaContent}</div>
+  ) : (
+    <Link href={href} className={mediaClassName}>
+      {mediaContent}
     </Link>
   );
 
@@ -198,9 +206,10 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
     <button
       type="button"
       onClick={toggleFav}
-      aria-label={fav ? "Retirer de la wishlist" : "Ajouter à la wishlist"}
+      disabled={sold}
+      aria-label={sold ? "Épuisé" : fav ? "Retirer de la wishlist" : "Ajouter à la wishlist"}
       aria-pressed={fav}
-      className={`${CHIP_H} grid w-[26px] shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS} ${
+      className={`${CHIP_H} grid w-[26px] shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} transition disabled:cursor-not-allowed disabled:opacity-45 ${sold ? "" : `hover:brightness-105 ${PLASTIC_PRESS}`} ${PLASTIC} ${
         fav ? "text-[#d3016d]" : "text-[#6B7280]"
       }`}
     >
@@ -230,12 +239,21 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
 
       <div className="p-1.5">{media}</div>
 
-      <Link href={href} className="min-w-0 px-2.5 pb-1">
-        <h3 className={`${MONO} line-clamp-2 text-[1.125rem] leading-snug font-bold text-[#1E2430]`}>{product.name}</h3>
-        <p className={`${MONO} mt-0.5 truncate text-[0.8125rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
-          {product.productType || product.meta || "Pièce unique"}
-        </p>
-      </Link>
+      {sold ? (
+        <div className="min-w-0 px-2.5 pb-1">
+          <h3 className={`${MONO} line-clamp-2 text-[1.125rem] leading-snug font-bold text-[#1E2430]`}>{product.name}</h3>
+          <p className={`${MONO} mt-0.5 truncate text-[0.8125rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
+            {product.productType || product.meta || "Pièce unique"}
+          </p>
+        </div>
+      ) : (
+        <Link href={href} className="min-w-0 px-2.5 pb-1">
+          <h3 className={`${MONO} line-clamp-2 text-[1.125rem] leading-snug font-bold text-[#1E2430]`}>{product.name}</h3>
+          <p className={`${MONO} mt-0.5 truncate text-[0.8125rem] tracking-[0.06em] text-[#6B7280] uppercase`}>
+            {product.productType || product.meta || "Pièce unique"}
+          </p>
+        </Link>
+      )}
 
       {/* Barre d'action : une seule rangée, jamais de retour à la ligne.
           Le panier et le cœur (`shrink-0`) gardent toujours leur taille
