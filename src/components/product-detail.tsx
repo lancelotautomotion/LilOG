@@ -306,16 +306,16 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
 
   const toggleFav = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (sold) return;
     toggle({ handle: product.handle, title: product.name, price: product.price, image: product.imageA, variantId: product.variantId });
   };
 
   const badge = sold ? "× SOLD" : product.tag === "1 OF 1" ? "💎 1/1" : product.tag === "NEW" ? "🔥 NEW" : null;
+  const cardClassName =
+    "group block overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-white shadow-[5px_5px_0_rgba(24,12,58,0.35)] transition hover:-translate-y-1 hover:shadow-[7px_9px_0_rgba(24,12,58,0.42)]";
 
-  return (
-    <Link
-      href={`/products/${product.handle}`}
-      className="group block overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-white shadow-[5px_5px_0_rgba(24,12,58,0.35)] transition hover:-translate-y-1 hover:shadow-[7px_9px_0_rgba(24,12,58,0.42)]"
-    >
+  const cardContent = (
+    <>
       {/* Photo posée à même la carte, sur un carré blanc plein, l'encadrement
           précédent (padding + fond lavande + biseau) creusait un cadre
           visible tout autour de chaque photo. */}
@@ -381,9 +381,10 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
           <button
             type="button"
             onClick={toggleFav}
-            aria-label={fav ? "Retirer de la wishlist" : "Ajouter à la wishlist"}
+            disabled={sold}
+            aria-label={sold ? "Épuisé" : fav ? "Retirer de la wishlist" : "Ajouter à la wishlist"}
             aria-pressed={fav}
-            className={`flex w-9 shrink-0 items-center justify-center rounded-md border-b-[3px] transition active:translate-y-[3px] active:border-b-0 active:shadow-none ${
+            className={`flex w-9 shrink-0 items-center justify-center rounded-md border-b-[3px] transition active:translate-y-[3px] active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 ${
               fav ? "border-[#7a0a52] bg-gradient-to-b from-[#ff9ee4] to-[#d3016d] text-white" : `border-[#8b87a3] ${PLASTIC_FACE} text-[#6B7280]`
             }`}
             style={{ boxShadow: "0 3px 0 rgba(0,0,0,0.18)" }}
@@ -392,6 +393,16 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
           </button>
         </div>
       </div>
+    </>
+  );
+
+  // Vendue = fiche introuvable (404) : inutile de faire pointer la suggestion
+  // vers un lien mort, on rend simplement la carte non cliquable.
+  return sold ? (
+    <div className={cardClassName}>{cardContent}</div>
+  ) : (
+    <Link href={`/products/${product.handle}`} className={cardClassName}>
+      {cardContent}
     </Link>
   );
 }

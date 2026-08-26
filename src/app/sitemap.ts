@@ -7,7 +7,7 @@ const SITE_URL = "https://lilog.shop";
 interface ProductsResponse {
   products: {
     pageInfo: { hasNextPage: boolean; endCursor: string | null };
-    edges: Array<{ node: { handle: string; title: string } }>;
+    edges: Array<{ node: { handle: string; title: string; availableForSale: boolean } }>;
   };
 }
 
@@ -31,6 +31,9 @@ async function getAllProducts(): Promise<Array<{ handle: string; title: string }
 
     const edges = data.products.edges;
     for (const edge of edges) {
+      // Pièce vendue = fiche 404 (voir /products/[handle]) : l'exclure du
+      // sitemap évite de soumettre à Google une URL qui n'existe plus.
+      if (!edge.node.availableForSale) continue;
       products.push({
         handle: edge.node.handle,
         title: edge.node.title,
