@@ -722,8 +722,14 @@ textarea {
   transition: opacity 0.6s ease, transform 1.4s ease;
 }
 .card-media .img-b { opacity: 0; }
-.card:hover .img-a { opacity: 0; }
-.card:hover .img-b { opacity: 1; transform: scale(1.05); }
+/* Bascule A/B au survol réservée aux pointeurs fins (souris) : sur tactile,
+   `:hover` reste « collé » après un tap tant qu'on ne touche pas ailleurs,
+   ce qui fige la fondu enchaîné à mi-parcours (l'aperçu affiche alors un
+   mélange des deux photos, plus visible là où elles diffèrent le plus). */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .img-a { opacity: 0; }
+  .card:hover .img-b { opacity: 1; transform: scale(1.05); }
+}
 .card-tag {
   position: absolute; top: 12px; left: 12px;
   z-index: 2;

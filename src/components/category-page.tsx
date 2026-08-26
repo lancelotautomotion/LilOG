@@ -59,9 +59,16 @@ const EXPLORER_CSS = `
 .lde-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   transition:opacity 420ms ease, transform 560ms ease, filter 320ms ease}
 .lde-img-b{opacity:0}
-.lde-media:hover .lde-img-a{opacity:0}
-.lde-media:hover .lde-img-b{opacity:1}
-.lde-media:hover .lde-img{transform:scale(1.06);filter:contrast(1.18) saturate(1.06)}
+/* Bascule A/B réservée aux pointeurs fins (souris) : sur tactile, :hover
+   reste « collé » après un tap tant qu'on ne touche pas ailleurs, ce qui
+   fige le fondu enchaîné à mi-parcours (les deux photos apparaissent alors
+   mélangées, surtout là où elles diffèrent le plus, ex. un plan large vs
+   un gros plan). */
+@media (hover: hover) and (pointer: fine) {
+  .lde-media:hover .lde-img-a{opacity:0}
+  .lde-media:hover .lde-img-b{opacity:1}
+  .lde-media:hover .lde-img{transform:scale(1.06);filter:contrast(1.18) saturate(1.06)}
+}
 
 /* ---- La fenêtre-fiche se soulève ---- */
 .lde-card{transition:transform 180ms ease, box-shadow 180ms ease}
