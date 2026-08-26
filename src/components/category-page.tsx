@@ -244,6 +244,13 @@ export function CategoryPage({
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
 
+    // Vendues en fin de liste, quel que soit le tri choisi : elles restent
+    // visibles (badge SOLD) mais ne doivent pas squatter le haut de page.
+    // Array.prototype.sort est stable, l'ordre interne à chaque groupe
+    // (par défaut ou par prix) est donc conservé.
+    const isSold = (p: Product) => p.tag === "SOLD" || !p.variantId;
+    list = [...list].sort((a, b) => Number(isSold(a)) - Number(isSold(b)));
+
     return list;
   }, [products, sub, sort, priceMin, priceMax, activeColors, activeTypes, activeSizes, activeMaterials]);
 
