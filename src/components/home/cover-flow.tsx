@@ -287,8 +287,11 @@ export function CoverFlow({ products }: { products: Product[] }) {
 
   return (
     /* Padding haut ET bas : premier module de la page, il porte seul le
-       retrait d'après le hero (les suivants n'ont qu'un padding bas). */
-    <section id="highlights" className="px-4 py-[clamp(48px,8vw,96px)] sm:px-6">
+       retrait d'après le hero (les suivants n'ont qu'un padding bas).
+       `min(8vw,5svh)` : sur un écran large mais bas, c'est la hauteur qui
+       doit céder, pas seulement la largeur — sinon ce padding à lui seul
+       peut suffire à faire déborder le lecteur d'un écran court. */
+    <section id="highlights" className="px-4 py-[clamp(24px,min(8vw,5svh),96px)] sm:px-6">
       <div className="mx-auto w-full max-w-[1200px]">
         <style>{COVER_CSS}</style>
 
@@ -321,7 +324,13 @@ export function CoverFlow({ products }: { products: Product[] }) {
               style={{ background: "radial-gradient(ellipse at center, transparent 48%, rgba(0,0,0,0.8) 100%)" }}
             />
 
-            <div className="relative h-[clamp(300px,46vw,480px)] w-full">
+            {/* `min(46vw,48svh)` : la scène ne se dimensionne plus que sur
+                la largeur de l'écran, sinon un écran large mais bas (un
+                laptop en 16:9 par exemple) la fait déborder verticalement.
+                48svh laisse la marge nécessaire aux pochettes voisines et
+                au reflet sous la pochette active, dimensionnés pareil
+                ci-dessous. */}
+            <div className="relative h-[clamp(220px,min(46vw,48svh),480px)] w-full">
               {products.map((p, i) => {
                 const offset = loopOffset(i, active, products.length);
                 const isActive = offset === 0;
@@ -329,7 +338,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
                 // Habillage commun aux deux formes de pochette : seul l'élément
                 // change (lien ou bouton), jamais l'aspect.
                 const skin = {
-                  className: `lhh-slide absolute top-1/2 left-1/2 aspect-[3/4] w-[clamp(190px,24vw,300px)] overflow-hidden rounded-lg border-2 ${
+                  className: `lhh-slide absolute top-1/2 left-1/2 aspect-[3/4] w-[clamp(150px,min(24vw,30svh),300px)] overflow-hidden rounded-lg border-2 ${
                     isActive ? "lhh-active border-white" : "border-[#4a4560]"
                   } bg-[#0d0d15] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`,
                   style: {
