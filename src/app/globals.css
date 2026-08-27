@@ -6232,6 +6232,12 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-modpick-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
 .dm-modpick-boot {
   margin: 0;
+  background: var(--dm-well);
+  border-top: 3px solid var(--dm-lo);
+  border-left: 3px solid var(--dm-lo);
+  border-right: 3px solid var(--dm-hi);
+  border-bottom: 3px solid var(--dm-hi);
+  padding: 10px 12px;
   font-family: var(--mono);
   font-size: 0.875rem;
   line-height: 1.5;
