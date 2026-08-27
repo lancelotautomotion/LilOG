@@ -426,6 +426,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
 
   const badge = product.tag === "1 OF 1" ? "💎 1 OF 1" : product.tag === "NEW" ? "🔥 NEW IN" : null;
   const size = variant?.title ?? product.size ?? "UNIQUE";
+  /* La case affiche déjà « ÉTAT » comme libellé : le mot ne doit pas se
+     répéter dans la valeur (« Très bon état » → « Très bon »). */
+  const etat = product.etat?.replace(/\bétat\b/gi, "").replace(/\s{2,}/g, " ").trim() || "Non renseigné";
   /* Shopify renvoie des identifiants de collection (« manteaux-et-vestes »),
      alors que les traductions sont rangées par clé de rayon (« outerwear ») :
      sans ce passage par CATEGORIES, la pastille RAYON affichait le handle brut,
@@ -634,7 +637,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   {/* Fiche de caractéristiques RPG */}
                   <div className="flex min-w-[360px] flex-1 flex-wrap items-stretch gap-2">
                     <StatCell icon="📏" label="Taille" value={size} />
-                    <StatCell icon="💎" label="État" value={product.etat ?? "Non renseigné"} />
+                    <StatCell icon="💎" label="État" value={etat} />
                     {dept && <StatCell icon="🗂️" label="Rayon" value={dept} />}
                   </div>
                 </div>
