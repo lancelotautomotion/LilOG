@@ -135,7 +135,7 @@ function StatCell({ icon, label, value }: { icon: string; label: string; value: 
         <span className={`${MONO} block truncate text-[0.8125rem] font-bold tracking-[0.1em] text-[#6B7280] uppercase`}>
           {label}
         </span>
-        <span className={`${MONO} block truncate text-[0.9375rem] font-bold text-[#1E2430] uppercase`}>{value}</span>
+        <span className={`${MONO} block text-[0.9375rem] leading-tight font-bold text-[#1E2430] uppercase`}>{value}</span>
       </span>
     </div>
   );
