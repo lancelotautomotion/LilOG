@@ -427,8 +427,13 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
   const badge = product.tag === "1 OF 1" ? "💎 1 OF 1" : product.tag === "NEW" ? "🔥 NEW IN" : null;
   const size = variant?.title ?? product.size ?? "UNIQUE";
   /* La case affiche déjà « ÉTAT » comme libellé : le mot ne doit pas se
-     répéter dans la valeur (« Très bon état » → « Très bon »). */
-  const etat = product.etat?.replace(/\bétat\b/gi, "").replace(/\s{2,}/g, " ").trim() || "Non renseigné";
+     répéter dans la valeur (« Très bon état » → « Très bon »).
+     `\b` ne reconnaît que [A-Za-z0-9_] comme caractère de mot : sans le
+     flag `u` et des frontières en `\p{L}`, il ne voit aucune frontière
+     avant un « é » et ne matche jamais. */
+  const etat =
+    product.etat?.replace(/(?<![\p{L}\p{N}])état(?![\p{L}\p{N}])/giu, "").replace(/\s{2,}/g, " ").trim() ||
+    "Non renseigné";
   /* Shopify renvoie des identifiants de collection (« manteaux-et-vestes »),
      alors que les traductions sont rangées par clé de rayon (« outerwear ») :
      sans ce passage par CATEGORIES, la pastille RAYON affichait le handle brut,
