@@ -416,14 +416,13 @@ export function Footer() {
   const [openSection, setOpenSection] = useState<"shop" | "support" | null>(null);
 
   return (
-    <footer className="liltb relative z-30 px-[clamp(10px,1.6vw,22px)] pt-5 pb-4 md:pt-[clamp(26px,4vw,48px)] md:pb-[clamp(20px,3vw,36px)]">
+    <footer className="liltb relative z-30 px-4 pt-5 pb-4 sm:px-6 md:pt-[clamp(26px,4vw,48px)] md:pb-[clamp(20px,3vw,36px)]">
       <style>{TASKBAR_CSS}</style>
 
       {/* Le conteneur relatif porte les pastilles : elles débordent de la
-          fenêtre. Plus large que les fenêtres de contenu (1180 px) : une
-          barre des tâches court d'un bord à l'autre de l'écran. La borne
-          haute n'existe que pour les écrans très larges. */}
-      <div className="relative mx-auto max-w-[2200px]">
+          fenêtre. Même largeur (1296px) et même marge aux bords que les
+          fenêtres de contenu du reste du site, ARCADE_SLOT compris. */}
+      <div className="relative mx-auto max-w-[1296px]">
 
         {/* ---- Pastilles décoratives (mêmes bijoux que /contact) ---- */}
         <span aria-hidden className="pointer-events-none absolute inset-0 z-20">
