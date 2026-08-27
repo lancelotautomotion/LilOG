@@ -70,14 +70,14 @@ export function CdRom({
 
   return (
     <div
-      /* Fond blanc plein, pas translucide : à partir de `lg`, le cadre
-         grandit au-delà de l'image (voir plus haut) et ce fond devient la
-         marge visible au-dessus et en dessous — un blanc/40 y prenait la
-         teinte du papier millimétré derrière et lisait comme du gris. */
-      className={`relative aspect-[1254/1035] w-full max-w-[420px] shrink-0 overflow-hidden rounded-[8px] bg-white p-[4%]${
+      /* Plus de matte blanc derrière l'image : le boîtier repose à même le
+         gris système de la fenêtre (Setup Wizard Windows 95), l'ombre
+         portée (`drop-shadow-xl`, posée sur l'image ci-dessous puisqu'elle
+         doit suivre le contour du boîtier, pas le cadre rectangulaire) lui
+         donne son relief. */
+      className={`relative aspect-[1254/1035] w-full max-w-[420px] shrink-0${
         stretch ? " lg:aspect-auto lg:min-h-[200px] lg:flex-1" : ""
       }`}
-      style={{ boxShadow: "8px 8px 0 rgba(24,12,58,0.38)" }}
     >
       <style>{CD_CSS}</style>
 
@@ -93,7 +93,7 @@ export function CdRom({
         alt="Carte cadeau Lil'OG : CD-ROM pastel dans son boîtier, numéro de série gravé au centre du disque."
         fill
         sizes="(min-width: 1024px) 400px, 90vw"
-        className="relative object-contain"
+        className="relative object-contain drop-shadow-xl"
         priority={priority}
       />
 
