@@ -82,6 +82,16 @@ function parseDescription(html: string): {
   };
 }
 
+/* La case ÉTAT (ITEM_STATS.SYS) et la pastille des cartes suggérées portent
+   déjà l'info par leur icône/libellé : le mot ne doit pas se répéter dans la
+   valeur (« Très bon état » → « Très bon »).
+   `\b` ne reconnaît que [A-Za-z0-9_] comme caractère de mot : sans le flag
+   `u` et des frontières en `\p{L}`, il ne voit aucune frontière avant un
+   « é » et ne matche jamais. */
+function stripEtatWord(raw: string): string {
+  return raw.replace(/(?<![\p{L}\p{N}])état(?![\p{L}\p{N}])/giu, "").replace(/\s{2,}/g, " ").trim();
+}
+
 const PDP_CSS = `
 @keyframes lpi-blink{0%,49%{opacity:1}50%,100%{opacity:.25}}
 .lpi-blink{animation:lpi-blink 1.15s step-end infinite}
@@ -342,13 +352,15 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
           {product.productType || product.meta || "Pièce unique"}
         </p>
 
-        {/* Prix et taille côte à côte : les suggestions sont choisies dans la
-            taille de la pièce regardée, encore faut-il pouvoir le vérifier
-            sans ouvrir la fiche. Pas de pastille pour les pièces sans taille
-            (sacs, bijoux, accessoires), « TU » n'apprendrait rien. */}
-        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+        {/* Prix, taille et état côte à côte, toujours sur une seule ligne :
+            avec `flex-wrap`, une pastille État longue passait seule à la
+            ligne et poussait le bouton d'achat plus bas sur cette carte,
+            décalant sa hauteur par rapport aux autres. Prix et taille
+            restent en entier (`shrink-0`), seule la pastille État peut se
+            tronquer si la carte est trop étroite pour tout afficher. */}
+        <div className="mt-2 flex flex-nowrap items-center gap-1.5">
           {/* Mini écran LED : même famille que PRICE_TAG.SYS au-dessus. */}
-          <div className={`lpi-crt relative overflow-hidden rounded-md border-2 border-[#2b2b3d] bg-black px-2 py-1 ${BEVEL_IN}`}>
+          <div className={`lpi-crt relative shrink-0 overflow-hidden rounded-md border-2 border-[#2b2b3d] bg-black px-2 py-1 ${BEVEL_IN}`}>
             <span className="relative z-[2] flex items-baseline gap-1.5">
               <span className={`${LCD} text-[1.25rem] leading-none tracking-[0.02em]`} style={{ color: NEON, textShadow: `0 0 8px ${NEON}b3` }}>
                 {product.price}€
@@ -359,16 +371,16 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
 
           {product.sizes.length > 0 && (
             <span
-              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1.5 text-[0.8125rem] font-bold tracking-[0.04em] text-[#3b3550] uppercase ${PLASTIC}`}
+              className={`${MONO} shrink-0 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1.5 text-[0.8125rem] font-bold tracking-[0.04em] text-[#3b3550] uppercase ${PLASTIC}`}
             >
               📏 {product.sizes.join(" / ")}
             </span>
           )}
           {product.etat && (
             <span
-              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1.5 text-[0.8125rem] font-bold tracking-[0.04em] text-[#3b3550] uppercase ${PLASTIC}`}
+              className={`${MONO} min-w-0 truncate rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1.5 text-[0.8125rem] font-bold tracking-[0.04em] text-[#3b3550] uppercase ${PLASTIC}`}
             >
-              💎 {product.etat}
+              💎 {stripEtatWord(product.etat) || product.etat}
             </span>
           )}
         </div>
@@ -433,14 +445,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
 
   const badge = product.tag === "1 OF 1" ? "💎 1 OF 1" : product.tag === "NEW" ? "🔥 NEW IN" : null;
   const size = variant?.title ?? product.size ?? "UNIQUE";
-  /* La case affiche déjà « ÉTAT » comme libellé : le mot ne doit pas se
-     répéter dans la valeur (« Très bon état » → « Très bon »).
-     `\b` ne reconnaît que [A-Za-z0-9_] comme caractère de mot : sans le
-     flag `u` et des frontières en `\p{L}`, il ne voit aucune frontière
-     avant un « é » et ne matche jamais. */
-  const etat =
-    product.etat?.replace(/(?<![\p{L}\p{N}])état(?![\p{L}\p{N}])/giu, "").replace(/\s{2,}/g, " ").trim() ||
-    "Non renseigné";
+  const etat = (product.etat && stripEtatWord(product.etat)) || "Non renseigné";
   /* Shopify renvoie des identifiants de collection (« manteaux-et-vestes »),
      alors que les traductions sont rangées par clé de rayon (« outerwear ») :
      sans ce passage par CATEGORIES, la pastille RAYON affichait le handle brut,
