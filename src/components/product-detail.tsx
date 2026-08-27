@@ -364,6 +364,13 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
               📏 {product.sizes.join(" / ")}
             </span>
           )}
+          {product.etat && (
+            <span
+              className={`${MONO} rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1.5 text-[0.8125rem] font-bold tracking-[0.04em] text-[#3b3550] uppercase ${PLASTIC}`}
+            >
+              💎 {product.etat}
+            </span>
+          )}
         </div>
 
         <div className="mt-2.5 flex items-stretch gap-1.5">

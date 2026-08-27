@@ -60,6 +60,9 @@ export const FEATURED_PRODUCTS_QUERY = /* GraphQL */ `
               currencyCode
             }
           }
+          etat: metafield(namespace: "custom", key: "etat") {
+            value
+          }
           variants(first: 1) {
             edges {
               node {
@@ -501,6 +504,9 @@ export const COLLECTION_BY_HANDLE_QUERY = /* GraphQL */ `
             materialMeta: metafield(namespace: "shopify", key: "fabric") { ${RICH_METAFIELD_FIELDS} }
             materialMeta2: metafield(namespace: "custom", key: "matiere") { ${RICH_METAFIELD_FIELDS} }
             materialMeta3: metafield(namespace: "custom", key: "composition") { ${RICH_METAFIELD_FIELDS} }
+            etat: metafield(namespace: "custom", key: "etat") {
+              value
+            }
             variants(first: 1) {
               edges {
                 node {

@@ -194,6 +194,7 @@ function mapProduct(node: ShopifyProductNode): Product {
     colors: extractColorValues(node),
     sizes: extractSizeValues(node),
     materials: extractMaterialValues(node),
+    etat: node.etat?.value ?? null,
     variantId: variant?.id ?? null,
   };
 }

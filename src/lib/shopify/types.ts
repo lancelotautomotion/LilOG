@@ -41,6 +41,7 @@ export interface ShopifyProductNode {
   materialMeta?: RichMetafield | null;
   materialMeta2?: RichMetafield | null;
   materialMeta3?: RichMetafield | null;
+  etat?: { value: string } | null;
   featuredImage: ShopifyImage | null;
   images: { edges: { node: ShopifyImage }[] };
   priceRange: { minVariantPrice: ShopifyMoney };
@@ -126,6 +127,7 @@ export interface Product {
   sizes: string[];
   /** Matières (« Coton », « Polyester »…), alimente le filtre du catalogue. */
   materials: string[];
+  etat: string | null;
   imageA: string;
   imageB: string;
   variantId: string | null;
