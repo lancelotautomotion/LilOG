@@ -50,7 +50,7 @@ import type { Product, ProductDetail as ProductDetailType } from "@/lib/shopify/
 const INTERNAL_TAGS = new Set(["new", "one-of-one", "1-of-1"]);
 
 const DESC_SECTIONS: { re: RegExp; label: string; accordion: boolean }[] = [
-  { re: /les détails de la pépite/i,       label: "Les détails de la pépite", accordion: false },
+  { re: /les détails de la pépite/i,       label: "Les détails de la pépite", accordion: true  },
   { re: /nos conseils de style/i,          label: "Nos conseils de style",     accordion: true  },
   { re: /info(?:s)?\s+mannequin/i,         label: "Info Mannequin & Fit",      accordion: true  },
   { re: /à propos de notre sélection/i,    label: "À propos de notre sélection", accordion: true },
@@ -145,7 +145,7 @@ function StatCell({ icon, label, value }: { icon: string; label: string; value: 
    SYSTEM_LOGS : fichiers système en menus déroulants
    ------------------------------------------------------------
    Un seul fichier ouvert à la fois : cliquer sur un en-tête ferme
-   le précédent. Le premier (DESCRIPTION_&_MOOD.TXT) est ouvert au
+   le précédent. Le premier (DETAILS_&_PEPITE.SYS) est ouvert au
    chargement.
 
    Ce bloc était en onglets, au-dessus d'une fenêtre de hauteur
@@ -449,13 +449,23 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
   };
 
   const { sections } = product.descriptionHtml ? parseDescription(product.descriptionHtml) : { sections: [] };
+  const detailsHtml = sections.find((s) => s.label === "Les détails de la pépite")?.content ?? "";
   const moodHtml = sections
-    .filter((s) => s.label !== "Info Mannequin & Fit")
+    .filter((s) => s.label !== "Info Mannequin & Fit" && s.label !== "Les détails de la pépite")
     .map((s) => s.content)
     .join("");
   const fitHtml = sections.find((s) => s.label === "Info Mannequin & Fit")?.content ?? "";
 
   const logTabs = [
+    {
+      file: "DETAILS_&_PEPITE.SYS",
+      icon: "📂",
+      body: detailsHtml ? (
+        <div dangerouslySetInnerHTML={{ __html: detailsHtml }} />
+      ) : (
+        <p>Aucun détail renseigné pour cette pièce.</p>
+      ),
+    },
     {
       file: "DESCRIPTION_&_MOOD.TXT",
       icon: "📂",
