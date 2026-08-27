@@ -161,7 +161,7 @@ function SystemLogs({
 }: {
   tabs: { file: string; icon: string; body: React.ReactNode }[];
 }) {
-  const [open, setOpen] = useState(0);
+  const [open, setOpen] = useState<number | null>(0);
 
   /* Le texte est plafonné en hauteur : reste à le dire. L'ascenseur ne
      suffit pas, Chrome le dessine en flottant, invisible tant qu'on ne
@@ -219,7 +219,7 @@ function SystemLogs({
                      texte long à un texte court laisserait le [ ▼ SUITE ]
                      affiché le temps que la mesure se refasse. */
                   setMore(false);
-                  setOpen(i);
+                  setOpen(isOpen ? null : i);
                 }}
                 aria-expanded={isOpen}
                 aria-controls={panelId}
