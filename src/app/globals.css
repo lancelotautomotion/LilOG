@@ -81,10 +81,11 @@
   /* Accent : LDL pink */
   --accent: var(--ldl-accent);
 
-  /* Fonts */
-  --serif: var(--font-serif), ui-monospace, monospace;    /* IBM Plex Mono, titles */
-  --sans: var(--font-sans), system-ui, sans-serif;        /* Montserrat, body */
-  --mono: var(--font-mono), ui-monospace, monospace;      /* Space Mono, labels */
+  /* Fonts — IBM Plex Mono partout (titres, corps, labels), VT323 pour les
+     écrans LCD, Grenze Gotisch pour les accents éditoriaux. */
+  --serif: var(--font-serif), ui-monospace, monospace;    /* IBM Plex Mono, titres */
+  --sans: var(--font-serif), ui-monospace, monospace;     /* IBM Plex Mono, corps */
+  --mono: var(--font-serif), ui-monospace, monospace;     /* IBM Plex Mono, labels */
   --gothic: var(--font-gothic), var(--serif);             /* Grenze Gotisch, accents éditoriaux */
 
   --ui-track: 0.18em;
@@ -115,8 +116,8 @@
   --color-ldl-secondary: var(--ldl-secondary);
   --color-ldl-accent: var(--ldl-accent);
   --font-serif: var(--font-serif), monospace;
-  --font-sans: var(--font-sans), sans-serif;
-  --font-mono: var(--font-mono), monospace;
+  --font-sans: var(--font-serif), sans-serif;
+  --font-mono: var(--font-serif), monospace;
 }
 
 * { box-sizing: border-box; }
@@ -1314,7 +1315,7 @@ textarea {
   margin-bottom: clamp(28px, 4vw, 48px);
 }
 .category-title {
-  font-family: var(--font-script), cursive;
+  font-family: var(--serif);
   font-weight: 400;
   font-size: clamp(3.5rem, 8vw, 6.5rem);
   line-height: 1;
@@ -4740,7 +4741,7 @@ html, body {
 .filter-price-input:focus { border-color: var(--ldl-primary) !important; }
 .category-header h1,
 .category-title {
-  font-family: var(--font-script), "Great Vibes", cursive !important;
+  font-family: var(--serif) !important;
   font-weight: 400 !important;
   font-size: clamp(3.5rem, 8vw, 6.5rem) !important;
   text-transform: none !important;
@@ -5347,7 +5348,7 @@ html, body {
 .burnbook-remove:hover { background: #fff; transform: scale(1.12); }
 .burnbook-doodle {
   position: absolute;
-  font-family: var(--font-hand), cursive;
+  font-family: var(--serif);
   font-weight: 700;
   color: #b026ff;
   z-index: 14;

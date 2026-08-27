@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Montserrat, Space_Mono, Great_Vibes, VT323, Caveat } from "next/font/google";
+import { IBM_Plex_Mono, VT323 } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -14,24 +14,6 @@ const serif = IBM_Plex_Mono({
   variable: "--font-serif",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-});
-
-const sans = Montserrat({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const script = Great_Vibes({
-  variable: "--font-script",
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-const mono = Space_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "700"],
 });
 
 const lcd = VT323({
@@ -54,12 +36,6 @@ const gothic = localFont({
   variable: "--font-gothic",
   weight: "500 700",
   display: "swap",
-});
-
-const hand = Caveat({
-  variable: "--font-hand",
-  subsets: ["latin"],
-  weight: ["500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -117,7 +93,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const initialCart = await getCartAction().catch(() => null);
 
   return (
-    <html lang="fr" className={`${serif.variable} ${sans.variable} ${mono.variable} ${script.variable} ${lcd.variable} ${gothic.variable} ${hand.variable}`}>
+    <html lang="fr" className={`${serif.variable} ${lcd.variable} ${gothic.variable}`}>
       <body className="grain">
         {gaId && (
           <Script id="consent-default" strategy="beforeInteractive">

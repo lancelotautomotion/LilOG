@@ -179,7 +179,7 @@ export function ReadmeWindow() {
               />
             </div>
 
-            <p className="mt-2 text-center text-[1rem] leading-none text-[#3b3550] font-[family-name:var(--font-hand)]">
+            <p className="mt-2 text-center text-[1rem] leading-none text-[#3b3550] font-[family-name:var(--mono)]">
               Lil&apos;OG archive · vol. 001
             </p>
           </div>
