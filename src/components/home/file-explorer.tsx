@@ -160,11 +160,14 @@ export function FileExplorer() {
           `align-items: stretch` d'un `flex` qui respecte une hauteur
           explicite du conteneur.
 
-          `max-w-[1400px] mx-auto` : ce module n'avait aucun plafond de
-          largeur, contrairement aux autres fenêtres du site — sur un grand
-          écran, la marge aux bords rétrécissait au lieu de rester celle
-          d'ARCADE_SLOT et du reste de l'accueil. */}
-      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-4 px-4 sm:gap-6 sm:px-6 lg:h-[calc(100svh-104px)] lg:flex-row lg:items-stretch">
+          `max-w-[1296px] mx-auto` : ce module n'avait aucun plafond de
+          largeur — sur un grand écran, la marge aux bords rétrécissait au
+          lieu de rester celle d'ARCADE_SLOT et du reste de l'accueil.
+          1296px, pas 1400 : c'est la largeur réellement occupée par la
+          grille d'ARCADE_SLOT une fois ses deux colonnes à leur maximum,
+          pas celle (plus large) de son conteneur — voir le commentaire dans
+          arcade-slot.tsx. */}
+      <div className="mx-auto flex w-full max-w-[1296px] flex-col gap-4 px-4 sm:gap-6 sm:px-6 lg:h-[calc(100svh-104px)] lg:flex-row lg:items-stretch">
         {/* Même retrait vertical que la colonne fenêtre : sans lui, l'image
             remplissait toute la cellule de grille pendant que la fenêtre,
             elle, était rentrée de son `py`, et dépassait donc en haut comme

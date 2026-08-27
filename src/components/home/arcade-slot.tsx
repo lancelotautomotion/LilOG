@@ -111,11 +111,15 @@ export function ArcadeSlot() {
        Un `py` ici ajouterait son padding haut à celui du bloc précédent et
        creuserait un écart deux fois plus grand qu'ailleurs sur l'accueil. */
     <section id="slot" className="px-4 pb-[clamp(48px,8vw,96px)] sm:px-6">
-      {/* Conteneur élargi (980px → 1400px, la largeur des autres fenêtres du
-          site) : la borne garde sa taille propre mais n'est plus seule au
-          centre : un texte de présentation prend la colonne de gauche, elle
-          se retrouve décalée à droite. */}
-      <div className="mx-auto w-full max-w-[1400px]">
+      {/* Conteneur élargi (980px → 1296px) : la borne garde sa taille propre
+          mais n'est plus seule au centre : un texte de présentation prend la
+          colonne de gauche, elle se retrouve décalée à droite. 1296px, pas
+          1400 : c'est la largeur réelle de la grille ci-dessous une fois ses
+          deux colonnes à leur maximum (460 + 780 + 56 de gap) — au-delà,
+          `justify-center` ne fait que répartir un vide inutile de chaque
+          côté. Les autres modules de l'accueil partagent ce même plafond,
+          pour que tous aient la même marge aux bords que celui-ci. */}
+      <div className="mx-auto w-full max-w-[1296px]">
         <style>{ARCADE_CSS}</style>
 
         {/* `justify-between` collait chaque colonne à un bord du conteneur :
