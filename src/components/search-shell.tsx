@@ -18,7 +18,7 @@ import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { Icon } from "@/components/icons";
-import { ProductWindow } from "@/components/category/product-window";
+import { PRODUCT_WINDOW_CSS, ProductWindow } from "@/components/category/product-window";
 import { BEVEL_IN, LeopardBackdrop, MONO, PLASTIC, PLASTIC_FACE, PLASTIC_PRESS, WindowFrame } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
 
@@ -39,6 +39,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
       <main className="relative">
+        <style>{PRODUCT_WINDOW_CSS}</style>
         <LeopardBackdrop />
 
         <div className="relative z-[1] mx-auto w-full max-w-[1400px] px-4 pt-[calc(72px+clamp(16px,2.4vw,28px))] pb-[clamp(24px,4vw,48px)] sm:px-6">

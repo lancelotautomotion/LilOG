@@ -303,6 +303,30 @@ export async function getAllProducts(count = 250): Promise<Product[]> {
 }
 
 /**
+ * Restreint la recherche Shopify à des champs qui ont un sens pour trouver
+ * une pièce (titre, type de produit, tag, marque), un mot devant apparaître
+ * dans au moins l'un d'eux (OR entre champs, AND entre mots).
+ *
+ * Passer la requête brute à Shopify (son comportement par défaut) fait du
+ * matching approximatif sur tout le texte indexé, fautes de frappe et
+ * substrings compris : une requête courte comme "top" pouvait ainsi
+ * remonter une jupe. Les guillemets, deux-points, parenthèses et astérisques
+ * sont retirés des mots de la requête pour ne pas casser la syntaxe qu'on
+ * construit autour.
+ */
+function buildSearchQuery(raw: string): string {
+  const words = raw
+    .replace(/["*:()]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 6);
+  if (words.length === 0) return raw;
+  return words
+    .map((w) => `(title:*${w}* OR product_type:*${w}* OR tag:*${w}* OR vendor:*${w}*)`)
+    .join(" AND ");
+}
+
+/**
  * Recherche texte libre dans le catalogue. Une chaîne vide renvoie tout de
  * suite un tableau vide, inutile d'aller demander à Shopify de « trouver »
  * une chaîne vide, qui renverrait tout le catalogue.
@@ -311,7 +335,7 @@ export async function searchProducts(query: string, count = 60): Promise<Product
   const trimmed = query.trim();
   if (!trimmed) return [];
   const data = await shopifyFetch<FeaturedProductsResponse>(SEARCH_PRODUCTS_QUERY, {
-    query: trimmed,
+    query: buildSearchQuery(trimmed),
     first: count,
   });
   return data.products.edges.map((e) => mapProduct(e.node));

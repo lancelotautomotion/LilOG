@@ -23,6 +23,36 @@ import { useWishlist } from "@/hooks/use-wishlist";
 import { BEVEL_IN, MONO, NAVY_BAR, PLASTIC, PLASTIC_FACE, PLASTIC_PRESS } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
 
+/* Bascule A/B des visuels + soulèvement de la fenêtre au survol : toute
+   page qui rend <ProductWindow> doit servir cette feuille (une seule fois),
+   sans quoi les deux photos (imageA/imageB) restent empilées en flux normal
+   au lieu de se superposer — la seconde reste visible sous la première,
+   coupée par overflow-hidden. */
+export const PRODUCT_WINDOW_CSS = `
+/* ---- Visuels des fiches : bascule A/B, contraste au survol ---- */
+.lde-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:opacity 420ms ease, transform 560ms ease, filter 320ms ease}
+.lde-img-b{opacity:0}
+/* Bascule A/B réservée aux pointeurs fins (souris) : sur tactile, :hover
+   reste « collé » après un tap tant qu'on ne touche pas ailleurs, ce qui
+   fige le fondu enchaîné à mi-parcours (les deux photos apparaissent alors
+   mélangées, surtout là où elles diffèrent le plus, ex. un plan large vs
+   un gros plan). */
+@media (hover: hover) and (pointer: fine) {
+  .lde-media:hover .lde-img-a{opacity:0}
+  .lde-media:hover .lde-img-b{opacity:1}
+  .lde-media:hover .lde-img{transform:scale(1.06);filter:contrast(1.18) saturate(1.06)}
+}
+
+/* ---- La fenêtre-fiche se soulève ---- */
+.lde-card{transition:transform 180ms ease, box-shadow 180ms ease}
+.lde-card:hover{transform:translateY(-3px);box-shadow:7px 9px 0 rgba(24,12,58,.5)}
+
+@media (prefers-reduced-motion: reduce){
+  .lde-img,.lde-card{transition:none}
+}
+`;
+
 /* ---- Stickers d'état ---- */
 
 type Sticker = { label: React.ReactNode; from: string; to: string; ink: string };

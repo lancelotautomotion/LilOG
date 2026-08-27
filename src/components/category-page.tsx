@@ -27,7 +27,7 @@ import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { Icon } from "@/components/icons";
 import { FilterControl, type FilterState, type Sort } from "@/components/category/filter-control";
-import { ProductWindow } from "@/components/category/product-window";
+import { PRODUCT_WINDOW_CSS, ProductWindow } from "@/components/category/product-window";
 import {
   BEVEL_IN,
   LCD,
@@ -55,24 +55,7 @@ function exeName(catKey: string, label: string): string {
 }
 
 const EXPLORER_CSS = `
-/* ---- Visuels des fiches : bascule A/B, contraste au survol ---- */
-.lde-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  transition:opacity 420ms ease, transform 560ms ease, filter 320ms ease}
-.lde-img-b{opacity:0}
-/* Bascule A/B réservée aux pointeurs fins (souris) : sur tactile, :hover
-   reste « collé » après un tap tant qu'on ne touche pas ailleurs, ce qui
-   fige le fondu enchaîné à mi-parcours (les deux photos apparaissent alors
-   mélangées, surtout là où elles diffèrent le plus, ex. un plan large vs
-   un gros plan). */
-@media (hover: hover) and (pointer: fine) {
-  .lde-media:hover .lde-img-a{opacity:0}
-  .lde-media:hover .lde-img-b{opacity:1}
-  .lde-media:hover .lde-img{transform:scale(1.06);filter:contrast(1.18) saturate(1.06)}
-}
-
-/* ---- La fenêtre-fiche se soulève ---- */
-.lde-card{transition:transform 180ms ease, box-shadow 180ms ease}
-.lde-card:hover{transform:translateY(-3px);box-shadow:7px 9px 0 rgba(24,12,58,.5)}
+${PRODUCT_WINDOW_CSS}
 
 /* ---- Faders de l'égaliseur ----
    Deux <input type=range> superposés : la piste est décorative (dessinée
@@ -129,7 +112,7 @@ const EXPLORER_CSS = `
   box-shadow:inset 1px 1px 0 rgba(255,255,255,.95),inset -1px -1px 0 rgba(90,86,120,.55)}
 
 @media (prefers-reduced-motion: reduce){
-  .lde-img,.lde-card,.lde-sheet,.lde-scrim,.lde-gem{transition:none}
+  .lde-sheet,.lde-scrim,.lde-gem{transition:none}
   .lde-gem:hover{transform:none}
 }
 `;
