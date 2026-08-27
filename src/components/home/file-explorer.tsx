@@ -137,13 +137,16 @@ export function FileExplorer() {
        coupe en deux : l'explorateur d'un côté, une photo de la marchandise
        de l'autre. Sur mobile, la photo passe en bandeau au-dessus (`order`)
        plutôt que serrée entre deux blocs de texte. */
-    <section id="drops" className="pb-[clamp(48px,8vw,96px)]">
+    <section id="drops" className="px-4 pb-[clamp(48px,8vw,96px)] sm:px-6">
       <style>{EXPLORER_CSS}</style>
 
-      {/* `px-4 sm:px-6` sur la ligne elle-même : la photo touchait le bord
-          droit de l'écran à zéro alors que la fenêtre gardait la marge du
-          reste du site à gauche. Même gouttière posée des deux côtés,
-          `gap` entre les deux colonnes pour ne pas les souder au milieu.
+      {/* La gouttière de bord de page (`px-4 sm:px-6`) vit sur la `<section>`,
+          jamais sur ce conteneur : posée ici en plus de `max-w-[1296px]`,
+          elle se serait soustraite des 1296px (box-sizing: border-box) et
+          le contenu se serait retrouvé décalé de 24px vers l'intérieur par
+          rapport aux autres modules, ARCADE_SLOT compris — c'est exactement
+          le bug que ce commentaire remplace. `gap` entre les deux colonnes
+          pour ne pas les souder au milieu.
 
           `lg:h-[...]` borne les deux colonnes à la hauteur de l'écran moins
           la navigation fixe (~72px) et un peu d'air : en desktop, tout le
@@ -167,7 +170,7 @@ export function FileExplorer() {
           grille d'ARCADE_SLOT une fois ses deux colonnes à leur maximum,
           pas celle (plus large) de son conteneur — voir le commentaire dans
           arcade-slot.tsx. */}
-      <div className="mx-auto flex w-full max-w-[1296px] flex-col gap-4 px-4 sm:gap-6 sm:px-6 lg:h-[calc(100svh-104px)] lg:flex-row lg:items-stretch">
+      <div className="mx-auto flex w-full max-w-[1296px] flex-col gap-4 sm:gap-6 lg:h-[calc(100svh-104px)] lg:flex-row lg:items-stretch">
         {/* Même retrait vertical que la colonne fenêtre : sans lui, l'image
             remplissait toute la cellule de grille pendant que la fenêtre,
             elle, était rentrée de son `py`, et dépassait donc en haut comme
