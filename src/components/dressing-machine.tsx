@@ -443,96 +443,108 @@ function Bay({
 }
 
 /* ================================================================== *
- * ÉTAPE 4 : Le terminal .EXE, encastré dans la console
+ * ÉTAPE 4 : Le bouton d'ouverture, encastré dans la console
  * ================================================================== */
 
-function ModuleTerminal({
-  open,
-  onOpen,
-  onClose,
+function ModuleTerminal({ onOpen }: { onOpen: () => void }) {
+  return (
+    <div className="dm-modules">
+      <button type="button" className="dm-w95 dm-modules-open" onClick={onOpen}>
+        [ + ] AJOUTER UN MODULE
+      </button>
+    </div>
+  );
+}
+
+/* ================================================================== *
+ * AJOUTER_MODULE.EXE : fenêtre flottante de sélection des modules
+ * ------------------------------------------------------------
+ * Remplace l'ancien terminal encastré dans la console (64px de haut,
+ * options qui défilaient en interne, difficile à parcourir) : les
+ * quatre modules tiennent sans défilement dans une vraie fenêtre,
+ * ouverte par-dessus la page comme SYSTEM_LOGIN.EXE. Rester ouverte
+ * après un clic permet d'activer plusieurs modules d'affilée.
+ * ================================================================== */
+
+function ModulePickerModal({
   active,
   counts,
   onLaunch,
+  onClose,
 }: {
-  open: boolean;
-  onOpen: () => void;
-  onClose: () => void;
   active: Set<ClosetSlot>;
   counts: Record<string, number>;
   onLaunch: (mod: ModuleDef) => void;
+  onClose: () => void;
 }) {
   const boot = "> SYSTÈME PRÊT. SÉLECTIONNEZ UN MODULE :";
-  const typed = useTyped(boot, open, 16);
-  const booted = open && typed.length === boot.length;
-
-  const [revealed, setRevealed] = useState(0);
-  const [prevBooted, setPrevBooted] = useState(booted);
-  if (prevBooted !== booted) {
-    setPrevBooted(booted);
-    setRevealed(0);
-  }
+  const typed = useTyped(boot, true, 16);
+  const booted = typed.length === boot.length;
 
   useEffect(() => {
-    if (!booted) return;
-    let i = 0;
-    const id = setInterval(() => {
-      i += 1;
-      setRevealed(i);
-      if (i >= MODULES.length) clearInterval(id);
-    }, 80);
-    return () => clearInterval(id);
-  }, [booted]);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
   return (
-    <div className="dm-modules">
-      {!open ? (
-        <button type="button" className="dm-w95 dm-modules-open" onClick={onOpen}>
-          [ + ] AJOUTER UN MODULE
-        </button>
-      ) : (
-        <div className="dm-well dm-modules-screen" role="region" aria-label="Terminal modules">
-          <div className="dm-modules-head">
-            <p className="dm-term-boot">
-              {typed}
-              {!booted && <span className="dm-caret">_</span>}
-            </p>
-            <button
-              type="button"
-              className="dm-term-close"
-              onClick={onClose}
-              aria-label="Fermer le terminal des modules"
-            >
+    <div
+      className="dm-gate-scrim"
+      role="dialog"
+      aria-modal="true"
+      aria-label="AJOUTER_MODULE.EXE"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="dm-win dm-modpick-win">
+        <div className="dm-titlebar">
+          <span className="dm-titlebar-text">AJOUTER_MODULE.EXE</span>
+          <div className="dm-chrome">
+            <span className="dm-chrome-btn" aria-hidden>_</span>
+            <span className="dm-chrome-btn" aria-hidden>□</span>
+            <button type="button" className="dm-chrome-btn" onClick={onClose} aria-label="Fermer">
               ×
             </button>
           </div>
+        </div>
 
-          <div className="dm-term-options">
-            {MODULES.map((mod, i) => {
+        <div className="dm-modpick-body">
+          <p className="dm-modpick-boot">
+            {typed}
+            {!booted && <span className="dm-caret">_</span>}
+          </p>
+
+          <div className="dm-modpick-options">
+            {MODULES.map((mod) => {
               const on = active.has(mod.slot);
               const empty = (counts[mod.slot] ?? 0) === 0;
               return (
                 <button
                   key={mod.slot}
                   type="button"
-                  className={
-                    "dm-term-opt" +
-                    (revealed > i ? " in" : "") +
-                    (on ? " on" : "") +
-                    (empty ? " out" : "")
-                  }
+                  className={"dm-modpick-opt" + (on ? " on" : "") + (empty ? " out" : "")}
                   onClick={() => onLaunch(mod)}
-                  disabled={revealed <= i}
                   aria-pressed={on}
                 >
-                  <span className="dm-term-box">[{on ? "x" : " "}]</span>
-                  <span className="dm-term-exe">{mod.exe}</span>
-                  <span className="dm-term-cursor">_</span>
+                  <span className="dm-modpick-box">[{on ? "x" : " "}]</span>
+                  <span className="dm-modpick-exe">{mod.exe}</span>
+                  {empty && <span className="dm-modpick-empty">Rayon vide</span>}
                 </button>
               );
             })}
           </div>
         </div>
-      )}
+
+        <div className="dm-statusbar">
+          <span className="dm-status-cell">C:\LILOG\CLOSET&gt;</span>
+          <span className="dm-status-cell dm-status-grow">
+            {active.size} MODULE{active.size !== 1 ? "S" : ""} ACTIF{active.size !== 1 ? "S" : ""}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1099,14 +1111,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
           <div className="dm-console">
             <MatchScanner keys={lookKeys} />
 
-            <ModuleTerminal
-              open={terminalOpen}
-              onOpen={() => setTerminalOpen(true)}
-              onClose={() => setTerminalOpen(false)}
-              active={new Set(openSlots)}
-              counts={counts}
-              onLaunch={launchModule}
-            />
+            <ModuleTerminal onOpen={() => setTerminalOpen(true)} />
 
             <button
               type="button"
@@ -1179,6 +1184,15 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
           initialSizes={sizes}
           initialShoeSizes={shoeSizes}
           onLaunch={launch}
+        />
+      )}
+
+      {terminalOpen && (
+        <ModulePickerModal
+          active={new Set(openSlots)}
+          counts={counts}
+          onLaunch={launchModule}
+          onClose={() => setTerminalOpen(false)}
         />
       )}
     </>
