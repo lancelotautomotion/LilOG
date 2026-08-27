@@ -292,7 +292,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
        doit céder, pas seulement la largeur — sinon ce padding à lui seul
        peut suffire à faire déborder le lecteur d'un écran court. */
     <section id="highlights" className="px-4 py-[clamp(24px,min(8vw,5svh),96px)] sm:px-6">
-      <div className="mx-auto w-full max-w-[1200px]">
+      <div className="mx-auto w-full max-w-[1400px]">
         <style>{COVER_CSS}</style>
 
         {/* La fenêtre garde la barre de titre commune du site ; c'est son corps

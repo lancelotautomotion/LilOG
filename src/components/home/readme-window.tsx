@@ -71,7 +71,7 @@ export function ReadmeWindow() {
 
   return (
     <section id="story" className="px-4 pb-[clamp(24px,4vw,48px)] sm:px-6">
-      <div className="mx-auto w-full max-w-[1120px]">
+      <div className="mx-auto w-full max-w-[1400px]">
         <style>{README_CSS}</style>
 
         {/* En desktop, la colonne de droite est réservée au polaroid :

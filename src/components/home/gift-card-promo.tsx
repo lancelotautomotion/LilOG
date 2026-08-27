@@ -72,7 +72,7 @@ export function GiftCardPromo() {
     /* Padding bas seul : PLAYLIST_HIGHLIGHTS.EXE, premier module de la
        page, porte seul le retrait d'après le hero. */
     <section id="gift-card" className="px-4 pb-[clamp(48px,8vw,96px)] sm:px-6">
-      <div className="mx-auto w-full max-w-[1200px]">
+      <div className="mx-auto w-full max-w-[1400px]">
         <style>{PROMO_CSS}</style>
 
         <WindowFrame
