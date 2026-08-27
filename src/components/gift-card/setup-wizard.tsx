@@ -4,11 +4,14 @@
    GRAVEUR_LIL_OG_OS.EXE : l'assistant de la carte cadeau
    ------------------------------------------------------------
    La carte cadeau n'est pas présentée comme un produit mais
-   comme un disque à graver. Un vrai Setup Wizard Windows 95 :
-   fond bureau bleu canard, fenêtre gris système uni (plus de
-   papier millimétré ni de plaque blanche), deux colonnes :
+   comme un disque à graver. Un Setup Wizard Windows 95, mais
+   dans la direction artistique de la maison — le même vocabulaire
+   que /contact, /faq, /histoire et la Dressing Machine : léopard
+   en fond, fenêtre bordée #b8b4cc, papier millimétré retiré au
+   profit d'un aplat clair uni, jetons « chunky plastic », écrans
+   encastrés à l'encre LCD verte. Deux colonnes :
 
-     à gauche   le boîtier du CD-ROM, à même le gris de la fenêtre
+     à gauche   le boîtier du CD-ROM, sans plaque blanche derrière
      à droite   deux groupes (<fieldset>) : ÉTAPE 1 la capacité,
                 ÉTAPE 2 la licence
 
@@ -40,7 +43,14 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { CdRom } from "@/components/gift-card/cd-rom";
-import { MONO, VIOLET_BAR, WindowButton } from "@/components/y2k/kit";
+import { ChromeStar, GemSticker } from "@/components/contact/stickers";
+import { BEVEL_IN, HARD_SHADOW, LeopardBackdrop, MONO, NEON, PLASTIC, PLASTIC_FACE, PLASTIC_PRESS, VIOLET_BAR, WindowButton } from "@/components/y2k/kit";
+
+/** Les deux arêtes du biseau Windows 95 maison (voir --dm-hi/--dm-lo dans la
+ *  Dressing Machine) : claire en haut-gauche pour une surface qui ressort,
+ *  sombre en haut-gauche pour un creux — jamais le gris/blanc générique. */
+const BEVEL_HI = "#ffffff";
+const BEVEL_LO = "#9b97b3";
 
 /** Une capacité de disque : une variante Shopify vue par l'assistant. */
 export interface Capacity {
@@ -97,11 +107,16 @@ function megabytes(amount: number) {
    ============================================================ */
 
 /** Groupe Win95 : bordure creusée classique, légende incrustée dans le trait
- *  supérieur — un vrai `<fieldset>`/`<legend>`, pas une imitation en `div`. */
+ *  supérieur — un vrai `<fieldset>`/`<legend>`, pas une imitation en `div`.
+ *  Biseau maison (clair en haut-gauche, sombre en bas-droite : BEVEL_HI/LO),
+ *  jamais le gris/blanc Windows générique. */
 function Fieldset({ n, children }: { n: string; children: React.ReactNode }) {
   return (
-    <fieldset className="border-2 border-t-gray-500 border-l-gray-500 border-r-white border-b-white p-3">
-      <legend className={`${MONO} px-1.5 text-[0.9375rem] font-bold tracking-[0.05em] text-black uppercase`}>
+    <fieldset
+      className="rounded-md border-2 p-3"
+      style={{ borderColor: `${BEVEL_LO} ${BEVEL_HI} ${BEVEL_HI} ${BEVEL_LO}` }}
+    >
+      <legend className={`${MONO} px-1.5 text-[0.8125rem] font-bold tracking-[0.05em] text-[#2b0f6b] uppercase`}>
         {n}
       </legend>
       {children}
@@ -109,12 +124,16 @@ function Fieldset({ n, children }: { n: string; children: React.ReactNode }) {
   );
 }
 
-/** Champ encastré : le creux Windows 95 autour d'une zone de saisie. */
+/** Champ encastré : le creux Windows 95 autour d'une zone de saisie, dans le
+ *  même vocabulaire que les afficheurs du reste du site (BEVEL_IN). Le
+ *  Tailwind arbitraire n'accepte pas de variable interpolée (le compilateur
+ *  scanne le code source, pas la valeur au runtime) : la couleur du biseau
+ *  reprend donc le hex de BEVEL_LO en dur, pas la constante. */
 const FIELD =
-  "w-full border-2 border-t-gray-500 border-l-gray-500 border-b-gray-200 border-r-gray-200 " +
-  "bg-white p-2 text-sm text-black shadow-inner outline-none placeholder:text-gray-400 " +
-  "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-900 " +
-  "disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500";
+  `w-full rounded-[3px] border border-[#9b97b3] bg-white px-3 py-2.5 text-[0.9375rem] ` +
+  `text-[#1e2430] ${BEVEL_IN} outline-none placeholder:text-[#9490a8] ` +
+  "focus-visible:border-[#7147d4] focus-visible:ring-2 focus-visible:ring-[#7147d4]/40 " +
+  "disabled:cursor-not-allowed disabled:bg-[#e7e5f1] disabled:text-[#6b6880]";
 
 /* ============================================================
    Assistant
@@ -219,16 +238,12 @@ export function SetupWizard({
   }
 
   return (
-    <main className="relative min-h-dvh bg-[#008080] px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(24px,4vw,48px)]">
+    <main className="relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(24px,4vw,48px)]">
       <style>{WIZARD_CSS}</style>
+      <LeopardBackdrop />
 
       {/* ================= FENÊTRE ================= */}
-      <div
-        className="relative z-[1] mx-auto max-w-[1180px] overflow-hidden rounded-xl border-2 border-[#808080] bg-[#c0c0c0]"
-        style={{
-          boxShadow: "inset 1px 1px 0 rgba(255,255,255,0.9), inset -1px -1px 0 rgba(0,0,0,0.35), var(--y2k-win-shadow)",
-        }}
-      >
+      <div className={`relative z-[1] mx-auto max-w-[1180px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#f0f0f5] ${HARD_SHADOW}`}>
         {/* ---- Barre de titre ---- */}
         <div className="flex items-center justify-between gap-3 px-3 py-2" style={{ background: VIOLET_BAR }}>
           <div className="flex min-w-0 items-center gap-2">
@@ -248,17 +263,33 @@ export function SetupWizard({
           </div>
         </div>
 
-        {/* ---- Corps : gris système uni, plus de papier millimétré ---- */}
-        <div className="bg-[#c0c0c0] p-[clamp(14px,3vw,32px)]">
-          <div className="grid gap-[clamp(20px,3vw,36px)] lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]">
+        {/* ---- Corps : aplat clair uni, plus de papier millimétré ---- */}
+        <div className="relative bg-[#f0f0f5] p-[clamp(14px,3vw,32px)]">
+          {/* Pastilles décoratives, comme /faq et /contact. */}
+          <span aria-hidden className="pointer-events-none absolute inset-0 z-[2] hidden sm:block">
+            <span
+              className="absolute top-[4px] right-[4px] h-[clamp(26px,4vw,44px)] w-[clamp(26px,4vw,44px)]"
+              style={{ transform: "rotate(14deg)" }}
+            >
+              <ChromeStar uid="gc-star" />
+            </span>
+            <span
+              className="absolute bottom-[4px] left-[4px] h-[clamp(24px,3.6vw,40px)] w-[clamp(24px,3.6vw,40px)]"
+              style={{ transform: "rotate(-12deg)" }}
+            >
+              <GemSticker uid="gc-heart" shape="heart" hue={["#FFC0DF", "#EE4B96", "#B3155A"]} />
+            </span>
+          </span>
+
+          <div className="relative z-[1] grid gap-[clamp(20px,3vw,36px)] lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]">
             {/* ================= COLONNE GAUCHE : LE DISQUE =================
                 `h-full` prend la hauteur que la grille lui étire déjà (elle
                 égale par défaut celle de la colonne de droite, la plus
                 grande des deux) : sans elle, ce flex a une hauteur
                 intrinsèque et `flex-1` dans CdRom n'a rien à occuper.
-                Le boîtier repose à même le gris de la fenêtre — plus de
-                plaque blanche ni de voyant sous l'image, l'état du lecteur
-                vit désormais dans la barre d'état, tout en bas. */}
+                Le boîtier repose à même le fond clair de la fenêtre — plus
+                de plaque blanche ni de voyant sous l'image, l'état du
+                lecteur vit désormais dans la barre d'état, tout en bas. */}
             <div className="flex h-full items-center justify-center">
               <CdRom spinning={burning} />
             </div>
@@ -269,13 +300,13 @@ export function SetupWizard({
               <Fieldset n="1. Sélectionner la capacité du disque">
                 {noDisc ? (
                   <p
-                    className={`${MONO} border-2 border-amber-700 bg-amber-100 px-3 py-2.5 text-[0.8125rem] text-amber-900`}
+                    className={`${MONO} rounded-[3px] border border-amber-500 bg-amber-100 px-3 py-2.5 text-[0.875rem] text-amber-900`}
                   >
                     ⚠ DISQUE_INTROUVABLE.SYS — aucune carte cadeau n&apos;est publiée dans la
                     boutique pour le moment.
                   </p>
                 ) : (
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                     {capacities.map((c, i) => {
                       const on = picked?.variantId === c.variantId;
                       const max = i === capacities.length - 1 && capacities.length > 1;
@@ -286,23 +317,37 @@ export function SetupWizard({
                           aria-pressed={on}
                           disabled={!c.available || burning}
                           onClick={() => setPicked(c)}
-                          className={`${MONO} flex items-center gap-2.5 border-2 bg-[#c0c0c0] px-3 py-2.5 text-left transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                          className={`${MONO} flex items-center gap-2.5 rounded-md border px-3 py-2.5 text-left transition disabled:cursor-not-allowed disabled:opacity-45 ${
                             on
-                              ? "border-t-gray-500 border-l-gray-500 border-r-white border-b-white shadow-inner"
-                              : "border-t-white border-l-white border-r-gray-500 border-b-gray-500 active:border-t-gray-500 active:border-l-gray-500 active:border-r-white active:border-b-white active:shadow-inner"
+                              ? `translate-y-[2px] border-[#12b45c] bg-[#1e2430] text-white ${BEVEL_IN}`
+                              : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#262626] ${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105`
                           }`}
                         >
+                          {/* Radio : anneau plastique, pastille LCD verte allumée quand
+                              sélectionné — même langage que les LED du reste du site. */}
                           <span
                             aria-hidden
-                            className="grid h-4 w-4 shrink-0 place-items-center rounded-full border-2 border-t-gray-500 border-l-gray-500 border-r-white border-b-white bg-white"
+                            className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border ${
+                              on ? "border-[#5affa0]/70 bg-black" : `border-[#9490a8] ${PLASTIC_FACE}`
+                            }`}
                           >
-                            {on && <span className="h-2 w-2 rounded-full bg-black" />}
+                            {on && (
+                              <span
+                                className="h-2 w-2 rounded-full bg-[#5affa0]"
+                                style={{ boxShadow: "0 0 4px rgba(90,255,160,0.9)" }}
+                              />
+                            )}
                           </span>
                           <span className="min-w-0">
-                            <span className="block text-[0.875rem] font-bold tracking-[0.03em] text-black uppercase">
+                            <span className="block text-[0.875rem] font-bold tracking-[0.03em] uppercase">
                               {max ? "[ CAPACITÉ MAX 💸 ]" : `[ ${megabytes(c.amount)} ]`}
                             </span>
-                            <span className="block text-[0.8125rem] text-gray-700">{euros(c.amount)}</span>
+                            <span
+                              className="block text-[0.8125rem]"
+                              style={{ color: on ? "#5affa0" : "#5b2fb8" }}
+                            >
+                              {euros(c.amount)}
+                            </span>
                           </span>
                         </button>
                       );
@@ -317,7 +362,7 @@ export function SetupWizard({
                   <div>
                     <label
                       htmlFor="gc-email"
-                      className={`${MONO} mb-1.5 block text-[0.8125rem] font-bold tracking-[0.05em] text-black uppercase`}
+                      className={`${MONO} mb-1.5 block text-[0.8125rem] font-bold tracking-[0.05em] text-[#2b0f6b] uppercase`}
                     >
                       EMAIL_DU_BÉNÉFICIAIRE.TXT
                     </label>
@@ -339,7 +384,7 @@ export function SetupWizard({
                     <p
                       id="gc-email-help"
                       className={`${MONO} mt-1.5 text-[0.75rem] ${
-                        touched && !emailOk ? "font-bold text-red-700" : "text-gray-700"
+                        touched && !emailOk ? "font-bold text-[#d4006e]" : "text-[#5b5670]"
                       }`}
                     >
                       {touched && !emailOk
@@ -351,7 +396,7 @@ export function SetupWizard({
                   <div>
                     <label
                       htmlFor="gc-message"
-                      className={`${MONO} mb-1.5 block text-[0.8125rem] font-bold tracking-[0.05em] text-black uppercase`}
+                      className={`${MONO} mb-1.5 block text-[0.8125rem] font-bold tracking-[0.05em] text-[#2b0f6b] uppercase`}
                     >
                       MESSAGE_PERSONNALISÉ.SYS
                     </label>
@@ -365,7 +410,7 @@ export function SetupWizard({
                       placeholder="Joyeux anniversaire, va piller l'archive…"
                       className={`${MONO} ${FIELD} resize-y`}
                     />
-                    <p className={`${MONO} mt-1.5 text-right text-[0.75rem] text-gray-700`}>
+                    <p className={`${MONO} mt-1.5 text-right text-[0.75rem] text-[#5b5670]`}>
                       {message.length} / {MESSAGE_MAX} octets
                     </p>
                   </div>
@@ -378,22 +423,27 @@ export function SetupWizard({
         {/* ================= PIED DE L'ASSISTANT ================= */}
         {/* Séparé du corps par une rainure, et le bouton d'action à droite :
             c'est la disposition d'un assistant Windows. */}
-        <div className="border-t-2 border-t-white bg-[#c0c0c0] px-[clamp(12px,3vw,32px)] py-[clamp(12px,2vw,18px)]">
+        <div className="border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-[clamp(12px,3vw,32px)] py-[clamp(12px,2vw,18px)]">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             {/* Jauge + journal */}
             <div className="min-w-0 flex-1">
               <div
-                className="h-[18px] w-full max-w-[360px] border-2 border-t-gray-500 border-l-gray-500 border-r-white border-b-white bg-white p-[2px] shadow-inner"
+                className="h-[18px] w-full max-w-[360px] rounded-[2px] border border-[#8b87a3] bg-white p-[2px]"
+                style={{ boxShadow: "inset 1px 1px 2px rgba(0,0,0,0.28)" }}
               >
                 <div className="gc-gauge-fill h-full" style={{ width: `${progress}%` }} />
               </div>
-              <p className={`${MONO} mt-1.5 text-[0.8125rem] text-black`} role="status" aria-live="polite">
+              <p
+                className={`${MONO} mt-1.5 text-[0.8125rem] text-[#3b3550]`}
+                role="status"
+                aria-live="polite"
+              >
                 {error ? (
-                  <span className="font-bold text-red-700">⚠ ERREUR : {error}</span>
+                  <span className="text-[#d4006e]">⚠ ERREUR : {error}</span>
                 ) : done ? (
                   <>
-                    <span className="font-bold text-green-800">✓ Disque ajouté au panier.</span>{" "}
-                    <Link href="/cart" className="font-bold text-blue-800 underline">
+                    <span className="text-[#0f7a3a]">✓ Disque ajouté au panier.</span>{" "}
+                    <Link href="/cart" className="font-bold text-[#5b2fb8] underline">
                       Ouvrir le panier →
                     </Link>
                   </>
@@ -427,11 +477,13 @@ export function SetupWizard({
 
         {/* ================= BARRE D'ÉTAT ================= */}
         {/* Le voyant du lecteur, qui vivait sous le disque, devient une vraie
-            barre d'état Windows 95 : bandeau plein pied de fenêtre, texte
-            enfoncé dans son propre encart (shadow-inner + biseau inversé). */}
-        <div className="flex items-center border-t-2 border-t-white bg-[#c0c0c0] px-2 py-1.5">
+            barre d'état pleine largeur : même écran encastré à l'encre LCD
+            verte que les afficheurs du reste du site (PRICE_TAG.SYS, la
+            Dressing Machine…), pas un panneau gris Windows générique. */}
+        <div className="flex items-center border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
           <span
-            className={`${MONO} flex min-w-0 flex-1 items-center gap-2 border-2 border-t-gray-500 border-l-gray-500 border-r-white border-b-white bg-[#c0c0c0] px-2 py-1 text-[0.8125rem] font-bold tracking-[0.04em] text-black shadow-inner uppercase`}
+            className={`${MONO} ${BEVEL_IN} flex min-w-0 flex-1 items-center gap-2 rounded-[4px] border border-[#3f3d55] bg-black px-3 py-2 text-[0.9375rem] font-bold tracking-[0.06em] uppercase`}
+            style={{ color: burning ? NEON : done ? "#5affa0" : "#8e8aa8" }}
           >
             <span className={`gc-led${burning || done ? " on" : ""}`} aria-hidden />
             <span className="min-w-0 truncate">
