@@ -143,8 +143,23 @@ export function FileExplorer() {
       {/* `px-4 sm:px-6` sur la ligne elle-même : la photo touchait le bord
           droit de l'écran à zéro alors que la fenêtre gardait la marge du
           reste du site à gauche. Même gouttière posée des deux côtés,
-          `gap` entre les deux colonnes pour ne pas les souder au milieu. */}
-      <div className="grid grid-cols-1 gap-4 px-4 sm:gap-6 sm:px-6 lg:grid-cols-2 lg:items-stretch">
+          `gap` entre les deux colonnes pour ne pas les souder au milieu.
+
+          `lg:h-[...]` borne les deux colonnes à la hauteur de l'écran moins
+          la navigation fixe (~72px) et un peu d'air : en desktop, tout le
+          module (fenêtre + photo) tient donc dans un seul écran plutôt que
+          de couper une rangée de dossiers au ras du bord de la fenêtre du
+          navigateur. En dessous de `lg:`, les colonnes s'empilent et
+          gardent leur hauteur naturelle : rien à contraindre, la grille de
+          dossiers défile avec la page comme le reste.
+
+          `flex` plutôt que `grid` pour ces deux colonnes : une piste de
+          grille implicite (`grid-auto-rows: auto`) ignore la hauteur
+          explicite posée sur le conteneur, ses cellules restent calées sur
+          la hauteur de contenu de la fenêtre au lieu de s'y borner — c'est
+          `align-items: stretch` d'un `flex` qui respecte une hauteur
+          explicite du conteneur. */}
+      <div className="flex flex-col gap-4 px-4 sm:gap-6 sm:px-6 lg:h-[calc(100svh-104px)] lg:flex-row lg:items-stretch">
         {/* Même retrait vertical que la colonne fenêtre : sans lui, l'image
             remplissait toute la cellule de grille pendant que la fenêtre,
             elle, était rentrée de son `py`, et dépassait donc en haut comme
@@ -159,7 +174,7 @@ export function FileExplorer() {
             seule qui réserve l'espace qui la suit, comme partout ailleurs sur
             l'accueil. Les deux colonnes restent alignées puisqu'elles sont
             traitées à l'identique. */}
-        <div className="order-1 lg:order-2">
+        <div className="order-1 lg:order-2 lg:min-w-0 lg:flex-1">
           {/* Même ombre dure que la fenêtre d'à côté : sans elle, les deux
               boîtes avaient bien la même hauteur mais la fenêtre, seule à
               porter son ombre décalée de 10px vers le bas, semblait
@@ -182,14 +197,15 @@ export function FileExplorer() {
           </div>
         </div>
 
-        <div className="order-2 flex lg:order-1 lg:items-center">
+        <div className="order-2 flex lg:order-1 lg:h-full lg:min-w-0 lg:flex-1">
           <WindowFrame
             title="Catégories.TXT"
             icon={<Icon.folderOpen width={16} height={13} />}
-            className="w-full"
+            className="w-full lg:flex lg:h-full lg:flex-col"
+            bodyClassName="lg:flex lg:min-h-0 lg:flex-1 lg:flex-col"
           >
             {/* Barre de menus */}
-            <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5">
+            <div className="flex flex-wrap items-center gap-4 border-b border-[#c6c2d8] bg-[#e9e7f2] px-3 py-1.5 lg:shrink-0">
               {["Fichier", "Édition", "Affichage", "Favoris", "?"].map((m) => (
                 <span
                   key={m}
@@ -201,7 +217,7 @@ export function FileExplorer() {
             </div>
 
             {/* Barre d'adresse */}
-            <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-2">
+            <div className="flex items-center gap-2 border-b border-[#c6c2d8] bg-[#f0eef7] px-3 py-2 lg:shrink-0">
               <span className={`${MONO} shrink-0 text-[0.8125rem] tracking-[0.14em] text-[#6B7280] uppercase`}>
                 Adresse
               </span>
@@ -219,7 +235,7 @@ export function FileExplorer() {
             </div>
 
             {/* En-tête de contenu */}
-            <div className="border-b border-[#d8d5e6] px-4 pt-4 pb-3" style={GRID_BG}>
+            <div className="border-b border-[#d8d5e6] px-4 pt-4 pb-3 lg:shrink-0" style={GRID_BG}>
               <h2 className={`${MONO} text-[1.25rem] font-bold tracking-[0.1em] text-[#3b1d8f] uppercase`}>
                 {t.home.filesTitle}
               </h2>
@@ -228,9 +244,12 @@ export function FileExplorer() {
               </p>
             </div>
 
-            {/* Le bureau : dossiers + disquette */}
+            {/* Le bureau : dossiers + disquette. Seule zone qui défile en
+                interne (`lg:overflow-y-auto`) si les 12 tuiles ne tiennent
+                pas dans la hauteur restante : les barres autour d'elle
+                (menus, adresse, en-tête, état) restent toujours visibles. */}
             <div
-              className="grid grid-cols-2 gap-x-3 gap-y-6 p-[clamp(16px,3vw,30px)] sm:grid-cols-3 sm:gap-y-8 xl:grid-cols-4"
+              className="grid grid-cols-2 gap-x-3 gap-y-6 p-[clamp(16px,3vw,30px)] sm:grid-cols-3 sm:gap-y-8 lg:min-h-0 lg:flex-1 lg:content-start lg:overflow-y-auto xl:grid-cols-4"
               style={GRID_BG}
             >
               {folders.map((f) => (
@@ -247,7 +266,7 @@ export function FileExplorer() {
             </div>
 
             {/* Barre d'état */}
-            <div className="flex flex-wrap items-center justify-between gap-2 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2 lg:shrink-0">
               <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
                 {count} {t.home.filesObjects}
               </span>
