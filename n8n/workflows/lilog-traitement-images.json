@@ -10,8 +10,8 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\" (`drive.google.com/drive/folders/**CET_ID**`)\n- `HUGGINGFACE_API_KEY` : token Hugging Face (`hf_...`, Settings → Access Tokens, lecture suffit)\n- `HF_MODEL_URL` : modèle de détourage (défaut `briaai/RMBG-1.4`)\n- `TEMPLATE_FOND_FILE_ID` : ID du fichier Drive de ton template Y2K\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : taille réelle du template (défaut 1500x1500)\n- `VETEMENT_MAX` : taille max du vêtement posé sur le fond (défaut 1200)\n- `PREFIXE_TRAITE` : marqueur de validation, par défaut `✓_`\n\n**Nœud `Déclencher workflow Shopify`** : coller l'ID de ton workflow de publication.\n\n**Credentials** : ouvrir chaque nœud Google Drive et sélectionner ton compte (Google Drive OAuth2). Aucune credential à créer pour Hugging Face : le token passe par le header `Authorization`.",
-        "height": 480,
+        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `HUGGINGFACE_API_KEY` : token Hugging Face (`hf_...`)\n- `HF_MODEL_URL` : modèle de détourage par défaut (BiRefNet)\n- `MODE_COMPOSITION` : `cadre` (défaut, sûr pour toutes les typologies) ou `profil`\n- `TEMPLATE_FOND_FILE_ID` : ID du fichier Drive du template Y2K par défaut\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : taille réelle du template (défaut 1500x1500)\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : les profils par catégorie (taille, ancrage, fond, modèle) se règlent dans l'objet `PROFILS` en haut du code.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : sélectionner ton compte Google Drive dans chaque nœud Drive. Rien à créer pour Hugging Face (token dans le header `Authorization`).",
+        "height": 540,
         "width": 420,
         "color": 4
       },
@@ -26,9 +26,9 @@
     },
     {
       "parameters": {
-        "content": "## 2. Tri des dossiers\n\nOn liste **uniquement les sous-dossiers** du dossier parent (requête Drive avancée), puis on **garde ceux qui ne commencent pas** par `✓_` ni `*`.\n\nLa boucle traite ensuite **1 dossier à la fois** (batchSize = 1), ce qui évite de mélanger les images de deux vêtements.",
-        "height": 300,
-        "width": 380,
+        "content": "## 2. Tri des dossiers + typologie\n\nOn liste **uniquement les sous-dossiers** du dossier parent, puis on **garde ceux qui ne commencent pas** par `✓_` (traité), `⚠_` (à relire) ni `*`.\n\nLa boucle traite **1 dossier à la fois**. `Détecter la typologie` déduit du nom du dossier s'il s'agit d'un **vêtement, sac, bijou, chaussure ou accessoire**, et charge le profil correspondant (taille sur le fond, ancrage, template, modèle de détourage).\n\nTag explicite possible dans le nom : `Sac Baguette Rose [sac]`.",
+        "height": 380,
+        "width": 420,
         "color": 5
       },
       "id": "sticky-tri",
@@ -37,13 +37,13 @@
       "typeVersion": 1,
       "position": [
         -60,
-        40
+        20
       ]
     },
     {
       "parameters": {
-        "content": "## 3. Photo principale -> Hugging Face (gratuit)\n\n`Classer les images` désigne la **photo principale** (nom contenant `main`, `principale`, `cover` ou `1`, sinon la 1ère image). Seule celle-ci part au détourage.\n\n**Appel HF** : `POST {{ HF_MODEL_URL }}` (par défaut `api-inference.huggingface.co/models/briaai/RMBG-1.4`), header `Authorization: Bearer <token>`, **corps = fichier binaire brut** (`Body Content Type` = *n8n Binary File*, champ `data`).\n\n**Deux réponses possibles** selon le modèle/provider :\n- une image PNG détourée -> utilisée telle quelle ;\n- du JSON `[{ label, score, mask: base64 }]` (pipeline *image-segmentation*, cas le plus fréquent avec RMBG) -> `Normaliser la sortie HF` décode le masque et `Appliquer le masque (alpha)` le pose en couche alpha (**CopyOpacity**).\n\n⚠️ **Licence** : RMBG-1.4 est en licence BRIA *non commerciale*. Pour une boutique qui vend, prendre une licence BRIA ou basculer `HF_MODEL_URL` sur un modèle permissif (ex. `https://api-inference.huggingface.co/models/ZhengPeng7/BiRefNet`, MIT).\n\n⚠️ Le tier gratuit HF a un quota mensuel et des démarrages à froid (503) : le header `x-wait-for-model` + 3 tentatives espacées de 15 s absorbent ça.",
-        "height": 560,
+        "content": "## 3. Photo principale -> Hugging Face (gratuit)\n\n`POST {{ modelUrl }}` (modèle du profil de typologie, sinon `HF_MODEL_URL` = **BiRefNet**), header `Authorization: Bearer <token>`, **corps = fichier binaire brut** (`Body Content Type` = *n8n Binary File*, champ `data`).\n\n**Trois réponses possibles**, toutes gérées par `Normaliser la sortie HF` :\n- image PNG détourée -> utilisée telle quelle ;\n- JSON `[{ label, score, mask }]` (cas de BiRefNet / RMBG) -> masque décodé puis posé en couche alpha par `Appliquer le masque (alpha)` (**CopyOpacity**) ;\n- erreur / réponse vide -> **mode dégradé** : la photo d'origine est conservée et le dossier finira en `⚠_`.\n\n**Modèle par typologie** : dans `Détecter la typologie`, le champ `modele` d'un profil permet d'envoyer par exemple les bijoux (chaînes fines) vers `ZhengPeng7/BiRefNet_HR` et le reste vers BiRefNet standard.\n\n⚠️ Tier gratuit HF : quota mensuel + démarrages à froid (503), absorbés par `x-wait-for-model` et 3 tentatives espacées de 15 s.",
+        "height": 600,
         "width": 700,
         "color": 3
       },
@@ -58,9 +58,9 @@
     },
     {
       "parameters": {
-        "content": "## 3 bis. Superposition du template Y2K\n\n`Redimensionner le vêtement` met le PNG détouré à l'échelle (**VETEMENT_MAX**, sans déformation), `Mesurer le vêtement` récupère ses dimensions réelles, `Télécharger le template de fond` va chercher ton fond dans Drive (**TEMPLATE_FOND_FILE_ID**, propriété binaire `background`).\n\n`Préparer la composition` réunit **fond + vêtement dans le même item** (`data` = fond, `cutout` = vêtement) et calcule `posX`/`posY` pour **centrer** le vêtement.\n\n`Superposer sur le template (Composite)` = nœud natif **Edit Image → Composite**, opérateur `Over`.\n\nRenseigne `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` avec la taille réelle de ton fond (défaut 1500x1500).",
-        "height": 420,
-        "width": 620,
+        "content": "## 3 bis. Mise à l'échelle par typologie + superposition\n\n`Redimensionner le produit` applique la taille du profil (**tailleProduit**), `Mesurer le produit` récupère ses dimensions réelles, `Télécharger le template de fond` charge le fond du profil.\n\n`Préparer la composition` réunit **fond + produit dans le même item** (`data` = fond, `cutout` = produit) et calcule `posX`/`posY` : centré, ou **posé sur une marge basse** pour les chaussures et les sacs.\n\n**`MODE_COMPOSITION` (nœud Config)**\n- `cadre` (défaut) : le produit garde son cadrage d'origine, quelle que soit la typologie. Sûr partout.\n- `profil` : chaque typologie a sa taille (bijou 50 %, sac 75 %, robe 90 %...). ⚠️ à n'activer que si tes photos sont **cadrées serré** (le produit remplit le cadre), car le détourage conserve les marges transparentes de la photo d'origine.",
+        "height": 480,
+        "width": 660,
         "color": 3
       },
       "id": "sticky-template",
@@ -74,8 +74,8 @@
     },
     {
       "parameters": {
-        "content": "## 4. Optimisation + upload + validation\n\n`Edit Image` : redimensionne à **1500 px max** (uniquement si l'image est plus grande) et exporte en **WebP qualité 80**.\n\nLes deux branches (principale / secondaires) se rejoignent dans `Fusionner les uploads`, `Limiter à 1 sortie` ramène à un seul item, puis le dossier est **renommé avec le préfixe `✓_`** = marqueur de validation.\n\nLe fil repart ensuite dans la boucle pour le dossier suivant.\n\n⚠️ `Edit Image` a besoin d'ImageMagick (présent sur n8n Cloud et sur l'image Docker officielle).",
-        "height": 380,
+        "content": "## 4. Optimisation + upload + validation\n\n`Edit Image` : **1500 px max** (uniquement si l'image est plus grande) + **WebP qualité 80**. Sortie carrée 1:1 quelle que soit la typologie, cohérente pour la grille Shopify.\n\nLes deux branches se rejoignent dans `Fusionner les uploads`, `Limiter à 1 sortie` ramène à un seul item, puis le dossier est renommé :\n- **`✓_`** = traité et validé ;\n- **`⚠_`** = détourage en échec, images produites en mode dégradé, **à relire à la main**.\n\n⚠️ `Edit Image` a besoin d'ImageMagick (présent sur n8n Cloud et sur l'image Docker officielle).",
+        "height": 420,
         "width": 420,
         "color": 6
       },
@@ -155,7 +155,13 @@
             {
               "id": "cfg-3",
               "name": "HF_MODEL_URL",
-              "value": "https://api-inference.huggingface.co/models/briaai/RMBG-1.4",
+              "value": "https://api-inference.huggingface.co/models/ZhengPeng7/BiRefNet",
+              "type": "string"
+            },
+            {
+              "id": "cfg-11",
+              "name": "MODE_COMPOSITION",
+              "value": "cadre",
               "type": "string"
             },
             {
@@ -189,6 +195,12 @@
               "type": "string"
             },
             {
+              "id": "cfg-12",
+              "name": "PREFIXE_ALERTE",
+              "value": "⚠_",
+              "type": "string"
+            },
+            {
               "id": "cfg-5",
               "name": "LARGEUR_MAX",
               "value": "1500",
@@ -213,7 +225,7 @@
         -480,
         580
       ],
-      "notes": "Toutes les valeurs à personnaliser sont ici."
+      "notes": "Toutes les valeurs à personnaliser sont ici. MODE_COMPOSITION : 'cadre' = le produit garde son cadrage d'origine (sûr quelle que soit la typologie) ; 'profil' = mise à l'échelle par typologie (voir le nœud Détecter la typologie)."
     },
     {
       "parameters": {
@@ -265,7 +277,7 @@
           "conditions": [
             {
               "id": "flt-1",
-              "leftValue": "={{ !String($json.name).startsWith($('Config').first().json.PREFIXE_TRAITE) && !String($json.name).startsWith('✓') && !String($json.name).startsWith('*') }}",
+              "leftValue": "={{ !String($json.name).startsWith($('Config').first().json.PREFIXE_TRAITE) && !String($json.name).startsWith('✓') && !String($json.name).startsWith('⚠') && !String($json.name).startsWith('*') }}",
               "rightValue": "",
               "operator": {
                 "type": "boolean",
@@ -287,7 +299,7 @@
         -40,
         580
       ],
-      "notes": "Exclut les dossiers commençant par ✓_ ou *"
+      "notes": "Exclut les dossiers déjà traités (✓_ / *) et ceux en attente de relecture (⚠_). Retirer le ⚠_ à la main pour relancer le traitement d'un dossier."
     },
     {
       "parameters": {
@@ -303,6 +315,20 @@
         580
       ],
       "notes": "1 dossier par itération"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Détecte la typologie du produit à partir du nom du dossier et renvoie le profil à appliquer.\n// C'est ICI qu'on règle le rendu par typologie : il n'y a rien d'autre à modifier ailleurs.\nconst cfg = $('Config').first().json;\nconst dossier = $input.first().json; // le dossier en cours de traitement (id + name)\nconst nom = String(dossier.name || '');\n\n// occupation : part du template occupée par le produit (1 = plein cadre)\n// ancrage    : 'centre' | 'bas'\n// template   : ID Drive d'un fond spécifique à cette typologie ('' = TEMPLATE_FOND_FILE_ID)\n// modele     : URL Hugging Face spécifique ('' = HF_MODEL_URL)\nconst PROFILS = {\n  vetement:   { occupation: 0.90, ancrage: 'centre', template: '', modele: '' },\n  sac:        { occupation: 0.75, ancrage: 'centre', template: '', modele: '' },\n  chaussure:  { occupation: 0.82, ancrage: 'bas',    template: '', modele: '' },\n  bijou:      { occupation: 0.50, ancrage: 'centre', template: '', modele: '' },\n  accessoire: { occupation: 0.65, ancrage: 'centre', template: '', modele: '' },\n  defaut:     { occupation: 0.85, ancrage: 'centre', template: '', modele: '' },\n};\n\n// Mots-clés cherchés dans le nom du dossier (sans accents, mot entier).\n// L'ordre compte : les typologies les plus spécifiques passent avant \"vetement\".\nconst MOTS = {\n  accessoire: ['ceinture', 'lunettes', 'casquette', 'bob', 'echarpe', 'foulard', 'gant', 'gants',\n               'chapeau', 'cravate', 'barrette', 'chouchou', 'porte-cles', 'montre', 'bandana',\n               'mitaine', 'mitaines', 'eventail'],\n  bijou: ['bijou', 'bijoux', 'collier', 'pendentif', 'bague', 'bracelet', 'boucle', 'boucles',\n          'anneau', 'broche', 'piercing', 'ras-de-cou', 'choker'],\n  chaussure: ['chaussure', 'chaussures', 'basket', 'baskets', 'sneaker', 'sneakers', 'botte',\n              'bottes', 'bottine', 'bottines', 'sandale', 'sandales', 'mule', 'mules',\n              'escarpin', 'escarpins', 'talon', 'talons', 'tong', 'tongs', 'ballerine'],\n  sac: ['sac', 'sacs', 'sacoche', 'pochette', 'cabas', 'bandouliere', 'besace', 'tote',\n        'portefeuille', 'porte-monnaie', 'trousse'],\n  vetement: ['robe', 'top', 'debardeur', 'tshirt', 't-shirt', 'chemise', 'chemisier', 'pull',\n             'gilet', 'veste', 'blouson', 'manteau', 'pantalon', 'jean', 'jeans', 'jupe', 'short',\n             'combinaison', 'body', 'corset', 'bustier', 'sweat', 'hoodie', 'cardigan', 'legging',\n             'jogging', 'maillot', 'crop', 'brassiere', 'kimono', 'salopette'],\n};\n\nconst sansAccents = (t) => String(t).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();\nconst nomNorm = sansAccents(nom);\n\n// 1) tag explicite prioritaire dans le nom du dossier, ex : \"Sac Baguette Rose [sac]\"\nlet typologie = null;\nconst tag = nomNorm.match(/\\[([a-z]+)\\]/);\nif (tag && PROFILS[tag[1]]) typologie = tag[1];\n\n// 2) sinon, détection par mot-clé\nif (!typologie) {\n  for (const [type, mots] of Object.entries(MOTS)) {\n    if (mots.some((m) => new RegExp('(^|[^a-z0-9])' + m + '([^a-z0-9]|$)').test(nomNorm))) {\n      typologie = type;\n      break;\n    }\n  }\n}\nif (!typologie) typologie = 'defaut';\n\nconst profil = { ...PROFILS.defaut, ...(PROFILS[typologie] || {}) };\n\n// MODE_COMPOSITION = 'cadre' -> on conserve le cadrage d'origine (occupation 1) : aucun risque\n// de sur-agrandir un petit objet. 'profil' -> on applique l'occupation de la typologie.\nconst mode = String(cfg.MODE_COMPOSITION || 'cadre').toLowerCase() === 'profil' ? 'profil' : 'cadre';\nconst occupation = mode === 'profil' ? Number(profil.occupation) || 0.85 : 1;\n\nconst largeurFond = Number(cfg.TEMPLATE_LARGEUR) || 1500;\nconst hauteurFond = Number(cfg.TEMPLATE_HAUTEUR) || 1500;\n\nreturn [{\n  json: {\n    ...dossier, // id et name du dossier : la suite du workflow s'en sert\n    typologie,\n    mode,\n    occupation,\n    ancrage: profil.ancrage || 'centre',\n    tailleProduit: Math.round(Math.min(largeurFond, hauteurFond) * occupation),\n    templateFileId: profil.template || cfg.TEMPLATE_FOND_FILE_ID,\n    modelUrl: profil.modele || cfg.HF_MODEL_URL,\n  },\n}];\n"
+      },
+      "id": "node-typologie",
+      "name": "Détecter la typologie",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        340,
+        700
+      ],
+      "notes": "Robe / sac / bijou / chaussure / accessoire : profil (taille, ancrage, fond, modèle) déduit du nom du dossier. Tag explicite possible : [bijou]."
     },
     {
       "parameters": {
@@ -452,7 +478,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Config').first().json.HF_MODEL_URL }}",
+        "url": "={{ $('Détecter la typologie').first().json.modelUrl }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -483,7 +509,7 @@
         }
       },
       "id": "node-huggingface",
-      "name": "Hugging Face - Détourage (RMBG-1.4)",
+      "name": "Hugging Face - Détourage",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
@@ -493,11 +519,12 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 15000,
-      "notes": "POST du binaire brut (Body Content Type = n8n Binary File, champ 'data'). Le header x-wait-for-model évite les 503 au démarrage à froid du modèle."
+      "notes": "POST du binaire brut (Body Content Type = n8n Binary File, champ 'data'). URL = modèle du profil de typologie. onError = continue : si HF tombe, le dossier est traité en mode dégradé et marqué ⚠_ au lieu de bloquer la boucle.",
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
-        "jsCode": "// Normalise la réponse de l'API Hugging Face.\n// Selon le modèle / le provider, l'inference API renvoie soit :\n//   - une image binaire (PNG détouré, fond transparent)\n//   - soit du JSON : [{ label, score, mask: \"<png en base64>\" }]  (pipeline image-segmentation)\n// Ce nœud produit toujours un item exploitable par la suite du workflow.\n\nconst items = $input.all();\nconst original = $('Télécharger la photo principale').first().binary.data;\n\nconst isImage = (b) => b && String(b.mimeType || '').startsWith('image/');\n\n// --- Cas 1 : Hugging Face a renvoyé directement l'image détourée\nfor (const it of items) {\n  const bin = it.binary || {};\n  const img = Object.values(bin).find(isImage);\n  if (img) {\n    return [{ json: { hfMode: 'cutout' }, binary: { data: img } }];\n  }\n}\n\n// --- Cas 2 : réponse JSON (un item par entrée du tableau renvoyé par HF)\nconst rows = [];\nfor (let idx = 0; idx < items.length; idx++) {\n  let j = items[idx].json;\n  const bin = items[idx].binary || {};\n  const keys = Object.keys(bin);\n  if ((!j || Object.keys(j).length === 0) && keys.length) {\n    try {\n      const buf = await this.helpers.getBinaryDataBuffer(idx, keys[0]);\n      j = JSON.parse(buf.toString('utf8'));\n    } catch (e) {\n      // ignoré : on tombera sur l'erreur explicite plus bas\n    }\n  }\n  if (Array.isArray(j)) rows.push(...j);\n  else if (j) rows.push(j);\n}\n\nconst erreur = rows.find((r) => r && r.error);\nif (erreur) {\n  throw new Error('Hugging Face a renvoyé une erreur : ' + JSON.stringify(erreur.error));\n}\n\nconst masques = rows\n  .filter((r) => r && typeof r.mask === 'string' && r.mask.length > 100)\n  .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));\n\nconst choisi = masques.find((r) => !/back(ground)?|bg|fond/i.test(String(r.label || ''))) || masques[0];\n\nif (!choisi) {\n  throw new Error(\n    'Réponse Hugging Face inattendue (ni image, ni masque). Extrait : ' +\n      JSON.stringify(rows).slice(0, 300),\n  );\n}\n\nconst masque = await this.helpers.prepareBinaryData(\n  Buffer.from(choisi.mask, 'base64'),\n  'masque.png',\n  'image/png',\n);\n\n// data = photo d'origine, mask = masque alpha -> le nœud suivant fait le détourage\nreturn [{ json: { hfMode: 'mask', label: choisi.label ?? null }, binary: { data: original, mask: masque } }];\n"
+        "jsCode": "// Normalise la réponse de l'API Hugging Face (BiRefNet, RMBG, ...).\n// Trois cas possibles :\n//   1. une image binaire  -> produit déjà détouré\n//   2. du JSON [{ label, score, mask }] -> masque base64 à poser en couche alpha\n//   3. une erreur / une réponse inattendue -> mode dégradé : on garde la photo d'origine\n//      et le dossier sera marqué avec le préfixe d'alerte pour relecture humaine.\nconst items = $input.all();\nconst original = $('Télécharger la photo principale').first().binary.data;\n\nconst isImage = (b) => b && String(b.mimeType || '').startsWith('image/');\nconst degrade = (raison) => [{\n  json: { hfMode: 'echec', avertissement: true, raison: String(raison).slice(0, 300) },\n  binary: { data: original },\n}];\n\n// --- Cas 1 : image détourée renvoyée directement\nfor (const it of items) {\n  const img = Object.values(it.binary || {}).find(isImage);\n  if (img) return [{ json: { hfMode: 'cutout', avertissement: false }, binary: { data: img } }];\n}\n\n// --- Cas 2 : réponse JSON (un item par entrée du tableau renvoyé par HF)\nconst rows = [];\nfor (let idx = 0; idx < items.length; idx++) {\n  let j = items[idx].json;\n  const keys = Object.keys(items[idx].binary || {});\n  if ((!j || Object.keys(j).length === 0) && keys.length) {\n    try {\n      const buf = await this.helpers.getBinaryDataBuffer(idx, keys[0]);\n      j = JSON.parse(buf.toString('utf8'));\n    } catch (e) {\n      // ignoré : traité comme réponse inattendue plus bas\n    }\n  }\n  if (Array.isArray(j)) rows.push(...j);\n  else if (j) rows.push(j);\n}\n\nconst erreur = rows.find((r) => r && r.error);\nif (erreur) return degrade('Hugging Face : ' + JSON.stringify(erreur.error));\n\nconst masques = rows\n  .filter((r) => r && typeof r.mask === 'string' && r.mask.length > 100)\n  .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));\n\nconst choisi = masques.find((r) => !/back(ground)?|bg|fond/i.test(String(r.label || ''))) || masques[0];\nif (!choisi) return degrade('Réponse inattendue (ni image, ni masque) : ' + JSON.stringify(rows));\n\nconst masque = await this.helpers.prepareBinaryData(\n  Buffer.from(choisi.mask, 'base64'),\n  'masque.png',\n  'image/png',\n);\n\n// data = photo d'origine, mask = masque alpha -> le nœud suivant fait le détourage\nreturn [{\n  json: { hfMode: 'mask', avertissement: false, label: choisi.label ?? null },\n  binary: { data: original, mask: masque },\n}];\n"
       },
       "id": "node-hf-normalize",
       "name": "Normaliser la sortie HF",
@@ -507,7 +534,7 @@
         1820,
         560
       ],
-      "notes": "Gère les 2 formats de réponse possibles de l'inference API : image binaire OU JSON avec masque base64."
+      "notes": "Gère les 3 cas : image binaire, masque base64, ou échec (mode dégradé + dossier marqué ⚠_)."
     },
     {
       "parameters": {
@@ -571,22 +598,22 @@
       "parameters": {
         "operation": "resize",
         "dataPropertyName": "data",
-        "width": "={{ $('Config').first().json.VETEMENT_MAX }}",
-        "height": "={{ $('Config').first().json.VETEMENT_MAX }}",
+        "width": "={{ $('Détecter la typologie').first().json.tailleProduit }}",
+        "height": "={{ $('Détecter la typologie').first().json.tailleProduit }}",
         "resizeOption": "maximumArea",
         "options": {
           "format": "png"
         }
       },
       "id": "node-resize-cutout",
-      "name": "Redimensionner le vêtement",
+      "name": "Redimensionner le produit",
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
         2480,
         560
       ],
-      "notes": "Le vêtement détouré est mis à l'échelle pour tenir dans le template (VETEMENT_MAX), sans déformation."
+      "notes": "Mise à l'échelle du produit détouré selon la typologie (tailleProduit). En mode 'cadre' = taille du template : le cadrage d'origine est conservé."
     },
     {
       "parameters": {
@@ -594,7 +621,7 @@
         "dataPropertyName": "data"
       },
       "id": "node-measure",
-      "name": "Mesurer le vêtement",
+      "name": "Mesurer le produit",
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
@@ -608,7 +635,7 @@
         "operation": "download",
         "fileId": {
           "__rl": true,
-          "value": "={{ $('Config').first().json.TEMPLATE_FOND_FILE_ID }}",
+          "value": "={{ $('Détecter la typologie').first().json.templateFileId }}",
           "mode": "id"
         },
         "options": {
@@ -625,11 +652,11 @@
       ],
       "retryOnFail": true,
       "maxTries": 3,
-      "notes": "Ton fond Y2K stocké dans Drive (idéalement 1500x1500, mêmes valeurs que TEMPLATE_LARGEUR/HAUTEUR)."
+      "notes": "Fond du profil de typologie (ou TEMPLATE_FOND_FILE_ID par défaut) : tu peux avoir un template par catégorie."
     },
     {
       "parameters": {
-        "jsCode": "// Réunit dans un seul item : le fond (template Y2K) + le vêtement détouré,\n// et calcule la position pour centrer le vêtement sur le fond.\nconst cfg = $('Config').first().json;\n\nconst vetement = $('Redimensionner le vêtement').first().binary.data;\nconst fond = $input.first().binary.background;\n\nconst info = $('Mesurer le vêtement').first().json;\nconst largeurVetement = Number(info?.size?.width ?? info?.width ?? 0);\nconst hauteurVetement = Number(info?.size?.height ?? info?.height ?? 0);\n\nconst largeurFond = Number(cfg.TEMPLATE_LARGEUR) || 1500;\nconst hauteurFond = Number(cfg.TEMPLATE_HAUTEUR) || 1500;\n\nconst posX = Math.max(0, Math.round((largeurFond - largeurVetement) / 2));\nconst posY = Math.max(0, Math.round((hauteurFond - hauteurVetement) / 2));\n\nreturn [{\n  json: { posX, posY, largeurVetement, hauteurVetement, largeurFond, hauteurFond },\n  binary: { data: fond, cutout: vetement },\n}];\n"
+        "jsCode": "// Réunit dans un seul item : le fond (template Y2K) + le produit détouré,\n// et calcule la position selon l'ancrage du profil de typologie.\nconst cfg = $('Config').first().json;\nconst profil = $('Détecter la typologie').first().json;\n\nconst produit = $('Redimensionner le produit').first().binary.data;\nconst fond = $input.first().binary.background;\n\nconst info = $('Mesurer le produit').first().json;\nconst largeurProduit = Number(info?.size?.width ?? info?.width ?? 0);\nconst hauteurProduit = Number(info?.size?.height ?? info?.height ?? 0);\n\nconst largeurFond = Number(cfg.TEMPLATE_LARGEUR) || 1500;\nconst hauteurFond = Number(cfg.TEMPLATE_HAUTEUR) || 1500;\n\nconst posX = Math.max(0, Math.round((largeurFond - largeurProduit) / 2));\n\n// ancrage 'bas' (chaussures, sacs posés) : le produit repose sur une marge basse de 6 %\nconst margeBasse = Math.round(hauteurFond * 0.06);\nconst posY = profil.ancrage === 'bas'\n  ? Math.max(0, hauteurFond - hauteurProduit - margeBasse)\n  : Math.max(0, Math.round((hauteurFond - hauteurProduit) / 2));\n\nreturn [{\n  json: {\n    posX,\n    posY,\n    typologie: profil.typologie,\n    mode: profil.mode,\n    largeurProduit,\n    hauteurProduit,\n    largeurFond,\n    hauteurFond,\n  },\n  binary: { data: fond, cutout: produit },\n}];\n"
       },
       "id": "node-prepare-composite",
       "name": "Préparer la composition",
@@ -639,7 +666,7 @@
         3140,
         560
       ],
-      "notes": "Regroupe fond (binary.data) + vêtement (binary.cutout) dans le même item et calcule posX/posY."
+      "notes": "Regroupe fond (binary.data) + produit (binary.cutout) et calcule posX/posY selon l'ancrage de la typologie."
     },
     {
       "parameters": {
@@ -827,11 +854,11 @@
           "value": "={{ $('Boucle dossiers').first().json.id }}",
           "mode": "id"
         },
-        "newUpdatedFileName": "={{ $('Config').first().json.PREFIXE_TRAITE }}{{ $('Boucle dossiers').first().json.name }}",
+        "newUpdatedFileName": "={{ $('Normaliser la sortie HF').first().json.avertissement ? $('Config').first().json.PREFIXE_ALERTE : $('Config').first().json.PREFIXE_TRAITE }}{{ $('Boucle dossiers').first().json.name }}",
         "options": {}
       },
       "id": "node-rename",
-      "name": "Renommer dossier (prefixe valide)",
+      "name": "Renommer le dossier (validation)",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
@@ -840,7 +867,7 @@
       ],
       "retryOnFail": true,
       "maxTries": 3,
-      "notes": "Un dossier Drive est un fichier : file:update permet de le renommer."
+      "notes": "✓_ si le détourage a réussi, ⚠_ si le dossier est passé en mode dégradé (à relire à la main)."
     },
     {
       "parameters": {
@@ -948,7 +975,7 @@
         ],
         [
           {
-            "node": "Lister les images du dossier",
+            "node": "Détecter la typologie",
             "type": "main",
             "index": 0
           }
@@ -1017,7 +1044,7 @@
       "main": [
         [
           {
-            "node": "Hugging Face - Détourage (RMBG-1.4)",
+            "node": "Hugging Face - Détourage",
             "type": "main",
             "index": 0
           }
@@ -1094,14 +1121,14 @@
       "main": [
         [
           {
-            "node": "Renommer dossier (prefixe valide)",
+            "node": "Renommer le dossier (validation)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Renommer dossier (prefixe valide)": {
+    "Renommer le dossier (validation)": {
       "main": [
         [
           {
@@ -1123,7 +1150,7 @@
         ]
       ]
     },
-    "Hugging Face - Détourage (RMBG-1.4)": {
+    "Hugging Face - Détourage": {
       "main": [
         [
           {
@@ -1156,7 +1183,7 @@
         ],
         [
           {
-            "node": "Redimensionner le vêtement",
+            "node": "Redimensionner le produit",
             "type": "main",
             "index": 0
           }
@@ -1167,25 +1194,25 @@
       "main": [
         [
           {
-            "node": "Redimensionner le vêtement",
+            "node": "Redimensionner le produit",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Redimensionner le vêtement": {
+    "Redimensionner le produit": {
       "main": [
         [
           {
-            "node": "Mesurer le vêtement",
+            "node": "Mesurer le produit",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Mesurer le vêtement": {
+    "Mesurer le produit": {
       "main": [
         [
           {
@@ -1223,6 +1250,17 @@
         [
           {
             "node": "Optimiser WebP (principale)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Détecter la typologie": {
+      "main": [
+        [
+          {
+            "node": "Lister les images du dossier",
             "type": "main",
             "index": 0
           }
