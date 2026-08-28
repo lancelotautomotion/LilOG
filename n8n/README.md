@@ -14,7 +14,7 @@ n8n → **Workflows** → **Import from File…** (ou coller le JSON sur le canv
 
 | Où | Quoi |
 |---|---|
-| Nœud `Config` | `PARENT_FOLDER_ID`, `DETOURAGE_SPACE_URL` / `DETOURAGE_FN`, `HUGGINGFACE_API_KEY` (utile seulement pour un Space privé), `MODE_COMPOSITION`, `TEMPLATE_FOND_FILE_ID`, `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR`, `PREFIXE_TRAITE`, `PREFIXE_ALERTE` |
+| Nœud `Config` | `PARENT_FOLDER_ID`, `DETOURAGE_SPACE_URL` / `DETOURAGE_FN`, `MODE_COMPOSITION`, `TEMPLATE_FOND_FILE_ID`, `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR`, `PREFIXE_TRAITE`, `PREFIXE_ALERTE` |
 | Nœud `Détecter la typologie` | objet `PROFILS` : taille, ancrage, fond et modèle par catégorie de produit |
 | Nœud `Déclencher workflow Shopify` | ID du workflow de publication Shopify |
 | Tous les nœuds Google Drive | sélectionner la credential *Google Drive OAuth2* |
@@ -76,9 +76,15 @@ remplacé, aucun modèle de suppression de fond n'est servi gratuitement : `Zhen
 facturé à l'image.
 
 Le workflow appelle donc un **Space Gradio sur CPU** (`hysts-mcp/rembg` par défaut) : gratuit, sans
-quota, ~3 à 10 s par image. Recommandé : dupliquer ce Space dans son propre compte HF (CPU basic,
-gratuit) et mettre son URL dans `DETOURAGE_SPACE_URL` pour ne pas partager la file d'attente ; le
-header `Authorization` est déjà envoyé, un Space privé fonctionne donc aussi.
+quota, sans compte ni authentification, ~3 à 10 s par image.
+
+Dupliquer ce Space dans son propre compte **n'est plus gratuit** : Hugging Face réserve désormais la
+création d'un Space CPU Basic aux comptes PRO. On utilise donc le Space public tel quel — file
+d'attente partagée, mais aucun quota.
+
+Filet de sécurité : 3 tentatives espacées de 15 s à chaque étape, puis mode dégradé (dossier marqué
+`⚠_`, photo d'origine conservée, boucle jamais bloquée). Il suffit de retirer le `⚠_` pour relancer
+un dossier au run suivant.
 
 Pour changer de Space, il suffit de `DETOURAGE_SPACE_URL` + `DETOURAGE_FN` (le nom de l'endpoint
 Gradio, visible sur `https://<space>.hf.space/gradio_api/info`), à condition qu'il prenne une image
