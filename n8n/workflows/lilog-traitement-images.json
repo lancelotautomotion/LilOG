@@ -1,5 +1,5 @@
 {
-  "name": "Lil'OG — Traitement images produits (Drive → Photoroom → WebP)",
+  "name": "Lil'OG — Traitement images produits (Drive → Hugging Face → WebP)",
   "active": false,
   "settings": {
     "executionOrder": "v1",
