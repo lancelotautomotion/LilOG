@@ -82,6 +82,13 @@ Dupliquer ce Space dans son propre compte **n'est plus gratuit** : Hugging Face 
 création d'un Space CPU Basic aux comptes PRO. On utilise donc le Space public tel quel — file
 d'attente partagée, mais aucun quota.
 
+**Licence et usage commercial.** Le Space épingle `rembg==2.0.67` (logiciel sous MIT), dont le modèle
+par défaut est `u2net`, publié sous **Apache 2.0** : usage commercial autorisé sans redevance.
+Attention, les versions **récentes** de rembg ont basculé leur modèle par défaut sur `bria-rmbg`
+(RMBG-2.0), sous licence BRIA qui exige un accord payant pour le commercial. Sur une instance
+auto-hébergée, forcer explicitement `-m u2net` (Apache 2.0) ou `-m birefnet-general` (BiRefNet, MIT).
+Ce point est à revérifier si le Space est mis à jour un jour.
+
 Filet de sécurité : 3 tentatives espacées de 15 s à chaque étape, puis mode dégradé (dossier marqué
 `⚠_`, photo d'origine conservée, boucle jamais bloquée). Il suffit de retirer le `⚠_` pour relancer
 un dossier au run suivant.
