@@ -113,7 +113,7 @@ function megabytes(amount: number) {
 function Fieldset({ n, children }: { n: string; children: React.ReactNode }) {
   return (
     <fieldset
-      className="rounded-md border-2 p-3"
+      className="rounded-md border-2 p-2.5"
       style={{ borderColor: `${BEVEL_LO} ${BEVEL_HI} ${BEVEL_HI} ${BEVEL_LO}` }}
     >
       <legend className={`${MONO} px-1.5 text-[0.8125rem] font-bold tracking-[0.05em] text-[#2b0f6b] uppercase`}>
@@ -238,7 +238,7 @@ export function SetupWizard({
   }
 
   return (
-    <main className="relative px-[clamp(12px,4vw,48px)] pt-[clamp(92px,11vw,132px)] pb-[clamp(24px,4vw,48px)]">
+    <main className="relative flex min-h-[100svh] flex-col justify-center px-[clamp(12px,4vw,48px)] pt-[clamp(64px,9vh,100px)] pb-[clamp(8px,1.6vh,28px)]">
       <style>{WIZARD_CSS}</style>
       <LeopardBackdrop />
 
@@ -264,7 +264,7 @@ export function SetupWizard({
         </div>
 
         {/* ---- Corps : aplat clair uni, plus de papier millimétré ---- */}
-        <div className="relative bg-[#f0f0f5] p-[clamp(14px,3vw,32px)]">
+        <div className="relative bg-[#f0f0f5] px-[clamp(14px,3vw,32px)] py-[clamp(10px,2vh,22px)]">
           {/* Pastilles décoratives, comme /faq et /contact. */}
           <span aria-hidden className="pointer-events-none absolute inset-0 z-[2] hidden sm:block">
             <span
@@ -281,7 +281,7 @@ export function SetupWizard({
             </span>
           </span>
 
-          <div className="relative z-[1] grid gap-[clamp(20px,3vw,36px)] lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]">
+          <div className="relative z-[1] grid gap-x-[clamp(20px,3vw,36px)] gap-y-[clamp(14px,2vh,24px)] lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]">
             {/* ================= COLONNE GAUCHE : LE DISQUE =================
                 `h-full` prend la hauteur que la grille lui étire déjà (elle
                 égale par défaut celle de la colonne de droite, la plus
@@ -295,7 +295,7 @@ export function SetupWizard({
             </div>
 
             {/* ================= COLONNE DROITE : LES RÉGLAGES ================= */}
-            <div className="min-w-0 space-y-[clamp(16px,2.4vw,24px)]">
+            <div className="min-w-0 space-y-[clamp(10px,2vh,18px)]">
               {/* ---------- ÉTAPE 1 ---------- */}
               <Fieldset n="1. Sélectionner la capacité du disque">
                 {noDisc ? (
@@ -306,7 +306,7 @@ export function SetupWizard({
                     boutique pour le moment.
                   </p>
                 ) : (
-                  <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                     {capacities.map((c, i) => {
                       const on = picked?.variantId === c.variantId;
                       const max = i === capacities.length - 1 && capacities.length > 1;
@@ -317,7 +317,7 @@ export function SetupWizard({
                           aria-pressed={on}
                           disabled={!c.available || burning}
                           onClick={() => setPicked(c)}
-                          className={`${MONO} flex items-center gap-2.5 rounded-md border px-3 py-2.5 text-left transition disabled:cursor-not-allowed disabled:opacity-45 ${
+                          className={`${MONO} flex items-center gap-2.5 rounded-md border px-3 py-2 text-left transition disabled:cursor-not-allowed disabled:opacity-45 ${
                             on
                               ? `translate-y-[2px] border-[#12b45c] bg-[#1e2430] text-white ${BEVEL_IN}`
                               : `border-[#c6c2d8] ${PLASTIC_FACE} text-[#262626] ${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105`
@@ -339,8 +339,8 @@ export function SetupWizard({
                             )}
                           </span>
                           <span className="min-w-0">
-                            <span className="block text-[0.875rem] font-bold tracking-[0.03em] uppercase">
-                              {max ? "[ CAPACITÉ MAX 💸 ]" : `[ ${megabytes(c.amount)} ]`}
+                            <span className="block text-[0.875rem] font-bold tracking-[0.03em] whitespace-nowrap uppercase">
+                              {max ? "[ MAX 💸 ]" : `[ ${megabytes(c.amount)} ]`}
                             </span>
                             <span
                               className="block text-[0.8125rem]"
@@ -358,7 +358,7 @@ export function SetupWizard({
 
               {/* ---------- ÉTAPE 2 ---------- */}
               <Fieldset n="2. Informations de licence">
-                <div className="space-y-4">
+                <div className="space-y-[clamp(10px,1.6vh,16px)]">
                   <div>
                     <label
                       htmlFor="gc-email"
@@ -402,7 +402,7 @@ export function SetupWizard({
                     </label>
                     <textarea
                       id="gc-message"
-                      rows={4}
+                      rows={3}
                       maxLength={MESSAGE_MAX}
                       disabled={noDisc || burning}
                       value={message}
@@ -423,7 +423,7 @@ export function SetupWizard({
         {/* ================= PIED DE L'ASSISTANT ================= */}
         {/* Séparé du corps par une rainure, et le bouton d'action à droite :
             c'est la disposition d'un assistant Windows. */}
-        <div className="border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-[clamp(12px,3vw,32px)] py-[clamp(12px,2vw,18px)]">
+        <div className="border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-[clamp(12px,3vw,32px)] py-[clamp(8px,1.4vh,14px)]">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             {/* Jauge + journal */}
             <div className="min-w-0 flex-1">
