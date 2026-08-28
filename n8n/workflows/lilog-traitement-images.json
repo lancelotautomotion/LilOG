@@ -10,8 +10,8 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\" (dans l'URL du dossier : `drive.google.com/drive/folders/**CET_ID**`)\n- `PHOTOROOM_API_KEY` : clé API Photoroom (`sandbox_...` pour tester gratuitement)\n- `PHOTOROOM_TEMPLATE_ID` : ID du template de fond Photoroom\n- `PREFIXE_TRAITE` : marqueur de validation, par défaut `✓_`\n\n**Nœud `Déclencher workflow Shopify`** : coller l'ID de ton workflow de publication.\n\n**Credentials** : ouvrir chaque nœud Google Drive et sélectionner ton compte (Google Drive OAuth2).",
-        "height": 420,
+        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\" (`drive.google.com/drive/folders/**CET_ID**`)\n- `HUGGINGFACE_API_KEY` : token Hugging Face (`hf_...`, Settings → Access Tokens, lecture suffit)\n- `HF_MODEL_URL` : modèle de détourage (défaut `briaai/RMBG-1.4`)\n- `TEMPLATE_FOND_FILE_ID` : ID du fichier Drive de ton template Y2K\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : taille réelle du template (défaut 1500x1500)\n- `VETEMENT_MAX` : taille max du vêtement posé sur le fond (défaut 1200)\n- `PREFIXE_TRAITE` : marqueur de validation, par défaut `✓_`\n\n**Nœud `Déclencher workflow Shopify`** : coller l'ID de ton workflow de publication.\n\n**Credentials** : ouvrir chaque nœud Google Drive et sélectionner ton compte (Google Drive OAuth2). Aucune credential à créer pour Hugging Face : le token passe par le header `Authorization`.",
+        "height": 480,
         "width": 420,
         "color": 4
       },
@@ -42,23 +42,39 @@
     },
     {
       "parameters": {
-        "content": "## 3. Photo principale → Photoroom\n\nLe nœud `Classer les images` trie les fichiers par nom et désigne la **photo principale** (nom contenant `main`, `principale`, `cover` ou `1`, sinon la 1ère image).\n\nSeule cette photo part chez Photoroom (`/v2/edit`) : **détourage + template de fond en une seule requête**.\n\n➜ Binaire envoyé en `multipart/form-data` (champ `imageFile`), réponse récupérée en **fichier binaire** (`data`).\n\n*Pas encore de template ?* Remplace le paramètre de requête `templateId` par `background.color` = `FFFFFF`.",
-        "height": 380,
-        "width": 400,
+        "content": "## 3. Photo principale -> Hugging Face (gratuit)\n\n`Classer les images` désigne la **photo principale** (nom contenant `main`, `principale`, `cover` ou `1`, sinon la 1ère image). Seule celle-ci part au détourage.\n\n**Appel HF** : `POST {{ HF_MODEL_URL }}` (par défaut `api-inference.huggingface.co/models/briaai/RMBG-1.4`), header `Authorization: Bearer <token>`, **corps = fichier binaire brut** (`Body Content Type` = *n8n Binary File*, champ `data`).\n\n**Deux réponses possibles** selon le modèle/provider :\n- une image PNG détourée -> utilisée telle quelle ;\n- du JSON `[{ label, score, mask: base64 }]` (pipeline *image-segmentation*, cas le plus fréquent avec RMBG) -> `Normaliser la sortie HF` décode le masque et `Appliquer le masque (alpha)` le pose en couche alpha (**CopyOpacity**).\n\n⚠️ **Licence** : RMBG-1.4 est en licence BRIA *non commerciale*. Pour une boutique qui vend, prendre une licence BRIA ou basculer `HF_MODEL_URL` sur un modèle permissif (ex. `https://api-inference.huggingface.co/models/ZhengPeng7/BiRefNet`, MIT).\n\n⚠️ Le tier gratuit HF a un quota mensuel et des démarrages à froid (503) : le header `x-wait-for-model` + 3 tentatives espacées de 15 s absorbent ça.",
+        "height": 560,
+        "width": 700,
         "color": 3
       },
       "id": "sticky-photoroom",
-      "name": "Note - Photoroom",
+      "name": "Note - Hugging Face",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1120,
-        20
+        1560,
+        -60
       ]
     },
     {
       "parameters": {
-        "content": "## 4. Optimisation + upload + validation\n\n`Edit Image` : redimensionne à **1500 px max** (uniquement si l'image est plus grande) et exporte en **WebP qualité 80**.\n\nLes deux branches se rejoignent dans `Fusionner les uploads`, `Limiter à 1 sortie` ramène à un seul item, puis le dossier est **renommé avec le préfixe `✓_`** = marqueur de validation.\n\nLe fil repart ensuite dans la boucle pour le dossier suivant.\n\n⚠️ `Edit Image` a besoin d'ImageMagick (présent sur n8n Cloud et sur l'image Docker officielle).",
+        "content": "## 3 bis. Superposition du template Y2K\n\n`Redimensionner le vêtement` met le PNG détouré à l'échelle (**VETEMENT_MAX**, sans déformation), `Mesurer le vêtement` récupère ses dimensions réelles, `Télécharger le template de fond` va chercher ton fond dans Drive (**TEMPLATE_FOND_FILE_ID**, propriété binaire `background`).\n\n`Préparer la composition` réunit **fond + vêtement dans le même item** (`data` = fond, `cutout` = vêtement) et calcule `posX`/`posY` pour **centrer** le vêtement.\n\n`Superposer sur le template (Composite)` = nœud natif **Edit Image → Composite**, opérateur `Over`.\n\nRenseigne `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` avec la taille réelle de ton fond (défaut 1500x1500).",
+        "height": 420,
+        "width": 620,
+        "color": 3
+      },
+      "id": "sticky-template",
+      "name": "Note - Template de fond",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 4. Optimisation + upload + validation\n\n`Edit Image` : redimensionne à **1500 px max** (uniquement si l'image est plus grande) et exporte en **WebP qualité 80**.\n\nLes deux branches (principale / secondaires) se rejoignent dans `Fusionner les uploads`, `Limiter à 1 sortie` ramène à un seul item, puis le dossier est **renommé avec le préfixe `✓_`** = marqueur de validation.\n\nLe fil repart ensuite dans la boucle pour le dossier suivant.\n\n⚠️ `Edit Image` a besoin d'ImageMagick (présent sur n8n Cloud et sur l'image Docker officielle).",
         "height": 380,
         "width": 420,
         "color": 6
@@ -68,8 +84,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2000,
-        20
+        3540,
+        -60
       ]
     },
     {
@@ -132,15 +148,39 @@
             },
             {
               "id": "cfg-2",
-              "name": "PHOTOROOM_API_KEY",
-              "value": "REMPLACER_PAR_CLE_API_PHOTOROOM",
+              "name": "HUGGINGFACE_API_KEY",
+              "value": "REMPLACER_PAR_TOKEN_HUGGINGFACE_hf_xxx",
               "type": "string"
             },
             {
               "id": "cfg-3",
-              "name": "PHOTOROOM_TEMPLATE_ID",
-              "value": "REMPLACER_PAR_ID_TEMPLATE_PHOTOROOM",
+              "name": "HF_MODEL_URL",
+              "value": "https://api-inference.huggingface.co/models/briaai/RMBG-1.4",
               "type": "string"
+            },
+            {
+              "id": "cfg-7",
+              "name": "TEMPLATE_FOND_FILE_ID",
+              "value": "REMPLACER_PAR_ID_FICHIER_DRIVE_DU_TEMPLATE_Y2K",
+              "type": "string"
+            },
+            {
+              "id": "cfg-8",
+              "name": "TEMPLATE_LARGEUR",
+              "value": "1500",
+              "type": "number"
+            },
+            {
+              "id": "cfg-9",
+              "name": "TEMPLATE_HAUTEUR",
+              "value": "1500",
+              "type": "number"
+            },
+            {
+              "id": "cfg-10",
+              "name": "VETEMENT_MAX",
+              "value": "1200",
+              "type": "number"
             },
             {
               "id": "cfg-4",
@@ -412,60 +452,38 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://image-api.photoroom.com/v2/edit",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "templateId",
-              "value": "={{ $('Config').first().json.PHOTOROOM_TEMPLATE_ID }}"
-            },
-            {
-              "name": "removeBackground",
-              "value": "true"
-            },
-            {
-              "name": "padding",
-              "value": "0.05"
-            }
-          ]
-        },
+        "url": "={{ $('Config').first().json.HF_MODEL_URL }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
-              "name": "x-api-key",
-              "value": "={{ $('Config').first().json.PHOTOROOM_API_KEY }}"
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Config').first().json.HUGGINGFACE_API_KEY }}"
             },
             {
               "name": "Accept",
-              "value": "image/png, application/json"
+              "value": "image/png"
+            },
+            {
+              "name": "x-wait-for-model",
+              "value": "true"
             }
           ]
         },
         "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "parameterType": "formBinaryData",
-              "name": "imageFile",
-              "inputDataFieldName": "data"
-            }
-          ]
-        },
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
         "options": {
-          "timeout": 120000,
+          "timeout": 180000,
           "response": {
             "response": {
-              "responseFormat": "file",
-              "outputPropertyName": "data"
+              "neverError": false
             }
           }
         }
       },
-      "id": "node-photoroom",
-      "name": "Photoroom - Détourage + Template",
+      "id": "node-huggingface",
+      "name": "Hugging Face - Détourage (RMBG-1.4)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
@@ -473,9 +491,177 @@
         560
       ],
       "retryOnFail": true,
-      "maxTries": 2,
-      "waitBetweenTries": 3000,
-      "notes": "Détourage + fond template en 1 appel. Sans template : remplacer le paramètre templateId par background.color = FFFFFF."
+      "maxTries": 3,
+      "waitBetweenTries": 15000,
+      "notes": "POST du binaire brut (Body Content Type = n8n Binary File, champ 'data'). Le header x-wait-for-model évite les 503 au démarrage à froid du modèle."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalise la réponse de l'API Hugging Face.\n// Selon le modèle / le provider, l'inference API renvoie soit :\n//   - une image binaire (PNG détouré, fond transparent)\n//   - soit du JSON : [{ label, score, mask: \"<png en base64>\" }]  (pipeline image-segmentation)\n// Ce nœud produit toujours un item exploitable par la suite du workflow.\n\nconst items = $input.all();\nconst original = $('Télécharger la photo principale').first().binary.data;\n\nconst isImage = (b) => b && String(b.mimeType || '').startsWith('image/');\n\n// --- Cas 1 : Hugging Face a renvoyé directement l'image détourée\nfor (const it of items) {\n  const bin = it.binary || {};\n  const img = Object.values(bin).find(isImage);\n  if (img) {\n    return [{ json: { hfMode: 'cutout' }, binary: { data: img } }];\n  }\n}\n\n// --- Cas 2 : réponse JSON (un item par entrée du tableau renvoyé par HF)\nconst rows = [];\nfor (let idx = 0; idx < items.length; idx++) {\n  let j = items[idx].json;\n  const bin = items[idx].binary || {};\n  const keys = Object.keys(bin);\n  if ((!j || Object.keys(j).length === 0) && keys.length) {\n    try {\n      const buf = await this.helpers.getBinaryDataBuffer(idx, keys[0]);\n      j = JSON.parse(buf.toString('utf8'));\n    } catch (e) {\n      // ignoré : on tombera sur l'erreur explicite plus bas\n    }\n  }\n  if (Array.isArray(j)) rows.push(...j);\n  else if (j) rows.push(j);\n}\n\nconst erreur = rows.find((r) => r && r.error);\nif (erreur) {\n  throw new Error('Hugging Face a renvoyé une erreur : ' + JSON.stringify(erreur.error));\n}\n\nconst masques = rows\n  .filter((r) => r && typeof r.mask === 'string' && r.mask.length > 100)\n  .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));\n\nconst choisi = masques.find((r) => !/back(ground)?|bg|fond/i.test(String(r.label || ''))) || masques[0];\n\nif (!choisi) {\n  throw new Error(\n    'Réponse Hugging Face inattendue (ni image, ni masque). Extrait : ' +\n      JSON.stringify(rows).slice(0, 300),\n  );\n}\n\nconst masque = await this.helpers.prepareBinaryData(\n  Buffer.from(choisi.mask, 'base64'),\n  'masque.png',\n  'image/png',\n);\n\n// data = photo d'origine, mask = masque alpha -> le nœud suivant fait le détourage\nreturn [{ json: { hfMode: 'mask', label: choisi.label ?? null }, binary: { data: original, mask: masque } }];\n"
+      },
+      "id": "node-hf-normalize",
+      "name": "Normaliser la sortie HF",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1820,
+        560
+      ],
+      "notes": "Gère les 2 formats de réponse possibles de l'inference API : image binaire OU JSON avec masque base64."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "if-mask-1",
+              "leftValue": "={{ $json.hfMode === 'mask' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "node-if-mask",
+      "name": "Masque à appliquer ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2040,
+        560
+      ],
+      "notes": "Vrai = HF a renvoyé un masque, il faut le poser en couche alpha. Faux = image déjà détourée."
+    },
+    {
+      "parameters": {
+        "operation": "composite",
+        "dataPropertyName": "data",
+        "dataPropertyNameComposite": "mask",
+        "operator": "CopyOpacity",
+        "positionX": 0,
+        "positionY": 0,
+        "options": {
+          "format": "png"
+        }
+      },
+      "id": "node-apply-mask",
+      "name": "Appliquer le masque (alpha)",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        2260,
+        400
+      ],
+      "notes": "CopyOpacity : le masque devient le canal alpha de la photo -> PNG détouré sur fond transparent."
+    },
+    {
+      "parameters": {
+        "operation": "resize",
+        "dataPropertyName": "data",
+        "width": "={{ $('Config').first().json.VETEMENT_MAX }}",
+        "height": "={{ $('Config').first().json.VETEMENT_MAX }}",
+        "resizeOption": "maximumArea",
+        "options": {
+          "format": "png"
+        }
+      },
+      "id": "node-resize-cutout",
+      "name": "Redimensionner le vêtement",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        560
+      ],
+      "notes": "Le vêtement détouré est mis à l'échelle pour tenir dans le template (VETEMENT_MAX), sans déformation."
+    },
+    {
+      "parameters": {
+        "operation": "information",
+        "dataPropertyName": "data"
+      },
+      "id": "node-measure",
+      "name": "Mesurer le vêtement",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        2700,
+        560
+      ],
+      "notes": "Renvoie les dimensions (size.width / size.height) qui servent à centrer le vêtement."
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Config').first().json.TEMPLATE_FOND_FILE_ID }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "background"
+        }
+      },
+      "id": "node-dl-template",
+      "name": "Télécharger le template de fond",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2920,
+        560
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "notes": "Ton fond Y2K stocké dans Drive (idéalement 1500x1500, mêmes valeurs que TEMPLATE_LARGEUR/HAUTEUR)."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Réunit dans un seul item : le fond (template Y2K) + le vêtement détouré,\n// et calcule la position pour centrer le vêtement sur le fond.\nconst cfg = $('Config').first().json;\n\nconst vetement = $('Redimensionner le vêtement').first().binary.data;\nconst fond = $input.first().binary.background;\n\nconst info = $('Mesurer le vêtement').first().json;\nconst largeurVetement = Number(info?.size?.width ?? info?.width ?? 0);\nconst hauteurVetement = Number(info?.size?.height ?? info?.height ?? 0);\n\nconst largeurFond = Number(cfg.TEMPLATE_LARGEUR) || 1500;\nconst hauteurFond = Number(cfg.TEMPLATE_HAUTEUR) || 1500;\n\nconst posX = Math.max(0, Math.round((largeurFond - largeurVetement) / 2));\nconst posY = Math.max(0, Math.round((hauteurFond - hauteurVetement) / 2));\n\nreturn [{\n  json: { posX, posY, largeurVetement, hauteurVetement, largeurFond, hauteurFond },\n  binary: { data: fond, cutout: vetement },\n}];\n"
+      },
+      "id": "node-prepare-composite",
+      "name": "Préparer la composition",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3140,
+        560
+      ],
+      "notes": "Regroupe fond (binary.data) + vêtement (binary.cutout) dans le même item et calcule posX/posY."
+    },
+    {
+      "parameters": {
+        "operation": "composite",
+        "dataPropertyName": "data",
+        "dataPropertyNameComposite": "cutout",
+        "operator": "Over",
+        "positionX": "={{ $json.posX }}",
+        "positionY": "={{ $json.posY }}",
+        "options": {
+          "format": "png"
+        }
+      },
+      "id": "node-composite-bg",
+      "name": "Superposer sur le template (Composite)",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        3360,
+        560
+      ],
+      "notes": "Le vêtement détouré est posé, centré, par-dessus le template Y2K."
     },
     {
       "parameters": {
@@ -495,7 +681,7 @@
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
-        1820,
+        3580,
         560
       ],
       "notes": "Redimensionne à 1500px max (seulement si plus grand) + export WebP qualité 80. Le champ Quality est masqué dans l'UI quand Format=WebP, mais la valeur 80 est bien appliquée à l'exécution."
@@ -523,7 +709,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        2040,
+        3800,
         560
       ],
       "retryOnFail": true,
@@ -615,7 +801,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        2280,
+        4040,
         700
       ]
     },
@@ -628,7 +814,7 @@
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
       "position": [
-        2480,
+        4240,
         700
       ],
       "notes": "Pour ne renommer le dossier qu'une seule fois"
@@ -649,7 +835,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        2680,
+        4440,
         700
       ],
       "retryOnFail": true,
@@ -831,18 +1017,7 @@
       "main": [
         [
           {
-            "node": "Photoroom - Détourage + Template",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Photoroom - Détourage + Template": {
-      "main": [
-        [
-          {
-            "node": "Optimiser WebP (principale)",
+            "node": "Hugging Face - Détourage (RMBG-1.4)",
             "type": "main",
             "index": 0
           }
@@ -942,6 +1117,112 @@
         [
           {
             "node": "Déclencher workflow Shopify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hugging Face - Détourage (RMBG-1.4)": {
+      "main": [
+        [
+          {
+            "node": "Normaliser la sortie HF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normaliser la sortie HF": {
+      "main": [
+        [
+          {
+            "node": "Masque à appliquer ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Masque à appliquer ?": {
+      "main": [
+        [
+          {
+            "node": "Appliquer le masque (alpha)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Redimensionner le vêtement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Appliquer le masque (alpha)": {
+      "main": [
+        [
+          {
+            "node": "Redimensionner le vêtement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redimensionner le vêtement": {
+      "main": [
+        [
+          {
+            "node": "Mesurer le vêtement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mesurer le vêtement": {
+      "main": [
+        [
+          {
+            "node": "Télécharger le template de fond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Télécharger le template de fond": {
+      "main": [
+        [
+          {
+            "node": "Préparer la composition",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer la composition": {
+      "main": [
+        [
+          {
+            "node": "Superposer sur le template (Composite)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Superposer sur le template (Composite)": {
+      "main": [
+        [
+          {
+            "node": "Optimiser WebP (principale)",
             "type": "main",
             "index": 0
           }
