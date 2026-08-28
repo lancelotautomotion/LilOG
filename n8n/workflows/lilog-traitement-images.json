@@ -10,7 +10,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `HUGGINGFACE_API_KEY` : token Hugging Face (`hf_...`)\n- `HF_MODEL_URL` : modèle de détourage par défaut (BiRefNet)\n- `MODE_COMPOSITION` : `auto` (profil par typologie) ou `cadre` (plein cadre partout, secours)\n- `TEMPLATE_FOND_FILE_ID` : ID du **dossier** contenant le template (ou du fichier directement)\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : secours seulement — la taille réelle est mesurée sur l'image\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : objet `PROFILS` = taille, ancrage, fond et modèle par catégorie. Mannequin = 1 (plein cadre), sac = 0.82, chaussure = 0.78.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : compte Google Drive sur chaque nœud Drive. Rien à créer pour Hugging Face.",
+        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `HUGGINGFACE_API_KEY` : token HF (utile seulement si tu duplikes le Space en privé)\n- `DETOURAGE_SPACE_URL` / `DETOURAGE_FN` : Space Gradio de détourage (voir note 3)\n- `MODE_COMPOSITION` : `auto` (profil par typologie) ou `cadre` (plein cadre partout, secours)\n- `TEMPLATE_FOND_FILE_ID` : ID du **dossier** contenant le template (ou du fichier directement)\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : secours seulement — la taille réelle est mesurée sur l'image\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : objet `PROFILS` = taille, ancrage, fond et modèle par catégorie. Mannequin = 1 (plein cadre), sac = 0.82, chaussure = 0.78.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : compte Google Drive sur chaque nœud Drive. Rien à créer pour Hugging Face.",
         "height": 540,
         "width": 420,
         "color": 4
@@ -26,7 +26,7 @@
     },
     {
       "parameters": {
-        "content": "## 2. Tri des dossiers + typologie\n\nOn liste **uniquement les sous-dossiers** du dossier parent, puis on **garde ceux qui ne commencent pas** par `✓_` (traité), `⚠_` (à relire) ni `*`.\n\nLa boucle traite **1 dossier à la fois**. `Détecter la typologie` déduit du nom du dossier si le produit est **porté sur mannequin** (vêtement, bijou, accessoire → plein cadre) ou **posé à plat** (sac, chaussure → réduit et centré sur le fond).\n\nTag explicite possible : `Sac Baguette Rose [sac]`, `Bague coeur [pose]`.",
+        "content": "## 2. Tri des dossiers + typologie\n\nOn liste **uniquement les sous-dossiers** du dossier parent, puis on **garde ceux qui ne commencent pas** par `✓_` (traité), `⚠_` (à relire) ni `*` — et le **dossier du template est exclu** (par son ID et par le mot « template » dans son nom).\n\nLa boucle traite **1 dossier à la fois**. `Détecter la typologie` déduit du nom du dossier si le produit est **porté sur mannequin** (vêtement, bijou, accessoire → plein cadre) ou **posé à plat** (sac, chaussure → réduit et centré sur le fond).\n\nTag explicite possible : `Sac Baguette Rose [sac]`, `Bague coeur [pose]`.",
         "height": 380,
         "width": 420,
         "color": 5
@@ -42,13 +42,13 @@
     },
     {
       "parameters": {
-        "content": "## 3. Photo principale -> Hugging Face (gratuit)\n\n`POST {{ modelUrl }}` (modèle du profil de typologie, sinon `HF_MODEL_URL` = **BiRefNet**), header `Authorization: Bearer <token>`, **corps = fichier binaire brut** (`Body Content Type` = *n8n Binary File*, champ `data`).\n\n**Trois réponses possibles**, toutes gérées par `Normaliser la sortie HF` :\n- image PNG détourée -> utilisée telle quelle ;\n- JSON `[{ label, score, mask }]` (cas de BiRefNet / RMBG) -> masque décodé puis posé en couche alpha par `Appliquer le masque (alpha)` (**CopyOpacity**) ;\n- erreur / réponse vide -> **mode dégradé** : la photo d'origine est conservée et le dossier finira en `⚠_`.\n\n**Modèle par typologie** : dans `Détecter la typologie`, le champ `modele` d'un profil permet d'envoyer par exemple les bijoux (chaînes fines) vers `ZhengPeng7/BiRefNet_HR` et le reste vers BiRefNet standard.\n\n⚠️ Tier gratuit HF : quota mensuel + démarrages à froid (503), absorbés par `x-wait-for-model` et 3 tentatives espacées de 15 s.",
-        "height": 600,
-        "width": 700,
+        "content": "## 3. Détourage via un Space Hugging Face (gratuit)\n\n⚠️ **`api-inference.huggingface.co` n'existe plus** (domaine supprimé par HF) et aucun modèle de détourage n'est servi gratuitement par le routeur : RMBG-2.0 n'est dispo que via fal-ai (payant).\n\nOn passe donc par un **Space Gradio sur CPU**, gratuit et sans quota :\n1. `Envoyer l'image au détourage` → `POST /gradio_api/upload` (binaire, champ `files`)\n2. `Lancer le détourage` → `POST /gradio_api/call/<fn>` → `event_id`\n3. `Attendre le résultat` → `GET /gradio_api/call/<fn>/<event_id>` (flux SSE)\n4. `Récupérer l'image détourée` → télécharge le fichier transparent\n\n`DETOURAGE_SPACE_URL` = `https://hysts-mcp-rembg.hf.space` (rembg, CPU, ~3-10 s/image), `DETOURAGE_FN` = `remove_background`.\n\n**Recommandé** : duplique ce Space dans ton compte HF (bouton *Duplicate this Space*, CPU basic gratuit) et mets ton URL dans `DETOURAGE_SPACE_URL` — tu ne partages plus la file d'attente. Le header `Authorization` est déjà envoyé, un Space privé fonctionnera donc aussi.\n\nEn cas d'échec (Space endormi, erreur) : mode dégradé, la photo d'origine est conservée et le dossier finit en `⚠_`.",
+        "height": 620,
+        "width": 720,
         "color": 3
       },
       "id": "sticky-photoroom",
-      "name": "Note - Hugging Face",
+      "name": "Note - Détourage",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -68,7 +68,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2380,
+        3052,
         -60
       ]
     },
@@ -84,7 +84,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3540,
+        4212,
         -60
       ]
     },
@@ -154,8 +154,14 @@
             },
             {
               "id": "cfg-3",
-              "name": "HF_MODEL_URL",
-              "value": "https://api-inference.huggingface.co/models/ZhengPeng7/BiRefNet",
+              "name": "DETOURAGE_SPACE_URL",
+              "value": "https://hysts-mcp-rembg.hf.space",
+              "type": "string"
+            },
+            {
+              "id": "cfg-13",
+              "name": "DETOURAGE_FN",
+              "value": "remove_background",
               "type": "string"
             },
             {
@@ -354,7 +360,7 @@
           "conditions": [
             {
               "id": "flt-1",
-              "leftValue": "={{ !String($json.name).startsWith($('Config').first().json.PREFIXE_TRAITE) && !String($json.name).startsWith('✓') && !String($json.name).startsWith('⚠') && !String($json.name).startsWith('*') }}",
+              "leftValue": "={{ !String($json.name).startsWith($('Config').first().json.PREFIXE_TRAITE) && !String($json.name).startsWith('✓') && !String($json.name).startsWith('⚠') && !String($json.name).startsWith('*') && $json.id !== $('Config').first().json.TEMPLATE_FOND_FILE_ID && !/template/i.test(String($json.name)) }}",
               "rightValue": "",
               "operator": {
                 "type": "boolean",
@@ -376,7 +382,7 @@
         -40,
         580
       ],
-      "notes": "Exclut les dossiers déjà traités (✓_ / *) et ceux en attente de relecture (⚠_). Retirer le ⚠_ à la main pour relancer le traitement d'un dossier."
+      "notes": "Exclut : les dossiers déjà traités (✓_ / *), ceux en attente de relecture (⚠_), le dossier du template (par son ID et par le mot 'template' dans son nom). Retirer le ⚠_ à la main pour relancer un dossier."
     },
     {
       "parameters": {
@@ -395,7 +401,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Profil de composition du produit, déduit du nom du dossier.\n//\n// Chez Lil'OG tout ce qui se PORTE (vêtements, bijoux, accessoires) est shooté sur mannequin :\n// le cadrage est déjà standardisé, on garde donc la photo en plein cadre et on ne remplace\n// que le fond. Seuls les produits POSÉS à plat (sacs, chaussures) sont remis à l'échelle\n// et recentrés sur le template.\nconst cfg = $('Config').first().json;\nconst dossier = $input.first().json; // le dossier en cours de traitement (id + name)\nconst nom = String(dossier.name || '');\n\n// occupation : part du template occupée par le produit (1 = plein cadre / mannequin)\n// ancrage    : 'centre' | 'bas'\n// modele     : URL Hugging Face spécifique à la typologie ('' = HF_MODEL_URL)\nconst PROFILS = {\n  vetement:   { occupation: 1.00, ancrage: 'centre', modele: '' }, // mannequin\n  bijou:      { occupation: 1.00, ancrage: 'centre', modele: '' }, // mannequin\n  accessoire: { occupation: 1.00, ancrage: 'centre', modele: '' }, // mannequin\n  sac:        { occupation: 0.82, ancrage: 'centre', modele: '' }, // posé à plat\n  chaussure:  { occupation: 0.78, ancrage: 'centre', modele: '' }, // posé à plat\n  defaut:     { occupation: 1.00, ancrage: 'centre', modele: '' },\n};\n\n// Occupation appliquée quand un dossier est marqué [pose] sans typologie reconnue.\nconst OCCUPATION_POSE = 0.80;\n\n// Mots-clés cherchés dans le nom du dossier (sans accents, mot entier).\n// L'ordre compte : les typologies les plus spécifiques passent avant \"vetement\".\nconst MOTS = {\n  accessoire: ['ceinture', 'lunettes', 'casquette', 'bob', 'echarpe', 'foulard', 'gant', 'gants',\n               'chapeau', 'cravate', 'barrette', 'chouchou', 'porte-cles', 'montre', 'bandana',\n               'mitaine', 'mitaines', 'eventail'],\n  bijou: ['bijou', 'bijoux', 'collier', 'pendentif', 'bague', 'bracelet', 'boucle', 'boucles',\n          'anneau', 'broche', 'piercing', 'ras-de-cou', 'choker'],\n  chaussure: ['chaussure', 'chaussures', 'basket', 'baskets', 'sneaker', 'sneakers', 'botte',\n              'bottes', 'bottine', 'bottines', 'sandale', 'sandales', 'mule', 'mules',\n              'escarpin', 'escarpins', 'talon', 'talons', 'tong', 'tongs', 'ballerine'],\n  sac: ['sac', 'sacs', 'sacoche', 'pochette', 'cabas', 'bandouliere', 'besace', 'tote',\n        'portefeuille', 'porte-monnaie', 'trousse'],\n  vetement: ['robe', 'top', 'debardeur', 'tshirt', 't-shirt', 'chemise', 'chemisier', 'pull',\n             'gilet', 'veste', 'blouson', 'manteau', 'pantalon', 'jean', 'jeans', 'jupe', 'short',\n             'combinaison', 'body', 'corset', 'bustier', 'sweat', 'hoodie', 'cardigan', 'legging',\n             'jogging', 'maillot', 'crop', 'brassiere', 'kimono', 'salopette'],\n};\n\nconst sansAccents = (t) => String(t).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();\nconst nomNorm = sansAccents(nom);\n\n// 1) tag explicite dans le nom du dossier, prioritaire sur tout le reste :\n//    \"[sac]\" / \"[chaussure]\" / \"[bijou]\"... force la typologie\n//    \"[pose]\"      force le traitement \"produit posé\" (mise à l'échelle + recentrage)\n//    \"[mannequin]\" force le plein cadre\nlet typologie = null;\nlet forcage = null;\nconst tag = nomNorm.match(/\\[([a-z]+)\\]/);\nif (tag) {\n  if (PROFILS[tag[1]]) typologie = tag[1];\n  else if (tag[1] === 'pose' || tag[1] === 'posee') forcage = 'pose';\n  else if (tag[1] === 'mannequin') forcage = 'mannequin';\n}\n\n// 2) sinon, détection par mot-clé\nif (!typologie) {\n  for (const [type, mots] of Object.entries(MOTS)) {\n    if (mots.some((m) => new RegExp('(^|[^a-z0-9])' + m + '([^a-z0-9]|$)').test(nomNorm))) {\n      typologie = type;\n      break;\n    }\n  }\n}\nif (!typologie) typologie = 'defaut';\n\nconst profil = { ...PROFILS.defaut, ...(PROFILS[typologie] || {}) };\n\nlet occupation = Number(profil.occupation) || 1;\nif (forcage === 'pose') occupation = OCCUPATION_POSE;\nif (forcage === 'mannequin') occupation = 1;\n// Secours : MODE_COMPOSITION = 'cadre' force le plein cadre pour TOUS les produits.\nif (String(cfg.MODE_COMPOSITION || 'auto').toLowerCase() === 'cadre') occupation = 1;\n\n// Dimensions réelles du template, mesurées sur l'image elle-même (le fichier fait foi).\n// TEMPLATE_LARGEUR / TEMPLATE_HAUTEUR de Config ne servent que de secours.\nlet largeurFond = Number(cfg.TEMPLATE_LARGEUR) || 1080;\nlet hauteurFond = Number(cfg.TEMPLATE_HAUTEUR) || 1350;\ntry {\n  const mesure = $('Mesurer le fond').first().json;\n  const w = Number(mesure?.size?.width ?? mesure?.width);\n  const h = Number(mesure?.size?.height ?? mesure?.height);\n  if (w > 0 && h > 0) {\n    largeurFond = w;\n    hauteurFond = h;\n  }\n} catch (e) {\n  // le nœud n'a pas tourné : on garde les valeurs de Config\n}\n\nreturn [{\n  json: {\n    ...dossier, // id et name du dossier : la suite du workflow s'en sert\n    typologie,\n    pose: occupation < 1,\n    occupation,\n    ancrage: profil.ancrage || 'centre',\n    largeurFond,\n    hauteurFond,\n    // boîte dans laquelle le produit doit tenir, au ratio du template\n    largeurProduitMax: Math.round(largeurFond * occupation),\n    hauteurProduitMax: Math.round(hauteurFond * occupation),\n    modelUrl: profil.modele || cfg.HF_MODEL_URL,\n  },\n}];\n"
+        "jsCode": "// Profil de composition du produit, déduit du nom du dossier.\n//\n// Chez Lil'OG tout ce qui se PORTE (vêtements, bijoux, accessoires) est shooté sur mannequin :\n// le cadrage est déjà standardisé, on garde donc la photo en plein cadre et on ne remplace\n// que le fond. Seuls les produits POSÉS à plat (sacs, chaussures) sont remis à l'échelle\n// et recentrés sur le template.\nconst cfg = $('Config').first().json;\nconst dossier = $input.first().json; // le dossier en cours de traitement (id + name)\nconst nom = String(dossier.name || '');\n\n// occupation : part du template occupée par le produit (1 = plein cadre / mannequin)\n// ancrage    : 'centre' | 'bas'\n// space      : Space de détourage spécifique à la typologie ('' = DETOURAGE_SPACE_URL)\nconst PROFILS = {\n  vetement:   { occupation: 1.00, ancrage: 'centre', space: '' }, // mannequin\n  bijou:      { occupation: 1.00, ancrage: 'centre', space: '' }, // mannequin\n  accessoire: { occupation: 1.00, ancrage: 'centre', space: '' }, // mannequin\n  sac:        { occupation: 0.82, ancrage: 'centre', space: '' }, // posé à plat\n  chaussure:  { occupation: 0.78, ancrage: 'centre', space: '' }, // posé à plat\n  defaut:     { occupation: 1.00, ancrage: 'centre', space: '' },\n};\n\n// Occupation appliquée quand un dossier est marqué [pose] sans typologie reconnue.\nconst OCCUPATION_POSE = 0.80;\n\n// Mots-clés cherchés dans le nom du dossier (sans accents, mot entier).\n// L'ordre compte : les typologies les plus spécifiques passent avant \"vetement\".\nconst MOTS = {\n  accessoire: ['ceinture', 'lunettes', 'casquette', 'bob', 'echarpe', 'foulard', 'gant', 'gants',\n               'chapeau', 'cravate', 'barrette', 'chouchou', 'porte-cles', 'montre', 'bandana',\n               'mitaine', 'mitaines', 'eventail'],\n  bijou: ['bijou', 'bijoux', 'collier', 'pendentif', 'bague', 'bracelet', 'boucle', 'boucles',\n          'anneau', 'broche', 'piercing', 'ras-de-cou', 'choker'],\n  chaussure: ['chaussure', 'chaussures', 'basket', 'baskets', 'sneaker', 'sneakers', 'botte',\n              'bottes', 'bottine', 'bottines', 'sandale', 'sandales', 'mule', 'mules',\n              'escarpin', 'escarpins', 'talon', 'talons', 'tong', 'tongs', 'ballerine'],\n  sac: ['sac', 'sacs', 'sacoche', 'pochette', 'cabas', 'bandouliere', 'besace', 'tote',\n        'portefeuille', 'porte-monnaie', 'trousse'],\n  vetement: ['robe', 'top', 'debardeur', 'tshirt', 't-shirt', 'chemise', 'chemisier', 'pull',\n             'gilet', 'veste', 'blouson', 'manteau', 'pantalon', 'jean', 'jeans', 'jupe', 'short',\n             'combinaison', 'body', 'corset', 'bustier', 'sweat', 'hoodie', 'cardigan', 'legging',\n             'jogging', 'maillot', 'crop', 'brassiere', 'kimono', 'salopette'],\n};\n\nconst sansAccents = (t) => String(t).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();\nconst nomNorm = sansAccents(nom);\n\n// 1) tag explicite dans le nom du dossier, prioritaire sur tout le reste :\n//    \"[sac]\" / \"[chaussure]\" / \"[bijou]\"... force la typologie\n//    \"[pose]\"      force le traitement \"produit posé\" (mise à l'échelle + recentrage)\n//    \"[mannequin]\" force le plein cadre\nlet typologie = null;\nlet forcage = null;\nconst tag = nomNorm.match(/\\[([a-z]+)\\]/);\nif (tag) {\n  if (PROFILS[tag[1]]) typologie = tag[1];\n  else if (tag[1] === 'pose' || tag[1] === 'posee') forcage = 'pose';\n  else if (tag[1] === 'mannequin') forcage = 'mannequin';\n}\n\n// 2) sinon, détection par mot-clé\nif (!typologie) {\n  for (const [type, mots] of Object.entries(MOTS)) {\n    if (mots.some((m) => new RegExp('(^|[^a-z0-9])' + m + '([^a-z0-9]|$)').test(nomNorm))) {\n      typologie = type;\n      break;\n    }\n  }\n}\nif (!typologie) typologie = 'defaut';\n\nconst profil = { ...PROFILS.defaut, ...(PROFILS[typologie] || {}) };\n\nlet occupation = Number(profil.occupation) || 1;\nif (forcage === 'pose') occupation = OCCUPATION_POSE;\nif (forcage === 'mannequin') occupation = 1;\n// Secours : MODE_COMPOSITION = 'cadre' force le plein cadre pour TOUS les produits.\nif (String(cfg.MODE_COMPOSITION || 'auto').toLowerCase() === 'cadre') occupation = 1;\n\n// Dimensions réelles du template, mesurées sur l'image elle-même (le fichier fait foi).\n// TEMPLATE_LARGEUR / TEMPLATE_HAUTEUR de Config ne servent que de secours.\nlet largeurFond = Number(cfg.TEMPLATE_LARGEUR) || 1080;\nlet hauteurFond = Number(cfg.TEMPLATE_HAUTEUR) || 1350;\ntry {\n  const mesure = $('Mesurer le fond').first().json;\n  const w = Number(mesure?.size?.width ?? mesure?.width);\n  const h = Number(mesure?.size?.height ?? mesure?.height);\n  if (w > 0 && h > 0) {\n    largeurFond = w;\n    hauteurFond = h;\n  }\n} catch (e) {\n  // le nœud n'a pas tourné : on garde les valeurs de Config\n}\n\nreturn [{\n  json: {\n    ...dossier, // id et name du dossier : la suite du workflow s'en sert\n    typologie,\n    pose: occupation < 1,\n    occupation,\n    ancrage: profil.ancrage || 'centre',\n    largeurFond,\n    hauteurFond,\n    // boîte dans laquelle le produit doit tenir, au ratio du template\n    largeurProduitMax: Math.round(largeurFond * occupation),\n    hauteurProduitMax: Math.round(hauteurFond * occupation),\n    spaceUrl: String(profil.space || cfg.DETOURAGE_SPACE_URL || '').replace(/\\/+$/, ''),\n    spaceFn: String(cfg.DETOURAGE_FN || 'remove_background').replace(/^\\//, ''),\n  },\n}];\n"
       },
       "id": "node-typologie",
       "name": "Détecter la typologie",
@@ -555,7 +561,94 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Détecter la typologie').first().json.modelUrl }}",
+        "url": "={{ $('Détecter la typologie').first().json.spaceUrl }}/gradio_api/upload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Config').first().json.HUGGINGFACE_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "files",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "node-space-upload",
+      "name": "Envoyer l'image au détourage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        560
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "notes": "Étape 1/4 — dépose la photo sur le Space Gradio. Réponse : [\"/tmp/gradio/.../photo.png\"]."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Détecter la typologie').first().json.spaceUrl }}/gradio_api/call/{{ $('Détecter la typologie').first().json.spaceFn }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Config').first().json.HUGGINGFACE_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ data: [ { path: JSON.parse($json.data)[0], meta: { _type: 'gradio.FileData' } } ] }) }}",
+        "options": {
+          "timeout": 120000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "node-space-call",
+      "name": "Lancer le détourage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1820,
+        560
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "notes": "Étape 2/4 — met la photo dans la file du Space. Réponse : { event_id }."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Détecter la typologie').first().json.spaceUrl }}/gradio_api/call/{{ $('Détecter la typologie').first().json.spaceFn }}/{{ JSON.parse($json.data).event_id }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -565,53 +658,83 @@
             },
             {
               "name": "Accept",
-              "value": "image/png"
-            },
-            {
-              "name": "x-wait-for-model",
-              "value": "true"
+              "value": "text/event-stream"
             }
           ]
         },
-        "sendBody": true,
-        "contentType": "binaryData",
-        "inputDataFieldName": "data",
         "options": {
-          "timeout": 180000,
+          "timeout": 300000,
           "response": {
             "response": {
-              "neverError": false
+              "responseFormat": "text"
             }
           }
         }
       },
-      "id": "node-huggingface",
-      "name": "Hugging Face - Détourage",
+      "id": "node-space-poll",
+      "name": "Attendre le résultat",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1600,
+        2040,
         560
       ],
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 15000,
-      "notes": "POST du binaire brut (Body Content Type = n8n Binary File, champ 'data'). URL = modèle du profil de typologie. onError = continue : si HF tombe, le dossier est traité en mode dégradé et marqué ⚠_ au lieu de bloquer la boucle.",
-      "onError": "continueRegularOutput"
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "notes": "Étape 3/4 — flux SSE : la connexion reste ouverte jusqu'à 'event: complete' (quelques secondes, plus si le Space démarre à froid)."
     },
     {
       "parameters": {
-        "jsCode": "// Normalise la réponse de l'API Hugging Face (BiRefNet, RMBG, ...).\n// Trois cas possibles :\n//   1. une image binaire  -> produit déjà détouré\n//   2. du JSON [{ label, score, mask }] -> masque base64 à poser en couche alpha\n//   3. une erreur / une réponse inattendue -> mode dégradé : on garde la photo d'origine\n//      et le dossier sera marqué avec le préfixe d'alerte pour relecture humaine.\nconst items = $input.all();\nconst original = $('Télécharger la photo principale').first().binary.data;\n\nconst isImage = (b) => b && String(b.mimeType || '').startsWith('image/');\nconst degrade = (raison) => [{\n  json: { hfMode: 'echec', avertissement: true, raison: String(raison).slice(0, 300) },\n  binary: { data: original },\n}];\n\n// --- Cas 1 : image détourée renvoyée directement\nfor (const it of items) {\n  const img = Object.values(it.binary || {}).find(isImage);\n  if (img) return [{ json: { hfMode: 'cutout', avertissement: false }, binary: { data: img } }];\n}\n\n// --- Cas 2 : réponse JSON (un item par entrée du tableau renvoyé par HF)\nconst rows = [];\nfor (let idx = 0; idx < items.length; idx++) {\n  let j = items[idx].json;\n  const keys = Object.keys(items[idx].binary || {});\n  if ((!j || Object.keys(j).length === 0) && keys.length) {\n    try {\n      const buf = await this.helpers.getBinaryDataBuffer(idx, keys[0]);\n      j = JSON.parse(buf.toString('utf8'));\n    } catch (e) {\n      // ignoré : traité comme réponse inattendue plus bas\n    }\n  }\n  if (Array.isArray(j)) rows.push(...j);\n  else if (j) rows.push(j);\n}\n\nconst erreur = rows.find((r) => r && r.error);\nif (erreur) return degrade('Hugging Face : ' + JSON.stringify(erreur.error));\n\nconst masques = rows\n  .filter((r) => r && typeof r.mask === 'string' && r.mask.length > 100)\n  .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));\n\nconst choisi = masques.find((r) => !/back(ground)?|bg|fond/i.test(String(r.label || ''))) || masques[0];\nif (!choisi) return degrade('Réponse inattendue (ni image, ni masque) : ' + JSON.stringify(rows));\n\nconst masque = await this.helpers.prepareBinaryData(\n  Buffer.from(choisi.mask, 'base64'),\n  'masque.png',\n  'image/png',\n);\n\n// data = photo d'origine, mask = masque alpha -> le nœud suivant fait le détourage\nreturn [{\n  json: { hfMode: 'mask', avertissement: false, label: choisi.label ?? null },\n  binary: { data: original, mask: masque },\n}];\n"
+        "method": "GET",
+        "url": "={{ JSON.parse(($json.data || '').split('\\n').filter(l => l.startsWith('data: ')).pop().slice(6)).flat()[0].url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Config').first().json.HUGGINGFACE_API_KEY }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000,
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      },
+      "id": "node-space-result",
+      "name": "Récupérer l'image détourée",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2260,
+        560
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "notes": "Étape 4/4 — télécharge le PNG/WebP détouré (fond transparent) produit par le Space."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalise la sortie du détourage (Space Gradio, ou toute API renvoyant image / masque).\n// Trois cas possibles :\n//   1. une image binaire  -> produit déjà détouré\n//   2. du JSON [{ label, score, mask }] -> masque base64 à poser en couche alpha\n//   3. une erreur / une réponse inattendue -> mode dégradé : on garde la photo d'origine\n//      et le dossier sera marqué avec le préfixe d'alerte pour relecture humaine.\nconst items = $input.all();\nconst original = $('Télécharger la photo principale').first().binary.data;\n\nconst isImage = (b) => b && String(b.mimeType || '').startsWith('image/');\nconst degrade = (raison) => [{\n  json: { hfMode: 'echec', avertissement: true, raison: String(raison).slice(0, 300) },\n  binary: { data: original },\n}];\n\n// --- Cas 1 : image détourée renvoyée directement\nfor (const it of items) {\n  const img = Object.values(it.binary || {}).find(isImage);\n  if (img) return [{ json: { hfMode: 'cutout', avertissement: false }, binary: { data: img } }];\n}\n\n// --- Cas 2 : réponse JSON (un item par entrée du tableau renvoyé par HF)\nconst rows = [];\nfor (let idx = 0; idx < items.length; idx++) {\n  let j = items[idx].json;\n  const keys = Object.keys(items[idx].binary || {});\n  if ((!j || Object.keys(j).length === 0) && keys.length) {\n    try {\n      const buf = await this.helpers.getBinaryDataBuffer(idx, keys[0]);\n      j = JSON.parse(buf.toString('utf8'));\n    } catch (e) {\n      // ignoré : traité comme réponse inattendue plus bas\n    }\n  }\n  if (Array.isArray(j)) rows.push(...j);\n  else if (j) rows.push(j);\n}\n\nconst erreur = rows.find((r) => r && r.error);\nif (erreur) return degrade('Détourage : ' + JSON.stringify(erreur.error));\n\nconst masques = rows\n  .filter((r) => r && typeof r.mask === 'string' && r.mask.length > 100)\n  .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));\n\nconst choisi = masques.find((r) => !/back(ground)?|bg|fond/i.test(String(r.label || ''))) || masques[0];\nif (!choisi) return degrade('Réponse inattendue (ni image, ni masque) : ' + JSON.stringify(rows));\n\nconst masque = await this.helpers.prepareBinaryData(\n  Buffer.from(choisi.mask, 'base64'),\n  'masque.png',\n  'image/png',\n);\n\n// data = photo d'origine, mask = masque alpha -> le nœud suivant fait le détourage\nreturn [{\n  json: { hfMode: 'mask', avertissement: false, label: choisi.label ?? null },\n  binary: { data: original, mask: masque },\n}];\n"
       },
       "id": "node-hf-normalize",
-      "name": "Normaliser la sortie HF",
+      "name": "Normaliser le détourage",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1820,
+        2492,
         560
       ],
-      "notes": "Gère les 3 cas : image binaire, masque base64, ou échec (mode dégradé + dossier marqué ⚠_)."
+      "notes": "Gère les 3 cas : image détourée, masque base64 (si tu repasses sur une API qui en renvoie), ou échec -> mode dégradé avec la photo d'origine et dossier marqué ⚠_."
     },
     {
       "parameters": {
@@ -644,7 +767,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2040,
+        2712,
         560
       ],
       "notes": "Vrai = HF a renvoyé un masque, il faut le poser en couche alpha. Faux = image déjà détourée."
@@ -666,7 +789,7 @@
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
-        2260,
+        2932,
         400
       ],
       "notes": "CopyOpacity : le masque devient le canal alpha de la photo -> PNG détouré sur fond transparent."
@@ -687,7 +810,7 @@
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
-        2480,
+        3152,
         560
       ],
       "notes": "Le produit détouré est mis à la taille de la boîte du profil, sans déformation. Mannequin = boîte = template (plein cadre) ; sac/chaussure = 82 % / 78 % du template."
@@ -702,7 +825,7 @@
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
-        2700,
+        3372,
         560
       ],
       "notes": "Dimensions réelles du produit après mise à l'échelle (size.width / size.height), pour le centrage."
@@ -716,7 +839,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3140,
+        3812,
         560
       ],
       "notes": "Regroupe fond (binary.data) + produit (binary.cutout) dans le même item et calcule posX/posY à partir des dimensions réelles du template et du produit."
@@ -738,7 +861,7 @@
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
-        3360,
+        4032,
         560
       ],
       "notes": "Le produit détouré est posé, centré, sur le template. Mannequin : il remplit le cadre. Sac / chaussure : il est réduit et entouré de fond, comme sur les fiches du site."
@@ -761,7 +884,7 @@
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
-        3580,
+        4252,
         560
       ],
       "notes": "1500 px max (seulement si plus grand) + export WebP qualité 80. ⚠️ Le champ Quality est masqué dans l'UI quand Format = WebP : si tu rouvres et réenregistres ce nœud, n8n retire la valeur 80 et repasse à 100 (fichiers plus lourds)."
@@ -789,7 +912,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        3800,
+        4472,
         560
       ],
       "retryOnFail": true,
@@ -881,7 +1004,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        4040,
+        4712,
         700
       ]
     },
@@ -894,7 +1017,7 @@
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
       "position": [
-        4240,
+        4912,
         700
       ],
       "notes": "Pour ne renommer le dossier qu'une seule fois"
@@ -907,7 +1030,7 @@
           "value": "={{ $('Boucle dossiers').first().json.id }}",
           "mode": "id"
         },
-        "newUpdatedFileName": "={{ $('Normaliser la sortie HF').first().json.avertissement ? $('Config').first().json.PREFIXE_ALERTE : $('Config').first().json.PREFIXE_TRAITE }}{{ $('Boucle dossiers').first().json.name }}",
+        "newUpdatedFileName": "={{ $('Normaliser le détourage').first().json.avertissement ? $('Config').first().json.PREFIXE_ALERTE : $('Config').first().json.PREFIXE_TRAITE }}{{ $('Boucle dossiers').first().json.name }}",
         "options": {}
       },
       "id": "node-rename",
@@ -915,7 +1038,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        4440,
+        5112,
         700
       ],
       "retryOnFail": true,
@@ -1097,7 +1220,7 @@
       "main": [
         [
           {
-            "node": "Hugging Face - Détourage",
+            "node": "Envoyer l'image au détourage",
             "type": "main",
             "index": 0
           }
@@ -1197,28 +1320,6 @@
         [
           {
             "node": "Déclencher workflow Shopify",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Hugging Face - Détourage": {
-      "main": [
-        [
-          {
-            "node": "Normaliser la sortie HF",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Normaliser la sortie HF": {
-      "main": [
-        [
-          {
-            "node": "Masque à appliquer ?",
             "type": "main",
             "index": 0
           }
@@ -1336,6 +1437,61 @@
         [
           {
             "node": "Lister les sous-dossiers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envoyer l'image au détourage": {
+      "main": [
+        [
+          {
+            "node": "Lancer le détourage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lancer le détourage": {
+      "main": [
+        [
+          {
+            "node": "Attendre le résultat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attendre le résultat": {
+      "main": [
+        [
+          {
+            "node": "Récupérer l'image détourée",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Récupérer l'image détourée": {
+      "main": [
+        [
+          {
+            "node": "Normaliser le détourage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normaliser le détourage": {
+      "main": [
+        [
+          {
+            "node": "Masque à appliquer ?",
             "type": "main",
             "index": 0
           }

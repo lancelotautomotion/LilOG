@@ -2,10 +2,9 @@
 
 ## `workflows/lilog-traitement-images.json`
 
-Traitement automatique des photos produits : Google Drive → détourage Hugging Face →
-superposition du template Y2K → WebP → Drive, puis déclenchement du workflow de publication Shopify.
-100 % gratuit : aucune API payante, uniquement l'inference API Hugging Face (tier gratuit)
-et les nœuds natifs n8n.
+Traitement automatique des photos produits : Google Drive → détourage via un Space Hugging Face →
+superposition du template → WebP → Drive, puis déclenchement du workflow de publication Shopify.
+100 % gratuit : aucune API payante, un Space Gradio sur CPU et les nœuds natifs n8n.
 
 ### Import
 
@@ -15,7 +14,7 @@ n8n → **Workflows** → **Import from File…** (ou coller le JSON sur le canv
 
 | Où | Quoi |
 |---|---|
-| Nœud `Config` | `PARENT_FOLDER_ID`, `HUGGINGFACE_API_KEY` (`hf_…`), `HF_MODEL_URL`, `MODE_COMPOSITION`, `TEMPLATE_FOND_FILE_ID`, `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR`, `PREFIXE_TRAITE`, `PREFIXE_ALERTE` |
+| Nœud `Config` | `PARENT_FOLDER_ID`, `DETOURAGE_SPACE_URL` / `DETOURAGE_FN`, `HUGGINGFACE_API_KEY` (utile seulement pour un Space privé), `MODE_COMPOSITION`, `TEMPLATE_FOND_FILE_ID`, `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR`, `PREFIXE_TRAITE`, `PREFIXE_ALERTE` |
 | Nœud `Détecter la typologie` | objet `PROFILS` : taille, ancrage, fond et modèle par catégorie de produit |
 | Nœud `Déclencher workflow Shopify` | ID du workflow de publication Shopify |
 | Tous les nœuds Google Drive | sélectionner la credential *Google Drive OAuth2* |
@@ -27,7 +26,8 @@ il n'y a pas de credential n8n à créer, il passe par le header `Authorization`
 
 ### Logique
 
-1. Liste les sous-dossiers du dossier parent, garde ceux **sans** préfixe `✓_` / `*`.
+1. Liste les sous-dossiers du dossier parent, garde ceux **sans** préfixe `✓_` / `⚠_` / `*` et
+   exclut le dossier du template (par son ID et par le mot « template » dans son nom).
 2. Boucle (1 dossier à la fois) : liste les images, désigne la **photo principale**
    (nom contenant `main` / `principale` / `cover` / `1`, sinon la première par ordre alphanumérique).
 3. `Détecter la typologie` déduit du nom du dossier s'il s'agit d'un **vêtement, sac, bijou,
@@ -68,15 +68,25 @@ Sur un produit posé, l'échelle porte sur le **cadre de la photo**, pas sur le 
 cadrage serré et centré. Un recadrage automatique sur le sujet demanderait un *trim* des pixels
 transparents, absent du nœud `Edit Image` (possible uniquement en self-hosted).
 
+### Détourage : pourquoi un Space et pas l'inference API
+
+`api-inference.huggingface.co` **n'existe plus** (le domaine ne résout plus). Sur le routeur qui l'a
+remplacé, aucun modèle de suppression de fond n'est servi gratuitement : `ZhengPeng7/BiRefNet` et
+`briaai/RMBG-1.4` n'ont plus aucun provider, et `briaai/RMBG-2.0` n'est disponible que via fal-ai,
+facturé à l'image.
+
+Le workflow appelle donc un **Space Gradio sur CPU** (`hysts-mcp/rembg` par défaut) : gratuit, sans
+quota, ~3 à 10 s par image. Recommandé : dupliquer ce Space dans son propre compte HF (CPU basic,
+gratuit) et mettre son URL dans `DETOURAGE_SPACE_URL` pour ne pas partager la file d'attente ; le
+header `Authorization` est déjà envoyé, un Space privé fonctionne donc aussi.
+
+Pour changer de Space, il suffit de `DETOURAGE_SPACE_URL` + `DETOURAGE_FN` (le nom de l'endpoint
+Gradio, visible sur `https://<space>.hf.space/gradio_api/info`), à condition qu'il prenne une image
+en entrée et renvoie un fichier.
+
 ### Dépendances et limites
 
 - `Edit Image` nécessite ImageMagick (présent sur n8n Cloud et l'image Docker officielle `n8nio/n8n`).
-- Tier gratuit Hugging Face : quota mensuel + démarrages à froid (503). Le header
-  `x-wait-for-model: true` et 3 tentatives espacées de 15 s absorbent les cold starts.
-- Modèle par défaut : `ZhengPeng7/BiRefNet` (MIT, utilisable commercialement). Pour les pièces fines
-  (chaînes, bijoux ajourés), un profil peut pointer vers `ZhengPeng7/BiRefNet_HR` via son champ `modele`.
-  Éviter `briaai/RMBG-1.4` en production : licence BRIA non commerciale.
+- Un Space gratuit s'endort après 48 h d'inactivité : le premier appel peut prendre une minute.
 - Si le détourage échoue, le workflow ne s'arrête pas : les images sont produites à partir de la photo
   d'origine et le dossier est marqué `⚠_` pour relecture.
-- Si `api-inference.huggingface.co` renvoie 404, utiliser la nouvelle route :
-  `https://router.huggingface.co/hf-inference/models/<modele>`.
