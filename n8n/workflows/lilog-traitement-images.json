@@ -1,0 +1,952 @@
+{
+  "name": "Lil'OG — Traitement images produits (Drive → Photoroom → WebP)",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\" (dans l'URL du dossier : `drive.google.com/drive/folders/**CET_ID**`)\n- `PHOTOROOM_API_KEY` : clé API Photoroom (`sandbox_...` pour tester gratuitement)\n- `PHOTOROOM_TEMPLATE_ID` : ID du template de fond Photoroom\n- `PREFIXE_TRAITE` : marqueur de validation, par défaut `✓_`\n\n**Nœud `Déclencher workflow Shopify`** : coller l'ID de ton workflow de publication.\n\n**Credentials** : ouvrir chaque nœud Google Drive et sélectionner ton compte (Google Drive OAuth2).",
+        "height": 420,
+        "width": 420,
+        "color": 4
+      },
+      "id": "sticky-config",
+      "name": "Note - Configuration",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 2. Tri des dossiers\n\nOn liste **uniquement les sous-dossiers** du dossier parent (requête Drive avancée), puis on **garde ceux qui ne commencent pas** par `✓_` ni `*`.\n\nLa boucle traite ensuite **1 dossier à la fois** (batchSize = 1), ce qui évite de mélanger les images de deux vêtements.",
+        "height": 300,
+        "width": 380,
+        "color": 5
+      },
+      "id": "sticky-tri",
+      "name": "Note - Tri",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3. Photo principale → Photoroom\n\nLe nœud `Classer les images` trie les fichiers par nom et désigne la **photo principale** (nom contenant `main`, `principale`, `cover` ou `1`, sinon la 1ère image).\n\nSeule cette photo part chez Photoroom (`/v2/edit`) : **détourage + template de fond en une seule requête**.\n\n➜ Binaire envoyé en `multipart/form-data` (champ `imageFile`), réponse récupérée en **fichier binaire** (`data`).\n\n*Pas encore de template ?* Remplace le paramètre de requête `templateId` par `background.color` = `FFFFFF`.",
+        "height": 380,
+        "width": 400,
+        "color": 3
+      },
+      "id": "sticky-photoroom",
+      "name": "Note - Photoroom",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 4. Optimisation + upload + validation\n\n`Edit Image` : redimensionne à **1500 px max** (uniquement si l'image est plus grande) et exporte en **WebP qualité 80**.\n\nLes deux branches se rejoignent dans `Fusionner les uploads`, `Limiter à 1 sortie` ramène à un seul item, puis le dossier est **renommé avec le préfixe `✓_`** = marqueur de validation.\n\nLe fil repart ensuite dans la boucle pour le dossier suivant.\n\n⚠️ `Edit Image` a besoin d'ImageMagick (présent sur n8n Cloud et sur l'image Docker officielle).",
+        "height": 380,
+        "width": 420,
+        "color": 6
+      },
+      "id": "sticky-optim",
+      "name": "Note - Optimisation",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 5. Fin de boucle → Shopify\n\nQuand tous les dossiers sont traités, la sortie **done** de la boucle prépare un récapitulatif (liste des dossiers `✓_`) et appelle le **workflow de publication Shopify** via `Execute Workflow`.\n\nSi aucun dossier n'était à traiter, cette branche ne s'exécute pas.",
+        "height": 300,
+        "width": 380,
+        "color": 7
+      },
+      "id": "sticky-shopify",
+      "name": "Note - Shopify",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -320
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "trigger-manual",
+      "name": "Exécuter manuellement",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "trigger-schedule",
+      "name": "Toutes les 6h (optionnel)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        660
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-1",
+              "name": "PARENT_FOLDER_ID",
+              "value": "REMPLACER_PAR_ID_DOSSIER_DRIVE_LILOG",
+              "type": "string"
+            },
+            {
+              "id": "cfg-2",
+              "name": "PHOTOROOM_API_KEY",
+              "value": "REMPLACER_PAR_CLE_API_PHOTOROOM",
+              "type": "string"
+            },
+            {
+              "id": "cfg-3",
+              "name": "PHOTOROOM_TEMPLATE_ID",
+              "value": "REMPLACER_PAR_ID_TEMPLATE_PHOTOROOM",
+              "type": "string"
+            },
+            {
+              "id": "cfg-4",
+              "name": "PREFIXE_TRAITE",
+              "value": "✓_",
+              "type": "string"
+            },
+            {
+              "id": "cfg-5",
+              "name": "LARGEUR_MAX",
+              "value": "1500",
+              "type": "number"
+            },
+            {
+              "id": "cfg-6",
+              "name": "QUALITE_WEBP",
+              "value": "80",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "options": {}
+      },
+      "id": "node-config",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -480,
+        580
+      ],
+      "notes": "Toutes les valeurs à personnaliser sont ici."
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "='{{ $json.PARENT_FOLDER_ID }}' in parents",
+        "returnAll": true,
+        "filter": {
+          "driveId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "My Drive",
+            "cachedResultName": "My Drive",
+            "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+          },
+          "whatToSearch": "folders"
+        },
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "mimeType",
+            "webViewLink"
+          ]
+        }
+      },
+      "id": "node-list-folders",
+      "name": "Lister les sous-dossiers",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -260,
+        580
+      ],
+      "notes": "Sous-dossiers de Lil'OG",
+      "alwaysOutputData": false,
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "flt-1",
+              "leftValue": "={{ !String($json.name).startsWith($('Config').first().json.PREFIXE_TRAITE) && !String($json.name).startsWith('✓') && !String($json.name).startsWith('*') }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "node-filter",
+      "name": "Garder les dossiers non traités",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -40,
+        580
+      ],
+      "notes": "Exclut les dossiers commençant par ✓_ ou *"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "node-loop",
+      "name": "Boucle dossiers",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        200,
+        580
+      ],
+      "notes": "1 dossier par itération"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "='{{ $json.id }}' in parents and mimeType contains 'image/'",
+        "returnAll": true,
+        "filter": {
+          "driveId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "My Drive",
+            "cachedResultName": "My Drive",
+            "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+          },
+          "whatToSearch": "files"
+        },
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "mimeType",
+            "webViewLink"
+          ]
+        }
+      },
+      "id": "node-list-images",
+      "name": "Lister les images du dossier",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        460,
+        700
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "notes": "alwaysOutputData = true pour ne pas bloquer la boucle sur un dossier vide"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Trie les images du dossier courant et désigne la photo principale.\nconst folder = $('Boucle dossiers').first().json;\n\nconst slug = String(folder.name || 'produit')\n  .normalize('NFD')\n  .replace(/[\\u0300-\\u036f]/g, '')\n  .toLowerCase()\n  .replace(/[^a-z0-9]+/g, '-')\n  .replace(/^-+|-+$/g, '') || 'produit';\n\nconst images = $input.all()\n  .filter((i) => typeof i.json.mimeType === 'string' && i.json.mimeType.startsWith('image/'))\n  .sort((a, b) => String(a.json.name).localeCompare(String(b.json.name), 'fr', { numeric: true }));\n\n// Dossier vide : on renvoie un marqueur, le dossier sera ignoré (pas de renommage).\nif (images.length === 0) {\n  return [{ json: { empty: true, folderId: folder.id, folderName: folder.name } }];\n}\n\n// Photo principale : nom contenant main / principale / cover / 1, sinon la première.\nconst MAIN_RE = /(^|[\\s_.-])(main|principale?|cover|couverture|0?1)([\\s_.-]|$)/i;\nlet mainIndex = images.findIndex((i) => MAIN_RE.test(String(i.json.name).replace(/\\.[^.]+$/, '')));\nif (mainIndex === -1) mainIndex = 0;\n\n// La principale passe en tête : elle est donc toujours l'item [0] de ce nœud.\nconst ordered = [images[mainIndex], ...images.filter((_, idx) => idx !== mainIndex)];\n\nreturn ordered.map((img, idx) => ({\n  json: {\n    id: img.json.id,\n    name: img.json.name,\n    mimeType: img.json.mimeType,\n    isMain: idx === 0,\n    position: idx + 1,\n    newName: `${slug}-${String(idx + 1).padStart(2, '0')}.webp`,\n    folderId: folder.id,\n    folderName: folder.name,\n    empty: false,\n  },\n}));"
+      },
+      "id": "node-classify",
+      "name": "Classer les images",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "if-empty-1",
+              "leftValue": "={{ $json.empty !== true }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "node-if-empty",
+      "name": "Dossier contient des images ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        900,
+        700
+      ],
+      "notes": "Faux = dossier vide, on repart directement dans la boucle sans renommer"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "if-main-1",
+              "leftValue": "={{ $json.isMain }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "node-if-main",
+      "name": "Photo principale ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "id": "node-dl-main",
+      "name": "Télécharger la photo principale",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1380,
+        560
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://image-api.photoroom.com/v2/edit",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "templateId",
+              "value": "={{ $('Config').first().json.PHOTOROOM_TEMPLATE_ID }}"
+            },
+            {
+              "name": "removeBackground",
+              "value": "true"
+            },
+            {
+              "name": "padding",
+              "value": "0.05"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $('Config').first().json.PHOTOROOM_API_KEY }}"
+            },
+            {
+              "name": "Accept",
+              "value": "image/png, application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "imageFile",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 120000,
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      },
+      "id": "node-photoroom",
+      "name": "Photoroom - Détourage + Template",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        560
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 3000,
+      "notes": "Détourage + fond template en 1 appel. Sans template : remplacer le paramètre templateId par background.color = FFFFFF."
+    },
+    {
+      "parameters": {
+        "operation": "resize",
+        "dataPropertyName": "data",
+        "width": 1500,
+        "height": 1500,
+        "resizeOption": "onlyIfLarger",
+        "options": {
+          "format": "webp",
+          "quality": 80,
+          "fileName": "={{ $('Classer les images').first().json.newName }}"
+        }
+      },
+      "id": "node-edit-main",
+      "name": "Optimiser WebP (principale)",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        560
+      ],
+      "notes": "Redimensionne à 1500px max (seulement si plus grand) + export WebP qualité 80. Le champ Quality est masqué dans l'UI quand Format=WebP, mais la valeur 80 est bien appliquée à l'exécution."
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Classer les images').first().json.newName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Boucle dossiers').first().json.id }}",
+          "mode": "id"
+        },
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "node-up-main",
+      "name": "Uploader la photo principale",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2040,
+        560
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "id": "node-dl-secondary",
+      "name": "Télécharger les photos secondaires",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1380,
+        860
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "operation": "resize",
+        "dataPropertyName": "data",
+        "width": 1500,
+        "height": 1500,
+        "resizeOption": "onlyIfLarger",
+        "options": {
+          "format": "webp",
+          "quality": 80,
+          "fileName": "={{ $('Classer les images').item.json.newName }}"
+        }
+      },
+      "id": "node-edit-secondary",
+      "name": "Optimiser WebP (secondaires)",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        860
+      ],
+      "notes": "Redimensionne à 1500px max (seulement si plus grand) + export WebP qualité 80. Le champ Quality est masqué dans l'UI quand Format=WebP, mais la valeur 80 est bien appliquée à l'exécution."
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Classer les images').item.json.newName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Boucle dossiers').first().json.id }}",
+          "mode": "id"
+        },
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "node-up-secondary",
+      "name": "Uploader les photos secondaires",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1820,
+        860
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "mode": "append",
+        "numberInputs": 2,
+        "options": {}
+      },
+      "id": "node-merge",
+      "name": "Fusionner les uploads",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2280,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "maxItems": 1
+      },
+      "id": "node-limit",
+      "name": "Limiter à 1 sortie",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        700
+      ],
+      "notes": "Pour ne renommer le dossier qu'une seule fois"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Boucle dossiers').first().json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "={{ $('Config').first().json.PREFIXE_TRAITE }}{{ $('Boucle dossiers').first().json.name }}",
+        "options": {}
+      },
+      "id": "node-rename",
+      "name": "Renommer dossier (prefixe valide)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2680,
+        700
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "notes": "Un dossier Drive est un fichier : file:update permet de le renommer."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Récapitulatif des dossiers validés pendant cette exécution.\nconst dossiers = $input.all()\n  .filter((i) => i.json && i.json.name && i.json.empty !== true)\n  .map((i) => i.json.name);\n\nreturn [{\n  json: {\n    event: 'lilog_images_ready',\n    prefix: $('Config').first().json.PREFIXE_TRAITE,\n    foldersProcessed: dossiers.length,\n    folders: dossiers,\n    finishedAt: new Date().toISOString(),\n  },\n}];"
+      },
+      "id": "node-signal",
+      "name": "Préparer le signal Shopify",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "REMPLACER_PAR_ID_WORKFLOW_SHOPIFY",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "id": "node-exec-shopify",
+      "name": "Déclencher workflow Shopify",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        380
+      ],
+      "notes": "Coller ici l'ID du workflow de publication Shopify (visible dans son URL)."
+    }
+  ],
+  "connections": {
+    "Exécuter manuellement": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Toutes les 6h (optionnel)": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Lister les sous-dossiers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lister les sous-dossiers": {
+      "main": [
+        [
+          {
+            "node": "Garder les dossiers non traités",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Garder les dossiers non traités": {
+      "main": [
+        [
+          {
+            "node": "Boucle dossiers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Boucle dossiers": {
+      "main": [
+        [
+          {
+            "node": "Préparer le signal Shopify",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Lister les images du dossier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lister les images du dossier": {
+      "main": [
+        [
+          {
+            "node": "Classer les images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classer les images": {
+      "main": [
+        [
+          {
+            "node": "Dossier contient des images ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dossier contient des images ?": {
+      "main": [
+        [
+          {
+            "node": "Photo principale ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Boucle dossiers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Photo principale ?": {
+      "main": [
+        [
+          {
+            "node": "Télécharger la photo principale",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Télécharger les photos secondaires",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Télécharger la photo principale": {
+      "main": [
+        [
+          {
+            "node": "Photoroom - Détourage + Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Photoroom - Détourage + Template": {
+      "main": [
+        [
+          {
+            "node": "Optimiser WebP (principale)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Optimiser WebP (principale)": {
+      "main": [
+        [
+          {
+            "node": "Uploader la photo principale",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Uploader la photo principale": {
+      "main": [
+        [
+          {
+            "node": "Fusionner les uploads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Télécharger les photos secondaires": {
+      "main": [
+        [
+          {
+            "node": "Optimiser WebP (secondaires)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Optimiser WebP (secondaires)": {
+      "main": [
+        [
+          {
+            "node": "Uploader les photos secondaires",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Uploader les photos secondaires": {
+      "main": [
+        [
+          {
+            "node": "Fusionner les uploads",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Fusionner les uploads": {
+      "main": [
+        [
+          {
+            "node": "Limiter à 1 sortie",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limiter à 1 sortie": {
+      "main": [
+        [
+          {
+            "node": "Renommer dossier (prefixe valide)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Renommer dossier (prefixe valide)": {
+      "main": [
+        [
+          {
+            "node": "Boucle dossiers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer le signal Shopify": {
+      "main": [
+        [
+          {
+            "node": "Déclencher workflow Shopify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
