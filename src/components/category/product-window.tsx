@@ -120,7 +120,7 @@ function StickerChip({ sticker, className = "" }: { sticker: Sticker; className?
 
 /* ---- Boutons de contrôle de la fiche ---- */
 
-function CardControl({ glyph, label }: { glyph: string; label: string }) {
+function CardControl({ glyph, label }: { glyph: React.ReactNode; label: string }) {
   return (
     <span
       role="presentation"
@@ -131,6 +131,14 @@ function CardControl({ glyph, label }: { glyph: string; label: string }) {
       {glyph}
     </span>
   );
+}
+
+/** Trait de « Réduire », dessiné plutôt qu'écrit : le caractère « _ » loge
+ *  son encre tout en bas de sa boîte de ligne, un centrage flex/grid ne
+ *  centre que la boîte — dans un bouton de 15px la barre se retrouvait
+ *  collée au bord inférieur. Même correctif que MaximizeGlyph pour « 🗖 ». */
+function MinimizeGlyph() {
+  return <span aria-hidden className="block h-[1.5px] w-[8px] rounded-full bg-current" />;
 }
 
 /* ============================================================
@@ -258,7 +266,7 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
       >
         {product.name}
       </span>
-      <CardControl glyph="_" label="Réduire" />
+      <CardControl glyph={<MinimizeGlyph />} label="Réduire" />
       <CardControl glyph="×" label="Fermer" />
     </div>
   );
