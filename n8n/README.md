@@ -37,9 +37,8 @@ il n'y a pas de credential n8n à créer, il passe par le header `Authorization`
    (`briaai/RMBG-1.4` par défaut). `Normaliser la sortie HF` gère les deux formats de réponse
    possibles : image PNG détourée, ou JSON `[{ label, score, mask }]` — dans ce cas le masque
    base64 est décodé puis posé en couche alpha par un `Edit Image → Composite` (`CopyOpacity`).
-5. Le produit détouré est mis à l'échelle selon son profil, mesuré, puis **superposé** sur le
-   template Y2K téléchargé depuis Drive (`Edit Image → Composite`, opérateur `Over`) : centré, ou
-   posé sur une marge basse pour les chaussures.
+5. Le produit détouré est mis à l'échelle selon son profil, mesuré, puis **superposé centré** sur le
+   template téléchargé depuis Drive (`Edit Image → Composite`, opérateur `Over`).
 6. Toutes les images (principale composée + secondaires brutes) passent par `Edit Image` :
    **1500 px max, WebP qualité 80**, puis sont uploadées dans le même dossier Drive sous un nom
    normalisé (`slug-du-dossier-01.webp`, `-02.webp`, …).
@@ -50,20 +49,24 @@ il n'y a pas de credential n8n à créer, il passe par le header `Authorization`
 
 ### Typologies de produits
 
-`MODE_COMPOSITION` (nœud `Config`) pilote le rendu :
+Deux cas seulement, distingués par `Détecter la typologie` :
 
-- **`cadre`** (défaut) : le produit garde le cadrage de la photo d'origine, seul le fond change.
-  Fonctionne pour toutes les typologies sans hypothèse sur la photo.
-- **`profil`** : chaque catégorie a sa taille sur le fond (bijou 50 %, accessoire 65 %, sac 75 %,
-  chaussure 82 % ancrée en bas, vêtement 90 %). À n'activer que si les photos sont **cadrées serré**
-  (le produit remplit le cadre) : le détourage conserve les marges transparentes de la photo d'origine,
-  donc l'échelle est calculée sur le cadre, pas sur le sujet.
-  Pour une mise à l'échelle exacte quel que soit le cadrage, il faut un *trim* des pixels transparents,
-  qui n'existe pas dans le nœud `Edit Image` — possible seulement en self-hosted (`Execute Command`
-  avec `convert -trim`, ou un Code node avec `sharp`/`jimp` via `NODE_FUNCTION_ALLOW_EXTERNAL`).
+- **Porté sur mannequin** (vêtement, bijou, accessoire) : la prise de vue est déjà standardisée,
+  le produit occupe **tout le cadre** (`occupation: 1`). Le workflow ne remplace que le fond.
+- **Posé à plat** (sac 82 %, chaussure 78 %) : le produit est **réduit et centré** sur le template,
+  avec du fond tout autour.
 
-Les profils (taille, ancrage, template et modèle HF par catégorie) et les listes de mots-clés se
+Tags dans le nom du dossier, prioritaires sur les mots-clés : `[sac]`, `[chaussure]`, `[bijou]`… pour
+forcer une typologie, `[pose]` pour traiter un produit à plat, `[mannequin]` pour forcer le plein cadre.
+`MODE_COMPOSITION = cadre` dans `Config` est un secours : plein cadre pour tout le catalogue.
+
+Les profils (occupation, ancrage, template et modèle HF par catégorie) et les listes de mots-clés se
 règlent dans l'objet `PROFILS` en haut du nœud `Détecter la typologie`.
+
+Sur un produit posé, l'échelle porte sur le **cadre de la photo**, pas sur le sujet lui-même
+(le détourage conserve les marges transparentes d'origine) : shooter les sacs et chaussures en
+cadrage serré et centré. Un recadrage automatique sur le sujet demanderait un *trim* des pixels
+transparents, absent du nœud `Edit Image` (possible uniquement en self-hosted).
 
 ### Dépendances et limites
 

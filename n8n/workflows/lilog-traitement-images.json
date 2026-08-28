@@ -10,7 +10,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `HUGGINGFACE_API_KEY` : token Hugging Face (`hf_...`)\n- `HF_MODEL_URL` : modèle de détourage par défaut (BiRefNet)\n- `MODE_COMPOSITION` : `cadre` (défaut, sûr pour toutes les typologies) ou `profil`\n- `TEMPLATE_FOND_FILE_ID` : ID du fichier Drive du template Y2K par défaut\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : taille réelle du template (défaut 1500x1500)\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : les profils par catégorie (taille, ancrage, fond, modèle) se règlent dans l'objet `PROFILS` en haut du code.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : sélectionner ton compte Google Drive dans chaque nœud Drive. Rien à créer pour Hugging Face (token dans le header `Authorization`).",
+        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `HUGGINGFACE_API_KEY` : token Hugging Face (`hf_...`)\n- `HF_MODEL_URL` : modèle de détourage par défaut (BiRefNet)\n- `MODE_COMPOSITION` : `auto` (profil par typologie) ou `cadre` (plein cadre partout, secours)\n- `TEMPLATE_FOND_FILE_ID` : ID du fichier Drive du template\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : taille réelle du template (ex. 1080 x 1350)\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : objet `PROFILS` = taille, ancrage, fond et modèle par catégorie. Mannequin = 1 (plein cadre), sac = 0.82, chaussure = 0.78.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : compte Google Drive sur chaque nœud Drive. Rien à créer pour Hugging Face.",
         "height": 540,
         "width": 420,
         "color": 4
@@ -26,7 +26,7 @@
     },
     {
       "parameters": {
-        "content": "## 2. Tri des dossiers + typologie\n\nOn liste **uniquement les sous-dossiers** du dossier parent, puis on **garde ceux qui ne commencent pas** par `✓_` (traité), `⚠_` (à relire) ni `*`.\n\nLa boucle traite **1 dossier à la fois**. `Détecter la typologie` déduit du nom du dossier s'il s'agit d'un **vêtement, sac, bijou, chaussure ou accessoire**, et charge le profil correspondant (taille sur le fond, ancrage, template, modèle de détourage).\n\nTag explicite possible dans le nom : `Sac Baguette Rose [sac]`.",
+        "content": "## 2. Tri des dossiers + typologie\n\nOn liste **uniquement les sous-dossiers** du dossier parent, puis on **garde ceux qui ne commencent pas** par `✓_` (traité), `⚠_` (à relire) ni `*`.\n\nLa boucle traite **1 dossier à la fois**. `Détecter la typologie` déduit du nom du dossier si le produit est **porté sur mannequin** (vêtement, bijou, accessoire → plein cadre) ou **posé à plat** (sac, chaussure → réduit et centré sur le fond).\n\nTag explicite possible : `Sac Baguette Rose [sac]`, `Bague coeur [pose]`.",
         "height": 380,
         "width": 420,
         "color": 5
@@ -58,8 +58,8 @@
     },
     {
       "parameters": {
-        "content": "## 3 bis. Mise à l'échelle par typologie + superposition\n\n`Redimensionner le produit` applique la taille du profil (**tailleProduit**), `Mesurer le produit` récupère ses dimensions réelles, `Télécharger le template de fond` charge le fond du profil.\n\n`Préparer la composition` réunit **fond + produit dans le même item** (`data` = fond, `cutout` = produit) et calcule `posX`/`posY` : centré, ou **posé sur une marge basse** pour les chaussures et les sacs.\n\n**`MODE_COMPOSITION` (nœud Config)**\n- `cadre` (défaut) : le produit garde son cadrage d'origine, quelle que soit la typologie. Sûr partout.\n- `profil` : chaque typologie a sa taille (bijou 50 %, sac 75 %, robe 90 %...). ⚠️ à n'activer que si tes photos sont **cadrées serré** (le produit remplit le cadre), car le détourage conserve les marges transparentes de la photo d'origine.",
-        "height": 480,
+        "content": "## 3 bis. Mise à l'échelle + superposition\n\n**Photos portées sur mannequin** (vêtements, bijoux, accessoires) : le cadrage est déjà standardisé, le produit occupe **tout le cadre** — on ne remplace que le fond.\n\n**Produits posés à plat** (sacs 82 %, chaussures 78 %) : le produit est réduit et **centré** sur le template, avec du fond tout autour, comme sur les fiches du site.\n\n`Redimensionner le produit` → boîte du profil (au ratio du template, ex. 1080x1350) ; `Mesurer le produit` → dimensions réelles ; `Préparer la composition` → `data` = fond, `cutout` = produit, + `posX`/`posY`.\n\nRéglages dans `Détecter la typologie` : l'objet `PROFILS`. Tags dans le nom du dossier : `[sac]`, `[chaussure]`, `[pose]` (produit à plat), `[mannequin]` (plein cadre).\n\n`MODE_COMPOSITION = cadre` dans Config = secours, force le plein cadre partout.",
+        "height": 460,
         "width": 660,
         "color": 3
       },
@@ -74,7 +74,7 @@
     },
     {
       "parameters": {
-        "content": "## 4. Optimisation + upload + validation\n\n`Edit Image` : **1500 px max** (uniquement si l'image est plus grande) + **WebP qualité 80**. Sortie carrée 1:1 quelle que soit la typologie, cohérente pour la grille Shopify.\n\nLes deux branches se rejoignent dans `Fusionner les uploads`, `Limiter à 1 sortie` ramène à un seul item, puis le dossier est renommé :\n- **`✓_`** = traité et validé ;\n- **`⚠_`** = détourage en échec, images produites en mode dégradé, **à relire à la main**.\n\n⚠️ `Edit Image` a besoin d'ImageMagick (présent sur n8n Cloud et sur l'image Docker officielle).",
+        "content": "## 4. Optimisation + upload + validation\n\n`Edit Image` : **1500 px max** (seulement si plus grand) + **WebP qualité 80**. La photo principale sort au format du template (ex. 1080x1350), cohérente pour la grille du site.\n\n⚠️ Le champ **Quality** est masqué dans l'UI quand Format = WebP : si tu rouvres et réenregistres ces deux nœuds, n8n supprime la valeur 80 (fichiers plus lourds). Réimporte le JSON pour la remettre.\n\nPuis le dossier est renommé : **`✓_`** = traité et validé, **`⚠_`** = détourage en échec, images produites en mode dégradé, **à relire à la main**.",
         "height": 420,
         "width": 420,
         "color": 6
@@ -161,7 +161,7 @@
             {
               "id": "cfg-11",
               "name": "MODE_COMPOSITION",
-              "value": "cadre",
+              "value": "auto",
               "type": "string"
             },
             {
@@ -225,7 +225,7 @@
         -480,
         580
       ],
-      "notes": "Toutes les valeurs à personnaliser sont ici. MODE_COMPOSITION : 'cadre' = le produit garde son cadrage d'origine (sûr quelle que soit la typologie) ; 'profil' = mise à l'échelle par typologie (voir le nœud Détecter la typologie)."
+      "notes": "Toutes les valeurs à personnaliser sont ici. MODE_COMPOSITION : 'auto' = profil par typologie (mannequin plein cadre, sac/chaussure réduits) ; 'cadre' = plein cadre partout."
     },
     {
       "parameters": {
@@ -318,7 +318,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Détecte la typologie du produit à partir du nom du dossier et renvoie le profil à appliquer.\n// C'est ICI qu'on règle le rendu par typologie : il n'y a rien d'autre à modifier ailleurs.\nconst cfg = $('Config').first().json;\nconst dossier = $input.first().json; // le dossier en cours de traitement (id + name)\nconst nom = String(dossier.name || '');\n\n// occupation : part du template occupée par le produit (1 = plein cadre)\n// ancrage    : 'centre' | 'bas'\n// template   : ID Drive d'un fond spécifique à cette typologie ('' = TEMPLATE_FOND_FILE_ID)\n// modele     : URL Hugging Face spécifique ('' = HF_MODEL_URL)\nconst PROFILS = {\n  vetement:   { occupation: 0.90, ancrage: 'centre', template: '', modele: '' },\n  sac:        { occupation: 0.75, ancrage: 'centre', template: '', modele: '' },\n  chaussure:  { occupation: 0.82, ancrage: 'bas',    template: '', modele: '' },\n  bijou:      { occupation: 0.50, ancrage: 'centre', template: '', modele: '' },\n  accessoire: { occupation: 0.65, ancrage: 'centre', template: '', modele: '' },\n  defaut:     { occupation: 0.85, ancrage: 'centre', template: '', modele: '' },\n};\n\n// Mots-clés cherchés dans le nom du dossier (sans accents, mot entier).\n// L'ordre compte : les typologies les plus spécifiques passent avant \"vetement\".\nconst MOTS = {\n  accessoire: ['ceinture', 'lunettes', 'casquette', 'bob', 'echarpe', 'foulard', 'gant', 'gants',\n               'chapeau', 'cravate', 'barrette', 'chouchou', 'porte-cles', 'montre', 'bandana',\n               'mitaine', 'mitaines', 'eventail'],\n  bijou: ['bijou', 'bijoux', 'collier', 'pendentif', 'bague', 'bracelet', 'boucle', 'boucles',\n          'anneau', 'broche', 'piercing', 'ras-de-cou', 'choker'],\n  chaussure: ['chaussure', 'chaussures', 'basket', 'baskets', 'sneaker', 'sneakers', 'botte',\n              'bottes', 'bottine', 'bottines', 'sandale', 'sandales', 'mule', 'mules',\n              'escarpin', 'escarpins', 'talon', 'talons', 'tong', 'tongs', 'ballerine'],\n  sac: ['sac', 'sacs', 'sacoche', 'pochette', 'cabas', 'bandouliere', 'besace', 'tote',\n        'portefeuille', 'porte-monnaie', 'trousse'],\n  vetement: ['robe', 'top', 'debardeur', 'tshirt', 't-shirt', 'chemise', 'chemisier', 'pull',\n             'gilet', 'veste', 'blouson', 'manteau', 'pantalon', 'jean', 'jeans', 'jupe', 'short',\n             'combinaison', 'body', 'corset', 'bustier', 'sweat', 'hoodie', 'cardigan', 'legging',\n             'jogging', 'maillot', 'crop', 'brassiere', 'kimono', 'salopette'],\n};\n\nconst sansAccents = (t) => String(t).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();\nconst nomNorm = sansAccents(nom);\n\n// 1) tag explicite prioritaire dans le nom du dossier, ex : \"Sac Baguette Rose [sac]\"\nlet typologie = null;\nconst tag = nomNorm.match(/\\[([a-z]+)\\]/);\nif (tag && PROFILS[tag[1]]) typologie = tag[1];\n\n// 2) sinon, détection par mot-clé\nif (!typologie) {\n  for (const [type, mots] of Object.entries(MOTS)) {\n    if (mots.some((m) => new RegExp('(^|[^a-z0-9])' + m + '([^a-z0-9]|$)').test(nomNorm))) {\n      typologie = type;\n      break;\n    }\n  }\n}\nif (!typologie) typologie = 'defaut';\n\nconst profil = { ...PROFILS.defaut, ...(PROFILS[typologie] || {}) };\n\n// MODE_COMPOSITION = 'cadre' -> on conserve le cadrage d'origine (occupation 1) : aucun risque\n// de sur-agrandir un petit objet. 'profil' -> on applique l'occupation de la typologie.\nconst mode = String(cfg.MODE_COMPOSITION || 'cadre').toLowerCase() === 'profil' ? 'profil' : 'cadre';\nconst occupation = mode === 'profil' ? Number(profil.occupation) || 0.85 : 1;\n\nconst largeurFond = Number(cfg.TEMPLATE_LARGEUR) || 1500;\nconst hauteurFond = Number(cfg.TEMPLATE_HAUTEUR) || 1500;\n\nreturn [{\n  json: {\n    ...dossier, // id et name du dossier : la suite du workflow s'en sert\n    typologie,\n    mode,\n    occupation,\n    ancrage: profil.ancrage || 'centre',\n    tailleProduit: Math.round(Math.min(largeurFond, hauteurFond) * occupation),\n    templateFileId: profil.template || cfg.TEMPLATE_FOND_FILE_ID,\n    modelUrl: profil.modele || cfg.HF_MODEL_URL,\n  },\n}];\n"
+        "jsCode": "// Profil de composition du produit, déduit du nom du dossier.\n//\n// Chez Lil'OG tout ce qui se PORTE (vêtements, bijoux, accessoires) est shooté sur mannequin :\n// le cadrage est déjà standardisé, on garde donc la photo en plein cadre et on ne remplace\n// que le fond. Seuls les produits POSÉS à plat (sacs, chaussures) sont remis à l'échelle\n// et recentrés sur le template.\nconst cfg = $('Config').first().json;\nconst dossier = $input.first().json; // le dossier en cours de traitement (id + name)\nconst nom = String(dossier.name || '');\n\n// occupation : part du template occupée par le produit (1 = plein cadre / mannequin)\n// ancrage    : 'centre' | 'bas'\n// template   : ID Drive d'un fond spécifique à cette typologie ('' = TEMPLATE_FOND_FILE_ID)\n// modele     : URL Hugging Face spécifique ('' = HF_MODEL_URL)\nconst PROFILS = {\n  vetement:   { occupation: 1.00, ancrage: 'centre', template: '', modele: '' }, // mannequin\n  bijou:      { occupation: 1.00, ancrage: 'centre', template: '', modele: '' }, // mannequin\n  accessoire: { occupation: 1.00, ancrage: 'centre', template: '', modele: '' }, // mannequin\n  sac:        { occupation: 0.82, ancrage: 'centre', template: '', modele: '' }, // posé à plat\n  chaussure:  { occupation: 0.78, ancrage: 'centre', template: '', modele: '' }, // posé à plat\n  defaut:     { occupation: 1.00, ancrage: 'centre', template: '', modele: '' },\n};\n\n// Occupation appliquée quand un dossier est marqué [pose] sans typologie reconnue.\nconst OCCUPATION_POSE = 0.80;\n\n// Mots-clés cherchés dans le nom du dossier (sans accents, mot entier).\n// L'ordre compte : les typologies les plus spécifiques passent avant \"vetement\".\nconst MOTS = {\n  accessoire: ['ceinture', 'lunettes', 'casquette', 'bob', 'echarpe', 'foulard', 'gant', 'gants',\n               'chapeau', 'cravate', 'barrette', 'chouchou', 'porte-cles', 'montre', 'bandana',\n               'mitaine', 'mitaines', 'eventail'],\n  bijou: ['bijou', 'bijoux', 'collier', 'pendentif', 'bague', 'bracelet', 'boucle', 'boucles',\n          'anneau', 'broche', 'piercing', 'ras-de-cou', 'choker'],\n  chaussure: ['chaussure', 'chaussures', 'basket', 'baskets', 'sneaker', 'sneakers', 'botte',\n              'bottes', 'bottine', 'bottines', 'sandale', 'sandales', 'mule', 'mules',\n              'escarpin', 'escarpins', 'talon', 'talons', 'tong', 'tongs', 'ballerine'],\n  sac: ['sac', 'sacs', 'sacoche', 'pochette', 'cabas', 'bandouliere', 'besace', 'tote',\n        'portefeuille', 'porte-monnaie', 'trousse'],\n  vetement: ['robe', 'top', 'debardeur', 'tshirt', 't-shirt', 'chemise', 'chemisier', 'pull',\n             'gilet', 'veste', 'blouson', 'manteau', 'pantalon', 'jean', 'jeans', 'jupe', 'short',\n             'combinaison', 'body', 'corset', 'bustier', 'sweat', 'hoodie', 'cardigan', 'legging',\n             'jogging', 'maillot', 'crop', 'brassiere', 'kimono', 'salopette'],\n};\n\nconst sansAccents = (t) => String(t).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();\nconst nomNorm = sansAccents(nom);\n\n// 1) tag explicite dans le nom du dossier, prioritaire sur tout le reste :\n//    \"[sac]\" / \"[chaussure]\" / \"[bijou]\"... force la typologie\n//    \"[pose]\"      force le traitement \"produit posé\" (mise à l'échelle + recentrage)\n//    \"[mannequin]\" force le plein cadre\nlet typologie = null;\nlet forcage = null;\nconst tag = nomNorm.match(/\\[([a-z]+)\\]/);\nif (tag) {\n  if (PROFILS[tag[1]]) typologie = tag[1];\n  else if (tag[1] === 'pose' || tag[1] === 'posee') forcage = 'pose';\n  else if (tag[1] === 'mannequin') forcage = 'mannequin';\n}\n\n// 2) sinon, détection par mot-clé\nif (!typologie) {\n  for (const [type, mots] of Object.entries(MOTS)) {\n    if (mots.some((m) => new RegExp('(^|[^a-z0-9])' + m + '([^a-z0-9]|$)').test(nomNorm))) {\n      typologie = type;\n      break;\n    }\n  }\n}\nif (!typologie) typologie = 'defaut';\n\nconst profil = { ...PROFILS.defaut, ...(PROFILS[typologie] || {}) };\n\nlet occupation = Number(profil.occupation) || 1;\nif (forcage === 'pose') occupation = OCCUPATION_POSE;\nif (forcage === 'mannequin') occupation = 1;\n// Secours : MODE_COMPOSITION = 'cadre' force le plein cadre pour TOUS les produits.\nif (String(cfg.MODE_COMPOSITION || 'auto').toLowerCase() === 'cadre') occupation = 1;\n\nconst largeurFond = Number(cfg.TEMPLATE_LARGEUR) || 1080;\nconst hauteurFond = Number(cfg.TEMPLATE_HAUTEUR) || 1350;\n\nreturn [{\n  json: {\n    ...dossier, // id et name du dossier : la suite du workflow s'en sert\n    typologie,\n    pose: occupation < 1,\n    occupation,\n    ancrage: profil.ancrage || 'centre',\n    // boîte dans laquelle le produit doit tenir, au ratio du template (ex. 1080x1350)\n    largeurProduitMax: Math.round(largeurFond * occupation),\n    hauteurProduitMax: Math.round(hauteurFond * occupation),\n    templateFileId: profil.template || cfg.TEMPLATE_FOND_FILE_ID,\n    modelUrl: profil.modele || cfg.HF_MODEL_URL,\n  },\n}];\n"
       },
       "id": "node-typologie",
       "name": "Détecter la typologie",
@@ -328,7 +328,7 @@
         340,
         700
       ],
-      "notes": "Robe / sac / bijou / chaussure / accessoire : profil (taille, ancrage, fond, modèle) déduit du nom du dossier. Tag explicite possible : [bijou]."
+      "notes": "Porté sur mannequin (vêtement, bijou, accessoire) = plein cadre. Posé à plat (sac, chaussure) = mise à l'échelle + recentrage sur le template. Tags possibles : [sac], [pose], [mannequin]."
     },
     {
       "parameters": {
@@ -598,8 +598,8 @@
       "parameters": {
         "operation": "resize",
         "dataPropertyName": "data",
-        "width": "={{ $('Détecter la typologie').first().json.tailleProduit }}",
-        "height": "={{ $('Détecter la typologie').first().json.tailleProduit }}",
+        "width": "={{ $('Détecter la typologie').first().json.largeurProduitMax }}",
+        "height": "={{ $('Détecter la typologie').first().json.hauteurProduitMax }}",
         "resizeOption": "maximumArea",
         "options": {
           "format": "png"
@@ -613,7 +613,7 @@
         2480,
         560
       ],
-      "notes": "Mise à l'échelle du produit détouré selon la typologie (tailleProduit). En mode 'cadre' = taille du template : le cadrage d'origine est conservé."
+      "notes": "Le produit détouré est mis à la taille de la boîte du profil, sans déformation. Mannequin = boîte = template (plein cadre) ; sac/chaussure = 82 % / 78 % du template."
     },
     {
       "parameters": {
@@ -628,7 +628,7 @@
         2700,
         560
       ],
-      "notes": "Renvoie les dimensions (size.width / size.height) qui servent à centrer le vêtement."
+      "notes": "Dimensions réelles du produit après mise à l'échelle (size.width / size.height), pour le centrage."
     },
     {
       "parameters": {
@@ -656,7 +656,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Réunit dans un seul item : le fond (template Y2K) + le produit détouré,\n// et calcule la position selon l'ancrage du profil de typologie.\nconst cfg = $('Config').first().json;\nconst profil = $('Détecter la typologie').first().json;\n\nconst produit = $('Redimensionner le produit').first().binary.data;\nconst fond = $input.first().binary.background;\n\nconst info = $('Mesurer le produit').first().json;\nconst largeurProduit = Number(info?.size?.width ?? info?.width ?? 0);\nconst hauteurProduit = Number(info?.size?.height ?? info?.height ?? 0);\n\nconst largeurFond = Number(cfg.TEMPLATE_LARGEUR) || 1500;\nconst hauteurFond = Number(cfg.TEMPLATE_HAUTEUR) || 1500;\n\nconst posX = Math.max(0, Math.round((largeurFond - largeurProduit) / 2));\n\n// ancrage 'bas' (chaussures, sacs posés) : le produit repose sur une marge basse de 6 %\nconst margeBasse = Math.round(hauteurFond * 0.06);\nconst posY = profil.ancrage === 'bas'\n  ? Math.max(0, hauteurFond - hauteurProduit - margeBasse)\n  : Math.max(0, Math.round((hauteurFond - hauteurProduit) / 2));\n\nreturn [{\n  json: {\n    posX,\n    posY,\n    typologie: profil.typologie,\n    mode: profil.mode,\n    largeurProduit,\n    hauteurProduit,\n    largeurFond,\n    hauteurFond,\n  },\n  binary: { data: fond, cutout: produit },\n}];\n"
+        "jsCode": "// Réunit dans un seul item le fond (template) + le produit détouré, et calcule sa position.\nconst cfg = $('Config').first().json;\nconst profil = $('Détecter la typologie').first().json;\n\nconst produit = $('Redimensionner le produit').first().binary.data;\nconst fond = $input.first().binary.background;\n\nconst info = $('Mesurer le produit').first().json;\nconst largeurProduit = Number(info?.size?.width ?? info?.width ?? 0);\nconst hauteurProduit = Number(info?.size?.height ?? info?.height ?? 0);\n\nconst largeurFond = Number(cfg.TEMPLATE_LARGEUR) || 1080;\nconst hauteurFond = Number(cfg.TEMPLATE_HAUTEUR) || 1350;\n\nconst posX = Math.max(0, Math.round((largeurFond - largeurProduit) / 2));\n\n// 'bas' : le produit repose sur une marge basse de 6 % (non utilisé par défaut,\n// sacs et chaussures sont centrés comme sur la boutique).\nconst margeBasse = Math.round(hauteurFond * 0.06);\nconst posY = profil.ancrage === 'bas'\n  ? Math.max(0, hauteurFond - hauteurProduit - margeBasse)\n  : Math.max(0, Math.round((hauteurFond - hauteurProduit) / 2));\n\nreturn [{\n  json: {\n    posX,\n    posY,\n    typologie: profil.typologie,\n    pose: profil.pose,\n    occupation: profil.occupation,\n    largeurProduit,\n    hauteurProduit,\n    largeurFond,\n    hauteurFond,\n  },\n  binary: { data: fond, cutout: produit },\n}];\n"
       },
       "id": "node-prepare-composite",
       "name": "Préparer la composition",
@@ -688,7 +688,7 @@
         3360,
         560
       ],
-      "notes": "Le vêtement détouré est posé, centré, par-dessus le template Y2K."
+      "notes": "Le produit détouré est posé, centré, sur le template. Mannequin : il remplit le cadre. Sac / chaussure : il est réduit et entouré de fond, comme sur les fiches du site."
     },
     {
       "parameters": {
@@ -711,7 +711,7 @@
         3580,
         560
       ],
-      "notes": "Redimensionne à 1500px max (seulement si plus grand) + export WebP qualité 80. Le champ Quality est masqué dans l'UI quand Format=WebP, mais la valeur 80 est bien appliquée à l'exécution."
+      "notes": "1500 px max (seulement si plus grand) + export WebP qualité 80. ⚠️ Le champ Quality est masqué dans l'UI quand Format = WebP : si tu rouvres et réenregistres ce nœud, n8n retire la valeur 80 et repasse à 100 (fichiers plus lourds)."
     },
     {
       "parameters": {
@@ -786,7 +786,7 @@
         1600,
         860
       ],
-      "notes": "Redimensionne à 1500px max (seulement si plus grand) + export WebP qualité 80. Le champ Quality est masqué dans l'UI quand Format=WebP, mais la valeur 80 est bien appliquée à l'exécution."
+      "notes": "1500 px max (seulement si plus grand) + export WebP qualité 80. ⚠️ Le champ Quality est masqué dans l'UI quand Format = WebP : si tu rouvres et réenregistres ce nœud, n8n retire la valeur 80 et repasse à 100 (fichiers plus lourds)."
     },
     {
       "parameters": {
