@@ -10,7 +10,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `DETOURAGE_SPACE_URL` / `DETOURAGE_FN` : Space Gradio de détourage (voir note 3)\n- `MODE_COMPOSITION` : `auto` (profil par typologie) ou `cadre` (plein cadre partout, secours)\n- `TEMPLATE_FOND_FILE_ID` : ID du **dossier** contenant le template (ou du fichier directement)\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : secours seulement — la taille réelle est mesurée sur l'image\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : objet `PROFILS` = taille, ancrage, fond et modèle par catégorie. Mannequin = 1 (plein cadre), sac = 0.82, chaussure = 0.78.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : compte Google Drive sur chaque nœud Drive. Rien à créer pour Hugging Face.",
+        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `DETOURAGE_SPACE_URL` / `DETOURAGE_FN` / `DETOURAGE_PARAMS` : Space et modèle de détourage (note 3)\n- `MODE_COMPOSITION` : `auto` (profil par typologie) ou `cadre` (plein cadre partout, secours)\n- `TEMPLATE_FOND_FILE_ID` : ID du **dossier** contenant le template (ou du fichier directement)\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : secours seulement — la taille réelle est mesurée sur l'image\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : objet `PROFILS` = taille, ancrage, fond et modèle par catégorie. Mannequin = 1 (plein cadre), sac = 0.82, chaussure = 0.78.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : compte Google Drive sur chaque nœud Drive. Rien à créer pour Hugging Face.",
         "height": 540,
         "width": 420,
         "color": 4
@@ -42,8 +42,8 @@
     },
     {
       "parameters": {
-        "content": "## 3. Détourage : Space Hugging Face (gratuit)\n\n`api-inference.huggingface.co` **n'existe plus** et aucun modèle de suppression de fond n'est servi gratuitement par le routeur HF (RMBG-2.0 = fal-ai, payant). On passe donc par un **Space Gradio sur CPU**, gratuit, sans quota et sans compte :\n\n1. `POST /gradio_api/upload` (binaire, champ `files`)\n2. `POST /gradio_api/call/<fn>` → `event_id`\n3. `GET /gradio_api/call/<fn>/<event_id>` → flux SSE\n4. téléchargement du fichier transparent\n\n`DETOURAGE_SPACE_URL` = `https://hysts-mcp-rembg.hf.space` (rembg, CPU, ~3-10 s/image), `DETOURAGE_FN` = `remove_background`. Aucune authentification : le Space est public.\n\n⚠️ **Dupliquer le Space demande désormais un compte HF PRO** — on utilise donc le Space public tel quel. File d'attente partagée, mais pas de quota.\n\n**Filet de sécurité** : 3 tentatives espacées de 15 s à chaque étape, et si ça échoue quand même le dossier passe en mode dégradé (photo d'origine conservée, dossier marqué `⚠_`). Il suffit de retirer le `⚠_` et de relancer : rien n'est perdu, la boucle n'est jamais bloquée.\n\nPour changer de Space : `DETOURAGE_SPACE_URL` + `DETOURAGE_FN` (nom de l'endpoint visible sur `https://<space>.hf.space/gradio_api/info`).\n\n**Usage commercial : OK.** Ce Space épingle `rembg==2.0.67` (logiciel MIT), dont le modèle par défaut est **u2net**, publié sous **Apache 2.0** — usage commercial autorisé, sans redevance.\n\n⚠️ À ne pas confondre avec **RMBG-2.0 de BRIA** (accord payant obligatoire pour le commercial), devenu le modèle par défaut des versions **récentes** de rembg. Si tu passes un jour sur ta propre instance, force explicitement `-m u2net` (Apache 2.0) ou `-m birefnet-general` (MIT).",
-        "height": 760,
+        "content": "## 3. Détourage : Space CPU avec choix du modèle\n\n`https://kenjiedec-rembg.hf.space`, endpoint `inference`. Ce Space tourne sur **CPU** : aucun quota GPU, aucun compte, aucune authentification.\n\n**Modèle** : réglé dans `DETOURAGE_PARAMS` (nœud Config), au format `[modèle, x, y]`.\n\n| Valeur | Qualité | Temps/image (CPU) | Licence |\n|---|---|---|---|\n| `[\"birefnet-general\", null, null]` | la meilleure | ~35 s | BiRefNet, **MIT** |\n| `[\"birefnet-general-lite\", null, null]` | très bonne | ~20 s | BiRefNet, **MIT** |\n| `[\"u2net\", null, null]` | grossière, rate les sujets peu contrastés | ~2 s | U-2-Net, **Apache 2.0** |\n\nLes trois sont libres pour un usage commercial. **Éviter** `isnet-*` (jeu de données DIS5K aux conditions d'usage académiques) et tout modèle BRIA / RMBG (accord payant obligatoire).\n\n**Pourquoi BiRefNet** : u2net (2020) rate les sujets peu contrastés — un mannequin beige sur mur blanc se fait amputer du torse. BiRefNet gère ces frontières faibles.\n\n**Avant un gros batch**, teste ta photo sur l'interface du Space (glisser-déposer, menu *Model*) pour comparer les modèles sur ton propre cas.\n\nChaîne : `upload` → `call/inference` → flux SSE → téléchargement du fichier. En cas d'échec : 3 tentatives, puis mode dégradé (photo d'origine, dossier marqué `⚠_`).",
+        "height": 780,
         "width": 720,
         "color": 3
       },
@@ -149,13 +149,19 @@
             {
               "id": "cfg-3",
               "name": "DETOURAGE_SPACE_URL",
-              "value": "https://hysts-mcp-rembg.hf.space",
+              "value": "https://kenjiedec-rembg.hf.space",
               "type": "string"
             },
             {
               "id": "cfg-13",
               "name": "DETOURAGE_FN",
-              "value": "remove_background",
+              "value": "inference",
+              "type": "string"
+            },
+            {
+              "id": "cfg-14",
+              "name": "DETOURAGE_PARAMS",
+              "value": "[\"birefnet-general\", null, null]",
               "type": "string"
             },
             {
@@ -597,7 +603,7 @@
         "sendBody": true,
         "contentType": "json",
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ data: [ { path: JSON.parse($json.data)[0], meta: { _type: 'gradio.FileData' } } ] }) }}",
+        "jsonBody": "={{ JSON.stringify({ data: [ { path: JSON.parse($json.data)[0], meta: { _type: 'gradio.FileData' } } ].concat(JSON.parse($('Config').first().json.DETOURAGE_PARAMS || '[]')) }) }}",
         "options": {
           "timeout": 120000,
           "response": {
@@ -619,7 +625,7 @@
       "maxTries": 3,
       "waitBetweenTries": 15000,
       "onError": "continueRegularOutput",
-      "notes": "Étape 2/4 — met la photo dans la file du Space. Réponse : { event_id }."
+      "notes": "Étape 2/4 — met la photo dans la file du Space. DETOURAGE_PARAMS (Config) contient les paramètres supplémentaires de l'endpoint, ici [modèle, x, y]."
     },
     {
       "parameters": {
@@ -635,7 +641,7 @@
           ]
         },
         "options": {
-          "timeout": 300000,
+          "timeout": 600000,
           "response": {
             "response": {
               "responseFormat": "text"
@@ -655,12 +661,12 @@
       "maxTries": 3,
       "waitBetweenTries": 15000,
       "onError": "continueRegularOutput",
-      "notes": "Étape 3/4 — flux SSE : la connexion reste ouverte jusqu'à 'event: complete' (quelques secondes, plus si le Space démarre à froid)."
+      "notes": "Étape 3/4 — flux SSE maintenu jusqu'à 'event: complete'. Timeout 10 min : BiRefNet sur CPU met 20 à 40 s par image, et bien plus au tout premier appel (téléchargement du modèle)."
     },
     {
       "parameters": {
         "method": "GET",
-        "url": "={{ JSON.parse(($json.data || '').split('\\n').filter(l => l.startsWith('data: ')).pop().slice(6)).flat()[0].url }}",
+        "url": "={{ $('Détecter la typologie').first().json.spaceUrl }}/gradio_api/file={{ JSON.parse(($json.data || '').split('\\n').filter(l => l.startsWith('data: ')).pop().slice(6)).flat()[0].path }}",
         "options": {
           "timeout": 120000,
           "response": {
@@ -683,7 +689,7 @@
       "maxTries": 3,
       "waitBetweenTries": 15000,
       "onError": "continueRegularOutput",
-      "notes": "Étape 4/4 — télécharge le PNG/WebP détouré (fond transparent) produit par le Space."
+      "notes": "Étape 4/4 — l'URL est reconstruite à partir du chemin renvoyé (certains Spaces renvoient une URL absolue erronée). Sortie : PNG/WebP à fond transparent."
     },
     {
       "parameters": {

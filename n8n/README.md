@@ -75,19 +75,29 @@ remplacé, aucun modèle de suppression de fond n'est servi gratuitement : `Zhen
 `briaai/RMBG-1.4` n'ont plus aucun provider, et `briaai/RMBG-2.0` n'est disponible que via fal-ai,
 facturé à l'image.
 
-Le workflow appelle donc un **Space Gradio sur CPU** (`hysts-mcp/rembg` par défaut) : gratuit, sans
-quota, sans compte ni authentification, ~3 à 10 s par image.
+Le workflow appelle donc un **Space Gradio sur CPU** — `KenjieDec/RemBG` — gratuit, sans quota GPU,
+sans compte ni authentification. Ce Space laisse **choisir le modèle**, réglé dans `DETOURAGE_PARAMS`
+(nœud `Config`), au format `[modèle, x, y]` :
+
+| Valeur | Qualité | Temps/image (CPU) | Licence |
+|---|---|---|---|
+| `["birefnet-general", null, null]` (défaut) | la meilleure | ~35 s | BiRefNet, **MIT** |
+| `["birefnet-general-lite", null, null]` | très bonne | ~20 s | BiRefNet, **MIT** |
+| `["u2net", null, null]` | grossière, rate les sujets peu contrastés | ~2 s | U-2-Net, **Apache 2.0** |
+
+u2net (2020) échoue sur les sujets peu contrastés — un mannequin beige sur mur blanc perd son torse.
+BiRefNet gère ces frontières faibles, au prix d'un temps de calcul plus long sur CPU.
+**Éviter** les modèles `isnet-*` (jeu de données DIS5K aux conditions d'usage académiques) et tout
+modèle BRIA / RMBG (accord payant obligatoire pour le commercial).
 
 Dupliquer ce Space dans son propre compte **n'est plus gratuit** : Hugging Face réserve désormais la
 création d'un Space CPU Basic aux comptes PRO. On utilise donc le Space public tel quel — file
 d'attente partagée, mais aucun quota.
 
-**Licence et usage commercial.** Le Space épingle `rembg==2.0.67` (logiciel sous MIT), dont le modèle
-par défaut est `u2net`, publié sous **Apache 2.0** : usage commercial autorisé sans redevance.
-Attention, les versions **récentes** de rembg ont basculé leur modèle par défaut sur `bria-rmbg`
-(RMBG-2.0), sous licence BRIA qui exige un accord payant pour le commercial. Sur une instance
-auto-hébergée, forcer explicitement `-m u2net` (Apache 2.0) ou `-m birefnet-general` (BiRefNet, MIT).
-Ce point est à revérifier si le Space est mis à jour un jour.
+**Licence et usage commercial.** `rembg` est sous MIT ; le modèle choisi par défaut ici,
+`birefnet-general`, provient de ZhengPeng7/BiRefNet, sous **MIT** : usage commercial autorisé sans
+redevance. Ne jamais laisser le modèle par défaut de rembg sur une instance auto-hébergée récente :
+c'est `bria-rmbg` (RMBG-2.0), sous licence BRIA qui exige un accord payant pour le commercial.
 
 Filet de sécurité : 3 tentatives espacées de 15 s à chaque étape, puis mode dégradé (dossier marqué
 `⚠_`, photo d'origine conservée, boucle jamais bloquée). Il suffit de retirer le `⚠_` pour relancer
