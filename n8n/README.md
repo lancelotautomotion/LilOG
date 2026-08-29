@@ -123,10 +123,17 @@ en entrée et renvoie un fichier.
 
 ### Ménage des originaux
 
-`SUPPRIMER_ORIGINAUX` (`Config`) vaut `true` : après upload des `.webp`, chaque photo d'origine part à
-la **corbeille** Google Drive — jamais en suppression définitive, donc récupérable 30 jours. Rien n'est
-supprimé si le dossier a échoué (`⚠_`), pour qu'une relance reste possible. La corbeille continue à
-occuper le quota Drive : la vider pour récupérer l'espace, une fois les résultats validés.
+`SUPPRIMER_ORIGINAUX` (`Config`) vaut `true` : une fois les `.webp` uploadés, `Préparer le ménage`
+relit la liste établie par `Classer les images` en début d'itération et sort un item par original, que
+`Supprimer les originaux` met à la **corbeille** Google Drive — jamais en suppression définitive, donc
+récupérable 30 jours. Les `.webp` créés pendant l'itération ne figurent pas dans cette liste : ils ne
+peuvent pas être visés.
+
+Le ménage est groupé en fin d'itération, sans appairage d'items : une suppression par photo, branchée
+après l'upload, dépendait de `.item` à travers le nœud d'upload Drive, où le lien entre items se perd.
+Rien n'est supprimé si le dossier a échoué (`⚠_`) ni si l'interrupteur est à `false` ; dans ces cas la
+branche *faux* rejoint directement le renommage, la boucle n'est jamais bloquée. La corbeille continue
+à occuper le quota Drive : la vider une fois les résultats validés.
 
 `Classer les images` ignore les `.webp` d'un dossier tant qu'il y reste des originaux, pour ne jamais
 retraiter une image déjà produite par le workflow.

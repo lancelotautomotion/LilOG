@@ -74,8 +74,8 @@
     },
     {
       "parameters": {
-        "content": "## 4. Optimisation, upload, ménage et validation\n\n`Edit Image` : **1500 px max** + **WebP qualité 80**. Les fichiers sont uploadés dans le même dossier Drive sous les noms **`1.webp`, `2.webp`, `3.webp`…** — la photo principale est toujours la n°1.\n\n**Ménage** : chaque original (jpg…) est ensuite mis à la **corbeille Drive** (récupérable 30 jours, pas de suppression définitive). Deux garde-fous : rien n'est supprimé si `SUPPRIMER_ORIGINAUX` = `false` dans Config, ni si le dossier est passé en mode dégradé — dans ce cas les originaux restent pour pouvoir relancer.\n\nPuis le dossier est renommé : **`✓_`** = traité et validé, **`⚠_`** = à relire à la main.\n\n⚠️ Le champ Quality est masqué dans l'UI quand Format = WebP : si tu rouvres et réenregistres les nœuds Edit Image, n8n supprime la valeur 80. Réimporte le JSON pour la remettre.",
-        "height": 480,
+        "content": "## 4. Optimisation, upload, ménage et validation\n\n`Edit Image` : **1500 px max** + **WebP qualité 80**. Upload dans le même dossier sous les noms **`1.webp`, `2.webp`…** — la principale est toujours la n°1.\n\n**Ménage** : `Préparer le ménage` relit la liste établie par `Classer les images` en début d'itération et sort **un item par original**, que `Supprimer les originaux` met à la **corbeille** Drive (récupérable 30 jours). Les `.webp` tout juste créés n'étant pas dans cette liste, ils ne risquent rien.\n\nRien n'est supprimé si `SUPPRIMER_ORIGINAUX` = `false` ou si le dossier est en mode dégradé — dans ce cas la branche *faux* va directement au renommage, la boucle n'est jamais bloquée.\n\n**Pour vérifier** : ouvre la sortie de `Préparer le ménage` (liste des fichiers visés) puis celle de `Supprimer les originaux` (résultat par fichier).\n\nPuis renommage : **`✓_`** = prêt à publier, **`⚠_`** = à relire à la main.",
+        "height": 520,
         "width": 420,
         "color": 6
       },
@@ -896,31 +896,6 @@
     },
     {
       "parameters": {
-        "operation": "deleteFile",
-        "fileId": {
-          "__rl": true,
-          "value": "={{ $('Config').first().json.SUPPRIMER_ORIGINAUX === false || $('Normaliser le détourage').first().json.avertissement === true ? '' : $('Classer les images').first().json.id }}",
-          "mode": "id"
-        },
-        "options": {
-          "deletePermanently": false
-        }
-      },
-      "id": "node-del-main",
-      "name": "Supprimer l'original (principale)",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        4696,
-        560
-      ],
-      "retryOnFail": true,
-      "maxTries": 2,
-      "onError": "continueRegularOutput",
-      "notes": "Met l'original de la photo principale à la CORBEILLE Drive (récupérable 30 jours). Ne supprime rien si SUPPRIMER_ORIGINAUX = false ou si le dossier est en mode dégradé (⚠_)."
-    },
-    {
-      "parameters": {
         "operation": "download",
         "fileId": {
           "__rl": true,
@@ -996,31 +971,6 @@
     },
     {
       "parameters": {
-        "operation": "deleteFile",
-        "fileId": {
-          "__rl": true,
-          "value": "={{ $('Config').first().json.SUPPRIMER_ORIGINAUX === false || $('Normaliser le détourage').first().json.avertissement === true ? '' : $('Classer les images').item.json.id }}",
-          "mode": "id"
-        },
-        "options": {
-          "deletePermanently": false
-        }
-      },
-      "id": "node-del-secondary",
-      "name": "Supprimer les originaux (secondaires)",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        2044,
-        860
-      ],
-      "retryOnFail": true,
-      "maxTries": 2,
-      "onError": "continueRegularOutput",
-      "notes": "Met chaque original secondaire à la CORBEILLE Drive (récupérable 30 jours). Même garde-fou que pour la principale."
-    },
-    {
-      "parameters": {
         "mode": "append",
         "numberInputs": 2,
         "options": {}
@@ -1050,6 +1000,95 @@
     },
     {
       "parameters": {
+        "jsCode": "// Liste les fichiers d'origine à mettre à la corbeille, une fois le dossier traité.\n// Aucun appairage d'items ici : on relit directement la liste établie en début d'itération,\n// donc on ne peut pas viser le mauvais dossier ni le mauvais fichier.\nconst cfg = $('Config').first().json;\n\n// Garde-fou 1 : interrupteur global (accepte true/false booléen ou texte)\nconst actif = String(cfg.SUPPRIMER_ORIGINAUX).toLowerCase() !== 'false';\n\n// Garde-fou 2 : on ne supprime rien si le détourage a échoué (dossier marqué ⚠_),\n// sinon impossible de relancer le dossier.\nlet alerte = true;\ntry {\n  alerte = $('Normaliser le détourage').first().json.avertissement === true;\n} catch (e) {\n  alerte = true; // nœud non exécuté : par prudence, on ne supprime rien\n}\n\nif (!actif || alerte) {\n  return [{ json: { rien: true, raison: !actif ? 'SUPPRIMER_ORIGINAUX = false' : 'dossier en mode dégradé' } }];\n}\n\n// Les originaux = ce que « Classer les images » avait listé au début de l'itération.\n// Les .webp produits ensuite n'y figurent pas : ils ne risquent rien.\nconst originaux = $('Classer les images').all()\n  .filter((i) => i.json && i.json.id && i.json.empty !== true)\n  .map((i) => ({ json: { fileId: i.json.id, nom: i.json.name } }));\n\nreturn originaux.length ? originaux : [{ json: { rien: true, raison: 'aucun original' } }];\n"
+      },
+      "id": "node-menage-prep",
+      "name": "Préparer le ménage",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5336,
+        700
+      ],
+      "notes": "Construit la liste des originaux à mettre à la corbeille. Renvoie toujours au moins un item pour ne jamais bloquer la boucle. Sa sortie montre exactement ce qui va être supprimé."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "if-menage-1",
+              "leftValue": "={{ !!$json.fileId }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "node-menage-if",
+      "name": "Des originaux à supprimer ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5536,
+        700
+      ],
+      "notes": "Faux = rien à supprimer (interrupteur off, dossier dégradé, ou aucun original) : on va directement au renommage."
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.fileId }}",
+          "mode": "id"
+        },
+        "options": {
+          "deletePermanently": false
+        }
+      },
+      "id": "node-menage-del",
+      "name": "Supprimer les originaux",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        5736,
+        580
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "onError": "continueRegularOutput",
+      "notes": "Met chaque original à la CORBEILLE Drive (récupérable 30 jours), un item par fichier. Son panneau de sortie liste les fichiers effectivement supprimés."
+    },
+    {
+      "parameters": {
+        "maxItems": 1
+      },
+      "id": "node-menage-limit",
+      "name": "Limiter à 1 sortie (ménage)",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        5936,
+        580
+      ],
+      "notes": "Le dossier ne doit être renommé qu'une fois, quel que soit le nombre de fichiers supprimés."
+    },
+    {
+      "parameters": {
         "operation": "update",
         "fileId": {
           "__rl": true,
@@ -1064,7 +1103,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        5336,
+        6136,
         700
       ],
       "retryOnFail": true,
@@ -1268,7 +1307,7 @@
       "main": [
         [
           {
-            "node": "Supprimer l'original (principale)",
+            "node": "Fusionner les uploads",
             "type": "main",
             "index": 0
           }
@@ -1301,9 +1340,9 @@
       "main": [
         [
           {
-            "node": "Supprimer les originaux (secondaires)",
+            "node": "Fusionner les uploads",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -1323,7 +1362,7 @@
       "main": [
         [
           {
-            "node": "Renommer le dossier (validation)",
+            "node": "Préparer le ménage",
             "type": "main",
             "index": 0
           }
@@ -1524,24 +1563,53 @@
         ]
       ]
     },
-    "Supprimer l'original (principale)": {
+    "Préparer le ménage": {
       "main": [
         [
           {
-            "node": "Fusionner les uploads",
+            "node": "Des originaux à supprimer ?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Supprimer les originaux (secondaires)": {
+    "Des originaux à supprimer ?": {
       "main": [
         [
           {
-            "node": "Fusionner les uploads",
+            "node": "Supprimer les originaux",
             "type": "main",
-            "index": 1
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Renommer le dossier (validation)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supprimer les originaux": {
+      "main": [
+        [
+          {
+            "node": "Limiter à 1 sortie (ménage)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limiter à 1 sortie (ménage)": {
+      "main": [
+        [
+          {
+            "node": "Renommer le dossier (validation)",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
