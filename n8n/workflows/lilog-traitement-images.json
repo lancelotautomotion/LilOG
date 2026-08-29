@@ -10,7 +10,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `DETOURAGE_SPACE_URL` / `DETOURAGE_FN` / `DETOURAGE_PARAMS` : Space et modèle de détourage (note 3)\n- `MODE_COMPOSITION` : `auto` (profil par typologie) ou `cadre` (plein cadre partout, secours)\n- `TEMPLATE_FOND_FILE_ID` : ID du **dossier** contenant le template (ou du fichier directement)\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : secours seulement — la taille réelle est mesurée sur l'image\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : objet `PROFILS` = taille, ancrage, fond et modèle par catégorie. Mannequin = 1 (plein cadre), sac = 0.82, chaussure = 0.78.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : compte Google Drive sur chaque nœud Drive. Rien à créer pour Hugging Face.",
+        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `DETOURAGE_SPACE_URL` / `DETOURAGE_FN` / `DETOURAGE_PARAMS` : Space et modèle de détourage (note 3)\n- `MODE_COMPOSITION` : `auto` (profil par typologie) ou `cadre` (plein cadre partout, secours)\n- `TEMPLATE_FOND_FILE_ID` : ID du **dossier** contenant le template (ou du fichier directement)\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : secours seulement — la taille réelle est mesurée sur l'image\n- `SUPPRIMER_ORIGINAUX` : `true` = les originaux partent à la corbeille après traitement\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : objet `PROFILS` = taille, ancrage, fond et modèle par catégorie. Mannequin = 1 (plein cadre), sac = 0.82, chaussure = 0.78.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : compte Google Drive sur chaque nœud Drive. Rien à créer pour Hugging Face.",
         "height": 540,
         "width": 420,
         "color": 4
@@ -74,8 +74,8 @@
     },
     {
       "parameters": {
-        "content": "## 4. Optimisation + upload + validation\n\n`Edit Image` : **1500 px max** (seulement si plus grand) + **WebP qualité 80**. La photo principale sort au format du template (ex. 1080x1350), cohérente pour la grille du site.\n\n⚠️ Le champ **Quality** est masqué dans l'UI quand Format = WebP : si tu rouvres et réenregistres ces deux nœuds, n8n supprime la valeur 80 (fichiers plus lourds). Réimporte le JSON pour la remettre.\n\nPuis le dossier est renommé : **`✓_`** = traité et validé, **`⚠_`** = détourage en échec, images produites en mode dégradé, **à relire à la main**.",
-        "height": 420,
+        "content": "## 4. Optimisation, upload, ménage et validation\n\n`Edit Image` : **1500 px max** + **WebP qualité 80**. Les fichiers sont uploadés dans le même dossier Drive sous les noms **`1.webp`, `2.webp`, `3.webp`…** — la photo principale est toujours la n°1.\n\n**Ménage** : chaque original (jpg…) est ensuite mis à la **corbeille Drive** (récupérable 30 jours, pas de suppression définitive). Deux garde-fous : rien n'est supprimé si `SUPPRIMER_ORIGINAUX` = `false` dans Config, ni si le dossier est passé en mode dégradé — dans ce cas les originaux restent pour pouvoir relancer.\n\nPuis le dossier est renommé : **`✓_`** = traité et validé, **`⚠_`** = à relire à la main.\n\n⚠️ Le champ Quality est masqué dans l'UI quand Format = WebP : si tu rouvres et réenregistres les nœuds Edit Image, n8n supprime la valeur 80. Réimporte le JSON pour la remettre.",
+        "height": 480,
         "width": 420,
         "color": 6
       },
@@ -84,7 +84,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4212,
+        4436,
         -60
       ]
     },
@@ -193,6 +193,12 @@
               "name": "VETEMENT_MAX",
               "value": "1200",
               "type": "number"
+            },
+            {
+              "id": "cfg-15",
+              "name": "SUPPRIMER_ORIGINAUX",
+              "value": true,
+              "type": "boolean"
             },
             {
               "id": "cfg-4",
@@ -453,7 +459,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Trie les images du dossier courant et désigne la photo principale.\nconst folder = $('Boucle dossiers').first().json;\n\nconst slug = String(folder.name || 'produit')\n  .normalize('NFD')\n  .replace(/[\\u0300-\\u036f]/g, '')\n  .toLowerCase()\n  .replace(/[^a-z0-9]+/g, '-')\n  .replace(/^-+|-+$/g, '') || 'produit';\n\nconst images = $input.all()\n  .filter((i) => typeof i.json.mimeType === 'string' && i.json.mimeType.startsWith('image/'))\n  .sort((a, b) => String(a.json.name).localeCompare(String(b.json.name), 'fr', { numeric: true }));\n\n// Dossier vide : on renvoie un marqueur, le dossier sera ignoré (pas de renommage).\nif (images.length === 0) {\n  return [{ json: { empty: true, folderId: folder.id, folderName: folder.name } }];\n}\n\n// Photo principale : nom contenant main / principale / cover / 1, sinon la première.\nconst MAIN_RE = /(^|[\\s_.-])(main|principale?|cover|couverture|0?1)([\\s_.-]|$)/i;\nlet mainIndex = images.findIndex((i) => MAIN_RE.test(String(i.json.name).replace(/\\.[^.]+$/, '')));\nif (mainIndex === -1) mainIndex = 0;\n\n// La principale passe en tête : elle est donc toujours l'item [0] de ce nœud.\nconst ordered = [images[mainIndex], ...images.filter((_, idx) => idx !== mainIndex)];\n\nreturn ordered.map((img, idx) => ({\n  json: {\n    id: img.json.id,\n    name: img.json.name,\n    mimeType: img.json.mimeType,\n    isMain: idx === 0,\n    position: idx + 1,\n    newName: `${slug}-${String(idx + 1).padStart(2, '0')}.webp`,\n    folderId: folder.id,\n    folderName: folder.name,\n    empty: false,\n  },\n}));"
+        "jsCode": "// Trie les images du dossier courant et désigne la photo principale.\nconst folder = $('Boucle dossiers').first().json;\n\nconst slug = String(folder.name || 'produit')\n  .normalize('NFD')\n  .replace(/[\\u0300-\\u036f]/g, '')\n  .toLowerCase()\n  .replace(/[^a-z0-9]+/g, '-')\n  .replace(/^-+|-+$/g, '') || 'produit';\n\nlet images = $input.all()\n  .filter((i) => typeof i.json.mimeType === 'string' && i.json.mimeType.startsWith('image/'))\n  .sort((a, b) => String(a.json.name).localeCompare(String(b.json.name), 'fr', { numeric: true }));\n\n// Si le dossier contient encore des originaux (jpg, png...), on ignore les .webp :\n// ce sont les images que ce workflow a déjà produites, il ne faut pas les retraiter.\nconst originaux = images.filter((i) => i.json.mimeType !== 'image/webp');\nif (originaux.length > 0) images = originaux;\n\n// Dossier vide : on renvoie un marqueur, le dossier sera ignoré (pas de renommage).\nif (images.length === 0) {\n  return [{ json: { empty: true, folderId: folder.id, folderName: folder.name } }];\n}\n\n// Photo principale : nom contenant main / principale / cover / 1, sinon la première.\nconst MAIN_RE = /(^|[\\s_.-])(main|principale?|cover|couverture|0?1)([\\s_.-]|$)/i;\nlet mainIndex = images.findIndex((i) => MAIN_RE.test(String(i.json.name).replace(/\\.[^.]+$/, '')));\nif (mainIndex === -1) mainIndex = 0;\n\n// La principale passe en tête : elle est donc toujours l'item [0] de ce nœud.\nconst ordered = [images[mainIndex], ...images.filter((_, idx) => idx !== mainIndex)];\n\nreturn ordered.map((img, idx) => ({\n  json: {\n    id: img.json.id,\n    name: img.json.name,\n    mimeType: img.json.mimeType,\n    isMain: idx === 0,\n    position: idx + 1,\n    // 1.webp, 2.webp... la photo principale est toujours la n°1.\n    // Pour repasser à un nom porteur du produit : `${slug}-${String(idx + 1).padStart(2, '0')}.webp`\n    newName: `${idx + 1}.webp`,\n    folderId: folder.id,\n    folderName: folder.name,\n    empty: false,\n  },\n}));"
       },
       "id": "node-classify",
       "name": "Classer les images",
@@ -462,7 +468,8 @@
       "position": [
         680,
         700
-      ]
+      ],
+      "notes": "Trie les images, désigne la principale (n°1) et calcule les noms de sortie 1.webp, 2.webp... Les .webp déjà produits par le workflow sont ignorés."
     },
     {
       "parameters": {
@@ -889,6 +896,31 @@
     },
     {
       "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Config').first().json.SUPPRIMER_ORIGINAUX === false || $('Normaliser le détourage').first().json.avertissement === true ? '' : $('Classer les images').first().json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "deletePermanently": false
+        }
+      },
+      "id": "node-del-main",
+      "name": "Supprimer l'original (principale)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4696,
+        560
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "onError": "continueRegularOutput",
+      "notes": "Met l'original de la photo principale à la CORBEILLE Drive (récupérable 30 jours). Ne supprime rien si SUPPRIMER_ORIGINAUX = false ou si le dossier est en mode dégradé (⚠_)."
+    },
+    {
+      "parameters": {
         "operation": "download",
         "fileId": {
           "__rl": true,
@@ -964,6 +996,31 @@
     },
     {
       "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Config').first().json.SUPPRIMER_ORIGINAUX === false || $('Normaliser le détourage').first().json.avertissement === true ? '' : $('Classer les images').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "deletePermanently": false
+        }
+      },
+      "id": "node-del-secondary",
+      "name": "Supprimer les originaux (secondaires)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2044,
+        860
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "onError": "continueRegularOutput",
+      "notes": "Met chaque original secondaire à la CORBEILLE Drive (récupérable 30 jours). Même garde-fou que pour la principale."
+    },
+    {
+      "parameters": {
         "mode": "append",
         "numberInputs": 2,
         "options": {}
@@ -973,7 +1030,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        4712,
+        4936,
         700
       ]
     },
@@ -986,7 +1043,7 @@
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
       "position": [
-        4912,
+        5136,
         700
       ],
       "notes": "Pour ne renommer le dossier qu'une seule fois"
@@ -1007,7 +1064,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        5112,
+        5336,
         700
       ],
       "retryOnFail": true,
@@ -1211,7 +1268,7 @@
       "main": [
         [
           {
-            "node": "Fusionner les uploads",
+            "node": "Supprimer l'original (principale)",
             "type": "main",
             "index": 0
           }
@@ -1244,9 +1301,9 @@
       "main": [
         [
           {
-            "node": "Fusionner les uploads",
+            "node": "Supprimer les originaux (secondaires)",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ]
       ]
@@ -1463,6 +1520,28 @@
             "node": "Masque à appliquer ?",
             "type": "main",
             "index": 0
+          }
+        ]
+      ]
+    },
+    "Supprimer l'original (principale)": {
+      "main": [
+        [
+          {
+            "node": "Fusionner les uploads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supprimer les originaux (secondaires)": {
+      "main": [
+        [
+          {
+            "node": "Fusionner les uploads",
+            "type": "main",
+            "index": 1
           }
         ]
       ]

@@ -40,8 +40,10 @@ il n'y a pas de credential n8n à créer, il passe par le header `Authorization`
 5. Le produit détouré est mis à l'échelle selon son profil, mesuré, puis **superposé centré** sur le
    template téléchargé depuis Drive (`Edit Image → Composite`, opérateur `Over`).
 6. Toutes les images (principale composée + secondaires brutes) passent par `Edit Image` :
-   **1500 px max, WebP qualité 80**, puis sont uploadées dans le même dossier Drive sous un nom
-   normalisé (`slug-du-dossier-01.webp`, `-02.webp`, …).
+   **1500 px max, WebP qualité 80**, puis sont uploadées dans le même dossier Drive sous les noms
+   `1.webp`, `2.webp`, `3.webp`… (la principale est toujours la n°1). Chaque original est ensuite mis
+   à la **corbeille Drive** — sauf si `SUPPRIMER_ORIGINAUX` = `false` ou si le dossier est en mode
+   dégradé, auquel cas les originaux restent pour permettre une relance.
 7. Le dossier est **renommé** : `✓_` si le détourage a réussi, `⚠_` s'il est passé en mode dégradé
    (à relire à la main ; retirer le `⚠_` pour relancer le dossier).
 8. En fin de boucle (sortie *done*), un `Execute Workflow` appelle le workflow Shopify
@@ -106,6 +108,16 @@ un dossier au run suivant.
 Pour changer de Space, il suffit de `DETOURAGE_SPACE_URL` + `DETOURAGE_FN` (le nom de l'endpoint
 Gradio, visible sur `https://<space>.hf.space/gradio_api/info`), à condition qu'il prenne une image
 en entrée et renvoie un fichier.
+
+### Ménage des originaux
+
+`SUPPRIMER_ORIGINAUX` (`Config`) vaut `true` : après upload des `.webp`, chaque photo d'origine part à
+la **corbeille** Google Drive — jamais en suppression définitive, donc récupérable 30 jours. Rien n'est
+supprimé si le dossier a échoué (`⚠_`), pour qu'une relance reste possible. La corbeille continue à
+occuper le quota Drive : la vider pour récupérer l'espace, une fois les résultats validés.
+
+`Classer les images` ignore les `.webp` d'un dossier tant qu'il y reste des originaux, pour ne jamais
+retraiter une image déjà produite par le workflow.
 
 ### Dépendances et limites
 
