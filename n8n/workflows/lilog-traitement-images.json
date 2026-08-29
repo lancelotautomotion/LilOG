@@ -26,7 +26,7 @@
     },
     {
       "parameters": {
-        "content": "## 2. Tri des dossiers + typologie\n\nOn liste **uniquement les sous-dossiers** du dossier parent, puis on **garde ceux qui ne commencent pas** par `✓_` (traité), `⚠_` (à relire) ni `*` — et le **dossier du template est exclu** (par son ID et par le mot « template » dans son nom).\n\nLa boucle traite **1 dossier à la fois**. `Détecter la typologie` déduit du nom du dossier si le produit est **porté sur mannequin** (vêtement, bijou, accessoire → plein cadre) ou **posé à plat** (sac, chaussure → réduit et centré sur le fond).\n\nTag explicite possible : `Sac Baguette Rose [sac]`, `Bague coeur [pose]`.",
+        "content": "## 2. Tri des dossiers + typologie\n\nOn liste **uniquement les sous-dossiers** du dossier parent, puis on **garde ceux qui ne commencent pas** par `✓_` (traité), `$_` (publié sur Shopify), `⚠_` (à relire) ni `*` — et le **dossier du template est exclu** (par son ID et par le mot « template » dans son nom).\n\nLa boucle traite **1 dossier à la fois**. `Détecter la typologie` déduit du nom du dossier si le produit est **porté sur mannequin** (vêtement, bijou, accessoire → plein cadre) ou **posé à plat** (sac, chaussure → réduit et centré sur le fond).\n\nTag explicite possible : `Sac Baguette Rose [sac]`, `Bague coeur [pose]`.",
         "height": 380,
         "width": 420,
         "color": 5
@@ -366,7 +366,7 @@
           "conditions": [
             {
               "id": "flt-1",
-              "leftValue": "={{ !String($json.name).startsWith($('Config').first().json.PREFIXE_TRAITE) && !String($json.name).startsWith('✓') && !String($json.name).startsWith('⚠') && !String($json.name).startsWith('*') && $json.id !== $('Config').first().json.TEMPLATE_FOND_FILE_ID && !/template/i.test(String($json.name)) }}",
+              "leftValue": "={{ !String($json.name).startsWith($('Config').first().json.PREFIXE_TRAITE) && !String($json.name).startsWith('✓') && !String($json.name).startsWith('⚠') && !String($json.name).startsWith('*') && !String($json.name).startsWith('$') && $json.id !== $('Config').first().json.TEMPLATE_FOND_FILE_ID && !/template/i.test(String($json.name)) }}",
               "rightValue": "",
               "operator": {
                 "type": "boolean",
@@ -388,7 +388,7 @@
         -40,
         580
       ],
-      "notes": "Exclut : les dossiers déjà traités (✓_ / *), ceux en attente de relecture (⚠_), le dossier du template (par son ID et par le mot 'template' dans son nom). Retirer le ⚠_ à la main pour relancer un dossier."
+      "notes": "Exclut : dossiers traités (✓_), publiés ($_), en alerte (⚠_), archivés (*), et le dossier du template."
     },
     {
       "parameters": {

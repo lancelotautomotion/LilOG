@@ -1,5 +1,17 @@
 # Workflows n8n — Lil'OG
 
+Deux workflows enchaînés, reliés par le nom des dossiers Drive :
+
+| Préfixe du dossier | Posé par | Signification |
+|---|---|---|
+| *(aucun)* | — | photos brutes, à traiter |
+| `✓_` | workflow 1 (images) | photos détourées, composées et optimisées |
+| `$_` | workflow 2 (Shopify) | produit créé sur Shopify avec ses images |
+| `⚠_` | workflow 1 | détourage en échec, à relire à la main |
+
+Le workflow 1 appelle le workflow 2 en fin d'exécution (`Execute Workflow`), et chacun ne traite que
+les dossiers portant le préfixe qui le concerne : un dossier ne peut donc pas être traité deux fois.
+
 ## `workflows/lilog-traitement-images.json`
 
 Traitement automatique des photos produits : Google Drive → détourage via un Space Hugging Face →
@@ -125,3 +137,38 @@ retraiter une image déjà produite par le workflow.
 - Un Space gratuit s'endort après 48 h d'inactivité : le premier appel peut prendre une minute.
 - Si le détourage échoue, le workflow ne s'arrête pas : les images sont produites à partir de la photo
   d'origine et le dossier est marqué `⚠_` pour relecture.
+
+---
+
+## `workflows/lilog-publication-shopify.json`
+
+Génère la fiche produit avec Gemini à partir des photos, crée le produit Shopify en **brouillon**,
+y attache les images, puis marque le dossier comme publié.
+
+### À renseigner après import
+
+| Où | Quoi |
+|---|---|
+| `Rechercher dossiers` | ID du dossier Drive « Lil'OG » |
+| `Appel Gemini (génération fiche)` | clé API Gemini (paramètre de requête `key`) |
+| `Créer produit Shopify` / `Uploader image Shopify` | domaine `*.myshopify.com` et credential Shopify |
+| Tous les nœuds Google Drive | credential *Google Drive OAuth2* |
+
+Côté workflow 1, le nœud `Déclencher workflow Shopify` doit recevoir **l'ID de ce workflow**
+(visible dans son URL n8n).
+
+### Logique
+
+1. Déclenché automatiquement par le workflow images (`Execute Workflow Trigger`, entrée *passthrough*)
+   ou à la main.
+2. Liste les sous-dossiers et ne garde que ceux préfixés **`✓_`**.
+3. Pour chaque dossier : télécharge les photos, les **trie numériquement** (`1.webp` d'abord — c'est
+   l'image principale de la fiche), en fait une version 1200 px pour l'IA et garde l'originale pour
+   Shopify.
+4. Gemini (`gemini-3.5-flash`) renvoie un JSON structuré : titre, mood, conseils de style, marque,
+   état, composition, taille, catégorie, tags.
+5. Création du produit Shopify en `status: draft`, puis upload des images dans l'ordre (`position`).
+6. Le dossier est renommé **`$_<titre>`** : il sort du périmètre des deux workflows.
+
+En cas d'échec Gemini ou Shopify, le dossier **n'est pas renommé** : il reste en `✓_` et sera retenté
+à l'exécution suivante. Aucun produit n'est publié deux fois.
