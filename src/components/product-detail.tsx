@@ -595,7 +595,11 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
 
                 {badge && (
                   <span
-                    className={`${MONO} mb-2 inline-block rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.8125rem] font-bold tracking-[0.06em] text-[#5b2fb8] uppercase ${PLASTIC}`}
+                    /* `self-center` : enfant d'une colonne flex, le jeton
+                       s'étirerait sinon sur toute la largeur au lieu de rester
+                       une pastille. `sm:self-start` le recale à gauche au
+                       bureau, où le bloc reste justifié à gauche. */
+                    className={`${MONO} mb-2 self-center rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.8125rem] font-bold tracking-[0.06em] text-[#5b2fb8] uppercase sm:self-start ${PLASTIC}`}
                   >
                     {badge}
                   </span>
@@ -606,7 +610,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                     langage que le reste du site plutôt qu'une typo
                     brutaliste propre à cette page. */}
                 <h1
-                  className={`${LCD} text-[clamp(1.6rem,3.6vw,2.6rem)] leading-[1.05] tracking-[0.02em] text-[#2a1266] uppercase`}
+                  className={`${LCD} text-center text-[clamp(1.6rem,3.6vw,2.6rem)] leading-[1.05] tracking-[0.02em] text-[#2a1266] uppercase sm:text-left`}
                 >
                   {product.name}
                 </h1>
@@ -616,7 +620,10 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                     se partagent le reste. `items-stretch` les met à la hauteur
                     de l'afficheur. Sous 360px de place pour le groupe, colonne
                     étroite ou affichage en une colonne, il repasse dessous. */}
-                <div className="mt-4 flex flex-wrap items-stretch gap-2">
+                {/* Centré sur téléphone, où le bloc est empilé sous les
+                    photos et occupe toute la largeur de la fenêtre ; justifié à
+                    gauche au bureau, où il forme la colonne de droite. */}
+                <div className="mt-4 flex flex-wrap items-stretch justify-center gap-2 sm:justify-start">
                   {/* Écran LED : un vrai afficheur d'appareil : boîtier noir
                       encastré, libellé gravé, chiffres néon en typo LCD, prix
                       barré et remise logés dans le même bandeau plutôt que
@@ -672,15 +679,17 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                       même passage à la ligne sans jamais réclamer plus que la
                       place existante. Le plancher reste au bureau, où il
                       décide du moment où le groupe descend sous le prix. */}
-                  <div className="flex w-full min-w-0 flex-wrap items-stretch gap-2 sm:w-auto sm:min-w-[360px] sm:flex-1">
+                  <div className="flex w-full min-w-0 flex-wrap items-stretch justify-center gap-2 sm:w-auto sm:min-w-[360px] sm:flex-1 sm:justify-start">
                     <StatCell icon="📏" label="Taille" value={size} />
                     <StatCell icon="💎" label="État" value={etat} />
                     {dept && <StatCell icon="🗂️" label="Rayon" value={dept} />}
                   </div>
                 </div>
 
+                {/* Tailles disponibles. Même alignement que les pastilles
+                    au-dessus : centré sur téléphone, à gauche au bureau. */}
                 {hasVariants && product.variants.length > 1 && (
-                  <div className="mt-3 flex flex-wrap gap-1.5">
+                  <div className="mt-3 flex flex-wrap justify-center gap-1.5 sm:justify-start">
                     {product.variants.map((v) => (
                       <button
                         key={v.id}
