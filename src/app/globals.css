@@ -3314,8 +3314,20 @@ textarea {
 
 @media (max-width: 760px) {
   .acct-body { grid-template-columns: 1fr; }
-  .acct-desktop { padding: 0; }
-  .acct-window { border-radius: 0; border-left: none; border-right: none; box-shadow: none; min-height: 100dvh; }
+  /* Réserve verticale sous la navigation, qui est `fixed` et opaque.
+     `padding: 0` la supprimait avec les gouttières latérales : la barre
+     de titre de la fenêtre (DOSSIER_CRUSH.EXE, MON_COMPTE.EXE) démarrait
+     alors à y=1, entièrement recouverte, et la page semblait coupée en
+     haut. On garde le plein-cadre latéral — c'est lui qu'on voulait —
+     et on rend les 68px du haut, ceux de la version bureau. */
+  .acct-desktop { padding: 68px 0 0; }
+  .acct-window {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+    min-height: calc(100dvh - 68px);
+  }
 }
 
 /* ============================================================
@@ -5390,6 +5402,37 @@ html, body {
   text-align: center;
   font-size: 0.8125rem !important;
   padding: 5px 8px !important;
+}
+
+/* ── Deux Polaroids par ligne sur téléphone ──
+   `repeat(auto-fill, minmax(150px, 190px))` avec les rembourrages du
+   bureau ne laissait la place qu'à une seule colonne sous 400px : on
+   faisait défiler sa wishlist une pièce à la fois. Deux colonnes
+   explicites, et les rembourrages resserrés pour leur faire de la
+   place. Le bouton garde ses 13px — le plancher de lisibilité du site,
+   on ne descend pas en dessous — mais rend son interlettrage et son
+   rembourrage horizontal, qui ne servent qu'à l'aération. */
+@media (max-width: 560px) {
+  .burnbook-body { padding: 14px; }
+  .burnbook-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 12px;
+    padding: 18px 2px 32px;
+  }
+  /* `max-width: 190px` de la règle de base conservé : sur les colonnes
+     larges du haut de la fourchette (480-560px), les Polaroids restent au
+     gabarit et se centrent dans leur piste plutôt que de s'étirer. */
+  .burnbook-polaroid { padding: 6px 6px 38px; }
+  .burnbook-cart-btn {
+    left: 5px;
+    right: 5px;
+    bottom: 6px;
+    letter-spacing: 0.01em;
+    gap: 4px;
+    padding: 5px 2px !important;
+  }
+  /* La pastille 💔 mangeait un quart d'une carte deux fois plus étroite. */
+  .burnbook-remove { width: 27px; height: 27px; font-size: 1rem; }
 }
 
 /* ── Entrée /dressing-machine : une borne d'arcade dans le menu ──────
