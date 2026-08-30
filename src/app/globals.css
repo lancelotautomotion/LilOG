@@ -2554,9 +2554,11 @@ textarea {
 .login-mono { font-family: var(--mono); }
 
 /* Wizz : la fenêtre tremble, comme le buzzer MSN.
-   Animé via `translate`/`rotate` et non `transform` : la fenêtre porte
-   déjà un `transform: scale()` quand l'écran est trop court pour elle,
-   et une animation sur `transform` l'écraserait le temps du tremblement. */
+   Animé via `translate`/`rotate` plutôt que `transform` : les deux
+   propriétés se composent au lieu de s'écraser, donc le tremblement
+   cohabite avec n'importe quelle transformation posée par ailleurs sur
+   la fenêtre. (Elle en portait une, `scale()`, retirée depuis : elle la
+   faisait maigrir quand une bannière d'erreur l'allongeait.) */
 @keyframes login-wizz {
   0%, 100% { translate: 0 0;      rotate: 0deg;    }
   10%      { translate: -9px 5px; rotate: -1deg;   }

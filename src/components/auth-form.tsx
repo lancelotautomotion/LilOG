@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
@@ -20,58 +20,6 @@ import {
 type Mode = "login" | "register";
 
 const LS_REMEMBER_KEY = "lilog_login_remember";
-
-/* Marge laissée entre la fenêtre et les bords de la zone visible. */
-const FIT_GAP = 14;
-/* En dessous, on préfère laisser défiler plutôt que rendre le texte
-   illisible : un écran de moins de ~380px utiles reste l'exception. */
-const FIT_MIN = 0.62;
-
-/**
- * Met la fenêtre à l'échelle pour qu'elle tienne en entier sous la barre
- * de navigation, sans défilement. Le facteur ne descend jamais au-dessus
- * de 1 : sur un grand écran, rien n'est touché.
- *
- * La mesure porte sur la hauteur de mise en page (`offsetHeight`), que la
- * transformation ne modifie pas : pas de boucle entre l'échelle et la
- * mesure. La hauteur du conteneur est en revanche corrigée à la main,
- * sinon la page réserverait la place de la fenêtre non réduite et
- * redeviendrait défilante pour rien.
- */
-function useFitToViewport() {
-  const winRef = useRef<HTMLDivElement>(null);
-  const [{ scale, height }, setFit] = useState({ scale: 1, height: 0 });
-
-  useEffect(() => {
-    const win = winRef.current;
-    if (!win) return;
-
-    const measure = () => {
-      const navH = document.querySelector("nav")?.getBoundingClientRect().height ?? 0;
-      const avail = window.innerHeight - navH - FIT_GAP * 2;
-      const natural = win.offsetHeight;
-      if (!natural) return;
-      const next = Math.max(FIT_MIN, Math.min(1, avail / natural));
-      setFit(prev =>
-        Math.abs(prev.scale - next) < 0.005 && prev.height === natural
-          ? prev
-          : { scale: next, height: natural },
-      );
-    };
-
-    /* ResizeObserver déclenche lui-même une première mesure au moment
-       d'observer : pas de setState synchrone dans le corps de l'effet. */
-    const ro = new ResizeObserver(measure);
-    ro.observe(win);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, []);
-
-  return { winRef, scale, height };
-}
 
 /* Biseaux Windows : relief sortant (fenêtre, boutons, onglet actif),
    relief rentrant (cadre photo, zones encastrées). */
@@ -102,8 +50,6 @@ export function AuthForm() {
   const [shaded, setShaded] = useState(false);
   const [maximized, setMaximized] = useState(false);
   const [wizz, setWizz] = useState(false);
-
-  const { winRef, scale, height } = useFitToViewport();
 
   const avatar = useStored(LS_AVATAR_KEY);
   const storedStatus = useStored(LS_STATUS_KEY);
@@ -163,19 +109,26 @@ export function AuthForm() {
 
   return (
     <div
-      /* Conteneur : il ne porte que la largeur et la hauteur réduite.
-         La mise à l'échelle est sur l'enfant, pour que la mesure de
-         `offsetHeight` reste celle de la fenêtre à taille réelle. */
+      /* Largeur de la fenêtre, et rien d'autre.
+         Elle portait un ajustement automatique qui mettait toute la fenêtre
+         à l'échelle (`transform: scale()`) dès que son contenu dépassait la
+         hauteur de l'écran — pour lui éviter de défiler. Mais une mise à
+         l'échelle est uniforme : la fenêtre rétrécissait AUSSI en largeur.
+         Il suffisait d'un mot de passe refusé pour que la bannière d'erreur
+         l'allonge et la fasse maigrir de 358 à 300px sur un téléphone de
+         390 — elle changeait de taille sous les yeux de la visiteuse à
+         chaque essai. L'onglet « Créer un compte », plus haut de deux
+         champs, produisait le même effet.
+         La fenêtre garde donc sa largeur en toutes circonstances et la page
+         défile quand le contenu est plus haut que l'écran, ce que le
+         `<main>` de /login prévoit déjà (aucun rognage vertical). */
       className={
         "relative w-full transition-[max-width] duration-300 " +
         (maximized ? "max-w-[780px]" : "max-w-[560px]")
       }
-      style={scale < 1 && height ? { height: Math.round(height * scale) } : undefined}
     >
     <div
-      ref={winRef}
-      className={"relative w-full origin-top" + (wizz ? " login-wizz" : "")}
-      style={scale < 1 ? { transform: `scale(${scale})` } : undefined}
+      className={"relative w-full" + (wizz ? " login-wizz" : "")}
       onAnimationEnd={e => { if (e.target === e.currentTarget) setWizz(false); }}
     >
       {STICKERS.map(s => (
