@@ -6,6 +6,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 import { PLASTIC, PLASTIC_FACE, PLASTIC_PRESS } from "@/components/y2k/kit";
+import { Icon } from "@/components/icons";
 import { actionSignup } from "@/lib/actions/auth-actions";
 import {
   LS_AVATAR_KEY,
@@ -90,6 +91,7 @@ const STICKERS = [
 export function AuthForm() {
   const [mode, setMode] = useState<Mode>("login");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -338,16 +340,33 @@ export function AuthForm() {
               </Field>
 
               <Field label="PASSWORD.RAW">
-                <input
-                  className={INPUT}
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                  autoComplete={mode === "login" ? "current-password" : "new-password"}
-                  minLength={mode === "register" ? 8 : undefined}
-                />
+                {/* Œil d'affichage : une faute de frappe dans un mot de passe
+                    masqué est invisible, et sur un clavier de téléphone elle
+                    est vite arrivée. Le bouton est DANS le <label> du champ,
+                    mais un descendant interactif n'active pas le label : le
+                    clic bascule l'affichage sans donner le focus au champ. */}
+                <div className="relative">
+                  <input
+                    className={`${INPUT} pr-12`}
+                    type={passwordVisible ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                    autoComplete={mode === "login" ? "current-password" : "new-password"}
+                    minLength={mode === "register" ? 8 : undefined}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setPasswordVisible(v => !v)}
+                    aria-label={passwordVisible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                    aria-pressed={passwordVisible}
+                    title={passwordVisible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                    className="absolute inset-y-0 right-0 flex w-11 cursor-pointer items-center justify-center rounded-r-xl text-[#6b6480] transition-colors hover:text-[#7147d4] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#7147d4]"
+                  >
+                    {passwordVisible ? <Icon.eyeOff /> : <Icon.eye />}
+                  </button>
+                </div>
               </Field>
 
               <div className="flex flex-wrap items-center justify-between gap-2">
