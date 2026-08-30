@@ -134,10 +134,18 @@ const PDP_CSS = `
 
 function StatCell({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
+    /* `sm:flex-1` et non `flex-1` : au bureau les trois cases se partagent
+       la rangée à parts égales, mais sur téléphone une largeur imposée les
+       forçait à découper leur valeur sur deux lignes — « TRÈS BON » cassé en
+       deux — et les trois cases héritaient de cette hauteur par
+       `items-stretch` : 94px de haut sur un portable contre 75 au bureau,
+       plus grosses sur le petit écran que sur le grand. À largeur naturelle,
+       chacune prend ce que son texte demande et passe à la ligne suivante
+       quand la rangée est pleine. */
     <div
-      className={`flex min-w-0 flex-1 items-center gap-2 rounded-md border border-[#c6c2d8] bg-[#f7f6fc] px-2.5 py-2 ${BEVEL_IN}`}
+      className={`flex min-w-0 items-center gap-1.5 rounded-md border border-[#c6c2d8] bg-[#f7f6fc] px-1.5 py-1.5 sm:flex-1 sm:gap-2 sm:px-2.5 sm:py-2 ${BEVEL_IN}`}
     >
-      <span aria-hidden className="shrink-0 text-[1.125rem] leading-none">{icon}</span>
+      <span aria-hidden className="shrink-0 text-[1rem] leading-none sm:text-[1.125rem]">{icon}</span>
       <span className="min-w-0">
         {/* Mêmes tailles que le bloc de description des catalogues :
             0.58rem pour l'étiquette (comme les #tags), 0.76rem pour la
@@ -652,7 +660,19 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   </div>
 
                   {/* Fiche de caractéristiques RPG */}
-                  <div className="flex min-w-[360px] flex-1 flex-wrap items-stretch gap-2">
+                  {/* Sur téléphone, le groupe prend sa propre rangée sous
+                      l'afficheur de prix (`w-full`).
+
+                      Il obtenait ce passage à la ligne par un `min-w-[360px]`,
+                      un plancher plus large que ce qui restait à côté du prix.
+                      Mais ce plancher dépassait aussi le conteneur lui-même —
+                      360px demandés pour 322 disponibles sur un écran de 390 —
+                      et la rangée débordait par la droite, la pastille RAYON
+                      venant mourir sur le bord de l'écran. `w-full` obtient le
+                      même passage à la ligne sans jamais réclamer plus que la
+                      place existante. Le plancher reste au bureau, où il
+                      décide du moment où le groupe descend sous le prix. */}
+                  <div className="flex w-full min-w-0 flex-wrap items-stretch gap-2 sm:w-auto sm:min-w-[360px] sm:flex-1">
                     <StatCell icon="📏" label="Taille" value={size} />
                     <StatCell icon="💎" label="État" value={etat} />
                     {dept && <StatCell icon="🗂️" label="Rayon" value={dept} />}
