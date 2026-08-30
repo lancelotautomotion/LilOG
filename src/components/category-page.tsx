@@ -352,10 +352,11 @@ export function CategoryPage({
 
                 ⚠ Hauteurs comptées : cet en-tête, additionné au chrome de la
                 fenêtre au-dessus, décide de ce qu'on voit des vêtements en
-                arrivant sur la page. Il a été resserré (marges, corps du
-                titre, colonne de texte élargie à 130ch pour tenir en deux
-                lignes) pour que la première rangée de la grille tienne dans
-                l'écran d'un portable. Le rallonger la repousse en dessous. */}
+                arrivant sur la page. Sur téléphone il se limite au titre et à
+                la signature — le descriptif est masqué plus bas — et sur les
+                écrans qui l'affichent, la colonne de texte est élargie à
+                130ch pour tenir en deux lignes. Tout ajout ici repousse la
+                première rangée de vêtements sous la ligne de flottaison. */}
             <div className="border-b border-[#d8d5e6] px-4 pt-4 pb-3 text-center sm:px-6">
               <h1
                 className={`${LCD} text-[clamp(1.7rem,4.4vw,2.5rem)] leading-[1.02] tracking-[0.02em] text-[#2a1266] uppercase`}
@@ -368,8 +369,15 @@ export function CategoryPage({
                 </p>
               )}
 
+              {/* Descriptif et mots-clés : masqués sur téléphone, où ils
+                  repoussaient la première rangée de pièces hors de l'écran.
+                  Le rayon s'annonce par son titre et sa signature, et la
+                  marchandise vient tout de suite après. `hidden sm:block`
+                  plutôt qu'un rendu conditionnel : le texte reste dans le
+                  document, donc lisible par les moteurs de recherche, qui le
+                  reçoivent par ailleurs en description de page. */}
               {vibe && (
-                <div className="mt-3 rounded-xl border border-[#d8d5e6] bg-[#f7f6fc] p-[clamp(10px,1.6vw,15px)] text-left">
+                <div className="mt-3 hidden rounded-xl border border-[#d8d5e6] bg-[#f7f6fc] p-[clamp(10px,1.6vw,15px)] text-left sm:block">
                   <p className={`${MONO} max-w-[130ch] text-[0.9375rem] leading-[1.85] text-[#3b3550]`}>
                     {vibe.desc}
                   </p>
