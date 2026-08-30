@@ -589,7 +589,9 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   que SYSTEM_LOGS est une pile de menus déroulants, plus rien
                   ne s'étire pour rejoindre le bas du lecteur photo. */}
               <div className="flex min-w-0 flex-col">
-                <div className={`${MONO} mb-2 text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
+                {/* Même alignement que le titre juste en dessous : centré sur
+                    téléphone, où toute la colonne l'est, à gauche au bureau. */}
+                <div className={`${MONO} mb-2 text-center text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase sm:text-left`}>
                   ▶ ITEM_STATS.SYS
                 </div>
 
