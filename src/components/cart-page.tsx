@@ -263,7 +263,10 @@ export function CartPage() {
                 {total === 0 ? (
                   <div className="oc-screen-empty">
                     <p>Votre dressing est vide.</p>
-                    <Link href="/" className="oc-link">Shopper maintenant →</Link>
+                    {/* Le catalogue complet, le « Tout voir » du menu, et non
+                        l'accueil : depuis un panier vide on veut des pièces à
+                        parcourir tout de suite, pas la page d'entrée. */}
+                    <Link href="/catalogue" className="oc-link">Shopper maintenant →</Link>
                   </div>
                 ) : (
                   <div className="oc-screen-item">
