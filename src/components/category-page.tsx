@@ -40,6 +40,7 @@ import {
 } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
 import { CAT_VIBES } from "@/lib/categories";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const PER_PAGE = 20;
 
@@ -253,6 +254,10 @@ export function CategoryPage({
     },
     [router],
   );
+
+  /* Tiroir des filtres ouvert : le catalogue derrière lui ne défile plus.
+     Le tiroir, lui, garde son propre défilement interne. */
+  useScrollLock(filterOpen);
 
   /* Le tiroir mobile se ferme à l'Échap, comme le menu latéral. */
   useEffect(() => {
@@ -496,8 +501,14 @@ export function CategoryPage({
       <button
         type="button"
         onClick={() => setFilterOpen(true)}
-        className={`${MONO} fixed bottom-5 left-1/2 z-[70] -translate-x-1/2 rounded-full border-2 border-[#3b1d8f] px-5 py-3 text-[0.8125rem] font-bold tracking-[0.08em] text-white uppercase transition active:translate-y-0.5 lg:hidden`}
+        className={`${MONO} fixed left-1/2 z-[70] -translate-x-1/2 rounded-full border-2 border-[#3b1d8f] px-5 py-3 text-[0.8125rem] font-bold whitespace-nowrap tracking-[0.08em] text-white uppercase transition active:translate-y-0.5 lg:hidden`}
         style={{
+          /* Au-dessus du bandeau de consentement, qui publie sa hauteur dans
+             `--lcc-h` : à `bottom: 1.25rem` sec, il le recouvrait entièrement
+             sur téléphone et les filtres restaient intouchables tant que la
+             visiteuse n'avait pas répondu. La variable vaut 0 dès que le
+             choix est enregistré, et le bouton redescend. */
+          bottom: "calc(1.25rem + var(--lcc-h, 0px))",
           background: "linear-gradient(180deg,#a86fe8 0%,#7147d4 48%,#3b1d8f 100%)",
           boxShadow:
             "0 5px 0 #2a1370, 0 12px 20px rgba(20,6,40,.45), inset 0 2px 0 rgba(255,255,255,.55)",

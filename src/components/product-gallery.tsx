@@ -18,6 +18,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { SmartImg } from "@/components/smart-img";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { HARD_SHADOW, MONO, NAVY_BAR, PLASTIC, PLASTIC_FACE, PLASTIC_PRESS, WindowControls } from "@/components/y2k/kit";
 
 const VIEWER_CSS = `
@@ -38,6 +39,9 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   const pics = images.length > 0 ? images : [""];
   const [index, setIndex] = useState(0);
   const [zoom, setZoom] = useState(false);
+
+  /* Photo en plein écran : la fiche produit ne défile plus derrière. */
+  useScrollLock(zoom);
   const touchX = useRef<number | null>(null);
 
   const go = (delta: number) => setIndex((i) => (i + delta + pics.length) % pics.length);

@@ -243,7 +243,12 @@ export function SetupWizard({
       <LeopardBackdrop />
 
       {/* ================= FENÊTRE ================= */}
-      <div className={`relative z-[1] mx-auto max-w-[1180px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#f0f0f5] ${HARD_SHADOW}`}>
+      {/* `w-full` : la fenêtre est un enfant flex à marges automatiques, donc
+          dimensionnée sur son contenu. Sans largeur explicite, il suffit
+          qu'un bloc à l'intérieur réclame une taille minimale pour que toute
+          la fenêtre déborde de l'écran. Avec `w-full`, elle prend la largeur
+          disponible, `max-w` la plafonne, `mx-auto` la centre. */}
+      <div className={`relative z-[1] mx-auto w-full max-w-[1180px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#f0f0f5] ${HARD_SHADOW}`}>
         {/* ---- Barre de titre ---- */}
         <div className="flex items-center justify-between gap-3 px-3 py-2" style={{ background: VIOLET_BAR }}>
           <div className="flex min-w-0 items-center gap-2">

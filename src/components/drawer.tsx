@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "@/lib/i18n-context";
 import { Icon } from "@/components/icons";
 import { CATEGORIES } from "@/lib/categories";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { LangCode } from "@/lib/i18n";
 
 /* Wording Y2K / file-explorer : propre au menu latéral, il ne remplace pas les
@@ -137,6 +138,10 @@ export function Drawer({ open, onClose }: { open: boolean; onClose: () => void }
 
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const clock = useDrawerClock();
+
+  /* Menu ouvert : la page du dessous ne défile plus. Sans ça, sur mobile,
+     un glissement du doigt dans le menu emmène la page derrière le voile. */
+  useScrollLock(open);
 
   const [prevOpen, setPrevOpen] = useState(open);
   if (open !== prevOpen) {

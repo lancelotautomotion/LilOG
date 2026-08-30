@@ -132,11 +132,23 @@ html, body {
   text-rendering: optimizeLegibility;
 }
 
-/* `html` est l'élément réellement défilant (pas `body`) : sans son propre
-   `overflow-x: hidden`, un débordement de quelques pixels ailleurs sur le
-   site (pastille décorative, etc.) reste glissable horizontalement au
-   doigt sur mobile même si `body` affiche déjà `overflow-x: hidden`. */
-html, body { overflow-x: hidden; }
+/* ---- Rognage horizontal ----
+   Les pastilles décoratives débordent volontairement de leur fenêtre
+   (footer, pages légales, /histoire, /durabilite) : il faut rogner ce
+   débordement, sinon la page se glisse de quelques pixels au doigt.
+
+   `clip`, et surtout PAS `overflow-x: hidden`, qui était posé ici sur
+   `html` ET `body`. Avec `hidden`, l'axe vertical resté `visible` est
+   recalculé en `auto` : `body` devenait un conteneur de défilement à part
+   entière, empilé sous celui du document. Ce double scrollport est ce qui
+   rendait le défilement saccadé au doigt (l'inertie s'arrête net quand le
+   geste change de conteneur) et ce qui neutralisait `position: sticky`
+   partout — d'où les contournements semés dans les composants.
+
+   `clip` rogne exactement pareil sans créer de scrollport : un seul
+   conteneur de défilement, celui du document, et `sticky` refonctionne.
+   Sur `body` uniquement : sur `html`, la valeur remonterait au viewport. */
+body { overflow-x: clip; }
 
 img { display: block; max-width: 100%; }
 button { font-family: inherit; cursor: pointer; }
