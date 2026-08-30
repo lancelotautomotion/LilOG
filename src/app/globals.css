@@ -1655,8 +1655,11 @@ textarea {
    passer sous les fenêtres.
 
    Sous 1180px, `.oc-page` passe en colonne : la bande d'icônes
-   se remet alors à plat au-dessus des fenêtres, sur toute la
-   largeur. Le point de bascule est celui de `.oc-page`, pas un
+   se remet alors à plat SOUS les fenêtres, sur toute la largeur.
+   En dessous et non au-dessus : les raccourcis sont des sorties
+   de page (favoris, dressing, catalogue, corbeille), ils n'ont
+   pas à occuper le premier écran d'un panier — on veut y voir le
+   panier. Le point de bascule est celui de `.oc-page`, pas un
    palier Tailwind, sinon les deux se croisent et la colonne se
    retrouve compressée sur une largeur d'icône.
    ============================================================ */
@@ -1673,6 +1676,12 @@ textarea {
   gap: 28px;
   align-self: stretch;
   flex-shrink: 0;
+  /* La bande est rendue APRÈS les deux fenêtres dans le JSX, l'ordre de
+     lecture du téléphone, où elle se pose sous elles. `order: -1` la
+     ramène en tête pour en faire la colonne de gauche du bureau ; c'est
+     donc le grand écran, minoritaire, qui porte l'écart entre ordre du
+     DOM et ordre affiché, pas le téléphone. */
+  order: -1;
 }
 @media (max-width: 1180px) {
   .oc-desktop-icons {
@@ -1683,6 +1692,11 @@ textarea {
     width: 100%;
     flex-basis: 100%;
     gap: 10px;
+    /* On rend l'ordre du DOM, où la bande vient après les deux fenêtres :
+       elle retombe donc en bas de la colonne. Sans cette remise à zéro, le
+       `order: -1` de la règle de base la garderait en tête, c'est-à-dire
+       au-dessus du panier. */
+    order: 0;
   }
 }
 

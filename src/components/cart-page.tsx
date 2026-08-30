@@ -244,14 +244,6 @@ export function CartPage() {
         <div className="oc-page">
         <div className="oc-row">
 
-          {/* ── Bureau : colonne de raccourcis le long du bord gauche.
-              Elle se remet à plat au-dessus des fenêtres quand .oc-page
-              passe en colonne (voir .oc-desktop-icons). ── */}
-          <div className="oc-desktop-icons">
-            {desktopIcons.map((ic) => (
-              <DesktopIcon key={ic.key} icon={ic.icon} label={ic.label} href={ic.href} onClick={ic.onClick} badge={ic.badge} />
-            ))}
-          </div>
           {/* ── Win95 machine ── */}
           <div className="oc-center">
             <div className="oc-win95-outer" ref={dressingWinRef}>
@@ -496,6 +488,17 @@ export function CartPage() {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* ── Bureau : les quatre raccourcis de sortie de page.
+              Rendus après les fenêtres, donc posés SOUS elles au téléphone,
+              où l'on veut voir son panier d'abord et pas quatre boutons qui
+              en font sortir. Au bureau, `order: -1` les ramène en colonne
+              le long du bord gauche (voir .oc-desktop-icons). ── */}
+          <div className="oc-desktop-icons">
+            {desktopIcons.map((ic) => (
+              <DesktopIcon key={ic.key} icon={ic.icon} label={ic.label} href={ic.href} onClick={ic.onClick} badge={ic.badge} />
+            ))}
           </div>
 
         </div>
