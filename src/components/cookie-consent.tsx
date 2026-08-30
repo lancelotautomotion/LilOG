@@ -179,7 +179,8 @@ export function CookieConsent() {
             <p className="min-w-0 text-[0.8125rem] leading-snug text-[#2b2340] sm:text-[0.875rem] sm:leading-relaxed">
               Le protocole <strong style={{ color: PINK }}>LIL_OG</strong>{" "}
               requiert l&apos;activation de fichiers de session (Cookies) pour mémoriser votre panier, optimiser
-              l&apos;affichage et analyser le trafic du site. Autorisez-vous l&apos;exécution ?
+              l&apos;affichage, analyser le trafic du site et mesurer nos publicités. Autorisez-vous
+              l&apos;exécution ?
             </p>
           </div>
 
@@ -203,6 +204,12 @@ export function CookieConsent() {
                 hint="Mémorise la langue et la devise choisies."
                 checked={draft.preferences}
                 onChange={preferences => setDraft(d => ({ ...d, preferences }))}
+              />
+              <Toggle
+                label="MARKETING.DAT"
+                hint="Pixel Meta (Facebook, Instagram) : mesure nos publicités et évite de te montrer celles qui ne te concernent pas."
+                checked={draft.marketing}
+                onChange={marketing => setDraft(d => ({ ...d, marketing }))}
               />
             </div>
           )}
