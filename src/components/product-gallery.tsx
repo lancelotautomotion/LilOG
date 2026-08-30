@@ -68,10 +68,19 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
     touchX.current = null;
   };
 
+  /* `flex-1 min-w-0` sur mobile : les trois boutons se partagent la rangée à
+     parts égales plutôt que de garder leur largeur naturelle. Sans ça, sur
+     la carte étroite d'un téléphone (288px de large une fois les marges du
+     lecteur déduites), les trois libellés réclamaient 324px à eux seuls —
+     36px de plus que ce que la rangée pouvait leur offrir — et NEXT
+     débordait de 20px hors de l'écran, sa fin coupée par le coin arrondi de
+     la fenêtre. Rembourrage et interlettrage resserrés en dessous de `sm`
+     pour la même raison ; ils reprennent leur largeur naturelle et leur
+     confort au bureau, où la place ne manque pas. */
   const navBtn =
-    `${MONO} shrink-0 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2.5 py-2 text-[0.8125rem] font-bold ` +
-    `tracking-[0.04em] text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-40 ` +
-    `${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105`;
+    `${MONO} min-w-0 flex-1 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-1.5 py-2 text-[0.75rem] font-bold ` +
+    `tracking-[0.01em] text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-40 ` +
+    `${PLASTIC} ${PLASTIC_PRESS} hover:brightness-105 sm:flex-none sm:px-2.5 sm:text-[0.8125rem] sm:tracking-[0.04em]`;
 
   return (
     <div>
@@ -114,15 +123,18 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-1.5 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-2 py-2 sm:gap-2">
+        <div className="flex items-center justify-between gap-1 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-2 py-2 sm:gap-2">
+          {/* Les crochets décoratifs `[ ]` ne reviennent qu'au bureau : sur
+              mobile, quatre caractères de plus par bouton, c'est ce qui
+              manquait pour tenir sur une rangée sans déborder. */}
           <button type="button" onClick={() => go(-1)} disabled={pics.length < 2} className={navBtn}>
-            [ ◀ PREV ]
+            <span className="hidden sm:inline">[ </span>◀ PREV<span className="hidden sm:inline"> ]</span>
           </button>
           <button type="button" onClick={() => setZoom(true)} className={navBtn}>
-            [ 🔍 ZOOM ]
+            <span className="hidden sm:inline">[ </span>🔍 ZOOM<span className="hidden sm:inline"> ]</span>
           </button>
           <button type="button" onClick={() => go(1)} disabled={pics.length < 2} className={navBtn}>
-            [ NEXT ▶ ]
+            <span className="hidden sm:inline">[ </span>NEXT ▶<span className="hidden sm:inline"> ]</span>
           </button>
         </div>
       </div>
