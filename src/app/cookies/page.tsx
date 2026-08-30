@@ -52,6 +52,11 @@ const SECTIONS: DocSection[] = [
           <strong>Cookies de préférences</strong> (avec consentement) : ces cookies mémorisent vos préférences (langue
           choisie, devise) pour personnaliser votre expérience.
         </P>
+        <P>
+          <strong>Cookies marketing</strong> (avec consentement) : le pixel Meta (Facebook, Instagram) mesure
+          l&apos;efficacité de nos publicités et permet de vous proposer des annonces plus pertinentes. Il n&apos;est
+          déposé qu&apos;après votre accord et n&apos;est pas chargé si vous le refusez.
+        </P>
       </>
     ),
   },
@@ -119,7 +124,7 @@ export default function CookiesPage() {
       title="Politique de Cookies"
       subtitle="Comment Lil'OG utilise les cookies sur son site."
       folder="COOKIES"
-      date="14 juillet 2026"
+      date="30 août 2026"
       sections={SECTIONS}
     />
   );

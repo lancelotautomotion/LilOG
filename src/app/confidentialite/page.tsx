@@ -113,6 +113,10 @@ const SECTIONS: DocSection[] = [
             { label: "Shopify Inc.", text: ": plateforme e-commerce et paiement" },
             { label: "Colissimo / Mondial Relay", text: ": transporteurs pour la livraison" },
             { label: "Klarna / Alma", text: ": paiement fractionné (si utilisé)" },
+            {
+              label: "Meta Platforms Ireland Ltd.",
+              text: ": mesure de nos publicités via le pixel Meta, uniquement si vous y avez consenti",
+            },
           ]}
         />
         <P>
@@ -160,7 +164,7 @@ export default function ConfidentialitePage() {
       title="Politique de Confidentialité"
       subtitle="Comment Lil'OG collecte, utilise et protège vos données personnelles."
       folder="PRIVACY"
-      date="14 juillet 2026"
+      date="30 août 2026"
       sections={SECTIONS}
     />
   );

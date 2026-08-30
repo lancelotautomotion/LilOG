@@ -7,8 +7,8 @@ import { readStored, useStored, writeStored } from "@/lib/stored";
 
    Les catégories reprennent mot pour mot celles annoncées sur
    /cookies : strictement nécessaires (jamais désactivables),
-   analytiques, préférences. Toute évolution de cette liste doit
-   être répercutée là-bas, et inversement.
+   analytiques, préférences, marketing. Toute évolution de cette
+   liste doit être répercutée là-bas, et inversement.
 
    Le choix est relu au chargement par un script `beforeInteractive`
    posé dans le layout racine : il rejoue le consentement dans le
@@ -21,7 +21,7 @@ export const LS_CONSENT_KEY = "lilog_cookie_consent";
 
 /** Version du format stocké. L'incrémenter invalide les choix passés
     et fait revenir le bandeau — à faire si les catégories changent. */
-export const CONSENT_VERSION = 1;
+export const CONSENT_VERSION = 2;
 
 /** /cookies annonce un consentement mémorisé 6 mois : on s'y tient. */
 export const CONSENT_MAX_AGE_MS = 182 * 24 * 60 * 60 * 1000;
@@ -31,12 +31,14 @@ export type Consent = {
   analytics: boolean;
   /** Langue, devise et autres conforts d'affichage. */
   preferences: boolean;
+  /** Traceurs publicitaires (pixel Meta : Facebook, Instagram). */
+  marketing: boolean;
 };
 
 type StoredConsent = Consent & { v: number; ts: number };
 
-export const CONSENT_ALL: Consent = { analytics: true, preferences: true };
-export const CONSENT_NONE: Consent = { analytics: false, preferences: false };
+export const CONSENT_ALL: Consent = { analytics: true, preferences: true, marketing: true };
+export const CONSENT_NONE: Consent = { analytics: false, preferences: false, marketing: false };
 
 function parse(raw: string | null): StoredConsent | null {
   if (!raw) return null;
@@ -50,16 +52,22 @@ function parse(raw: string | null): StoredConsent | null {
       ts: parsed.ts,
       analytics: parsed.analytics === true,
       preferences: parsed.preferences === true,
+      marketing: parsed.marketing === true,
     };
   } catch {
     return null;
   }
 }
 
+/** Le choix nu, débarrassé de la version et de l'horodatage. */
+function pick({ analytics, preferences, marketing }: StoredConsent): Consent {
+  return { analytics, preferences, marketing };
+}
+
 /** Le choix en vigueur, ou null s'il n'y en a pas (ou s'il a expiré). */
 export function readConsent(): Consent | null {
   const stored = parse(readStored(LS_CONSENT_KEY));
-  return stored && { analytics: stored.analytics, preferences: stored.preferences };
+  return stored && pick(stored);
 }
 
 /**
@@ -73,7 +81,7 @@ export function readConsent(): Consent | null {
  */
 export function useConsent(): Consent | null {
   const stored = parse(useStored(LS_CONSENT_KEY));
-  return stored ? { analytics: stored.analytics, preferences: stored.preferences } : null;
+  return stored ? pick(stored) : null;
 }
 
 /** Enregistre le choix et le pousse aussitôt à Google. */
@@ -97,9 +105,13 @@ type DataLayerWindow = Window & { dataLayer?: unknown[] };
  * forme qu'attend gtag.js, celle de l'extrait officiel de Google. Un
  * tableau ordinaire n'est pas interprété de la même façon.
  *
- * Rien n'est fait pour la publicité (`ad_storage` et consorts) : le
- * site n'a pas de régie, ces signaux restent refusés en permanence,
- * posés par le script de défaut du layout.
+ * Rien n'est fait pour la publicité (`ad_storage` et consorts) : ces
+ * signaux ne pilotent que les produits publicitaires de Google, dont
+ * le site ne se sert pas. Ils restent refusés en permanence, posés
+ * par le script de défaut du layout. La catégorie « marketing », elle,
+ * ne passe pas par Google : elle conditionne le chargement du pixel
+ * Meta (voir `@/components/meta-pixel`), qui n'est tout simplement pas
+ * injecté tant qu'elle n'est pas accordée.
  */
 export function pushConsent(consent: Consent) {
   if (typeof window === "undefined") return;

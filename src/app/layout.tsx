@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
 import { CookieConsent } from "@/components/cookie-consent";
+import { MetaPixel } from "@/components/meta-pixel";
 import { getCartAction } from "@/lib/actions/cart-actions";
 import "./globals.css";
 
@@ -78,7 +79,7 @@ try{
   var s=localStorage.getItem('lilog_cookie_consent');
   if(s){
     var c=JSON.parse(s);
-    if(c&&c.v===1&&typeof c.ts==='number'&&Date.now()-c.ts<15724800000){
+    if(c&&c.v===2&&typeof c.ts==='number'&&Date.now()-c.ts<15724800000){
       gtag('consent','update',{
         analytics_storage:c.analytics?'granted':'denied',
         functionality_storage:c.preferences?'granted':'denied',
@@ -106,6 +107,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           </LanguageProvider>
         </SessionProvider>
         <CookieConsent />
+        <MetaPixel />
       </body>
       {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
