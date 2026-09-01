@@ -147,7 +147,16 @@ export function CdRom({
          portée (`drop-shadow-xl`, posée sur chaque image ci-dessous puisqu'elle
          doit suivre le contour du boîtier/disque, pas le cadre rectangulaire)
          leur donne leur relief. */
-      className={`relative aspect-[1254/1035] w-full max-w-[420px] shrink-0${
+      /* `lg:shrink-0` et non `shrink-0` : le refus de rétrécir n'a de sens
+         qu'au format bureau, où le boîtier partage une ligne flex avec le
+         reste. Appliqué à toutes les largeurs, il donnait au boîtier une
+         taille minimale de 420 px que le navigateur remontait de proche en
+         proche — colonne, grille, puis la fenêtre GRAVEUR elle-même, large
+         de 574 px sur un téléphone de 390. Le tiers droit de l'assistant
+         sortait de l'écran, hors d'atteinte puisque le débordement
+         horizontal est rogné : capacité, montant et bouton de gravure
+         coupés. `w-full max-w-[420px]` suffit à le brider au bureau. */
+      className={`relative aspect-[1254/1035] w-full max-w-[420px] lg:shrink-0${
         stretch ? " lg:aspect-auto lg:min-h-[200px] lg:flex-1" : ""
       }`}
     >

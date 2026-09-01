@@ -330,6 +330,7 @@ function Bay({
   saved,
   onToggleSave,
   onNext,
+  onPrev,
   onChangeSize,
 }: {
   label: string;
@@ -344,6 +345,7 @@ function Bay({
   saved: boolean;
   onToggleSave: () => void;
   onNext: () => void;
+  onPrev: () => void;
   onChangeSize: () => void;
 }) {
   const item = items[index];
@@ -360,17 +362,23 @@ function Bay({
     reel.play();
   }
 
-  const pull = () => {
+  const pull = (dir: 1 | -1 = 1) => {
     reel.play();
-    timers.current.push(setTimeout(onNext, SPIN_SWAP));
+    timers.current.push(setTimeout(dir === 1 ? onNext : onPrev, SPIN_SWAP));
   };
 
   // Rendered as grid cells rather than a nested column, so both bays share
   // the same four rows and line up whatever their content.
   const cell = { gridColumn: col };
 
+  /* `.dm-bay` est en `display: contents` sur grand écran : la boîte
+     disparaît de la mise en page et les quatre éléments retombent
+     directement dans la grille de `.dm-screen`, rangée par rangée, comme
+     avant son introduction. Sur téléphone, elle redevient une vraie boîte
+     — la moitié haute ou basse de l'écran — et sert de repère aux quatre
+     éléments, qui s'y superposent au lieu de s'empiler. */
   return (
-    <>
+    <div className={"dm-bay " + (col === 1 ? "dm-bay-up" : "dm-bay-down")}>
       <header className="dm-bay-head" style={cell}>
         <span className="dm-bay-label">{label}</span>
         <span className="dm-bay-count">
@@ -401,6 +409,33 @@ function Bay({
             </button>
           </div>
         )}
+
+        {/* Sur téléphone, ces deux flèches remplacent le gros [ SPIN ] :
+            posées sur les bords de la photo, elles ne coûtent aucune
+            hauteur, celle-ci étant intégralement rendue aux deux pièces.
+            Masquées sur grand écran, où le SPIN reprend la main. */}
+        {item && (
+          <>
+            <button
+              type="button"
+              className="dm-nudge dm-nudge-prev"
+              onClick={() => pull(-1)}
+              disabled={items.length < 2}
+              aria-label={`Pièce précédente dans ${label}`}
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              className="dm-nudge dm-nudge-next"
+              onClick={() => pull(1)}
+              disabled={items.length < 2}
+              aria-label={`Pièce suivante dans ${label}`}
+            >
+              ›
+            </button>
+          </>
+        )}
       </div>
 
       <div className="dm-bay-plate" style={cell}>
@@ -412,7 +447,7 @@ function Bay({
         <button
           type="button"
           className="dm-spin"
-          onClick={pull}
+          onClick={() => pull(1)}
           disabled={items.length < 2}
           aria-label={`Faire tourner ${label}`}
         >
@@ -438,7 +473,7 @@ function Bay({
           {saved ? "♥" : "♡"}
         </button>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -449,8 +484,16 @@ function Bay({
 function ModuleTerminal({ onOpen }: { onOpen: () => void }) {
   return (
     <div className="dm-modules">
-      <button type="button" className="dm-w95 dm-modules-open" onClick={onOpen}>
-        [ + ] AJOUTER UN MODULE
+      {/* Le libellé long tombe dans le dock de téléphone, où le bouton se
+          réduit à son [ + ] : `aria-label` reprend le texte visible, donc
+          le nom accessible ne change pas d'une largeur à l'autre. */}
+      <button
+        type="button"
+        className="dm-w95 dm-modules-open"
+        onClick={onOpen}
+        aria-label="Ajouter un module"
+      >
+        [ + ]<span className="dm-btn-word">&nbsp;AJOUTER UN MODULE</span>
       </button>
     </div>
   );
@@ -477,7 +520,7 @@ function ModulePickerModal({
   onLaunch: (mod: ModuleDef) => void;
   onClose: () => void;
 }) {
-  const boot = "> SYSTÈME PRÊT. SÉLECTIONNEZ UN MODULE :";
+  const boot = "> SYSTÈME PRÊT. SÉLECTIONNEZ UN MODULE :";
   const typed = useTyped(boot, true, 16);
   const booted = typed.length === boot.length;
 
@@ -1025,12 +1068,16 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
             <button className="dm-toolbar-btn" onClick={() => setGateOpen(true)}>
               ⚙ Morphologie
             </button>
-            <span className="dm-toolbar-sep" />
-            <button className="dm-toolbar-btn" onClick={() => shuffle(sizes)}>
+            {/* Écartés de la barre sur téléphone (`dm-mobile-off`), où la
+                place manque : MÉLANGER fait double emploi avec la bulle
+                STYLE_ME, juste en dessous, et MES LOOKS est déjà dans le
+                menu. Seule MORPHOLOGIE, sans autre porte d'entrée, reste. */}
+            <span className="dm-toolbar-sep dm-mobile-off" />
+            <button className="dm-toolbar-btn dm-mobile-off" onClick={() => shuffle(sizes)}>
               ⟳ Mélanger
             </button>
-            <span className="dm-toolbar-sep" />
-            <Link className="dm-toolbar-btn" href="/wishlist">
+            <span className="dm-toolbar-sep dm-mobile-off" />
+            <Link className="dm-toolbar-btn dm-mobile-off" href="/wishlist">
               ♡ Mes looks
             </Link>
             <span className="dm-toolbar-tag">
@@ -1053,6 +1100,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               saved={top ? wishlist.has(top.handle) : false}
               onToggleSave={() => top && toggleSaveItem(top)}
               onNext={() => step("top", 1)}
+              onPrev={() => step("top", -1)}
               onChangeSize={() => setGateOpen(true)}
             />
 
@@ -1103,6 +1151,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               saved={bottom ? wishlist.has(bottom.handle) : false}
               onToggleSave={() => bottom && toggleSaveItem(bottom)}
               onNext={() => step("bottom", 1)}
+              onPrev={() => step("bottom", -1)}
               onChangeSize={() => setGateOpen(true)}
             />
           </div>
@@ -1118,9 +1167,10 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               className={"dm-w95 dm-save" + (lookSaved ? " pressed" : "")}
               onClick={saveLook}
               disabled={look.length === 0}
+              aria-label="SAVE_TO_WISHLIST.EXE : enregistrer ce look"
             >
               <span className="dm-save-led" aria-hidden />
-              💾 SAVE_TO_WISHLIST.EXE
+              💾<span className="dm-btn-word">&nbsp;SAVE_TO_WISHLIST.EXE</span>
             </button>
 
             <div className="dm-cop">

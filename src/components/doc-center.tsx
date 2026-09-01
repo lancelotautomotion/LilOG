@@ -64,12 +64,6 @@ const CGV_CSS = `
   .lildoc-sticker{animation:none}
 }
 
-/* overflow-x:hidden sur body (globals.css) ferait du body un conteneur de
-   défilement, ce qui neutralise position:sticky. La valeur clip rogne
-   exactement pareil sans créer de scrollport : le sommaire peut donc se
-   figer. Règle locale, active tant qu'une page légale est montée. */
-body{overflow-x:clip}
-
 /* ---- Impression : on ne garde que le document ---- */
 @media print{
   nav.nav, footer.footer, .lildoc-noprint{display:none !important}

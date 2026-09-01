@@ -208,17 +208,21 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
     </span>
   );
 
-  /* Taille posée à côté du prix, dans les deux présentations : c'est le
-     premier critère de tri d'une friperie, et l'ouvrir fiche par fiche pour
-     le connaître n'a pas de sens. Rien pour les pièces sans taille (sacs,
-     bijoux), « TU » n'apprendrait rien. Au-delà de trois tailles, la liste
-     est coupée : la vignette fait 170px de large en mobile. Elle est aussi
-     la seule pastille qui cède du terrain (`min-w-0 shrink truncate`) : sur
-     une carte étroite, mieux vaut une taille tronquée que le panier ou le
-     cœur qui saute de rangée. */
+  /* Taille posée à côté du prix : c'est le premier critère de tri d'une
+     friperie, et l'ouvrir fiche par fiche pour le connaître n'a pas de sens.
+     Rien pour les pièces sans taille (sacs, bijoux), « TU » n'apprendrait
+     rien. Au-delà de trois tailles, la liste est coupée à la source.
+
+     `shrink-0` : la pastille ne cède plus de terrain. Elle le faisait, et
+     comme `CHIP_BASE` centre son contenu, la comprimer ne produisait pas
+     une ellipse mais un rognage des DEUX côtés — sur une carte de 202px on
+     lisait « / », le milieu de « 📏 XS / S / M ». C'est désormais la barre
+     d'action qui passe à deux rangées quand la place manque, et plus la
+     taille qui s'efface. `justify-start` et `max-w-full` restent le
+     garde-fou du cas extrême, où l'ellipse tombe alors au bon endroit. */
   const sizeChip = product.sizes.length > 0 && (
     <span
-      className={`${MONO} ${CHIP_BASE} min-w-0 shrink truncate rounded border border-[#c6c2d8] px-1.5 text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
+      className={`${MONO} ${CHIP_BASE} max-w-full shrink-0 justify-start truncate rounded border border-[#c6c2d8] px-1 text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
       title={`Taille ${product.sizes.join(" / ")}`}
     >
       📏 {product.sizes.slice(0, 3).join(" / ")}
@@ -232,7 +236,7 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
       onClick={add}
       disabled={sold}
       aria-label={sold ? "Épuisé" : `Ajouter ${product.name} au panier`}
-      className={`${MONO} ${CHIP_BASE} shrink-0 rounded-md border border-[#c6c2d8] px-1.5 text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 ${
+      className={`${MONO} ${CHIP_BASE} grow rounded-md border border-[#c6c2d8] px-1.5 text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 ${
         added ? "bg-[linear-gradient(180deg,#d8ffe8_0%,#8ce8b4_48%,#4fbe84_100%)]" : PLASTIC_FACE
       } ${PLASTIC} ${sold ? "" : PLASTIC_PRESS} ${sold ? "" : "hover:brightness-105"}`}
     >
@@ -293,19 +297,29 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
         </Link>
       )}
 
-      {/* Barre d'action : une seule rangée, jamais de retour à la ligne.
-          Le panier et le cœur (`shrink-0`) gardent toujours leur taille
-          entière et restent collés à droite ; c'est le groupe prix+taille
-          qui absorbe le manque de place (`min-w-0 flex-1`), la pastille de
-          taille se tronquant la première (voir `sizeChip`). Ainsi le panier
-          et le cœur tombent au même endroit sur toutes les fiches, quel
-          que soit le nombre de tailles ou un prix barré en plus. */}
-      <div className="mt-auto flex flex-nowrap items-center justify-between gap-1 border-t border-[#d8d5e6] bg-[#e9e7f2] px-1.5 py-2">
-        <span className="flex min-w-0 flex-1 items-center gap-1">
+      {/* Barre d'action, deux rangées : informations puis actions.
+
+          Elle tenait sur une seule, et les quatre pastilles n'y entraient
+          pas : le pire cas — prix barré et trois tailles — demande 236px,
+          que n'offrent ni un téléphone (153px sur un écran de 390) ni la
+          colonne la plus étroite du bureau (198px en trois colonnes vers
+          1024px). C'est la taille qui payait l'addition, et comme
+          `CHIP_BASE` centre son contenu, la comprimer ne produisait pas une
+          ellipse mais un rognage des DEUX côtés : sur une carte de 202px on
+          lisait « / », le milieu de « 📏 XS / S / M ».
+
+          Deux rangées pour TOUTES les cartes, et non seulement les étroites :
+          replier au cas par cas laissait, dans une même ligne de la grille,
+          la fiche en promotion sur deux rangées à côté de voisines sur une
+          seule — les barres ne s'alignaient plus. Uniforme, donc, à toute
+          largeur : prix et taille en haut, [+CART] étiré et le cœur en bas.
+          Le bouton y gagne au passage une cible tactile digne de ce nom. */}
+      <div className="mt-auto flex flex-col gap-1 border-t border-[#d8d5e6] bg-[#e9e7f2] px-1.5 py-2">
+        <span className="flex min-w-0 flex-wrap items-center gap-1">
           {price}
           {sizeChip}
         </span>
-        <span className="flex shrink-0 items-center gap-1">
+        <span className="flex items-center gap-1">
           {cartButton}
           {favButton}
         </span>

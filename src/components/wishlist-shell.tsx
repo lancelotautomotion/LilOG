@@ -60,7 +60,11 @@ export function WishlistShell() {
                 <p className="burnbook-empty-text">
                   ⚠️ Erreur 404 : Ugh, as if! Ta wishlist est aussi vide que le cœur de Regina George.
                 </p>
-                <Link href="/" className="account-btn primary acct-orders-cta-btn">
+                {/* Le catalogue complet, le « Tout voir » du menu, et non
+                    l'accueil : depuis une wishlist vide on veut des pièces à
+                    parcourir tout de suite. Même destination que « Shopper
+                    maintenant » du panier vide. */}
+                <Link href="/catalogue" className="account-btn primary acct-orders-cta-btn">
                   RETOURNER_SHOPPER.EXE →
                 </Link>
               </div>

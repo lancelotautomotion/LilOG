@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 import { PLASTIC, PLASTIC_FACE, PLASTIC_PRESS } from "@/components/y2k/kit";
+import { Icon } from "@/components/icons";
 import { actionSignup } from "@/lib/actions/auth-actions";
 import {
   LS_AVATAR_KEY,
@@ -19,58 +20,6 @@ import {
 type Mode = "login" | "register";
 
 const LS_REMEMBER_KEY = "lilog_login_remember";
-
-/* Marge laissée entre la fenêtre et les bords de la zone visible. */
-const FIT_GAP = 14;
-/* En dessous, on préfère laisser défiler plutôt que rendre le texte
-   illisible : un écran de moins de ~380px utiles reste l'exception. */
-const FIT_MIN = 0.62;
-
-/**
- * Met la fenêtre à l'échelle pour qu'elle tienne en entier sous la barre
- * de navigation, sans défilement. Le facteur ne descend jamais au-dessus
- * de 1 : sur un grand écran, rien n'est touché.
- *
- * La mesure porte sur la hauteur de mise en page (`offsetHeight`), que la
- * transformation ne modifie pas : pas de boucle entre l'échelle et la
- * mesure. La hauteur du conteneur est en revanche corrigée à la main,
- * sinon la page réserverait la place de la fenêtre non réduite et
- * redeviendrait défilante pour rien.
- */
-function useFitToViewport() {
-  const winRef = useRef<HTMLDivElement>(null);
-  const [{ scale, height }, setFit] = useState({ scale: 1, height: 0 });
-
-  useEffect(() => {
-    const win = winRef.current;
-    if (!win) return;
-
-    const measure = () => {
-      const navH = document.querySelector("nav")?.getBoundingClientRect().height ?? 0;
-      const avail = window.innerHeight - navH - FIT_GAP * 2;
-      const natural = win.offsetHeight;
-      if (!natural) return;
-      const next = Math.max(FIT_MIN, Math.min(1, avail / natural));
-      setFit(prev =>
-        Math.abs(prev.scale - next) < 0.005 && prev.height === natural
-          ? prev
-          : { scale: next, height: natural },
-      );
-    };
-
-    /* ResizeObserver déclenche lui-même une première mesure au moment
-       d'observer : pas de setState synchrone dans le corps de l'effet. */
-    const ro = new ResizeObserver(measure);
-    ro.observe(win);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, []);
-
-  return { winRef, scale, height };
-}
 
 /* Biseaux Windows : relief sortant (fenêtre, boutons, onglet actif),
    relief rentrant (cadre photo, zones encastrées). */
@@ -90,6 +39,7 @@ const STICKERS = [
 export function AuthForm() {
   const [mode, setMode] = useState<Mode>("login");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -101,13 +51,12 @@ export function AuthForm() {
   const [maximized, setMaximized] = useState(false);
   const [wizz, setWizz] = useState(false);
 
-  const { winRef, scale, height } = useFitToViewport();
-
   const avatar = useStored(LS_AVATAR_KEY);
   const storedStatus = useStored(LS_STATUS_KEY);
   const statusId = MSN_STATUSES.some(s => s.id === storedStatus)
     ? (storedStatus as string)
     : MSN_STATUSES[0].id;
+  const currentStatus = MSN_STATUSES.find(s => s.id === statusId) ?? MSN_STATUSES[0];
   const avatarSrc = MSN_AVATARS.some(a => a.src === avatar)
     ? (avatar as string)
     : MSN_AVATARS[0].src;
@@ -160,19 +109,26 @@ export function AuthForm() {
 
   return (
     <div
-      /* Conteneur : il ne porte que la largeur et la hauteur réduite.
-         La mise à l'échelle est sur l'enfant, pour que la mesure de
-         `offsetHeight` reste celle de la fenêtre à taille réelle. */
+      /* Largeur de la fenêtre, et rien d'autre.
+         Elle portait un ajustement automatique qui mettait toute la fenêtre
+         à l'échelle (`transform: scale()`) dès que son contenu dépassait la
+         hauteur de l'écran — pour lui éviter de défiler. Mais une mise à
+         l'échelle est uniforme : la fenêtre rétrécissait AUSSI en largeur.
+         Il suffisait d'un mot de passe refusé pour que la bannière d'erreur
+         l'allonge et la fasse maigrir de 358 à 300px sur un téléphone de
+         390 — elle changeait de taille sous les yeux de la visiteuse à
+         chaque essai. L'onglet « Créer un compte », plus haut de deux
+         champs, produisait le même effet.
+         La fenêtre garde donc sa largeur en toutes circonstances et la page
+         défile quand le contenu est plus haut que l'écran, ce que le
+         `<main>` de /login prévoit déjà (aucun rognage vertical). */
       className={
         "relative w-full transition-[max-width] duration-300 " +
         (maximized ? "max-w-[780px]" : "max-w-[560px]")
       }
-      style={scale < 1 && height ? { height: Math.round(height * scale) } : undefined}
     >
     <div
-      ref={winRef}
-      className={"relative w-full origin-top" + (wizz ? " login-wizz" : "")}
-      style={scale < 1 ? { transform: `scale(${scale})` } : undefined}
+      className={"relative w-full" + (wizz ? " login-wizz" : "")}
       onAnimationEnd={e => { if (e.target === e.currentTarget) setWizz(false); }}
     >
       {STICKERS.map(s => (
@@ -219,12 +175,20 @@ export function AuthForm() {
         <div className={shaded ? "hidden" : "block"}>
 
           {/* ── Bloc avatar + statut ── */}
-          <div className="flex items-center gap-3 border-b border-gray-400 bg-gradient-to-b from-[#f6f2ff] to-[#e4ddf7] p-2.5">
+          {/* Grille plutôt que rangée flex : un `<select>` ne sait ni passer
+              à la ligne ni mettre en ellipse, il coupe. Coincé à côté de
+              l'avatar, il n'offrait que 208px sur un écran de 390 pour un
+              statut qui en demande près de 300 : « J'ÉCOUTE BRITNEY EN
+              BOUCLE » s'arrêtait à « EN ». Sur téléphone il passe donc sur
+              sa propre ligne, sous l'avatar et le pseudo, où il dispose de
+              toute la largeur de la fenêtre. Au bureau, l'avatar reprend
+              ses deux rangées et la mise en page ne bouge pas. */}
+          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-3 gap-y-2 border-b border-gray-400 bg-gradient-to-b from-[#f6f2ff] to-[#e4ddf7] p-2.5">
             <button
               type="button"
               onClick={cycleAvatar}
               title="Changer d'avatar"
-              className={`shrink-0 rounded-md bg-white p-1 shadow-inner ${BEVEL_IN}`}
+              className={`shrink-0 self-center rounded-md bg-white p-1 shadow-inner sm:row-span-2 ${BEVEL_IN}`}
             >
               <span className="relative block h-14 w-14 overflow-hidden rounded-sm">
                 <Image
@@ -238,24 +202,43 @@ export function AuthForm() {
               </span>
             </button>
 
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[1rem] font-bold text-[#2b2340]">
-                Invitée_LilOG <span className="hidden text-[0.875rem] font-normal text-[#6B7280] sm:inline">(clique la photo ✎)</span>
-              </p>
+            <p className="min-w-0 truncate text-[1rem] font-bold text-[#2b2340]">
+              Invitée_LilOG <span className="hidden text-[0.875rem] font-normal text-[#6B7280] sm:inline">(clique la photo ✎)</span>
+            </p>
 
-              <div className="relative mt-1">
-                <select
-                  aria-label="Statut"
-                  value={statusId}
-                  onChange={e => writeStored(LS_STATUS_KEY, e.target.value)}
-                  className={`w-full cursor-pointer appearance-none rounded-md bg-white py-1.5 pl-2.5 pr-8 text-[0.875rem] tracking-[0.04em] sm:text-[0.9375rem] text-[#2b2340] shadow-inner outline-none ${BEVEL_IN}`}
-                >
-                  {MSN_STATUSES.map(s => (
-                    <option key={s.id} value={s.id}>{s.emoji}  {s.loginLabel}</option>
-                  ))}
-                </select>
-                <span aria-hidden className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[0.9375rem] text-[#6B7280]">▾</span>
+            {/* Statut : toute la largeur sous l'avatar au téléphone, deuxième
+                rangée de la colonne de droite au bureau.
+
+                Le libellé visible est un `<span>`, et le vrai `<select>` est
+                posé transparent par-dessus. Un `<select>` natif ne sait ni
+                passer à la ligne ni mettre en ellipse — il coupe — et il est
+                servi à 16px minimum par la règle anti-zoom iOS de
+                globals.css, qu'on ne contourne pas. Résultat : « J'ÉCOUTE
+                BRITNEY EN BOUCLE » demande 254px alors qu'un écran de 360
+                n'en offre que 242, et la phrase s'arrêtait à « EN ». Le span,
+                lui, se replie sur deux lignes quand il le faut, à n'importe
+                quelle largeur. Le select garde le clavier, le lecteur d'écran
+                et le sélecteur natif du téléphone ; sa taille de police reste
+                celle de la règle, il est invisible de toute façon. */}
+            <div className="relative col-span-2 sm:col-span-1 sm:col-start-2">
+              <select
+                aria-label="Statut"
+                value={statusId}
+                onChange={e => writeStored(LS_STATUS_KEY, e.target.value)}
+                className="peer absolute inset-0 h-full w-full cursor-pointer opacity-0"
+              >
+                {MSN_STATUSES.map(s => (
+                  <option key={s.id} value={s.id}>{s.emoji}  {s.loginLabel}</option>
+                ))}
+              </select>
+
+              <div
+                aria-hidden
+                className={`pointer-events-none rounded-md bg-white py-1.5 pl-2.5 pr-7 text-[0.875rem] leading-snug tracking-[0.04em] text-[#2b2340] shadow-inner peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-[#7b2ff7] sm:text-[0.9375rem] ${BEVEL_IN}`}
+              >
+                {currentStatus.emoji}  {currentStatus.loginLabel}
               </div>
+              <span aria-hidden className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[0.875rem] text-[#6B7280] sm:right-2.5 sm:text-[0.9375rem]">▾</span>
             </div>
           </div>
 
@@ -310,16 +293,33 @@ export function AuthForm() {
               </Field>
 
               <Field label="PASSWORD.RAW">
-                <input
-                  className={INPUT}
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                  autoComplete={mode === "login" ? "current-password" : "new-password"}
-                  minLength={mode === "register" ? 8 : undefined}
-                />
+                {/* Œil d'affichage : une faute de frappe dans un mot de passe
+                    masqué est invisible, et sur un clavier de téléphone elle
+                    est vite arrivée. Le bouton est DANS le <label> du champ,
+                    mais un descendant interactif n'active pas le label : le
+                    clic bascule l'affichage sans donner le focus au champ. */}
+                <div className="relative">
+                  <input
+                    className={`${INPUT} pr-12`}
+                    type={passwordVisible ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                    autoComplete={mode === "login" ? "current-password" : "new-password"}
+                    minLength={mode === "register" ? 8 : undefined}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setPasswordVisible(v => !v)}
+                    aria-label={passwordVisible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                    aria-pressed={passwordVisible}
+                    title={passwordVisible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                    className="absolute inset-y-0 right-0 flex w-11 cursor-pointer items-center justify-center rounded-r-xl text-[#6b6480] transition-colors hover:text-[#7147d4] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#7147d4]"
+                  >
+                    {passwordVisible ? <Icon.eyeOff /> : <Icon.eye />}
+                  </button>
+                </div>
               </Field>
 
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -417,14 +417,25 @@ function Tab({ active, onClick, children }: { active: boolean; onClick: () => vo
     <button
       type="button"
       onClick={onClick}
+      /* Sur téléphone, les deux onglets se partagent la rangée à parts
+         égales (`flex-1 min-w-0`) et leur libellé peut passer à la ligne.
+         Ils étaient à largeur libre, en `whitespace-nowrap`, dans un corps
+         PLUS GROS qu'au bureau (1rem contre 0.9375rem) : les deux
+         demandaient 460px pour une rangée qui n'en offre que 338 sur un
+         écran de 390, et « CRÉER UN COMPTE » disparaissait sous le
+         `overflow-hidden` de la fenêtre. Les crochets décoratifs, qui
+         coûtent quatre caractères par onglet, ne reviennent qu'au bureau.
+         Le corps reste à 14px, au-dessus du plancher de lisibilité. */
       className={
-        "relative -mb-px rounded-t-lg border border-b-0 whitespace-nowrap border-gray-400 px-2.5 py-1.5 text-[1rem] uppercase tracking-[0.08em] transition-colors sm:px-3.5 sm:text-[0.9375rem] " +
+        "relative -mb-px min-w-0 flex-1 rounded-t-lg border border-b-0 border-gray-400 px-2 py-1.5 text-center text-[0.875rem] uppercase tracking-[0.04em] transition-colors sm:flex-none sm:px-3.5 sm:text-[0.9375rem] sm:tracking-[0.08em] sm:whitespace-nowrap " +
         (active
           ? "z-10 bg-[#f7f6fb] font-bold text-[#7b2ff7]"
           : "bg-[#ddd9ea] text-[#6B7280] hover:bg-[#e9e6f5] hover:text-[#2b2340]")
       }
     >
-      [ {children} ]
+      <span className="hidden sm:inline">[ </span>
+      {children}
+      <span className="hidden sm:inline"> ]</span>
     </button>
   );
 }
