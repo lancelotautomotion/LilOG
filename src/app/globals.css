@@ -6757,17 +6757,19 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 /* ================================================================
    TABLETTE / TÉLÉPHONE : la borne devient une app plein écran
    ----------------------------------------------------------------
-   Contrainte de départ : le HAUT et le BAS doivent tenir ensemble sur
-   l'écran, sans un pixel de défilement. La page empilée ne le permettait
-   pas — deux hublots de 58vh, deux plaques, deux gros [ SPIN ], la
-   console et le pied de page faisaient près de trois écrans de haut, et
-   il fallait faire défiler pour voir le bas d'un look.
+   Contrainte de départ : le HAUT et le BAS doivent se voir ensemble,
+   sans avoir à faire défiler. La page empilée en était loin — deux
+   hublots de 58vh, deux plaques, deux gros [ SPIN ] et la console
+   faisaient près de trois écrans de haut, et il fallait descendre pour
+   voir le bas d'un look, c'est-à-dire précisément ce que la machine
+   sert à juger.
 
    Trois principes en découlent :
 
-   1. La fenêtre occupe exactement 100dvh, pied de page compris (masqué)
-      et défilement du document coupé. C'est la seule façon de tenir la
-      promesse : ce qui ne rentre pas doit disparaître, pas déborder.
+   1. La borne occupe exactement la hauteur visible. Le document, lui,
+      défile encore : c'est ainsi qu'on atteint le pied de page, posé en
+      dessous. Rien de ce qui sert à composer un look ne s'y cache — ce
+      qui ne rentre pas dans l'écran est retiré, pas repoussé plus bas.
    2. Tout ce qui n'est pas la photo se pose SUR la photo. Bandeau,
       plaque et cœur deviennent des surimpressions ; la hauteur libérée
       va aux deux pièces, qui se partagent le reste à parts égales.
@@ -6776,20 +6778,30 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
       donc dégagée pour l'arête et la bulle STYLE_ME.
    ================================================================ */
 @media (max-width: 900px) {
-  /* ---- Plus aucun défilement vertical ----
-     Le pied de page part avec : le laisser sous une fenêtre haute de
-     100dvh rouvrirait le défilement que toute la mise en page cherche à
-     supprimer. Ses liens légaux restent atteignables par le menu. */
-  body:has(main.dm-desktop) { overflow: hidden; overscroll-behavior-y: none; }
-  main.dm-desktop ~ footer { display: none; }
+  /* ---- La machine tient dans un écran, la page défile quand même ----
+     Le document n'est plus bloqué : la borne occupe exactement la
+     hauteur visible, et le défilement ne sert qu'à atteindre le pied de
+     page en dessous. Rien d'important n'y est caché — tout ce qui sert
+     à composer un look tient dans le premier écran.
 
+     `svh` et non `dvh` : c'est la hauteur visible barre d'URL DÉPLIÉE,
+     donc la plus petite. La borne tient dans tous les états de la barre,
+     et ne se redimensionne pas quand celle-ci se replie au défilement —
+     avec `dvh`, le simple fait de descendre vers le pied de page ferait
+     grandir les deux photos d'un coup. */
   .dm-desktop {
-    height: 100dvh;
+    height: 100svh;
     min-height: 0;
     align-items: stretch;
     padding: var(--dm-nav-h) 0 0;
     overflow: hidden;
   }
+
+  /* Écartés de la barre d'outils et du dock sur téléphone : la place y
+     est comptée, et chacun a une autre porte d'entrée (la bulle
+     STYLE_ME pour MÉLANGER, le menu pour MES LOOKS). */
+  .dm-mobile-off,
+  .dm-modules { display: none; }
   /* Plein cadre : ni tranche de cabinet, ni coins arrondis, ni ombre
      portée — sur un écran de téléphone, ces 24px de décor coûtent plus
      qu'ils ne racontent. Le fronton suffit à tenir l'identité. */
@@ -6952,8 +6964,8 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   /* Strass au placard : autour d'une bulle posée sur la jonction, entre
      une plaque et un bandeau, ils ne font plus que du bruit. */
   .dm-strass { display: none; }
-  .dm-style-me { width: clamp(84px, 24vw, 104px); }
-  .dm-style-me-label { font-size: 0.8125rem; }
+  .dm-style-me { width: clamp(66px, 19vw, 82px); }
+  .dm-style-me-label { font-size: 0.625rem; letter-spacing: 0.04em; }
   .dm-style-me:active { transform: translateY(4px); }
 
   /* ---- Le dock d'achat, collé en bas ----
@@ -7016,12 +7028,12 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-statusbar { display: none; }
 
   /* Filet de sécurité pour les deux fenêtres modales. Elles sont posées
-     en `fixed` et centrées : ce qui les dépasse a toujours été hors
-     d'atteinte, mais le document pouvait encore défiler derrière. Ce
-     n'est plus le cas — si les grilles de tailles débordent, c'est la
-     fenêtre qui défile, sinon SYSTEM_LOGIN.EXE, porte d'entrée de la
-     page, garderait son bouton LANCER sous l'écran. Le plafond ne mord
-     que lorsqu'il y a débordement. */
+     en `fixed` et centrées : ce qui les dépasse est hors d'atteinte, et
+     le faire défiler ne sert à rien puisqu'elles ne suivent pas le
+     document. Si les grilles de tailles débordent, c'est donc la fenêtre
+     elle-même qui défile, sinon SYSTEM_LOGIN.EXE — la porte d'entrée de
+     la page — garderait son bouton LANCER sous l'écran. Le plafond ne
+     mord que lorsqu'il y a débordement. */
   .dm-gate-body,
   .dm-modpick-body {
     max-height: calc(100dvh - var(--dm-nav-h) - 110px);
@@ -7050,10 +7062,10 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-toolbar { padding: 0 6px; }
   .dm-toolbar-btn { padding: 3px 7px; }
   .dm-console { padding: 5px 8px calc(5px + env(safe-area-inset-bottom)); }
-  .dm-style-me { width: clamp(72px, 20vw, 88px); }
-  /* Le libellé suit la bulle : à 72px de diamètre, il débordait du cercle
-     de part et d'autre. */
-  .dm-style-me-label { font-size: 0.6875rem; letter-spacing: 0.05em; }
+  .dm-style-me { width: clamp(60px, 17vw, 72px); }
+  /* Le libellé suit la bulle : au diamètre le plus petit, il débordait du
+     cercle de part et d'autre. */
+  .dm-style-me-label { font-size: 0.5625rem; letter-spacing: 0.02em; }
   .dm-nudge { width: 38px; height: 38px; margin-top: -19px; font-size: 1.5rem; }
   .dm-heart, .dm-modules-open, .dm-save { width: 40px; height: 40px; }
   .dm-cop-btn { padding: 10px 8px; }
