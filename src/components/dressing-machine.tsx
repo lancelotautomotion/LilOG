@@ -477,7 +477,7 @@ function ModulePickerModal({
   onLaunch: (mod: ModuleDef) => void;
   onClose: () => void;
 }) {
-  const boot = "> SYSTÈME PRÊT. SÉLECTIONNEZ UN MODULE :";
+  const boot = "> SYSTÈME PRÊT. SÉLECTIONNEZ UN MODULE :";
   const typed = useTyped(boot, true, 16);
   const booted = typed.length === boot.length;
 
