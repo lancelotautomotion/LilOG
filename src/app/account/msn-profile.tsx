@@ -10,6 +10,7 @@ import {
   useStored,
   writeStored,
 } from "@/lib/msn";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 
 export function MsnProfile({
@@ -49,7 +50,10 @@ export function MsnProfile({
     setModalOpen(true);
   }
 
-  /* Flèches clavier + Échap, et blocage du scroll de fond */
+  /* Choix de l'avatar : la page derrière la modale ne défile plus. */
+  useScrollLock(modalOpen);
+
+  /* Flèches clavier + Échap */
   useEffect(() => {
     if (!modalOpen) return;
     function onKey(e: KeyboardEvent) {
@@ -58,12 +62,7 @@ export function MsnProfile({
       if (e.key === "ArrowRight") goNext();
     }
     window.addEventListener("keydown", onKey);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
-    };
+    return () => window.removeEventListener("keydown", onKey);
   }, [modalOpen, goPrev, goNext]);
 
   function changeStatus(id: string) {

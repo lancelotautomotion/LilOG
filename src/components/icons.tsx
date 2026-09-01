@@ -83,6 +83,23 @@ export const Icon = {
       <path d="m6 9 6 6 6-6" />
     </svg>
   ),
+  /* Œil ouvert / barré : l'interrupteur « afficher le mot de passe » des
+     champs de saisie. Même cadre et même graisse de trait que les autres
+     icônes de la nav, pour qu'il ne détonne pas dans un champ. */
+  eye: (p: SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M2.5 12S6.6 5.5 12 5.5 21.5 12 21.5 12 17.4 18.5 12 18.5 2.5 12 2.5 12Z" />
+      <circle cx="12" cy="12" r="3.1" />
+    </svg>
+  ),
+  eyeOff: (p: SVGProps<SVGSVGElement>) => (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}>
+      <path d="M9.9 5.8A8.9 8.9 0 0 1 12 5.5c5.4 0 9.5 6.5 9.5 6.5a17.6 17.6 0 0 1-3.3 3.9" />
+      <path d="M6.4 7.7A17.4 17.4 0 0 0 2.5 12S6.6 18.5 12 18.5a9 9 0 0 0 3.7-.8" />
+      <path d="M10.1 10a2.7 2.7 0 0 0 3.8 3.8" />
+      <path d="m3.5 3.5 17 17" />
+    </svg>
+  ),
   /* Dossier Win95, jaune fixe : indépendant du rendu emoji de la plateforme.
      C'est LE dossier du site : menu latéral, explorateur de l'accueil,
      raccourcis de /contact, arborescences de /faq et des pages légales

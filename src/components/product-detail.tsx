@@ -134,10 +134,18 @@ const PDP_CSS = `
 
 function StatCell({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
+    /* `sm:flex-1` et non `flex-1` : au bureau les trois cases se partagent
+       la rangée à parts égales, mais sur téléphone une largeur imposée les
+       forçait à découper leur valeur sur deux lignes — « TRÈS BON » cassé en
+       deux — et les trois cases héritaient de cette hauteur par
+       `items-stretch` : 94px de haut sur un portable contre 75 au bureau,
+       plus grosses sur le petit écran que sur le grand. À largeur naturelle,
+       chacune prend ce que son texte demande et passe à la ligne suivante
+       quand la rangée est pleine. */
     <div
-      className={`flex min-w-0 flex-1 items-center gap-2 rounded-md border border-[#c6c2d8] bg-[#f7f6fc] px-2.5 py-2 ${BEVEL_IN}`}
+      className={`flex min-w-0 items-center gap-1.5 rounded-md border border-[#c6c2d8] bg-[#f7f6fc] px-1.5 py-1.5 sm:flex-1 sm:gap-2 sm:px-2.5 sm:py-2 ${BEVEL_IN}`}
     >
-      <span aria-hidden className="shrink-0 text-[1.125rem] leading-none">{icon}</span>
+      <span aria-hidden className="shrink-0 text-[1rem] leading-none sm:text-[1.125rem]">{icon}</span>
       <span className="min-w-0">
         {/* Mêmes tailles que le bloc de description des catalogues :
             0.58rem pour l'étiquette (comme les #tags), 0.76rem pour la
@@ -581,13 +589,19 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   que SYSTEM_LOGS est une pile de menus déroulants, plus rien
                   ne s'étire pour rejoindre le bas du lecteur photo. */}
               <div className="flex min-w-0 flex-col">
-                <div className={`${MONO} mb-2 text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase`}>
+                {/* Même alignement que le titre juste en dessous : centré sur
+                    téléphone, où toute la colonne l'est, à gauche au bureau. */}
+                <div className={`${MONO} mb-2 text-center text-[0.8125rem] font-bold tracking-[0.14em] text-[#5b2fb8] uppercase sm:text-left`}>
                   ▶ ITEM_STATS.SYS
                 </div>
 
                 {badge && (
                   <span
-                    className={`${MONO} mb-2 inline-block rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.8125rem] font-bold tracking-[0.06em] text-[#5b2fb8] uppercase ${PLASTIC}`}
+                    /* `self-center` : enfant d'une colonne flex, le jeton
+                       s'étirerait sinon sur toute la largeur au lieu de rester
+                       une pastille. `sm:self-start` le recale à gauche au
+                       bureau, où le bloc reste justifié à gauche. */
+                    className={`${MONO} mb-2 self-center rounded-sm border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.8125rem] font-bold tracking-[0.06em] text-[#5b2fb8] uppercase sm:self-start ${PLASTIC}`}
                   >
                     {badge}
                   </span>
@@ -598,7 +612,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                     langage que le reste du site plutôt qu'une typo
                     brutaliste propre à cette page. */}
                 <h1
-                  className={`${LCD} text-[clamp(1.6rem,3.6vw,2.6rem)] leading-[1.05] tracking-[0.02em] text-[#2a1266] uppercase`}
+                  className={`${LCD} text-center text-[clamp(1.6rem,3.6vw,2.6rem)] leading-[1.05] tracking-[0.02em] text-[#2a1266] uppercase sm:text-left`}
                 >
                   {product.name}
                 </h1>
@@ -608,7 +622,10 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                     se partagent le reste. `items-stretch` les met à la hauteur
                     de l'afficheur. Sous 360px de place pour le groupe, colonne
                     étroite ou affichage en une colonne, il repasse dessous. */}
-                <div className="mt-4 flex flex-wrap items-stretch gap-2">
+                {/* Centré sur téléphone, où le bloc est empilé sous les
+                    photos et occupe toute la largeur de la fenêtre ; justifié à
+                    gauche au bureau, où il forme la colonne de droite. */}
+                <div className="mt-4 flex flex-wrap items-stretch justify-center gap-2 sm:justify-start">
                   {/* Écran LED : un vrai afficheur d'appareil : boîtier noir
                       encastré, libellé gravé, chiffres néon en typo LCD, prix
                       barré et remise logés dans le même bandeau plutôt que
@@ -652,15 +669,29 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                   </div>
 
                   {/* Fiche de caractéristiques RPG */}
-                  <div className="flex min-w-[360px] flex-1 flex-wrap items-stretch gap-2">
+                  {/* Sur téléphone, le groupe prend sa propre rangée sous
+                      l'afficheur de prix (`w-full`).
+
+                      Il obtenait ce passage à la ligne par un `min-w-[360px]`,
+                      un plancher plus large que ce qui restait à côté du prix.
+                      Mais ce plancher dépassait aussi le conteneur lui-même —
+                      360px demandés pour 322 disponibles sur un écran de 390 —
+                      et la rangée débordait par la droite, la pastille RAYON
+                      venant mourir sur le bord de l'écran. `w-full` obtient le
+                      même passage à la ligne sans jamais réclamer plus que la
+                      place existante. Le plancher reste au bureau, où il
+                      décide du moment où le groupe descend sous le prix. */}
+                  <div className="flex w-full min-w-0 flex-wrap items-stretch justify-center gap-2 sm:w-auto sm:min-w-[360px] sm:flex-1 sm:justify-start">
                     <StatCell icon="📏" label="Taille" value={size} />
                     <StatCell icon="💎" label="État" value={etat} />
                     {dept && <StatCell icon="🗂️" label="Rayon" value={dept} />}
                   </div>
                 </div>
 
+                {/* Tailles disponibles. Même alignement que les pastilles
+                    au-dessus : centré sur téléphone, à gauche au bureau. */}
                 {hasVariants && product.variants.length > 1 && (
-                  <div className="mt-3 flex flex-wrap gap-1.5">
+                  <div className="mt-3 flex flex-wrap justify-center gap-1.5 sm:justify-start">
                     {product.variants.map((v) => (
                       <button
                         key={v.id}

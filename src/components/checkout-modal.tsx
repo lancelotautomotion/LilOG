@@ -17,6 +17,7 @@
 import Image from "next/image";
 import type { CartLine } from "@/lib/shopify/types";
 import logoBlack from "../../public/logo-black.png";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 /* ---- Palettes ---------------------------------------------------------- */
 
@@ -149,6 +150,10 @@ export function CheckoutModal({
      automatique. */
   onContinue?: () => void;
 }) {
+  /* La modale n'est montée que le temps de la redirection : le panier
+     derrière elle ne défile pas pendant ces trois secondes. */
+  useScrollLock(true);
+
   const count = lines.reduce((n, l) => n + l.quantity, 0);
   const ticket = ticketNumber(lines, subtotal);
   /* Un gros panier ne doit pas pousser le bouton hors de l'écran : au-delà

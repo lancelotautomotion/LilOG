@@ -132,11 +132,23 @@ html, body {
   text-rendering: optimizeLegibility;
 }
 
-/* `html` est l'élément réellement défilant (pas `body`) : sans son propre
-   `overflow-x: hidden`, un débordement de quelques pixels ailleurs sur le
-   site (pastille décorative, etc.) reste glissable horizontalement au
-   doigt sur mobile même si `body` affiche déjà `overflow-x: hidden`. */
-html, body { overflow-x: hidden; }
+/* ---- Rognage horizontal ----
+   Les pastilles décoratives débordent volontairement de leur fenêtre
+   (footer, pages légales, /histoire, /durabilite) : il faut rogner ce
+   débordement, sinon la page se glisse de quelques pixels au doigt.
+
+   `clip`, et surtout PAS `overflow-x: hidden`, qui était posé ici sur
+   `html` ET `body`. Avec `hidden`, l'axe vertical resté `visible` est
+   recalculé en `auto` : `body` devenait un conteneur de défilement à part
+   entière, empilé sous celui du document. Ce double scrollport est ce qui
+   rendait le défilement saccadé au doigt (l'inertie s'arrête net quand le
+   geste change de conteneur) et ce qui neutralisait `position: sticky`
+   partout — d'où les contournements semés dans les composants.
+
+   `clip` rogne exactement pareil sans créer de scrollport : un seul
+   conteneur de défilement, celui du document, et `sticky` refonctionne.
+   Sur `body` uniquement : sur `html`, la valeur remonterait au viewport. */
+body { overflow-x: clip; }
 
 img { display: block; max-width: 100%; }
 button { font-family: inherit; cursor: pointer; }
@@ -1643,8 +1655,11 @@ textarea {
    passer sous les fenêtres.
 
    Sous 1180px, `.oc-page` passe en colonne : la bande d'icônes
-   se remet alors à plat au-dessus des fenêtres, sur toute la
-   largeur. Le point de bascule est celui de `.oc-page`, pas un
+   se remet alors à plat SOUS les fenêtres, sur toute la largeur.
+   En dessous et non au-dessus : les raccourcis sont des sorties
+   de page (favoris, dressing, catalogue, corbeille), ils n'ont
+   pas à occuper le premier écran d'un panier — on veut y voir le
+   panier. Le point de bascule est celui de `.oc-page`, pas un
    palier Tailwind, sinon les deux se croisent et la colonne se
    retrouve compressée sur une largeur d'icône.
    ============================================================ */
@@ -1661,6 +1676,12 @@ textarea {
   gap: 28px;
   align-self: stretch;
   flex-shrink: 0;
+  /* La bande est rendue APRÈS les deux fenêtres dans le JSX, l'ordre de
+     lecture du téléphone, où elle se pose sous elles. `order: -1` la
+     ramène en tête pour en faire la colonne de gauche du bureau ; c'est
+     donc le grand écran, minoritaire, qui porte l'écart entre ordre du
+     DOM et ordre affiché, pas le téléphone. */
+  order: -1;
 }
 @media (max-width: 1180px) {
   .oc-desktop-icons {
@@ -1671,6 +1692,11 @@ textarea {
     width: 100%;
     flex-basis: 100%;
     gap: 10px;
+    /* On rend l'ordre du DOM, où la bande vient après les deux fenêtres :
+       elle retombe donc en bas de la colonne. Sans cette remise à zéro, le
+       `order: -1` de la règle de base la garderait en tête, c'est-à-dire
+       au-dessus du panier. */
+    order: 0;
   }
 }
 
@@ -2528,9 +2554,11 @@ textarea {
 .login-mono { font-family: var(--mono); }
 
 /* Wizz : la fenêtre tremble, comme le buzzer MSN.
-   Animé via `translate`/`rotate` et non `transform` : la fenêtre porte
-   déjà un `transform: scale()` quand l'écran est trop court pour elle,
-   et une animation sur `transform` l'écraserait le temps du tremblement. */
+   Animé via `translate`/`rotate` plutôt que `transform` : les deux
+   propriétés se composent au lieu de s'écraser, donc le tremblement
+   cohabite avec n'importe quelle transformation posée par ailleurs sur
+   la fenêtre. (Elle en portait une, `scale()`, retirée depuis : elle la
+   faisait maigrir quand une bannière d'erreur l'allongeait.) */
 @keyframes login-wizz {
   0%, 100% { translate: 0 0;      rotate: 0deg;    }
   10%      { translate: -9px 5px; rotate: -1deg;   }
@@ -3288,8 +3316,20 @@ textarea {
 
 @media (max-width: 760px) {
   .acct-body { grid-template-columns: 1fr; }
-  .acct-desktop { padding: 0; }
-  .acct-window { border-radius: 0; border-left: none; border-right: none; box-shadow: none; min-height: 100dvh; }
+  /* Réserve verticale sous la navigation, qui est `fixed` et opaque.
+     `padding: 0` la supprimait avec les gouttières latérales : la barre
+     de titre de la fenêtre (DOSSIER_CRUSH.EXE, MON_COMPTE.EXE) démarrait
+     alors à y=1, entièrement recouverte, et la page semblait coupée en
+     haut. On garde le plein-cadre latéral — c'est lui qu'on voulait —
+     et on rend les 68px du haut, ceux de la version bureau. */
+  .acct-desktop { padding: 68px 0 0; }
+  .acct-window {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+    min-height: calc(100dvh - 68px);
+  }
 }
 
 /* ============================================================
@@ -5366,6 +5406,37 @@ html, body {
   padding: 5px 8px !important;
 }
 
+/* ── Deux Polaroids par ligne sur téléphone ──
+   `repeat(auto-fill, minmax(150px, 190px))` avec les rembourrages du
+   bureau ne laissait la place qu'à une seule colonne sous 400px : on
+   faisait défiler sa wishlist une pièce à la fois. Deux colonnes
+   explicites, et les rembourrages resserrés pour leur faire de la
+   place. Le bouton garde ses 13px — le plancher de lisibilité du site,
+   on ne descend pas en dessous — mais rend son interlettrage et son
+   rembourrage horizontal, qui ne servent qu'à l'aération. */
+@media (max-width: 560px) {
+  .burnbook-body { padding: 14px; }
+  .burnbook-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 12px;
+    padding: 18px 2px 32px;
+  }
+  /* `max-width: 190px` de la règle de base conservé : sur les colonnes
+     larges du haut de la fourchette (480-560px), les Polaroids restent au
+     gabarit et se centrent dans leur piste plutôt que de s'étirer. */
+  .burnbook-polaroid { padding: 6px 6px 38px; }
+  .burnbook-cart-btn {
+    left: 5px;
+    right: 5px;
+    bottom: 6px;
+    letter-spacing: 0.01em;
+    gap: 4px;
+    padding: 5px 2px !important;
+  }
+  /* La pastille 💔 mangeait un quart d'une carte deux fois plus étroite. */
+  .burnbook-remove { width: 27px; height: 27px; font-size: 1rem; }
+}
+
 /* ── Entrée /dressing-machine : une borne d'arcade dans le menu ──────
    C'est l'attraction du site, pas un rayon du catalogue : elle cesse
    d'être une carte blanche parmi douze pour devenir l'écran du cabinet
@@ -5702,6 +5773,14 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   position: relative;
 }
 
+/* Boîte de baie : invisible ici, structurante sur téléphone.
+   `display: contents` l'efface de la mise en page — bandeau, hublot,
+   plaque et bouton retombent directement dans la grille de .dm-screen et
+   partagent ses rangées, comme avant qu'elle n'existe. Sur téléphone, elle
+   redevient une vraie boîte : la moitié haute ou basse de l'écran, sur
+   laquelle les quatre éléments viennent se poser. */
+.dm-bay { display: contents; }
+
 /* Bandeau industriel de la baie */
 .dm-bay-head {
   grid-row: 1;
@@ -5776,6 +5855,11 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   object-fit: contain;
   display: block;
 }
+
+/* Flèches posées sur les bords de la photo : elles ne servent que sur
+   téléphone, où elles remplacent le gros [ SPIN ] sans coûter de hauteur.
+   Déclarées masquées ici, réveillées dans la requête média. */
+.dm-nudge { display: none; }
 
 /* Roulette : deux noms d'animation alternés pour rejouer sans remonter le
    DOM (donc sans recharger l'image). */
@@ -6341,7 +6425,16 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 
 /* Save : Win95 gris, LED verte quand le look est en wishlist */
 .dm-save { align-self: center; }
+/* Ces deux libellés vivent dans un <span> à part, pour pouvoir disparaître
+   du dock de téléphone. Sans cette remise à zéro, le `gap` de .dm-w95
+   viendrait s'ajouter à l'espace que le texte porte déjà et écarterait
+   l'icône du mot de 8px — la LED, elle, reprend le sien en marge.
+   L'espace en tête du libellé est insécable : un élément flex est
+   blocifié, et une espace ordinaire y serait absorbée en début de ligne,
+   collant le mot à l'icône. */
+.dm-modules-open, .dm-save { gap: 0; }
 .dm-save-led {
+  margin-right: 8px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -6661,36 +6754,321 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-cop-btn { padding: 10px 18px; }
 }
 
-/* ---- Tablette / mobile ---- */
+/* ================================================================
+   TABLETTE / TÉLÉPHONE : la borne devient une app plein écran
+   ----------------------------------------------------------------
+   Contrainte de départ : le HAUT et le BAS doivent se voir ensemble,
+   sans avoir à faire défiler. La page empilée en était loin — deux
+   hublots de 58vh, deux plaques, deux gros [ SPIN ] et la console
+   faisaient près de trois écrans de haut, et il fallait descendre pour
+   voir le bas d'un look, c'est-à-dire précisément ce que la machine
+   sert à juger.
+
+   Trois principes en découlent :
+
+   1. La borne occupe exactement la hauteur visible. Le document, lui,
+      défile encore : c'est ainsi qu'on atteint le pied de page, posé en
+      dessous. Rien de ce qui sert à composer un look ne s'y cache — ce
+      qui ne rentre pas dans l'écran est retiré, pas repoussé plus bas.
+   2. Tout ce qui n'est pas la photo se pose SUR la photo. Bandeau,
+      plaque et cœur deviennent des surimpressions ; la hauteur libérée
+      va aux deux pièces, qui se partagent le reste à parts égales.
+   3. Les bandeaux fuient la jonction : la baie du haut colle les siens
+      en haut, celle du bas les colle en bas. La ligne de partage reste
+      donc dégagée pour l'arête et la bulle STYLE_ME.
+   ================================================================ */
 @media (max-width: 900px) {
-  .dm-desktop { align-items: flex-start; padding-top: calc(var(--dm-nav-h) + 10px); }
-  .dm-main { height: auto; max-height: none; }
-  /* L'ordre du DOM (baie 1, arête, baie 2) donne l'empilement voulu. */
+  /* ---- La machine tient dans un écran, la page défile quand même ----
+     Le document n'est plus bloqué : la borne occupe exactement la
+     hauteur visible, et le défilement ne sert qu'à atteindre le pied de
+     page en dessous. Rien d'important n'y est caché — tout ce qui sert
+     à composer un look tient dans le premier écran.
+
+     `svh` et non `dvh` : c'est la hauteur visible barre d'URL DÉPLIÉE,
+     donc la plus petite. La borne tient dans tous les états de la barre,
+     et ne se redimensionne pas quand celle-ci se replie au défilement —
+     avec `dvh`, le simple fait de descendre vers le pied de page ferait
+     grandir les deux photos d'un coup. */
+  .dm-desktop {
+    height: 100svh;
+    min-height: 0;
+    align-items: stretch;
+    padding: var(--dm-nav-h) 0 0;
+    overflow: hidden;
+  }
+
+  /* Écartés de la barre d'outils et du dock sur téléphone : la place y
+     est comptée, et chacun a une autre porte d'entrée (la bulle
+     STYLE_ME pour MÉLANGER, le menu pour MES LOOKS). */
+  .dm-mobile-off,
+  .dm-modules { display: none; }
+  /* Plein cadre : ni tranche de cabinet, ni coins arrondis, ni ombre
+     portée — sur un écran de téléphone, ces 24px de décor coûtent plus
+     qu'ils ne racontent. Le fronton suffit à tenir l'identité. */
+  .dm-main {
+    height: 100%;
+    max-height: none;
+    max-width: none;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* ---- Barres de tête, au régime ---- */
+  .dm-titlebar { border-radius: 0; border-width: 0 0 2px; padding: 5px 10px; }
+  .dm-titlebar-text { font-size: 0.8125rem; }
+  .dm-titlebar::before { margin-right: 30px; }
+  /* Une seule ligne qui défile latéralement : en `wrap`, l'étiquette de
+     taille passait à la ligne et volait 24px aux photos. */
+  .dm-toolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 2px 8px;
+  }
+  .dm-toolbar::-webkit-scrollbar { display: none; }
+  .dm-toolbar-btn { padding: 4px 8px; font-size: 0.8125rem; letter-spacing: 0.02em; }
+  .dm-toolbar-sep { margin: 0 1px; }
+  .dm-toolbar-tag { font-size: 0.75rem; padding: 2px 8px; letter-spacing: 0.04em; }
+
+  /* ---- L'écran scindé : deux moitiés strictement égales ---- */
   .dm-screen { display: flex; flex-direction: column; }
-  .dm-viewport { height: min(58vh, 420px); flex: 0 0 auto; }
-  .dm-divider { flex: 0 0 4px; height: 4px; width: 100%; }
-  /* En pile, la cellule de la bulle porte elle-même l'arête horizontale :
-     la bulle garde son chevauchement sans recouvrir le SPIN du dessus. */
-  .dm-divider { display: none; }
-  .dm-style-cell { height: 132px; flex: 0 0 auto; }
-  .dm-style-cell::before {
-    content: "";
+  .dm-bay {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;          /* base 0 : les deux moitiés sont égales au pixel,
+                             quelle que soit la longueur des noms */
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  /* La baie du haut plaque ses bandeaux en haut, celle du bas en bas :
+     la jonction reste libre pour l'arête et la bulle. */
+  .dm-bay-up { justify-content: flex-start; }
+  .dm-bay-down { justify-content: flex-end; }
+
+  /* La photo passe en fond de baie, plein cadre. */
+  .dm-viewport {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    height: auto;
+    border: none;
+  }
+
+  /* Bandeau et plaque : surimpressions en dégradé, plus des rangées. */
+  .dm-bay-head,
+  .dm-bay-plate {
+    position: relative;
+    z-index: 2;
+    height: auto;
+    margin: 0;
+    border: none;
+    padding: 5px 10px;
+  }
+  /* Un seul fondu par extrémité, pas un par bandeau : le bandeau collé au
+     bord reste plein, celui qui regarde la photo porte la dégradation.
+     Deux fondus successifs faisaient rebondir l'opacité à mi-hauteur et
+     dessinaient une bande claire entre les deux lignes de texte. */
+  .dm-bay-up .dm-bay-head,
+  .dm-bay-down .dm-bay-plate { background: rgba(23, 8, 62, 0.88); }
+  .dm-bay-up .dm-bay-plate {
+    background: linear-gradient(180deg, rgba(23, 8, 62, 0.88) 0%, rgba(23, 8, 62, 0) 100%);
+  }
+  .dm-bay-down .dm-bay-head {
+    background: linear-gradient(0deg, rgba(23, 8, 62, 0.88) 0%, rgba(23, 8, 62, 0) 100%);
+  }
+  .dm-bay-label { font-size: 0.75rem; letter-spacing: 0.2em; }
+  .dm-bay-count { font-size: 1rem; }
+  /* Encre claire : le texte est passé du châssis gris à la photo. */
+  .dm-plate-name { color: #fff; font-size: 0.8125rem; }
+  .dm-plate-price {
+    color: var(--dm-lcd);
+    font-size: 1.2rem;
+    text-shadow: 0 0 8px rgba(90, 255, 160, 0.45);
+  }
+
+  /* Le cœur file au coin extérieur ; le bandeau qu'il surplombe lui
+     réserve sa place, sinon il recouvrirait le compteur ou le prix. */
+  .dm-bay-actions { position: absolute; z-index: 3; right: 8px; margin: 0; }
+  .dm-bay-up .dm-bay-actions { top: 5px; }
+  .dm-bay-down .dm-bay-actions { bottom: 5px; }
+  /* Le cœur (44px) est plus haut qu'un bandeau : il chevauche le compteur
+     ET le prix. Les deux lui réservent donc leur marge droite. */
+  .dm-bay-head, .dm-bay-plate { padding-right: 56px; }
+  .dm-spin { display: none; }
+  .dm-heart {
+    width: 44px;
+    height: 44px;
+    font-size: 1.15rem;
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.98),
+      inset 0 -7px 11px rgba(90, 86, 120, 0.34),
+      0 3px 0 var(--dm-plastic-edge),
+      0 5px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  /* ---- Les flèches, à la place du [ SPIN ] ---- */
+  .dm-nudge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    width: 42px;
+    height: 42px;
+    margin-top: -21px;
+    padding: 0 0 3px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    background: rgba(23, 8, 62, 0.52);
+    backdrop-filter: blur(3px);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 90ms, background 120ms;
+  }
+  .dm-nudge-prev { left: 8px; }
+  .dm-nudge-next { right: 8px; }
+  .dm-nudge:active { transform: scale(0.9); background: rgba(113, 71, 212, 0.8); }
+  .dm-nudge:disabled { opacity: 0.3; }
+  .dm-nudge:focus-visible { outline: 2px dotted #fff; outline-offset: 2px; }
+
+  /* ---- La jonction : arête pleine largeur + bulle centrée dessus ---- */
+  .dm-divider {
+    display: block;
     position: absolute;
     left: 0;
     right: 0;
     top: 50%;
+    z-index: 8;
     height: 4px;
+    width: auto;
     margin-top: -2px;
     background: linear-gradient(90deg, #2a1266 0%, #7147d4 50%, #2a1266 100%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(20, 6, 50, 0.6);
   }
-  .dm-strass-rail, .dm-strass-heart { display: none; }
-  .dm-style-me { width: 104px; }
+  .dm-style-cell {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    height: auto;
+    gap: 0;
+  }
+  .dm-style-cell::before { content: none; }
+  /* Strass au placard : autour d'une bulle posée sur la jonction, entre
+     une plaque et un bandeau, ils ne font plus que du bruit. */
+  .dm-strass { display: none; }
+  .dm-style-me { width: clamp(66px, 19vw, 82px); }
+  .dm-style-me-label { font-size: 0.625rem; letter-spacing: 0.04em; }
   .dm-style-me:active { transform: translateY(4px); }
-  .dm-console { grid-template-columns: 1fr; }
-  .dm-cop-btn { width: 100%; }
-  .dm-save { width: 100%; }
-  .dm-statusbar .dm-status-cell:not(.dm-status-grow) { display: none; }
+
+  /* ---- Le dock d'achat, collé en bas ----
+     `display: contents` sur .dm-cop dissout le sous-groupe : l'afficheur
+     et le bouton deviennent des cases du dock au même titre que les deux
+     outils, ce qui permet de les ordonner — prix à gauche, achat à
+     droite, outils au milieu — sans toucher au balisage.
+     Pas de `position: absolute` : la fenêtre étant une colonne flex de
+     hauteur fixe, la console est déjà la dernière bande, sans risque de
+     recouvrir la photo. */
+  .dm-console {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+  }
+  .dm-scanner { display: none; }
+  .dm-cop { display: contents; }
+  .dm-cop-readout {
+    order: 1;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    padding: 3px 9px;
+  }
+  .dm-cop-label { font-size: 0.6875rem; letter-spacing: 0.08em; }
+  .dm-cop-total { font-size: 1.15rem; }
+  /* Les deux outils tombent à l'icône : le libellé complet ne tient pas
+     sur la même ligne que le prix et le bouton d'achat. */
+  .dm-modules { order: 2; flex: 0 0 auto; }
+  .dm-save { order: 3; flex: 0 0 auto; align-self: center; }
+  .dm-btn-word { display: none; }
+  .dm-modules-open,
+  .dm-save {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    gap: 3px;
+    font-size: 0.8125rem;
+  }
+  .dm-save { flex-direction: column; }
+  .dm-save-led { width: 6px; height: 6px; margin-right: 0; }
+  /* `BUY_THE_LOOK.EXE` est un seul mot insécable : il ne se replie pas,
+     il déborde. D'où le plafond de taille par vw, et la largeur maximale
+     qui l'empêche de s'étirer sur 600px en écran couché — `margin-left`
+     le garde alors plaqué à droite, comme demandé. */
+  .dm-cop-btn {
+    order: 4;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    max-width: 380px;
+    margin-left: auto;
+    padding: 12px 6px;
+    font-size: clamp(0.5625rem, 2.7vw, 0.8125rem);
+    letter-spacing: 0.02em;
+  }
+
+  /* La barre d'état est le premier décor sacrifié : trois cellules de
+     journal contre 26px de photo, l'arbitrage est vite fait. */
+  .dm-statusbar { display: none; }
+
+  /* Filet de sécurité pour les deux fenêtres modales. Elles sont posées
+     en `fixed` et centrées : ce qui les dépasse est hors d'atteinte, et
+     le faire défiler ne sert à rien puisqu'elles ne suivent pas le
+     document. Si les grilles de tailles débordent, c'est donc la fenêtre
+     elle-même qui défile, sinon SYSTEM_LOGIN.EXE — la porte d'entrée de
+     la page — garderait son bouton LANCER sous l'écran. Le plafond ne
+     mord que lorsqu'il y a débordement. */
+  .dm-gate-body,
+  .dm-modpick-body {
+    max-height: calc(100dvh - var(--dm-nav-h) - 110px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+/* ---- Écrans étroits : le dock se resserre ----
+   Sous 380px, le prix et les deux outils laissaient moins de 90px au
+   bouton d'achat, dont le libellé débordait. Ils rendent ici la place. */
+@media (max-width: 380px) {
+  .dm-console { gap: 5px; padding-left: 6px; padding-right: 6px; }
+  .dm-cop-readout { padding: 3px 6px; }
+  .dm-cop-label { font-size: 0.625rem; letter-spacing: 0.02em; }
+  .dm-cop-total { font-size: 1rem; }
+  .dm-modules-open, .dm-save, .dm-heart { width: 38px; height: 38px; }
+  .dm-nudge { width: 38px; height: 38px; margin-top: -19px; font-size: 1.5rem; }
+}
+
+/* ---- Téléphone couché, ou petit écran : on rogne encore le décor ----
+   Sous 620px de haut, les deux moitiés tombent à ~150px : chaque pixel
+   repris aux barres retourne aux photos. */
+@media (max-width: 900px) and (max-height: 620px) {
+  .dm-titlebar { padding: 3px 8px; }
+  .dm-toolbar { padding: 0 6px; }
+  .dm-toolbar-btn { padding: 3px 7px; }
+  .dm-console { padding: 5px 8px calc(5px + env(safe-area-inset-bottom)); }
+  .dm-style-me { width: clamp(60px, 17vw, 72px); }
+  /* Le libellé suit la bulle : au diamètre le plus petit, il débordait du
+     cercle de part et d'autre. */
+  .dm-style-me-label { font-size: 0.5625rem; letter-spacing: 0.02em; }
+  .dm-nudge { width: 38px; height: 38px; margin-top: -19px; font-size: 1.5rem; }
+  .dm-heart, .dm-modules-open, .dm-save { width: 40px; height: 40px; }
+  .dm-cop-btn { padding: 10px 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
