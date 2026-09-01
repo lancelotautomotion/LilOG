@@ -1068,12 +1068,16 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
             <button className="dm-toolbar-btn" onClick={() => setGateOpen(true)}>
               ⚙ Morphologie
             </button>
-            <span className="dm-toolbar-sep" />
-            <button className="dm-toolbar-btn" onClick={() => shuffle(sizes)}>
+            {/* Écartés de la barre sur téléphone (`dm-mobile-off`), où la
+                place manque : MÉLANGER fait double emploi avec la bulle
+                STYLE_ME, juste en dessous, et MES LOOKS est déjà dans le
+                menu. Seule MORPHOLOGIE, sans autre porte d'entrée, reste. */}
+            <span className="dm-toolbar-sep dm-mobile-off" />
+            <button className="dm-toolbar-btn dm-mobile-off" onClick={() => shuffle(sizes)}>
               ⟳ Mélanger
             </button>
-            <span className="dm-toolbar-sep" />
-            <Link className="dm-toolbar-btn" href="/wishlist">
+            <span className="dm-toolbar-sep dm-mobile-off" />
+            <Link className="dm-toolbar-btn dm-mobile-off" href="/wishlist">
               ♡ Mes looks
             </Link>
             <span className="dm-toolbar-tag">
