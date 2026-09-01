@@ -5773,6 +5773,14 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   position: relative;
 }
 
+/* Boîte de baie : invisible ici, structurante sur téléphone.
+   `display: contents` l'efface de la mise en page — bandeau, hublot,
+   plaque et bouton retombent directement dans la grille de .dm-screen et
+   partagent ses rangées, comme avant qu'elle n'existe. Sur téléphone, elle
+   redevient une vraie boîte : la moitié haute ou basse de l'écran, sur
+   laquelle les quatre éléments viennent se poser. */
+.dm-bay { display: contents; }
+
 /* Bandeau industriel de la baie */
 .dm-bay-head {
   grid-row: 1;
@@ -5847,6 +5855,11 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   object-fit: contain;
   display: block;
 }
+
+/* Flèches posées sur les bords de la photo : elles ne servent que sur
+   téléphone, où elles remplacent le gros [ SPIN ] sans coûter de hauteur.
+   Déclarées masquées ici, réveillées dans la requête média. */
+.dm-nudge { display: none; }
 
 /* Roulette : deux noms d'animation alternés pour rejouer sans remonter le
    DOM (donc sans recharger l'image). */
@@ -6412,7 +6425,16 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 
 /* Save : Win95 gris, LED verte quand le look est en wishlist */
 .dm-save { align-self: center; }
+/* Ces deux libellés vivent dans un <span> à part, pour pouvoir disparaître
+   du dock de téléphone. Sans cette remise à zéro, le `gap` de .dm-w95
+   viendrait s'ajouter à l'espace que le texte porte déjà et écarterait
+   l'icône du mot de 8px — la LED, elle, reprend le sien en marge.
+   L'espace en tête du libellé est insécable : un élément flex est
+   blocifié, et une espace ordinaire y serait absorbée en début de ligne,
+   collant le mot à l'icône. */
+.dm-modules-open, .dm-save { gap: 0; }
 .dm-save-led {
+  margin-right: 8px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -6732,36 +6754,309 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-cop-btn { padding: 10px 18px; }
 }
 
-/* ---- Tablette / mobile ---- */
+/* ================================================================
+   TABLETTE / TÉLÉPHONE : la borne devient une app plein écran
+   ----------------------------------------------------------------
+   Contrainte de départ : le HAUT et le BAS doivent tenir ensemble sur
+   l'écran, sans un pixel de défilement. La page empilée ne le permettait
+   pas — deux hublots de 58vh, deux plaques, deux gros [ SPIN ], la
+   console et le pied de page faisaient près de trois écrans de haut, et
+   il fallait faire défiler pour voir le bas d'un look.
+
+   Trois principes en découlent :
+
+   1. La fenêtre occupe exactement 100dvh, pied de page compris (masqué)
+      et défilement du document coupé. C'est la seule façon de tenir la
+      promesse : ce qui ne rentre pas doit disparaître, pas déborder.
+   2. Tout ce qui n'est pas la photo se pose SUR la photo. Bandeau,
+      plaque et cœur deviennent des surimpressions ; la hauteur libérée
+      va aux deux pièces, qui se partagent le reste à parts égales.
+   3. Les bandeaux fuient la jonction : la baie du haut colle les siens
+      en haut, celle du bas les colle en bas. La ligne de partage reste
+      donc dégagée pour l'arête et la bulle STYLE_ME.
+   ================================================================ */
 @media (max-width: 900px) {
-  .dm-desktop { align-items: flex-start; padding-top: calc(var(--dm-nav-h) + 10px); }
-  .dm-main { height: auto; max-height: none; }
-  /* L'ordre du DOM (baie 1, arête, baie 2) donne l'empilement voulu. */
+  /* ---- Plus aucun défilement vertical ----
+     Le pied de page part avec : le laisser sous une fenêtre haute de
+     100dvh rouvrirait le défilement que toute la mise en page cherche à
+     supprimer. Ses liens légaux restent atteignables par le menu. */
+  body:has(main.dm-desktop) { overflow: hidden; overscroll-behavior-y: none; }
+  main.dm-desktop ~ footer { display: none; }
+
+  .dm-desktop {
+    height: 100dvh;
+    min-height: 0;
+    align-items: stretch;
+    padding: var(--dm-nav-h) 0 0;
+    overflow: hidden;
+  }
+  /* Plein cadre : ni tranche de cabinet, ni coins arrondis, ni ombre
+     portée — sur un écran de téléphone, ces 24px de décor coûtent plus
+     qu'ils ne racontent. Le fronton suffit à tenir l'identité. */
+  .dm-main {
+    height: 100%;
+    max-height: none;
+    max-width: none;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* ---- Barres de tête, au régime ---- */
+  .dm-titlebar { border-radius: 0; border-width: 0 0 2px; padding: 5px 10px; }
+  .dm-titlebar-text { font-size: 0.8125rem; }
+  .dm-titlebar::before { margin-right: 30px; }
+  /* Une seule ligne qui défile latéralement : en `wrap`, l'étiquette de
+     taille passait à la ligne et volait 24px aux photos. */
+  .dm-toolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 2px 8px;
+  }
+  .dm-toolbar::-webkit-scrollbar { display: none; }
+  .dm-toolbar-btn { padding: 4px 8px; font-size: 0.8125rem; letter-spacing: 0.02em; }
+  .dm-toolbar-sep { margin: 0 1px; }
+  .dm-toolbar-tag { font-size: 0.75rem; padding: 2px 8px; letter-spacing: 0.04em; }
+
+  /* ---- L'écran scindé : deux moitiés strictement égales ---- */
   .dm-screen { display: flex; flex-direction: column; }
-  .dm-viewport { height: min(58vh, 420px); flex: 0 0 auto; }
-  .dm-divider { flex: 0 0 4px; height: 4px; width: 100%; }
-  /* En pile, la cellule de la bulle porte elle-même l'arête horizontale :
-     la bulle garde son chevauchement sans recouvrir le SPIN du dessus. */
-  .dm-divider { display: none; }
-  .dm-style-cell { height: 132px; flex: 0 0 auto; }
-  .dm-style-cell::before {
-    content: "";
+  .dm-bay {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;          /* base 0 : les deux moitiés sont égales au pixel,
+                             quelle que soit la longueur des noms */
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  /* La baie du haut plaque ses bandeaux en haut, celle du bas en bas :
+     la jonction reste libre pour l'arête et la bulle. */
+  .dm-bay-up { justify-content: flex-start; }
+  .dm-bay-down { justify-content: flex-end; }
+
+  /* La photo passe en fond de baie, plein cadre. */
+  .dm-viewport {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    height: auto;
+    border: none;
+  }
+
+  /* Bandeau et plaque : surimpressions en dégradé, plus des rangées. */
+  .dm-bay-head,
+  .dm-bay-plate {
+    position: relative;
+    z-index: 2;
+    height: auto;
+    margin: 0;
+    border: none;
+    padding: 5px 10px;
+  }
+  /* Un seul fondu par extrémité, pas un par bandeau : le bandeau collé au
+     bord reste plein, celui qui regarde la photo porte la dégradation.
+     Deux fondus successifs faisaient rebondir l'opacité à mi-hauteur et
+     dessinaient une bande claire entre les deux lignes de texte. */
+  .dm-bay-up .dm-bay-head,
+  .dm-bay-down .dm-bay-plate { background: rgba(23, 8, 62, 0.88); }
+  .dm-bay-up .dm-bay-plate {
+    background: linear-gradient(180deg, rgba(23, 8, 62, 0.88) 0%, rgba(23, 8, 62, 0) 100%);
+  }
+  .dm-bay-down .dm-bay-head {
+    background: linear-gradient(0deg, rgba(23, 8, 62, 0.88) 0%, rgba(23, 8, 62, 0) 100%);
+  }
+  .dm-bay-label { font-size: 0.75rem; letter-spacing: 0.2em; }
+  .dm-bay-count { font-size: 1rem; }
+  /* Encre claire : le texte est passé du châssis gris à la photo. */
+  .dm-plate-name { color: #fff; font-size: 0.8125rem; }
+  .dm-plate-price {
+    color: var(--dm-lcd);
+    font-size: 1.2rem;
+    text-shadow: 0 0 8px rgba(90, 255, 160, 0.45);
+  }
+
+  /* Le cœur file au coin extérieur ; le bandeau qu'il surplombe lui
+     réserve sa place, sinon il recouvrirait le compteur ou le prix. */
+  .dm-bay-actions { position: absolute; z-index: 3; right: 8px; margin: 0; }
+  .dm-bay-up .dm-bay-actions { top: 5px; }
+  .dm-bay-down .dm-bay-actions { bottom: 5px; }
+  /* Le cœur (44px) est plus haut qu'un bandeau : il chevauche le compteur
+     ET le prix. Les deux lui réservent donc leur marge droite. */
+  .dm-bay-head, .dm-bay-plate { padding-right: 56px; }
+  .dm-spin { display: none; }
+  .dm-heart {
+    width: 44px;
+    height: 44px;
+    font-size: 1.15rem;
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.98),
+      inset 0 -7px 11px rgba(90, 86, 120, 0.34),
+      0 3px 0 var(--dm-plastic-edge),
+      0 5px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  /* ---- Les flèches, à la place du [ SPIN ] ---- */
+  .dm-nudge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    width: 42px;
+    height: 42px;
+    margin-top: -21px;
+    padding: 0 0 3px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    background: rgba(23, 8, 62, 0.52);
+    backdrop-filter: blur(3px);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 90ms, background 120ms;
+  }
+  .dm-nudge-prev { left: 8px; }
+  .dm-nudge-next { right: 8px; }
+  .dm-nudge:active { transform: scale(0.9); background: rgba(113, 71, 212, 0.8); }
+  .dm-nudge:disabled { opacity: 0.3; }
+  .dm-nudge:focus-visible { outline: 2px dotted #fff; outline-offset: 2px; }
+
+  /* ---- La jonction : arête pleine largeur + bulle centrée dessus ---- */
+  .dm-divider {
+    display: block;
     position: absolute;
     left: 0;
     right: 0;
     top: 50%;
+    z-index: 8;
     height: 4px;
+    width: auto;
     margin-top: -2px;
     background: linear-gradient(90deg, #2a1266 0%, #7147d4 50%, #2a1266 100%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(20, 6, 50, 0.6);
   }
-  .dm-strass-rail, .dm-strass-heart { display: none; }
-  .dm-style-me { width: 104px; }
+  .dm-style-cell {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    height: auto;
+    gap: 0;
+  }
+  .dm-style-cell::before { content: none; }
+  /* Strass au placard : autour d'une bulle posée sur la jonction, entre
+     une plaque et un bandeau, ils ne font plus que du bruit. */
+  .dm-strass { display: none; }
+  .dm-style-me { width: clamp(84px, 24vw, 104px); }
+  .dm-style-me-label { font-size: 0.8125rem; }
   .dm-style-me:active { transform: translateY(4px); }
-  .dm-console { grid-template-columns: 1fr; }
-  .dm-cop-btn { width: 100%; }
-  .dm-save { width: 100%; }
-  .dm-statusbar .dm-status-cell:not(.dm-status-grow) { display: none; }
+
+  /* ---- Le dock d'achat, collé en bas ----
+     `display: contents` sur .dm-cop dissout le sous-groupe : l'afficheur
+     et le bouton deviennent des cases du dock au même titre que les deux
+     outils, ce qui permet de les ordonner — prix à gauche, achat à
+     droite, outils au milieu — sans toucher au balisage.
+     Pas de `position: absolute` : la fenêtre étant une colonne flex de
+     hauteur fixe, la console est déjà la dernière bande, sans risque de
+     recouvrir la photo. */
+  .dm-console {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+  }
+  .dm-scanner { display: none; }
+  .dm-cop { display: contents; }
+  .dm-cop-readout {
+    order: 1;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    padding: 3px 9px;
+  }
+  .dm-cop-label { font-size: 0.6875rem; letter-spacing: 0.08em; }
+  .dm-cop-total { font-size: 1.15rem; }
+  /* Les deux outils tombent à l'icône : le libellé complet ne tient pas
+     sur la même ligne que le prix et le bouton d'achat. */
+  .dm-modules { order: 2; flex: 0 0 auto; }
+  .dm-save { order: 3; flex: 0 0 auto; align-self: center; }
+  .dm-btn-word { display: none; }
+  .dm-modules-open,
+  .dm-save {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    gap: 3px;
+    font-size: 0.8125rem;
+  }
+  .dm-save { flex-direction: column; }
+  .dm-save-led { width: 6px; height: 6px; margin-right: 0; }
+  /* `BUY_THE_LOOK.EXE` est un seul mot insécable : il ne se replie pas,
+     il déborde. D'où le plafond de taille par vw, et la largeur maximale
+     qui l'empêche de s'étirer sur 600px en écran couché — `margin-left`
+     le garde alors plaqué à droite, comme demandé. */
+  .dm-cop-btn {
+    order: 4;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    max-width: 380px;
+    margin-left: auto;
+    padding: 12px 6px;
+    font-size: clamp(0.5625rem, 2.7vw, 0.8125rem);
+    letter-spacing: 0.02em;
+  }
+
+  /* La barre d'état est le premier décor sacrifié : trois cellules de
+     journal contre 26px de photo, l'arbitrage est vite fait. */
+  .dm-statusbar { display: none; }
+
+  /* Filet de sécurité pour les deux fenêtres modales. Elles sont posées
+     en `fixed` et centrées : ce qui les dépasse a toujours été hors
+     d'atteinte, mais le document pouvait encore défiler derrière. Ce
+     n'est plus le cas — si les grilles de tailles débordent, c'est la
+     fenêtre qui défile, sinon SYSTEM_LOGIN.EXE, porte d'entrée de la
+     page, garderait son bouton LANCER sous l'écran. Le plafond ne mord
+     que lorsqu'il y a débordement. */
+  .dm-gate-body,
+  .dm-modpick-body {
+    max-height: calc(100dvh - var(--dm-nav-h) - 110px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+/* ---- Écrans étroits : le dock se resserre ----
+   Sous 380px, le prix et les deux outils laissaient moins de 90px au
+   bouton d'achat, dont le libellé débordait. Ils rendent ici la place. */
+@media (max-width: 380px) {
+  .dm-console { gap: 5px; padding-left: 6px; padding-right: 6px; }
+  .dm-cop-readout { padding: 3px 6px; }
+  .dm-cop-label { font-size: 0.625rem; letter-spacing: 0.02em; }
+  .dm-cop-total { font-size: 1rem; }
+  .dm-modules-open, .dm-save, .dm-heart { width: 38px; height: 38px; }
+  .dm-nudge { width: 38px; height: 38px; margin-top: -19px; font-size: 1.5rem; }
+}
+
+/* ---- Téléphone couché, ou petit écran : on rogne encore le décor ----
+   Sous 620px de haut, les deux moitiés tombent à ~150px : chaque pixel
+   repris aux barres retourne aux photos. */
+@media (max-width: 900px) and (max-height: 620px) {
+  .dm-titlebar { padding: 3px 8px; }
+  .dm-toolbar { padding: 0 6px; }
+  .dm-toolbar-btn { padding: 3px 7px; }
+  .dm-console { padding: 5px 8px calc(5px + env(safe-area-inset-bottom)); }
+  .dm-style-me { width: clamp(72px, 20vw, 88px); }
+  /* Le libellé suit la bulle : à 72px de diamètre, il débordait du cercle
+     de part et d'autre. */
+  .dm-style-me-label { font-size: 0.6875rem; letter-spacing: 0.05em; }
+  .dm-nudge { width: 38px; height: 38px; margin-top: -19px; font-size: 1.5rem; }
+  .dm-heart, .dm-modules-open, .dm-save { width: 40px; height: 40px; }
+  .dm-cop-btn { padding: 10px 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
