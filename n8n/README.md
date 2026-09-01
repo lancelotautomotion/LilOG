@@ -121,19 +121,22 @@ Pour changer de Space, il suffit de `DETOURAGE_SPACE_URL` + `DETOURAGE_FN` (le n
 Gradio, visible sur `https://<space>.hf.space/gradio_api/info`), à condition qu'il prenne une image
 en entrée et renvoie un fichier.
 
-### Ménage des originaux
+### Ménage des originaux : archivage, pas suppression
 
-`SUPPRIMER_ORIGINAUX` (`Config`) vaut `true` : une fois les `.webp` uploadés, `Préparer le ménage`
-relit la liste établie par `Classer les images` en début d'itération et sort un item par original, que
-`Supprimer les originaux` met à la **corbeille** Google Drive — jamais en suppression définitive, donc
-récupérable 30 jours. Les `.webp` créés pendant l'itération ne figurent pas dans cette liste : ils ne
-peuvent pas être visés.
+Google Drive n'autorise **que le propriétaire d'un fichier** à le mettre à la corbeille — un Éditeur ne
+le peut pas, même avec accès complet. Or les photos brutes sont souvent uploadées depuis un autre
+compte (téléphone) que celui connecté à n8n : une suppression échoue alors silencieusement (l'appel
+API renvoie une erreur de permission, absorbée par `onError: continueRegularOutput`).
 
-Le ménage est groupé en fin d'itération, sans appairage d'items : une suppression par photo, branchée
-après l'upload, dépendait de `.item` à travers le nœud d'upload Drive, où le lien entre items se perd.
-Rien n'est supprimé si le dossier a échoué (`⚠_`) ni si l'interrupteur est à `false` ; dans ces cas la
-branche *faux* rejoint directement le renommage, la boucle n'est jamais bloquée. La corbeille continue
-à occuper le quota Drive : la vider une fois les résultats validés.
+`ARCHIVER_ORIGINAUX` (`Config`) vaut `true` : les originaux sont donc **déplacés** (changement de
+parent Drive, une opération d'édition autorisée à tout compte Éditeur) dans un sous-dossier
+**`_originaux`**, créé une fois par produit. `Préparer le ménage` relit la liste établie par
+`Classer les images` en début d'itération, `Créer le sous-dossier _originaux` crée le sous-dossier une
+seule fois, `Préparer les déplacements` éclate la liste, `Déplacer l'original` change le parent de
+chaque fichier. Les `.webp` créés pendant l'itération ne figurent pas dans cette liste.
+
+Rien n'est déplacé si le dossier a échoué (`⚠_`) ni si l'interrupteur est à `false` ; dans ces cas la
+branche *faux* rejoint directement le renommage, la boucle n'est jamais bloquée.
 
 `Classer les images` ignore les `.webp` d'un dossier tant qu'il y reste des originaux, pour ne jamais
 retraiter une image déjà produite par le workflow.

@@ -10,7 +10,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `DETOURAGE_SPACE_URL` / `DETOURAGE_FN` / `DETOURAGE_PARAMS` : Space et modèle de détourage (note 3)\n- `MODE_COMPOSITION` : `auto` (profil par typologie) ou `cadre` (plein cadre partout, secours)\n- `TEMPLATE_FOND_FILE_ID` : ID du **dossier** contenant le template (ou du fichier directement)\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : secours seulement — la taille réelle est mesurée sur l'image\n- `SUPPRIMER_ORIGINAUX` : `true` = les originaux partent à la corbeille après traitement\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : objet `PROFILS` = taille, ancrage, fond et modèle par catégorie. Mannequin = 1 (plein cadre), sac = 0.82, chaussure = 0.78.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : compte Google Drive sur chaque nœud Drive. Rien à créer pour Hugging Face.",
+        "content": "## 1. À REMPLIR AVANT DE LANCER\n\n**Nœud `Config`** :\n- `PARENT_FOLDER_ID` : ID du dossier Drive \"Lil'OG\"\n- `DETOURAGE_SPACE_URL` / `DETOURAGE_FN` / `DETOURAGE_PARAMS` : Space et modèle de détourage (note 3)\n- `MODE_COMPOSITION` : `auto` (profil par typologie) ou `cadre` (plein cadre partout, secours)\n- `TEMPLATE_FOND_FILE_ID` : ID du **dossier** contenant le template (ou du fichier directement)\n- `TEMPLATE_LARGEUR` / `TEMPLATE_HAUTEUR` : secours seulement — la taille réelle est mesurée sur l'image\n- `ARCHIVER_ORIGINAUX` : `true` = les originaux sont déplacés dans un sous-dossier `_originaux` après traitement (Drive ne permet pas de les supprimer, voir note 4)\n- `PREFIXE_TRAITE` (`✓_`) et `PREFIXE_ALERTE` (`⚠_`)\n\n**Nœud `Détecter la typologie`** : objet `PROFILS` = taille, ancrage, fond et modèle par catégorie. Mannequin = 1 (plein cadre), sac = 0.82, chaussure = 0.78.\n\n**Nœud `Déclencher workflow Shopify`** : ID de ton workflow de publication.\n\n**Credentials** : compte Google Drive sur chaque nœud Drive. Rien à créer pour Hugging Face.",
         "height": 540,
         "width": 420,
         "color": 4
@@ -74,8 +74,8 @@
     },
     {
       "parameters": {
-        "content": "## 4. Optimisation, upload, ménage et validation\n\n`Edit Image` : **1500 px max** + **WebP qualité 80**. Upload dans le même dossier sous les noms **`1.webp`, `2.webp`…** — la principale est toujours la n°1.\n\n**Ménage** : `Préparer le ménage` relit la liste établie par `Classer les images` en début d'itération et sort **un item par original**, que `Supprimer les originaux` met à la **corbeille** Drive (récupérable 30 jours). Les `.webp` tout juste créés n'étant pas dans cette liste, ils ne risquent rien.\n\nRien n'est supprimé si `SUPPRIMER_ORIGINAUX` = `false` ou si le dossier est en mode dégradé — dans ce cas la branche *faux* va directement au renommage, la boucle n'est jamais bloquée.\n\n**Pour vérifier** : ouvre la sortie de `Préparer le ménage` (liste des fichiers visés) puis celle de `Supprimer les originaux` (résultat par fichier).\n\nPuis renommage : **`✓_`** = prêt à publier, **`⚠_`** = à relire à la main.",
-        "height": 520,
+        "content": "## 4. Optimisation, upload, archivage et validation\n\n`Edit Image` : **1500 px max** + **WebP qualité 80**. Upload dans le même dossier sous les noms **`1.webp`, `2.webp`…** — la principale est toujours la n°1.\n\n**Archivage des originaux** (et non suppression) : Google Drive n'autorise que le **propriétaire** d'un fichier à le mettre à la corbeille — or les photos brutes sont souvent uploadées depuis un autre compte (téléphone) que celui connecté à n8n. `Préparer le ménage` décide et liste, `Créer le sous-dossier _originaux` crée **un sous-dossier par produit** (une seule fois), `Préparer les déplacements` éclate la liste, `Déplacer l'original` change le parent de chaque fichier — une opération d'édition, autorisée à tout compte Éditeur, contrairement à la corbeille.\n\nRien n'est déplacé si `ARCHIVER_ORIGINAUX` = `false` ou si le dossier est en mode dégradé.\n\n**Pour vérifier** : ouvre la sortie de `Préparer le ménage` (liste visée) puis celle de `Déplacer l'original` (résultat par fichier).\n\nPuis renommage : **`✓_`** = prêt à publier, **`⚠_`** = à relire à la main.",
+        "height": 560,
         "width": 420,
         "color": 6
       },
@@ -196,7 +196,7 @@
             },
             {
               "id": "cfg-15",
-              "name": "SUPPRIMER_ORIGINAUX",
+              "name": "ARCHIVER_ORIGINAUX",
               "value": true,
               "type": "boolean"
             },
@@ -1000,7 +1000,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Liste les fichiers d'origine à mettre à la corbeille, une fois le dossier traité.\n// Aucun appairage d'items ici : on relit directement la liste établie en début d'itération,\n// donc on ne peut pas viser le mauvais dossier ni le mauvais fichier.\nconst cfg = $('Config').first().json;\n\n// Garde-fou 1 : interrupteur global (accepte true/false booléen ou texte)\nconst actif = String(cfg.SUPPRIMER_ORIGINAUX).toLowerCase() !== 'false';\n\n// Garde-fou 2 : on ne supprime rien si le détourage a échoué (dossier marqué ⚠_),\n// sinon impossible de relancer le dossier.\nlet alerte = true;\ntry {\n  alerte = $('Normaliser le détourage').first().json.avertissement === true;\n} catch (e) {\n  alerte = true; // nœud non exécuté : par prudence, on ne supprime rien\n}\n\nif (!actif || alerte) {\n  return [{ json: { rien: true, raison: !actif ? 'SUPPRIMER_ORIGINAUX = false' : 'dossier en mode dégradé' } }];\n}\n\n// Les originaux = ce que « Classer les images » avait listé au début de l'itération.\n// Les .webp produits ensuite n'y figurent pas : ils ne risquent rien.\nconst originaux = $('Classer les images').all()\n  .filter((i) => i.json && i.json.id && i.json.empty !== true)\n  .map((i) => ({ json: { fileId: i.json.id, nom: i.json.name } }));\n\nreturn originaux.length ? originaux : [{ json: { rien: true, raison: 'aucun original' } }];\n"
+        "jsCode": "// Décide s'il faut archiver les originaux de ce dossier, et prépare la liste.\n// Un seul item en sortie (pas de fan-out ici) : la création du sous-dossier archive\n// ne doit avoir lieu qu'une fois par dossier, pas une fois par photo.\nconst cfg = $('Config').first().json;\n\nconst actif = String(cfg.ARCHIVER_ORIGINAUX).toLowerCase() !== 'false';\n\nlet alerte = true;\ntry {\n  alerte = $('Normaliser le détourage').first().json.avertissement === true;\n} catch (e) {\n  alerte = true; // nœud non exécuté : par prudence, on n'archive rien\n}\n\n// Les originaux = ce que « Classer les images » avait listé au début de l'itération.\n// Les .webp produits ensuite n'y figurent pas.\nconst aDeplacer = $('Classer les images').all()\n  .filter((i) => i.json && i.json.id && i.json.empty !== true)\n  .map((i) => ({ fileId: i.json.id, nom: i.json.name }));\n\nreturn [{\n  json: {\n    actif,\n    alerte,\n    count: aDeplacer.length,\n    aDeplacer,\n  },\n}];\n"
       },
       "id": "node-menage-prep",
       "name": "Préparer le ménage",
@@ -1010,7 +1010,7 @@
         5336,
         700
       ],
-      "notes": "Construit la liste des originaux à mettre à la corbeille. Renvoie toujours au moins un item pour ne jamais bloquer la boucle. Sa sortie montre exactement ce qui va être supprimé."
+      "notes": "Décide s'il faut archiver (actif, pas en mode dégradé, au moins 1 original) et prépare la liste, en 1 seul item : la création du sous-dossier archive ne doit se faire qu'une fois par dossier."
     },
     {
       "parameters": {
@@ -1024,7 +1024,7 @@
           "conditions": [
             {
               "id": "if-menage-1",
-              "leftValue": "={{ !!$json.fileId }}",
+              "leftValue": "={{ $json.actif && !$json.alerte && $json.count > 0 }}",
               "rightValue": "",
               "operator": {
                 "type": "boolean",
@@ -1039,29 +1039,36 @@
         "options": {}
       },
       "id": "node-menage-if",
-      "name": "Des originaux à supprimer ?",
+      "name": "Faut-il archiver des originaux ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
         5536,
         700
       ],
-      "notes": "Faux = rien à supprimer (interrupteur off, dossier dégradé, ou aucun original) : on va directement au renommage."
+      "notes": "Faux = rien à archiver (interrupteur off, dossier dégradé, ou aucun original) : on va directement au renommage."
     },
     {
       "parameters": {
-        "operation": "deleteFile",
-        "fileId": {
+        "resource": "folder",
+        "operation": "create",
+        "name": "_originaux",
+        "driveId": {
           "__rl": true,
-          "value": "={{ $json.fileId }}",
+          "mode": "list",
+          "value": "My Drive",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Boucle dossiers').first().json.id }}",
           "mode": "id"
         },
-        "options": {
-          "deletePermanently": false
-        }
+        "options": {}
       },
-      "id": "node-menage-del",
-      "name": "Supprimer les originaux",
+      "id": "node-creer-archive",
+      "name": "Créer le sous-dossier _originaux",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
@@ -1070,8 +1077,56 @@
       ],
       "retryOnFail": true,
       "maxTries": 2,
+      "notes": "Un sous-dossier « _originaux » par produit, créé une seule fois : Drive n'autorise que le propriétaire d'un fichier à le mettre à la corbeille, donc on ARCHIVE au lieu de supprimer (fonctionne quel que soit le compte qui a uploadé les photos brutes)."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Éclate la liste des originaux en un item par fichier, en y attachant l'ID\n// du sous-dossier « _originaux » qui vient d'être créé pour ce produit.\nconst archiveId = $json.id;\nconst liste = $('Préparer le ménage').first().json.aDeplacer;\n\nreturn liste.map((f) => ({ json: { fileId: f.fileId, nom: f.nom, archiveFolderId: archiveId } }));\n"
+      },
+      "id": "node-fanout-archive",
+      "name": "Préparer les déplacements",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5960,
+        580
+      ],
+      "notes": "Un item par original à déplacer, avec l'ID du sous-dossier archive commun."
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.fileId }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.archiveFolderId }}",
+          "mode": "id"
+        }
+      },
+      "id": "node-deplacer-original",
+      "name": "Déplacer l'original",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        6184,
+        580
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
       "onError": "continueRegularOutput",
-      "notes": "Met chaque original à la CORBEILLE Drive (récupérable 30 jours), un item par fichier. Son panneau de sortie liste les fichiers effectivement supprimés."
+      "notes": "Déplace le fichier (changement de parent) : une opération d'édition, autorisée à n'importe quel compte ayant un accès Éditeur, contrairement à la mise à la corbeille."
     },
     {
       "parameters": {
@@ -1082,7 +1137,7 @@
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
       "position": [
-        5936,
+        6408,
         580
       ],
       "notes": "Le dossier ne doit être renommé qu'une fois, quel que soit le nombre de fichiers supprimés."
@@ -1567,18 +1622,29 @@
       "main": [
         [
           {
-            "node": "Des originaux à supprimer ?",
+            "node": "Faut-il archiver des originaux ?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Des originaux à supprimer ?": {
+    "Limiter à 1 sortie (ménage)": {
       "main": [
         [
           {
-            "node": "Supprimer les originaux",
+            "node": "Renommer le dossier (validation)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Faut-il archiver des originaux ?": {
+      "main": [
+        [
+          {
+            "node": "Créer le sous-dossier _originaux",
             "type": "main",
             "index": 0
           }
@@ -1592,22 +1658,33 @@
         ]
       ]
     },
-    "Supprimer les originaux": {
+    "Créer le sous-dossier _originaux": {
       "main": [
         [
           {
-            "node": "Limiter à 1 sortie (ménage)",
+            "node": "Préparer les déplacements",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Limiter à 1 sortie (ménage)": {
+    "Préparer les déplacements": {
       "main": [
         [
           {
-            "node": "Renommer le dossier (validation)",
+            "node": "Déplacer l'original",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Déplacer l'original": {
+      "main": [
+        [
+          {
+            "node": "Limiter à 1 sortie (ménage)",
             "type": "main",
             "index": 0
           }
