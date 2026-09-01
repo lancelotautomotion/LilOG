@@ -330,7 +330,8 @@ function Bay({
   saved,
   onToggleSave,
   onNext,
-  onPrev,
+  locked,
+  onToggleLock,
   onChangeSize,
 }: {
   label: string;
@@ -345,7 +346,9 @@ function Bay({
   saved: boolean;
   onToggleSave: () => void;
   onNext: () => void;
-  onPrev: () => void;
+  /** Cadenas fermé : STYLE_ME laisse cette pièce en place. */
+  locked: boolean;
+  onToggleLock: () => void;
   onChangeSize: () => void;
 }) {
   const item = items[index];
@@ -359,12 +362,14 @@ function Bay({
   const [prevSignal, setPrevSignal] = useState(spinSignal);
   if (prevSignal !== spinSignal) {
     setPrevSignal(spinSignal);
-    reel.play();
+    // Verrouillée, la baie garde sa pièce : la faire tourner pour rien
+    // laisserait croire à un tirage.
+    if (!locked) reel.play();
   }
 
-  const pull = (dir: 1 | -1 = 1) => {
+  const pull = () => {
     reel.play();
-    timers.current.push(setTimeout(dir === 1 ? onNext : onPrev, SPIN_SWAP));
+    timers.current.push(setTimeout(onNext, SPIN_SWAP));
   };
 
   // Rendered as grid cells rather than a nested column, so both bays share
@@ -409,33 +414,6 @@ function Bay({
             </button>
           </div>
         )}
-
-        {/* Sur téléphone, ces deux flèches remplacent le gros [ SPIN ] :
-            posées sur les bords de la photo, elles ne coûtent aucune
-            hauteur, celle-ci étant intégralement rendue aux deux pièces.
-            Masquées sur grand écran, où le SPIN reprend la main. */}
-        {item && (
-          <>
-            <button
-              type="button"
-              className="dm-nudge dm-nudge-prev"
-              onClick={() => pull(-1)}
-              disabled={items.length < 2}
-              aria-label={`Pièce précédente dans ${label}`}
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              className="dm-nudge dm-nudge-next"
-              onClick={() => pull(1)}
-              disabled={items.length < 2}
-              aria-label={`Pièce suivante dans ${label}`}
-            >
-              ›
-            </button>
-          </>
-        )}
       </div>
 
       <div className="dm-bay-plate" style={cell}>
@@ -447,7 +425,7 @@ function Bay({
         <button
           type="button"
           className="dm-spin"
-          onClick={() => pull(1)}
+          onClick={pull}
           disabled={items.length < 2}
           aria-label={`Faire tourner ${label}`}
         >
@@ -471,6 +449,29 @@ function Bay({
           title={saved ? "Retirer de la wishlist" : "Enregistrer cette pièce seule"}
         >
           {saved ? "♥" : "♡"}
+        </button>
+
+        {/* Cadenas : fermé, STYLE_ME laisse la pièce en place et ne fait
+            plus tourner cette baie. C'est ce qui remplace les flèches sur
+            téléphone — verrouiller un rayon et relancer STYLE_ME revient à
+            ne faire défiler que l'autre. */}
+        <button
+          type="button"
+          className={"dm-lock" + (locked ? " on" : "")}
+          onClick={onToggleLock}
+          aria-pressed={locked}
+          title={
+            locked
+              ? "Pièce verrouillée : STYLE_ME ne la changera pas"
+              : "Verrouiller cette pièce pour la garder au prochain STYLE_ME"
+          }
+          aria-label={
+            locked
+              ? `Déverrouiller ${label} : STYLE_ME pourra de nouveau changer la pièce`
+              : `Verrouiller ${label} : STYLE_ME gardera cette pièce`
+          }
+        >
+          {locked ? "🔒" : "🔓"}
         </button>
       </div>
     </div>
@@ -805,6 +806,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
   const [gateOpen, setGateOpen] = useState(true);
   const [topIdx, setTopIdx] = useState(0);
   const [bottomIdx, setBottomIdx] = useState(0);
+  /* Rayons dont le cadenas est fermé : STYLE_ME les saute. */
+  const [lockedSlots, setLockedSlots] = useState<ReadonlySet<ClosetSlot>>(() => new Set());
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [openSlots, setOpenSlots] = useState<ClosetSlot[]>([]);
   const [moduleIdx, setModuleIdx] = useState<Record<string, number>>({});
@@ -928,29 +931,58 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
 
   /* ---- actions ---- */
 
-  const shuffle = useCallback((chosen: ReadonlySet<string>) => {
-    const tops = applySizes(bySlot.top, chosen, true);
-    const bottoms = applySizes(bySlot.bottom, chosen, true);
-    setTopIdx(tops.length ? Math.floor(Math.random() * tops.length) : 0);
-    setBottomIdx(bottoms.length ? Math.floor(Math.random() * bottoms.length) : 0);
-  }, [bySlot]);
+  /** `keep` : rayons à ne pas retirer au sort (cadenas fermé). */
+  const shuffle = useCallback(
+    (chosen: ReadonlySet<string>, keep?: ReadonlySet<ClosetSlot>) => {
+      const tops = applySizes(bySlot.top, chosen, true);
+      const bottoms = applySizes(bySlot.bottom, chosen, true);
+      if (!keep?.has("top")) {
+        setTopIdx(tops.length ? Math.floor(Math.random() * tops.length) : 0);
+      }
+      if (!keep?.has("bottom")) {
+        setBottomIdx(bottoms.length ? Math.floor(Math.random() * bottoms.length) : 0);
+      }
+    },
+    [bySlot],
+  );
 
   /** Full random look: reels roll, pieces swap under the blur. */
   const shuffleAll = useCallback(() => {
     setSpinSignal((n) => n + 1);
     later(() => {
-      shuffle(sizes);
+      shuffle(sizes, lockedSlots);
       setModuleIdx((m) => {
         const next = { ...m };
         for (const slot of openSlots) {
+          if (lockedSlots.has(slot)) continue;
           const len = pools[slot as keyof typeof pools].length;
           next[slot] = len ? Math.floor(Math.random() * len) : 0;
         }
         return next;
       });
-      setStatus("STYLE_ME.EXE : NOUVEAU LOOK TIRÉ.");
+      setStatus(
+        lockedSlots.size > 0
+          ? `STYLE_ME.EXE : NOUVEAU LOOK TIRÉ (${lockedSlots.size} PIÈCE${lockedSlots.size > 1 ? "S" : ""} VERROUILLÉE${lockedSlots.size > 1 ? "S" : ""}).`
+          : "STYLE_ME.EXE : NOUVEAU LOOK TIRÉ.",
+      );
     }, SPIN_SWAP);
-  }, [later, shuffle, sizes, openSlots, pools]);
+  }, [later, shuffle, sizes, openSlots, pools, lockedSlots]);
+
+  /* Tout est verrouillé : STYLE_ME n'aurait plus rien à tirer. Le bouton
+     s'éteint plutôt que de rester muet — sur téléphone, la barre d'état
+     qui l'expliquerait n'est pas affichée. */
+  const allLocked =
+    lockedSlots.has("top") &&
+    lockedSlots.has("bottom") &&
+    openSlots.every((slot) => lockedSlots.has(slot));
+
+  const toggleLock = useCallback((slot: ClosetSlot) => {
+    setLockedSlots((s) => {
+      const next = new Set(s);
+      if (!next.delete(slot)) next.add(slot);
+      return next;
+    });
+  }, []);
 
   const launch = (chosen: Set<string>, chosenShoes: Set<string>) => {
     setSizes(chosen);
@@ -1100,7 +1132,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               saved={top ? wishlist.has(top.handle) : false}
               onToggleSave={() => top && toggleSaveItem(top)}
               onNext={() => step("top", 1)}
-              onPrev={() => step("top", -1)}
+              locked={lockedSlots.has("top")}
+              onToggleLock={() => toggleLock("top")}
               onChangeSize={() => setGateOpen(true)}
             />
 
@@ -1129,7 +1162,12 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
                 type="button"
                 className="dm-style-me"
                 onClick={shuffleAll}
-                aria-label="Composer un look complet au hasard"
+                disabled={allLocked}
+                aria-label={
+                  allLocked
+                    ? "Toutes les pièces sont verrouillées : ouvrez un cadenas pour relancer"
+                    : "Composer un look complet au hasard"
+                }
               >
                 <span className="dm-style-me-label">STYLE_ME</span>
               </button>
@@ -1151,7 +1189,8 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               saved={bottom ? wishlist.has(bottom.handle) : false}
               onToggleSave={() => bottom && toggleSaveItem(bottom)}
               onNext={() => step("bottom", 1)}
-              onPrev={() => step("bottom", -1)}
+              locked={lockedSlots.has("bottom")}
+              onToggleLock={() => toggleLock("bottom")}
               onChangeSize={() => setGateOpen(true)}
             />
           </div>
