@@ -5856,10 +5856,11 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   display: block;
 }
 
-/* Flèches posées sur les bords de la photo : elles ne servent que sur
-   téléphone, où elles remplacent le gros [ SPIN ] sans coûter de hauteur.
-   Déclarées masquées ici, réveillées dans la requête média. */
-.dm-nudge { display: none; }
+/* Le cadenas ne sert que sur téléphone, où il remplace les flèches : il
+   fige une pièce pour que STYLE_ME ne la retire plus au sort. Sur grand
+   écran, chaque baie a son [ SPIN ], donc rien à figer.
+   Déclaré masqué ici, réveillé dans la requête média. */
+.dm-lock { display: none; }
 
 /* Roulette : deux noms d'animation alternés pour rejouer sans remonter le
    DOM (donc sans recharger l'image). */
@@ -6218,6 +6219,13 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     0 7px 14px rgba(0, 0, 0, 0.4);
 }
 .dm-style-me:focus-visible { outline: 3px dotted #fff; outline-offset: 4px; }
+/* Éteinte : tous les cadenas sont fermés, il n'y a plus rien à tirer. */
+.dm-style-me:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.7) brightness(0.82);
+  opacity: 0.72;
+}
+.dm-style-me:disabled:active { transform: none; }
 
 /* ================================================================
    LA CONSOLE : barre de contrôle basse
@@ -6804,7 +6812,11 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-modules { display: none; }
   /* Plein cadre : ni tranche de cabinet, ni coins arrondis, ni ombre
      portée — sur un écran de téléphone, ces 24px de décor coûtent plus
-     qu'ils ne racontent. Le fronton suffit à tenir l'identité. */
+     qu'ils ne racontent. Le fronton suffit à tenir l'identité.
+
+     Le châssis passe au léopard de la maison, le même `/leo.jpeg` que
+     /histoire, /contact, /faq et la fiche produit, sous le même voile
+     sombre : c'est lui qu'on voit tout autour des cartes et du dock. */
   .dm-main {
     height: 100%;
     max-height: none;
@@ -6813,6 +6825,16 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     border: none;
     border-radius: 0;
     box-shadow: none;
+    background-image:
+      linear-gradient(rgba(18, 6, 44, 0.34), rgba(18, 6, 44, 0.34)),
+      url("/leo.jpeg");
+    /* Motif répété à taille lisible plutôt qu'une photo étirée en plein
+       cadre : ce qu'on en voit, ce sont les 12px autour des cartes et les
+       32px entre elles. En `cover`, l'image y était si agrandie qu'elle
+       ne se lisait plus que comme une tache. */
+    background-size: auto, 300px auto;
+    background-position: center, center;
+    background-repeat: no-repeat, repeat;
   }
 
   /* ---- Barres de tête, au régime ---- */
@@ -6840,14 +6862,24 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-screen {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-    padding: 10px;
+    gap: 32px;
+    padding: 12px;
     border-top: none;
+    background: none;      /* le léopard du châssis passe au travers */
   }
   .dm-bay {
+    /* Part de la carte réservée au panneau uni. Le hublot commence là,
+       et le texte s'arrête un peu avant : c'est cette variable unique qui
+       garantit que le nom du produit n'empiète jamais sur la photo. */
+    --dm-panel: 47%;
+
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    /* Réparti sur toute la hauteur plutôt qu'entassé en haut : le panneau
+       est plus haut que ses trois blocs, les tasser laissait les deux
+       tiers inférieurs en aplat vide. */
+    justify-content: space-between;
     gap: 5px;
     flex: 1 1 0;          /* base 0 : les deux cartes sont égales au pixel,
                              quelle que soit la longueur des noms */
@@ -6856,43 +6888,37 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     overflow: hidden;
     padding: 11px 12px;
     border-radius: 18px;
-    border: 1px solid rgba(150, 120, 220, 0.38);
-    background: var(--dm-well);
+    border: 1px solid rgba(220, 150, 245, 0.45);
+    background: #aa43c4;   /* le violet du panneau, demandé */
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.16),
-      0 8px 20px rgba(24, 12, 58, 0.4);
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      0 8px 20px rgba(24, 12, 58, 0.45);
   }
 
-  /* La photo passe en fond de carte, plein cadre, et se décale vers la
-     droite : la colonne de texte occupe la gauche, la pièce doit rester
-     entièrement visible à côté, pas dessous. */
+  /* La photo n'est plus le fond de la carte : elle occupe la partie
+     droite, à côté du panneau uni. Le texte ne se pose donc plus dessus,
+     et n'a plus besoin d'être assombri pour rester lisible. */
   .dm-viewport {
     position: absolute;
-    inset: 0;
+    inset: 0 0 0 var(--dm-panel);
     z-index: 0;
     height: auto;
     border: none;
   }
-  .dm-reel-img { object-position: 84% 50%; }
-  /* Voile latéral à la place du vignettage : il assombrit la moitié
-     gauche, où se pose le texte, et laisse la droite intacte. Les lignes
-     de balayage de la borne sont conservées par-dessus. */
+  /* Voile réduit à la seule texture de balayage de la borne : le
+     dégradé violet qui couvrait la pièce lui faussait la couleur, ce
+     qui, sur une friperie, est un défaut et pas un effet. */
   .dm-reel-shade {
-    background:
-      linear-gradient(90deg,
-        rgba(23, 8, 62, 0.86) 0%,
-        rgba(23, 8, 62, 0.74) 32%,
-        rgba(23, 8, 62, 0.26) 60%,
-        rgba(23, 8, 62, 0) 82%),
-      repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.14) 0 1px, transparent 1px 3px);
+    background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px 3px);
   }
 
-  /* ---- La colonne d'infos, posée sur la photo ----
-     Bandeau, plaque et cœur quittent leur bande pleine largeur pour
-     s'empiler en haut à gauche : rayon, compteur, nom, prix, cœur. Plus
-     aucun fond propre — le voile latéral s'en charge.
-     La moitié droite leur est interdite (`max-width: 50%`), c'est ce qui
-     garde la pièce dégagée et laisse la place aux flèches. */
+  /* ---- La colonne d'infos, dans le panneau uni ----
+     Bandeau, plaque et boutons quittent leur bande pleine largeur pour
+     s'empiler en haut à gauche : rayon, compteur, nom, prix, puis le
+     couple cœur / cadenas. Plus aucun fond propre : le panneau de la
+     carte le leur donne.
+     Ils s'arrêtent 14px avant le hublot — c'est cette gouttière qui
+     empêche un nom long de mordre sur la photo. */
   .dm-bay-head,
   .dm-bay-plate,
   .dm-bay-actions {
@@ -6900,7 +6926,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     z-index: 2;
     height: auto;
     width: auto;
-    max-width: 50%;
+    max-width: calc(var(--dm-panel) - 14px);
     margin: 0;
     padding: 0;
     border: none;
@@ -6910,35 +6936,52 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   /* Le rayon devient une pastille, comme les jetons du reste du site. */
   .dm-bay-label {
     padding: 3px 9px;
-    border: 1px solid rgba(178, 148, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.55);
     border-radius: 8px;
-    background: rgba(113, 71, 212, 0.34);
+    background: rgba(58, 12, 74, 0.42);
     font-size: 0.6875rem;
     letter-spacing: 0.16em;
   }
-  .dm-bay-count { font-size: 0.9375rem; }
+  /* Le vert LCD sur le violet #aa43c4 est trop peu contrasté : le
+     compteur repasse en blanc, le prix garde le vert mais dans un puits
+     sombre (voir plus bas). */
+  .dm-bay-count {
+    font-size: 0.9375rem;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(40, 8, 54, 0.6);
+  }
 
   .dm-bay-plate { flex-direction: column; align-items: flex-start; gap: 3px; }
   .dm-plate-name {
     flex: 0 0 auto;          /* en colonne, `flex: 1` l'étirerait en hauteur */
+    width: 100%;
     color: #fff;
-    font-size: 0.9375rem;
+    font-size: clamp(0.75rem, 3.3vw, 0.9375rem);
     line-height: 1.25;
     font-weight: 600;
-    /* Le nom se déplie sur deux lignes au lieu d'être coupé : c'est la
-       ligne la plus lue de la carte. Au-delà, l'ellipse reprend. */
+    text-shadow: 0 1px 2px rgba(40, 8, 54, 0.55);
+    /* Trois lignes au lieu d'une coupée net : c'est la ligne la plus lue
+       de la carte, et le panneau est étroit. Les mots trop longs pour la
+       colonne se brisent plutôt que de dépasser. */
     white-space: normal;
+    overflow-wrap: anywhere;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+  /* Le prix garde le vert de la borne, mais dans un puits sombre : posé
+     à même le violet, il devenait illisible. */
   .dm-plate-price {
-    font-size: 1.5rem;
+    align-self: flex-start;
+    padding: 2px 9px;
+    border-radius: 8px;
+    background: rgba(30, 8, 58, 0.55);
+    font-size: clamp(1.1rem, 4.6vw, 1.4rem);
     color: var(--dm-lcd);
-    text-shadow: 0 0 9px rgba(90, 255, 160, 0.45);
+    text-shadow: 0 0 9px rgba(90, 255, 160, 0.4);
   }
-  .dm-bay-actions { margin-top: 3px; }
+  .dm-bay-actions { margin-top: 4px; gap: 8px; align-items: center; }
   .dm-spin { display: none; }
   .dm-heart {
     width: 44px;
@@ -6951,38 +6994,42 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
       0 5px 12px rgba(0, 0, 0, 0.4);
   }
 
-  /* ---- Les flèches, à la place du [ SPIN ] ----
-     Elles encadrent la photo, pas la carte : la précédente se pose juste
-     à droite de la colonne de texte (54% > les 50% qui lui sont
-     concédés, donc l'écart tient à toutes les largeurs), la suivante au
-     bord. */
-  .dm-nudge {
+  /* ---- Le cadenas, à côté du cœur ----
+     Même jeton de plastique que le cœur, même taille : ils forment une
+     paire. Fermé, il s'enfonce et vire au violet, comme un cœur coché. */
+  .dm-lock {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    top: 50%;
-    z-index: 3;
-    width: 42px;
-    height: 42px;
-    margin-top: -21px;
-    padding: 0 0 3px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid rgba(24, 22, 30, 0.34);
     border-radius: 999px;
-    background: rgba(23, 8, 62, 0.52);
-    backdrop-filter: blur(3px);
-    color: #fff;
-    font-family: var(--mono);
-    font-size: 1.75rem;
+    background: var(--dm-plastic);
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.98),
+      inset 0 -7px 11px rgba(90, 86, 120, 0.34),
+      0 3px 0 var(--dm-plastic-edge),
+      0 5px 12px rgba(0, 0, 0, 0.4);
+    font-size: 1.05rem;
     line-height: 1;
     cursor: pointer;
-    transition: transform 90ms, background 120ms;
+    user-select: none;
+    transition: filter 120ms, box-shadow 90ms, transform 90ms, background 120ms;
   }
-  .dm-nudge-prev { left: 54%; }
-  .dm-nudge-next { right: 12px; }
-  .dm-nudge:active { transform: scale(0.9); background: rgba(113, 71, 212, 0.8); }
-  .dm-nudge:disabled { opacity: 0.3; }
-  .dm-nudge:focus-visible { outline: 2px dotted #fff; outline-offset: 2px; }
+  .dm-lock:active { transform: translateY(3px); }
+  .dm-lock:focus-visible { outline: 2px dotted #fff; outline-offset: 3px; }
+  /* Enfoncé sans décaler, comme le cœur coché : il doit rester aligné. */
+  .dm-lock.on {
+    background: linear-gradient(180deg, #ece6f8 0%, #ded5f1 44%, #c8bee1 100%);
+    box-shadow:
+      inset 0 4px 9px rgba(70, 45, 125, 0.42),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.5),
+      0 0 0 2px rgba(255, 255, 255, 0.55),
+      0 2px 0 #9c94b0;
+  }
 
   /* ---- La jonction : pointillé dans le vide, bulle centrée dessus ---- */
   .dm-divider {
@@ -7112,8 +7159,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-cop-readout { padding: 3px 6px; }
   .dm-cop-label { font-size: 0.625rem; letter-spacing: 0.02em; }
   .dm-cop-total { font-size: 1rem; }
-  .dm-modules-open, .dm-save, .dm-heart { width: 38px; height: 38px; }
-  .dm-nudge { width: 38px; height: 38px; margin-top: -19px; font-size: 1.5rem; }
+  .dm-modules-open, .dm-save, .dm-heart, .dm-lock { width: 38px; height: 38px; }
 }
 
 /* ---- Téléphone couché, ou petit écran : on rogne encore le décor ----
@@ -7134,8 +7180,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   /* Le libellé suit la bulle : au diamètre le plus petit, il débordait du
      cercle de part et d'autre. */
   .dm-style-me-label { font-size: 0.5625rem; letter-spacing: 0.02em; }
-  .dm-nudge { width: 38px; height: 38px; margin-top: -19px; font-size: 1.5rem; }
-  .dm-heart, .dm-modules-open, .dm-save { width: 40px; height: 40px; }
+  .dm-heart, .dm-lock, .dm-modules-open, .dm-save { width: 40px; height: 40px; }
   .dm-cop-btn { padding: 10px 8px; }
 }
 
