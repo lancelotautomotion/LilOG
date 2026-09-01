@@ -26,7 +26,7 @@
     },
     {
       "parameters": {
-        "content": "## 2. Tri des dossiers + typologie\n\nOn liste **uniquement les sous-dossiers** du dossier parent, puis on **garde ceux qui ne commencent pas** par `✓_` (traité), `$_` (publié sur Shopify), `⚠_` (à relire) ni `*` — et le **dossier du template est exclu** (par son ID et par le mot « template » dans son nom).\n\nLa boucle traite **1 dossier à la fois**. `Détecter la typologie` déduit du nom du dossier si le produit est **porté sur mannequin** (vêtement, bijou, accessoire → plein cadre) ou **posé à plat** (sac, chaussure → réduit et centré sur le fond).\n\nTag explicite possible : `Sac Baguette Rose [sac]`, `Bague coeur [pose]`.",
+        "content": "## 2. Tri des dossiers + typologie\n\n`Filtrer et compter les dossiers` liste les sous-dossiers du dossier parent et ne garde que ceux **sans** préfixe `✓_` (traité), `$_` (publié sur Shopify), `⚠_` (à relire) ni `*` — le dossier du template est aussi exclu (par son ID et par le mot « template » dans son nom). Il produit toujours **1 seul item** (`dossiers[]` + `count`), même s'il n'y a rien à traiter.\n\n`Y a-t-il des dossiers à traiter ?` saute toute la boucle et va **directement** déclencher le workflow Shopify si `count = 0` (tout est déjà traité ou publié) — utile pour rattraper des dossiers `✓_` qu'une exécution précédente du workflow Shopify n'aurait pas publiés.\n\nSinon, `Éclater la liste des dossiers` reconstitue un item par dossier et la boucle traite **1 dossier à la fois**. `Détecter la typologie` déduit du nom du dossier si le produit est **porté sur mannequin** (plein cadre) ou **posé à plat** (réduit et centré).\n\nTag explicite possible : `Sac Baguette Rose [sac]`, `Bague coeur [pose]`.",
         "height": 380,
         "width": 420,
         "color": 5
@@ -356,6 +356,20 @@
     },
     {
       "parameters": {
+        "jsCode": "// Filtre les sous-dossiers à traiter et compte-les, en UN SEUL item.\n// Pourquoi un Code node et non un Filter : si le Filter ne garde aucun dossier (tout est déjà\n// ✓_ / $_ / traité), il produit 0 item — et un nœud à 0 item ne s'exécute pas dans n8n. La boucle\n// et tout ce qui suit (y compris l'appel au workflow Shopify) resteraient alors bloqués.\n// Ici, qu'il reste 0 ou 50 dossiers à traiter, ce nœud produit toujours exactement 1 item.\nconst cfg = $('Config').first().json;\nconst prefixeTraite = String(cfg.PREFIXE_TRAITE || '✓_');\nconst templateFileId = cfg.TEMPLATE_FOND_FILE_ID;\n\nconst dossiers = $input.all()\n  .filter((i) => {\n    const nom = String(i.json.name || '');\n    if (nom.startsWith(prefixeTraite)) return false;\n    if (nom.startsWith('✓') || nom.startsWith('⚠') || nom.startsWith('*') || nom.startsWith('$')) return false;\n    if (i.json.id === templateFileId) return false;\n    if (/template/i.test(nom)) return false;\n    return true;\n  })\n  .map((i) => i.json);\n\nreturn [{ json: { dossiers, count: dossiers.length } }];\n"
+      },
+      "id": "node-filter",
+      "name": "Filtrer et compter les dossiers",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        580
+      ],
+      "notes": "Toujours 1 item en sortie (dossiers[] + count), même quand il n'y a rien à traiter : un Filter à 0 résultat bloquerait la suite du workflow."
+    },
+    {
+      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -365,8 +379,8 @@
           },
           "conditions": [
             {
-              "id": "flt-1",
-              "leftValue": "={{ !String($json.name).startsWith($('Config').first().json.PREFIXE_TRAITE) && !String($json.name).startsWith('✓') && !String($json.name).startsWith('⚠') && !String($json.name).startsWith('*') && !String($json.name).startsWith('$') && $json.id !== $('Config').first().json.TEMPLATE_FOND_FILE_ID && !/template/i.test(String($json.name)) }}",
+              "id": "if-count-1",
+              "leftValue": "={{ $json.count > 0 }}",
               "rightValue": "",
               "operator": {
                 "type": "boolean",
@@ -380,15 +394,29 @@
         "looseTypeValidation": true,
         "options": {}
       },
-      "id": "node-filter",
-      "name": "Garder les dossiers non traités",
-      "type": "n8n-nodes-base.filter",
+      "id": "node-if-count",
+      "name": "Y a-t-il des dossiers à traiter ?",
+      "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -40,
+        184,
         580
       ],
-      "notes": "Exclut : dossiers traités (✓_), publiés ($_), en alerte (⚠_), archivés (*), et le dossier du template."
+      "notes": "Faux = tous les dossiers sont déjà ✓_ / $_ / traités : on saute toute la boucle et on va directement déclencher le workflow Shopify (utile s'il restait des dossiers ✓_ non publiés d'une exécution précédente)."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Éclate la liste en un item par dossier, pour la boucle « Boucle dossiers ».\nconst dossiers = $json.dossiers || [];\nreturn dossiers.map((d) => ({ json: d }));\n"
+      },
+      "id": "node-split-dossiers",
+      "name": "Éclater la liste des dossiers",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        408,
+        580
+      ],
+      "notes": "Un item par dossier à traiter, prêt pour « Boucle dossiers »."
     },
     {
       "parameters": {
@@ -400,7 +428,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        200,
+        632,
         580
       ],
       "notes": "1 dossier par itération"
@@ -1242,18 +1270,7 @@
       "main": [
         [
           {
-            "node": "Garder les dossiers non traités",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Garder les dossiers non traités": {
-      "main": [
-        [
-          {
-            "node": "Boucle dossiers",
+            "node": "Filtrer et compter les dossiers",
             "type": "main",
             "index": 0
           }
@@ -1685,6 +1702,46 @@
         [
           {
             "node": "Limiter à 1 sortie (ménage)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrer et compter les dossiers": {
+      "main": [
+        [
+          {
+            "node": "Y a-t-il des dossiers à traiter ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Y a-t-il des dossiers à traiter ?": {
+      "main": [
+        [
+          {
+            "node": "Éclater la liste des dossiers",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Préparer le signal Shopify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Éclater la liste des dossiers": {
+      "main": [
+        [
+          {
+            "node": "Boucle dossiers",
             "type": "main",
             "index": 0
           }

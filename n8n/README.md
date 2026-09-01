@@ -38,8 +38,14 @@ il n'y a pas de credential n8n à créer, il passe par le header `Authorization`
 
 ### Logique
 
-1. Liste les sous-dossiers du dossier parent, garde ceux **sans** préfixe `✓_` / `⚠_` / `*` et
-   exclut le dossier du template (par son ID et par le mot « template » dans son nom).
+1. Liste les sous-dossiers du dossier parent. `Filtrer et compter les dossiers` garde ceux **sans**
+   préfixe `✓_` (traité), `$_` (publié), `⚠_` (à relire) ni `*`, exclut le dossier du template, et
+   produit toujours **1 seul item** récapitulatif (`dossiers[]` + `count`) — même vide, pour ne jamais
+   bloquer la suite : un Filter classique à 0 résultat empêcherait tout ce qui suit de s'exécuter,
+   y compris l'appel au workflow Shopify.
+2. `Y a-t-il des dossiers à traiter ?` saute toute la boucle et va **directement** déclencher le
+   workflow Shopify si `count = 0` — utile pour rattraper des dossiers `✓_` qu'une exécution
+   précédente du workflow Shopify n'aurait pas publiés (échec Gemini, quota, etc.).
 2. Boucle (1 dossier à la fois) : liste les images, désigne la **photo principale**
    (nom contenant `main` / `principale` / `cover` / `1`, sinon la première par ordre alphanumérique).
 3. `Détecter la typologie` déduit du nom du dossier s'il s'agit d'un **vêtement, sac, bijou,
