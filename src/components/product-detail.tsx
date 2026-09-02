@@ -543,7 +543,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
           <button
             type="button"
             onClick={() => router.back()}
-            className={`${MONO} mb-4 inline-flex items-center gap-1.5 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.8125rem] font-bold text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
+            className={`${MONO} mb-4 hidden items-center gap-1.5 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-3 py-1.5 text-[0.8125rem] font-bold text-[#262626] uppercase transition hover:brightness-105 sm:inline-flex ${PLASTIC} ${PLASTIC_PRESS}`}
           >
             <Icon.arrowL width={13} height={13} className="[transform:scaleX(-1)]" /> {t.pdp.back}
           </button>
