@@ -39,7 +39,6 @@ import {
   LeopardBackdrop,
   MATRIX,
   MONO,
-  NEON,
   PLASTIC,
   PLASTIC_FACE,
   PLASTIC_PRESS,
@@ -642,8 +641,8 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                         </span>
                         <span className="flex items-baseline gap-2.5">
                           <span
-                            className={`${LCD} text-[2.6rem] leading-[0.9] tracking-[0.02em]`}
-                            style={{ color: NEON, textShadow: `0 0 14px ${NEON}b3, 0 0 34px ${NEON}59` }}
+                            className={`${LCD} text-[2.6rem] leading-[0.9] tracking-[0.02em] text-green-400`}
+                            style={{ textShadow: "0 0 14px rgba(74,222,128,.7), 0 0 34px rgba(74,222,128,.35)" }}
                           >
                             {product.price}€
                           </span>
