@@ -17,7 +17,7 @@ export default async function Page() {
       <main className="dm-desktop">
         <div className="dm-win dm-main dm-main-error">
           <div className="dm-titlebar">
-            <span className="dm-titlebar-text">VIRTUAL_CLOSET.EXE</span>
+            <span className="dm-titlebar-text">DRESSING_MACHINE.EXE</span>
             <div className="dm-chrome">
               <Link className="dm-chrome-btn" href="/" aria-label="Fermer">×</Link>
             </div>
