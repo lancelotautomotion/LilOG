@@ -256,8 +256,12 @@ export function HeroCamcorder() {
         </div>
       </div>
 
-      {/* ---- Texte de marque ---- */}
-      <div className="relative z-30 w-full max-w-[min(92vw,1000px)] px-5 text-center">
+      {/* ---- Texte de marque ----
+           `mt-[11svh]` en mobile : le cadrage dédié au portrait laisse le
+           visage dans la moitié basse de l'écran, pile au niveau du bloc de
+           texte (centré par le `flex items-center` du header) sans cette
+           marge. Le bureau garde le centrage d'origine. */}
+      <div className="relative z-30 mt-[20svh] w-full max-w-[min(92vw,1000px)] px-5 text-center md:mt-0">
         <h1 className={`${MONO} leading-[1.15] font-bold text-white`}>
           {/* Voile allégé oblige : la lisibilité tient au halo du texte
               lui-même, pas à un fond assombri. */}
