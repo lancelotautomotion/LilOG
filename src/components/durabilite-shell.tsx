@@ -548,9 +548,9 @@ function RecycleBin() {
           {/* `h-40 w-40` sur mobile (au lieu de `h-28 w-28`) : en pile sur une
               seule colonne, la corbeille se noyait dans la large bande de
               papier millimétré vide qui l'entoure de part et d'autre.
-              `mt-3` : légèrement descendue par rapport au haut de la
-              fenêtre, pour ne pas coller à la barre de titre. */}
-          <div className="relative mx-auto mt-3 h-40 w-40 shrink-0 sm:mx-0 sm:mt-0 sm:h-28 sm:w-28" aria-hidden>
+              `mt-7` : descendue par rapport au haut de la fenêtre, pour ne
+              pas coller à la barre de titre. */}
+          <div className="relative mx-auto mt-7 h-40 w-40 shrink-0 sm:mx-0 sm:mt-0 sm:h-28 sm:w-28" aria-hidden>
             <span className="absolute inset-0 grid place-items-center">
               <RecycleBinIcon className="h-24 w-24 sm:h-16 sm:w-16" />
             </span>
