@@ -138,7 +138,7 @@ plus bas), et remplacer l'ensemble par :
     <tr>
       <td class="actions__cell">
         <table class="button main-action-cell">
-          <tr><td class="button__cell"><a href="https://lilog.shop/account/orders" class="button__text">Voir ma commande</a></td></tr>
+          <tr><td class="button__cell"><a href="https://lilog.shop/account" class="button__text">Voir ma commande</a></td></tr>
         </table>
         <table class="link secondary-action-cell">
           <tr><td class="link__cell">ou <a href="{{ order_status_url }}">suivre l'expédition</a></td></tr>
