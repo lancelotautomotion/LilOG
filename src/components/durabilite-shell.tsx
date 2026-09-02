@@ -529,7 +529,7 @@ function RecycleBin() {
         }}
       >
         <div className="flex items-center justify-between gap-2 px-3 py-2" style={{ background: VIOLET_BAR }}>
-          <span className={`${MONO} truncate text-[0.8125rem] font-bold tracking-[0.03em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}>
+          <span className={`${MONO} hidden truncate text-[0.8125rem] font-bold tracking-[0.03em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)] sm:inline`}>
             🗑️ C:\LILOG\RESCUE_MISSION.TXT
           </span>
           <div className="flex shrink-0 items-center gap-1.5">
@@ -541,9 +541,12 @@ function RecycleBin() {
 
         <div className="flex flex-col gap-5 p-4 sm:flex-row sm:items-center sm:p-6" style={GRID_BG}>
           {/* Icône : corbeille Win95 d'où sortent des vêtements étincelants */}
-          <div className="relative mx-auto h-28 w-28 shrink-0 sm:mx-0" aria-hidden>
+          {/* `h-40 w-40` sur mobile (au lieu de `h-28 w-28`) : en pile sur une
+              seule colonne, la corbeille se noyait dans la large bande de
+              papier millimétré vide qui l'entoure de part et d'autre. */}
+          <div className="relative mx-auto h-40 w-40 shrink-0 sm:mx-0 sm:h-28 sm:w-28" aria-hidden>
             <span className="absolute inset-0 grid place-items-center">
-              <RecycleBinIcon className="h-16 w-16" />
+              <RecycleBinIcon className="h-24 w-24 sm:h-16 sm:w-16" />
             </span>
             <span className="durab-sticker absolute -top-1 left-2 text-2xl" style={{ ["--r" as string]: "-12deg" }}>
               👗
