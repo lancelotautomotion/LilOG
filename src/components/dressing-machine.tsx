@@ -1034,8 +1034,31 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
     }, 700);
   };
 
+  /**
+   * Bascule : le bouton défait ce qu'il vient de faire.
+   *
+   * `lookSaved` ne vaut vrai que si le look affiché est bien celui qui a
+   * été enregistré ET que toutes ses pièces sont encore en wishlist —
+   * changer une pièce ou décocher son cœur éteint le témoin, et le
+   * bouton redevient un « enregistrer ». Le retrait ne peut donc porter
+   * que sur le look tel qu'il a été enregistré, jamais sur un autre.
+   *
+   * Il emporte en revanche une pièce qui aurait déjà été aimée seule
+   * avant l'enregistrement : le bouton retire tout le look, c'est ce
+   * qu'il annonce. Les cœurs restent là pour un retrait pièce par pièce.
+   */
   const saveLook = () => {
     if (look.length === 0) return;
+
+    if (lookSaved) {
+      for (const piece of look) wishlist.remove(piece.handle);
+      setSavedLookKey(null);
+      setStatus(
+        `LOOK RETIRÉ DE LA WISHLIST : ${look.length} PIÈCE${look.length > 1 ? "S" : ""}.`,
+      );
+      return;
+    }
+
     for (const piece of look) {
       wishlist.add({
         handle: piece.handle,
@@ -1206,7 +1229,17 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
               className={"dm-w95 dm-save" + (lookSaved ? " pressed" : "")}
               onClick={saveLook}
               disabled={look.length === 0}
-              aria-label="SAVE_TO_WISHLIST.EXE : enregistrer ce look"
+              aria-pressed={lookSaved}
+              aria-label={
+                lookSaved
+                  ? "SAVE_TO_WISHLIST.EXE : retirer ce look de la wishlist"
+                  : "SAVE_TO_WISHLIST.EXE : enregistrer ce look"
+              }
+              title={
+                lookSaved
+                  ? "Look enregistré — appuyer de nouveau pour le retirer"
+                  : "Enregistrer tout le look dans la wishlist"
+              }
             >
               <span className="dm-save-led" aria-hidden />
               💾<span className="dm-btn-word">&nbsp;SAVE_TO_WISHLIST.EXE</span>
