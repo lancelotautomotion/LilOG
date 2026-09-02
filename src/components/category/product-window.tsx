@@ -103,10 +103,24 @@ const CHIP_BASE =
   `${CHIP_H} inline-flex items-center justify-center text-[0.75rem] leading-none ` +
   "font-bold whitespace-nowrap";
 
-function StickerChip({ sticker, className = "" }: { sticker: Sticker; className?: string }) {
+function StickerChip({
+  sticker,
+  className = "",
+  smallOnMobile = false,
+}: {
+  sticker: Sticker;
+  className?: string;
+  /** Réduit le badge sur mobile : utile pour "💗 Coup de cœur", le seul
+   *  libellé assez long pour risquer de dépasser (et donc d'être coupé par
+   *  l'`overflow: hidden` du média) sur une carte à deux colonnes. Les
+   *  autres badges (HOT, RARE, SOLD) sont déjà courts, pas besoin d'y toucher. */
+  smallOnMobile?: boolean;
+}) {
   return (
     <span
-      className={`${MONO} pointer-events-none absolute z-20 rounded-[5px] border border-black/25 px-1.5 py-[3px] text-[0.8125rem] font-bold tracking-[0.06em] whitespace-nowrap uppercase ${PLASTIC} ${className}`}
+      className={`${MONO} pointer-events-none absolute z-20 rounded-[5px] border border-black/25 font-bold tracking-[0.06em] whitespace-nowrap uppercase ${PLASTIC} ${
+        smallOnMobile ? "px-1 py-[2px] text-[0.6875rem] sm:px-1.5 sm:py-[3px] sm:text-[0.8125rem]" : "px-1.5 py-[3px] text-[0.8125rem]"
+      } ${className}`}
       style={{
         background: `linear-gradient(180deg, ${sticker.from} 0%, ${sticker.to} 100%)`,
         color: sticker.ink,
@@ -185,7 +199,7 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
       <SmartImg className="lde-img lde-img-b" src={product.imageB} alt={product.name} tone={idx + 1} />
 
       {badge && <StickerChip sticker={badge} className="top-1.5 left-1.5 -rotate-3" />}
-      {pick && <StickerChip sticker={pick} className="right-1.5 bottom-1.5 rotate-2" />}
+      {pick && <StickerChip sticker={pick} className="right-1.5 bottom-1.5 rotate-2" smallOnMobile />}
       {sold && <span className="pointer-events-none absolute inset-0 z-10 bg-white/45" />}
     </>
   );
