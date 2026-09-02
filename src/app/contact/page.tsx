@@ -371,7 +371,7 @@ export default function ContactPage() {
                         >
                           OBJET DU MESSAGE
                         </legend>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                           {SUBJECTS.map(({ id, label }) => {
                             const on = subject === id;
                             return (
@@ -383,7 +383,7 @@ export default function ContactPage() {
                                   setSubject(id);
                                   setSubjectError(false);
                                 }}
-                                className={`${MONO} rounded-full border px-4 py-2 text-[0.875rem] font-bold transition ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
+                                className={`${MONO} rounded-2xl border px-2 py-1.5 text-center leading-tight text-[0.75rem] font-bold transition sm:rounded-full sm:px-4 sm:py-2 sm:text-[0.875rem] ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
                                   on
                                     ? "border-purple-700 bg-purple-600 text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.45),inset_0_-2px_5px_rgba(0,0,0,0.3),0_2px_4px_rgba(80,30,140,0.35)]"
                                     : `border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] text-[#262626] ${PLASTIC}`
@@ -426,7 +426,7 @@ export default function ContactPage() {
                       <button
                         type="submit"
                         disabled={isPending}
-                        className={`${MONO} mt-1 w-full rounded-full bg-purple-600 p-4 text-[1rem] font-bold tracking-[0.04em] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.7),0_4px_6px_rgba(0,0,0,0.15)] transition hover:brightness-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                        className={`${MONO} mt-1 w-full whitespace-nowrap rounded-full bg-purple-600 px-2 py-3 text-[0.6875rem] font-bold tracking-[0.02em] text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.7),0_4px_6px_rgba(0,0,0,0.15)] transition hover:brightness-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] sm:p-4 sm:text-[1rem] sm:tracking-[0.04em]`}
                       >
                         {isPending
                           ? "[ ⏳ TRANSMISSION_EN_COURS… ]"

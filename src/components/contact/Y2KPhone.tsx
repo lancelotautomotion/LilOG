@@ -424,6 +424,12 @@ function buzz(pattern: number | number[]) {
 const CSS = `
 .y2kp{position:relative;width:100%;max-width:340px;margin-inline:auto;
   -webkit-tap-highlight-color:transparent}
+/* Sur téléphone, le clapet en pleine largeur de colonne écrasait le reste
+   de la page (jusqu'à ~620px de haut vu son ratio très vertical). On le
+   réduit nettement en dessous de sm, où la mise en page reste empilée. */
+@media (max-width:639px){
+  .y2kp{max-width:190px}
+}
 .y2kp:focus{outline:none}
 .y2kp:focus-visible{outline:2px solid #7147d4;outline-offset:6px;border-radius:18px}
 /* Le contexte de conteneur vit sur la scène, pas sur .y2kp : les tailles
