@@ -414,9 +414,9 @@ export function AccountDashboard({
           <div className="account-status-cell">
             <span className="account-status-pink">●</span> Connecté
           </div>
-          <div className="account-status-cell grow">{email}</div>
+          <div className="account-status-cell grow acct-status-optional">{email}</div>
           {addresses.length > 0 && (
-            <div className="account-status-cell">
+            <div className="account-status-cell acct-status-optional">
               📍 {addresses.length} adresse{addresses.length > 1 ? "s" : ""}
             </div>
           )}

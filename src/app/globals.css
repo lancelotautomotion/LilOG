@@ -3005,6 +3005,13 @@ textarea {
 .account-status-cell.grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .account-status-pink { color: var(--ldl-accent); font-weight: 700; }
 
+/* Sur mobile, la barre de statut ne garde que "Connecté" et le copyright :
+   l'email et le nombre d'adresses n'y apportent rien d'utile et sont les
+   deux premiers candidats à disparaître si l'espace manque. */
+@media (max-width: 760px) {
+  .acct-status-optional { display: none; }
+}
+
 /* Order detail */
 .account-detail-row {
   display: flex;
