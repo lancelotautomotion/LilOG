@@ -54,7 +54,7 @@
   --ldl-border: #D9DFEC;
   --ldl-text: #1E2430;
   --ldl-muted: #6B7280;
-  --ldl-radius: 0px;
+  --ldl-radius: 8px;
   --ldl-titlebar: #1B48CE;
   /* Barre de titre unique du site : le fronton de la borne d'arcade,
      violet profond → violet → fuchsia. Toutes les fenêtres la portent,
@@ -2748,7 +2748,7 @@ textarea {
   color: var(--ldl-text);
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 0;
+  border-radius: 6px;
   padding: 5px 12px;
   cursor: pointer;
   white-space: nowrap;
@@ -2838,7 +2838,7 @@ textarea {
   color: var(--ldl-text);
   background: var(--ldl-bg);
   border: 1px solid var(--ldl-border);
-  border-radius: 0;
+  border-radius: 6px;
   padding: 5px 9px;
   word-break: break-all;
 }
@@ -2851,7 +2851,7 @@ textarea {
   color: var(--ldl-text);
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
-  border-radius: 0;
+  border-radius: 6px;
   outline: none;
   padding: 10px 12px;
   box-sizing: border-box;
@@ -2872,7 +2872,7 @@ textarea {
   color: var(--ldl-text);
   background: var(--ldl-surface);
   border: 1px solid var(--ldl-border);
-  border-radius: 0;
+  border-radius: 6px;
   padding: 7px 16px;
   cursor: pointer;
   text-decoration: none;
@@ -2967,7 +2967,7 @@ textarea {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 3px 8px;
-  border-radius: 0;
+  border-radius: 6px;
   background: var(--ldl-primary);
   color: #fff;
 }
@@ -2993,7 +2993,7 @@ textarea {
   color: var(--ldl-muted);
   padding: 2px 10px;
   border: 1px solid var(--ldl-border);
-  border-radius: 0;
+  border-radius: 6px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -3020,7 +3020,7 @@ textarea {
   object-fit: cover;
   flex-shrink: 0;
   background: var(--ldl-bg);
-  border-radius: 0;
+  border-radius: 4px;
   display: block;
   border: 1px solid var(--ldl-border);
 }
@@ -3086,7 +3086,7 @@ textarea {
   color: #00a040;
   background: #f0fff6;
   border: 1px solid rgba(0,160,64,0.3);
-  border-radius: 0;
+  border-radius: 6px;
   padding: 8px 12px;
   letter-spacing: 0.04em;
 }
@@ -3096,7 +3096,7 @@ textarea {
   color: #c00;
   background: #fff0f0;
   border: 1px solid rgba(204,0,0,0.3);
-  border-radius: 0;
+  border-radius: 6px;
   padding: 8px 12px;
   letter-spacing: 0.04em;
 }
@@ -3296,7 +3296,7 @@ textarea {
   padding: 3px 8px;
   display: inline-block;
   white-space: nowrap;
-  border-radius: 0;
+  border-radius: 6px;
 }
 .acct-badge-fulfilled { background: #e8fff2; color: #00601e; border: 1px solid rgba(0,160,64,0.25); }
 .acct-badge-pending   { background: #eef2ff; color: var(--ldl-primary); border: 1px solid rgba(30,77,255,0.2); }
@@ -3312,7 +3312,7 @@ textarea {
   color: var(--ldl-primary);
   background: transparent;
   border: 1px solid var(--ldl-border);
-  border-radius: 0;
+  border-radius: 6px;
   padding: 4px 10px;
   text-decoration: none;
   display: inline-block;
@@ -3835,7 +3835,7 @@ textarea {
   color: var(--ldl-text);
   background: var(--ldl-bg);
   border: 1px solid var(--ldl-border);
-  border-radius: 0;
+  border-radius: 6px;
   padding: 7px 10px;
   outline: none;
   width: 100%;
@@ -4360,10 +4360,10 @@ html, body {
 .lang-menu  {
   background: var(--ldl-surface) !important;
   border: 1px solid var(--ldl-border) !important;
-  border-radius: 0 !important;
+  border-radius: 8px !important;
   box-shadow: var(--ldl-shadow-md) !important;
 }
-.lang-opt   { color: var(--ldl-text) !important; font-family: var(--mono) !important; font-size: 0.875rem !important; border-radius: 0 !important; }
+.lang-opt   { color: var(--ldl-text) !important; font-family: var(--mono) !important; font-size: 0.875rem !important; border-radius: 4px !important; }
 .lang-opt:hover { background: var(--ldl-bg) !important; color: var(--ldl-primary) !important; }
 .lang-opt.on    { color: var(--ldl-primary) !important; }
 .lang-opt .lang-code { color: inherit !important; }
@@ -4376,7 +4376,7 @@ html, body {
   align-items: flex-start !important;
   gap: 5px !important;
   width: auto !important;
-  border-radius: 0 !important;
+  border-radius: 6px !important;
 }
 .menu-btn span { height: 1.5px !important; background: var(--ldl-text) !important; width: 20px !important; transition: transform 0.25s ease !important; }
 .menu-btn span:nth-child(2) { width: 14px !important; }
@@ -4385,7 +4385,7 @@ html, body {
   background: none !important;
   border: none !important;
   padding: 4px 6px !important;
-  border-radius: 0 !important;
+  border-radius: 6px !important;
   transition: background var(--ldl-transition) !important;
 }
 .nav-icon-btn:hover { background: var(--ldl-bg) !important; }
