@@ -31,6 +31,9 @@ const HERO_VIDEO = "/hero/camcorder.mp4";
 /** Still de repli : photographie maison, pas de banque d'images. */
 const HERO_STILL = "/Design sans titre (1).png";
 
+/** Still dédié au mobile : cadrage portrait qui montre le sujet en entier. */
+const HERO_STILL_MOBILE = "/mobile-hero.jpg";
+
 const HERO_CSS = `
 /* Lignes de balayage du viseur. */
 .lhz-scan{
@@ -173,15 +176,28 @@ export function HeroCamcorder() {
     >
       <style>{HERO_CSS}</style>
 
-      {/* ---- Fond : still de la marque, puis vidéo si elle existe ---- */}
+      {/* ---- Fond : still de la marque, puis vidéo si elle existe ----
+           Deux stills, jamais le même cadrage : le portrait pris pour le
+           bureau, recadré au centre sur la photo large, coupait le sujet en
+           mobile. `HERO_STILL_MOBILE` est un cadrage dédié (portrait, sujet
+           déjà centré) qui garde toute la hauteur de la photo au lieu de la
+           rogner. */}
       <div aria-hidden className="absolute inset-0">
+        <Image
+          src={HERO_STILL_MOBILE}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="block object-cover object-center md:hidden"
+        />
         <Image
           src={HERO_STILL}
           alt=""
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[64%_center] md:object-center"
+          className="hidden object-cover object-center md:block"
         />
 
         <video
