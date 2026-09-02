@@ -183,22 +183,24 @@ export function HeroCamcorder() {
            déjà centré) qui garde toute la hauteur de la photo au lieu de la
            rogner. */}
       <div aria-hidden className="absolute inset-0">
-        <Image
-          src={HERO_STILL_MOBILE}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="block object-cover object-center md:hidden"
-        />
-        <Image
-          src={HERO_STILL}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="hidden object-cover object-center md:block"
-        />
+        {/* Le toggle mobile/bureau vit sur ces `<div>`, jamais directement sur
+            l'`<Image>` : `img{display:block}` (globals.css, hors des layers
+            Tailwind) bat "hidden"/"md:block" posées sur un `<img>` quelle que
+            soit la largeur d'écran, les deux photos restaient affichées en
+            même temps. */}
+        <div className="absolute inset-0 block md:hidden">
+          <Image
+            src={HERO_STILL_MOBILE}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
+        <div className="absolute inset-0 hidden md:block">
+          <Image src={HERO_STILL} alt="" fill priority sizes="100vw" className="object-cover object-center" />
+        </div>
 
         <video
           className="absolute inset-0 h-full w-full object-cover object-[64%_center] transition-opacity duration-700 md:object-center"
