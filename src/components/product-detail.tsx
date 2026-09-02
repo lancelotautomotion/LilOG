@@ -548,7 +548,7 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
           </button>
 
           <WindowFrame
-            title="C:\ LIL_OG \ ITEM_INSPECTOR_2000.EXE"
+            title="FICHE_PRODUIT.EXE"
             icon={<Icon.folderOpen width={15} height={12} />}
             bodyStyle={{ backgroundColor: "#ffffff" }}
           >
