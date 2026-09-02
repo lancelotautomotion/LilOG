@@ -2,18 +2,18 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Publication Shopify — cycle de vie des dossiers\n\n`✓_Nom du produit` → posé par le **workflow images** quand les photos sont prêtes.\n`$_Nom du produit` → posé **ici**, une fois le produit créé sur Shopify avec ses images.\n`⚠_Nom du produit` → détourage en échec, à relire à la main : ignoré par ce workflow.\n\n**Déclenchement** : automatique via `Déclenché par le workflow images` (nœud *Execute Workflow Trigger*), ou à la main avec `Manual Trigger`. Les deux entrent au même endroit.\n\n**Reprise sur erreur** : si Gemini ou Shopify échoue, le dossier n'est pas renommé — il reste en `✓_` et sera retenté à la prochaine exécution. Rien n'est publié deux fois.\n\n**Ordre des images** : les photos sont triées numériquement (1.webp, 2.webp...), la n°1 devient l'image principale de la fiche produit.\n\nProduits créés en **brouillon** (`status: draft`) : ils ne sont pas mis en ligne sans relecture.",
-        "height": 520,
-        "width": 460,
+        "content": "## Publication Shopify — cycle de vie des dossiers\n\n`✓_Nom du produit` → posé par le **workflow images** quand les photos sont prêtes.\n`$_Nom du produit` → posé **ici**, une fois le produit créé sur Shopify avec ses images.\n`⚠_Nom du produit` → détourage en échec, à relire à la main : ignoré par ce workflow.\n\n**Déclenchement** : automatique via `Déclenché par le workflow images` (nœud *Execute Workflow Trigger*), ou à la main avec `Manual Trigger`. Les deux entrent au même endroit.\n\n**Reprise sur erreur** : si Gemini ou Shopify échoue, le dossier n'est pas renommé — il reste en `✓_` et sera retenté à la prochaine exécution. Rien n'est publié deux fois.\n\n**Ordre des images** : les photos sont triées numériquement (1.webp, 2.webp...), la n°1 devient l'image principale de la fiche produit.\n\nProduits créés en **brouillon** (`status: draft`) : ils ne sont pas mis en ligne sans relecture.\n\n**Traite tous les dossiers `✓_` en une seule exécution**, pas un seul : la boucle `Loop Over Folders` reprend automatiquement dès qu'un dossier est terminé (renommé `$_`, ou sauté s'il n'a aucune image). Si un run précédent semblait n'en traiter qu'un, c'est qu'un nœud sans filet (recherche Drive, renommage...) avait échoué en silence sur le 2ᵉ dossier, arrêtant tout le reste du lot — corrigé par les tentatives automatiques ajoutées partout, et par le nœud `Le dossier a-t-il des images ?` qui empêche un dossier vide de bloquer la suite.",
+        "height": 420,
+        "width": 1340,
         "color": 4
       },
-      "id": "aa11bb22-cc33-4d44-8e55-ff6677889900",
+      "id": "d271f585-b365-499b-bbe9-d632b19c3961",
       "name": "Note - Cycle de vie",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4780,
-        1180
+        5600,
+        672
       ]
     },
     {
@@ -34,13 +34,13 @@
         "jsonBody": "={{ JSON.stringify($json.body) }}",
         "options": {}
       },
-      "id": "24631a85-23e6-40ae-a866-efa40c79d159",
+      "id": "951da4ea-9885-47c2-b3f8-cba5b5e8183b",
       "name": "Appel Gemini (génération fiche)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        7056,
-        1424
+        8112,
+        1072
       ],
       "onError": "continueRegularOutput"
     },
@@ -48,30 +48,31 @@
       "parameters": {
         "inputSource": "passthrough"
       },
-      "id": "f0a1c2d3-4e5b-4a67-9c80-1d2e3f4a5b6c",
+      "id": "e679b6d6-fca0-48b4-8931-8d97b3f6ea77",
       "name": "Déclenché par le workflow images",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        4816,
-        1720
+        5648,
+        1328
       ],
       "notes": "Point d'entrée appelé automatiquement par le workflow de traitement d'images, à la fin de sa boucle."
     },
     {
       "parameters": {},
-      "id": "34ea578a-8a6e-4943-a473-d216100668ef",
+      "id": "81138156-4128-49ac-be07-5e99e54902ea",
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        4816,
-        1880
+        5648,
+        1520
       ]
     },
     {
       "parameters": {
         "resource": "fileFolder",
+        "returnAll": true,
         "filter": {
           "folderId": {
             "__rl": true,
@@ -86,18 +87,19 @@
             "name",
             "mimeType"
           ]
-        },
-        "returnAll": true
+        }
       },
-      "id": "1ef6f669-6356-4f56-84ad-7e53a7b3caf2",
+      "id": "3108f03e-e7b0-424a-abfb-5c6d4731a6d0",
       "name": "Rechercher dossiers",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        5040,
-        1880
+        5872,
+        1520
       ],
-      "notes": "Tous les sous-dossiers du dossier Lil'OG (returnAll pour dépasser la limite par défaut)."
+      "notes": "Tous les sous-dossiers du dossier Lil'OG (returnAll pour dépasser la limite par défaut).",
+      "retryOnFail": true,
+      "maxTries": 3
     },
     {
       "parameters": {
@@ -123,13 +125,13 @@
         },
         "options": {}
       },
-      "id": "a137d5f0-3e4e-45ad-b631-6f99cf51452f",
+      "id": "0055ec61-3e5d-42ac-ba53-148e9692ac9a",
       "name": "Filtrer dossiers prêts",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2,
       "position": [
-        5264,
-        1880
+        6096,
+        1520
       ],
       "notes": "Ne garde QUE les dossiers préparés par le workflow images (préfixe ✓_). Les dossiers déjà publiés ($_), en alerte (⚠_) ou pas encore traités sont ignorés."
     },
@@ -137,26 +139,26 @@
       "parameters": {
         "options": {}
       },
-      "id": "1db16803-8409-495c-b7c3-e578094e8a1f",
+      "id": "73164a59-4472-4f3c-a0a7-0136358590b1",
       "name": "Loop Over Folders",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        5488,
-        1880
+        6320,
+        1520
       ]
     },
     {
       "parameters": {
         "jsCode": "// Retire le préfixe de statut du nom de dossier pour obtenir le titre produit.\nconst dossier = $input.first().json;\nconst folderName = String(dossier.name || '');\nconst titre = folderName.replace(/^\\s*(✓_|✅_|⚠_|\\$_|\\*)\\s*/, '').trim();\n\nreturn [{ json: { folderId: dossier.id, folderName, titre } }];\n"
       },
-      "id": "78a57748-5fe9-406b-b19e-06f764b94c5f",
+      "id": "fc940e1f-258d-469f-8bbc-29eb63e3dea1",
       "name": "Nettoyer titre produit",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5712,
-        1616
+        6544,
+        1264
       ],
       "notes": "Le titre produit = nom du dossier sans son préfixe de statut."
     },
@@ -179,40 +181,80 @@
           ]
         }
       },
-      "id": "14048d8f-90d2-4d4d-b322-bbbed20872df",
+      "id": "998ac0b2-60d0-4041-af78-3a45e0239823",
       "name": "Lister les photos",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        5936,
-        1616
-      ]
+        6768,
+        1264
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "notes": "alwaysOutputData = true : si le dossier n'a aucun fichier, on ne bloque pas la suite (voir « Filtrer et trier les images » et l'IF juste après)."
     },
     {
       "parameters": {
-        "jsCode": "// Ne garde que les images, et les trie par numéro : 1.webp, 2.webp, ... 10.webp.\n// L'ordre compte : la première image devient l'image principale de la fiche Shopify.\nreturn $input.all()\n  .filter((i) => typeof i.json.mimeType === 'string' && i.json.mimeType.startsWith('image/'))\n  .sort((a, b) => String(a.json.name).localeCompare(String(b.json.name), 'fr', { numeric: true }));\n"
+        "jsCode": "// Ne garde que les images, triées par numéro : 1.webp, 2.webp, ... 10.webp.\n// L'ordre compte : la première image devient l'image principale de la fiche Shopify.\n//\n// Émet toujours AU MOINS 1 item, même si le dossier n'a aucune image : un Code node qui\n// renvoie 0 item empêche tout ce qui suit de s'exécuter, y compris le retour de boucle vers\n// « Loop Over Folders » — le workflow s'arrêterait alors en silence sur ce dossier, sans\n// jamais passer aux suivants.\nconst images = $input.all()\n  .filter((i) => typeof i.json.mimeType === 'string' && i.json.mimeType.startsWith('image/'))\n  .sort((a, b) => String(a.json.name).localeCompare(String(b.json.name), 'fr', { numeric: true }));\n\nif (images.length === 0) {\n  return [{ json: { empty: true } }];\n}\n\nreturn images.map((i) => ({ json: { ...i.json, empty: false } }));\n"
       },
-      "id": "4ddf377c-0749-4331-9b05-a4c119a1ad37",
+      "id": "591efa94-0519-4337-906b-97a0490f03b5",
       "name": "Filtrer et trier les images",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6160,
-        1616
+        6992,
+        1264
       ],
-      "notes": "Tri numérique sur le nom : 1.webp passe en premier et devient l'image principale Shopify."
+      "notes": "Émet toujours ≥1 item (marqueur { empty: true } si le dossier n'a aucune image) : sinon la boucle sur les dossiers se bloquerait en silence sur celui-ci."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "if-empty-photos",
+              "leftValue": "={{ $json.empty !== true }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "if-le-dossier-a-des-images",
+      "name": "Le dossier a-t-il des images ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        7216,
+        1264
+      ],
+      "notes": "Faux = dossier ✓_ sans aucune image (cas anormal, le workflow images ne devrait jamais poser ✓_ sur un dossier vide) : on repart directement dans la boucle, sans créer de produit ni renommer — le dossier reste ✓_ et sera réexaminé au prochain run."
     },
     {
       "parameters": {
         "options": {}
       },
-      "id": "f15abc03-47d5-4ae0-8ac3-59db82e84fd8",
+      "id": "9aaa638d-c5ee-4c3a-a89a-686edaf3e3b4",
       "name": "Loop Over Photos",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        6384,
-        1616
+        7440,
+        1264
       ]
     },
     {
@@ -225,26 +267,28 @@
         },
         "options": {}
       },
-      "id": "29180384-0144-471b-b0cd-b2982269c29a",
+      "id": "d8ac9ba1-6161-4411-9497-c81e0adb4c64",
       "name": "Télécharger binaire (pour IA)",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        6608,
-        1616
-      ]
+        7664,
+        1264
+      ],
+      "retryOnFail": true,
+      "maxTries": 3
     },
     {
       "parameters": {
         "jsCode": "const originalBuffer = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst originalBase64 = originalBuffer.toString('base64');\nconst mimeType = $input.first().binary.data.mimeType || 'image/jpeg';\n\nreturn [{ json: { originalBase64, mimeType }, binary: $input.first().binary }];"
       },
-      "id": "b4ecc7ae-f4f3-4a92-8020-6fb4c5c972a7",
+      "id": "dd035807-f61b-4a26-8b0c-ed7cb16bf6e8",
       "name": "Sauvegarder original",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6832,
-        1616
+        7888,
+        1264
       ]
     },
     {
@@ -255,26 +299,26 @@
           "format": "jpeg"
         }
       },
-      "id": "a4113d0b-71af-4e7d-a971-70b54870ee5e",
+      "id": "518ecf50-03cf-4a0c-b264-f8e6672b1cd8",
       "name": "Compresser pour IA",
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
-        7056,
-        1616
+        8112,
+        1264
       ]
     },
     {
       "parameters": {
         "jsCode": "const compressedBuffer = await this.helpers.getBinaryDataBuffer(0, 'data');\nconst base64Compressed = compressedBuffer.toString('base64');\n\nconst base64Data = $json.originalBase64;\nconst mimeType = $json.mimeType;\nconst mimeTypeCompressed = $input.first().binary.data.mimeType || mimeType;\nconst nom = $('Télécharger binaire (pour IA)').first().json.name || '';\n\nreturn [{ json: { base64Data, base64Compressed, mimeTypeCompressed, mimeType, nom } }];\n"
       },
-      "id": "cb963784-9d08-4d86-92df-bffa0608652e",
+      "id": "0b6cadc5-3751-4df3-85b2-6c58c55ecf8a",
       "name": "Assembler URL + binaire",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7280,
-        1688
+        8336,
+        1328
       ],
       "notes": "base64Data = image pleine résolution (pour Shopify), base64Compressed = version 1200px (pour Gemini)."
     },
@@ -284,39 +328,39 @@
         "destinationFieldName": "photos",
         "options": {}
       },
-      "id": "181db408-2afc-4abb-8dad-dfeb387af753",
+      "id": "6ed6449f-d16f-4c34-a02c-dd8bd51cc056",
       "name": "Agréger toutes les photos",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        6608,
-        1424
+        7664,
+        1072
       ]
     },
     {
       "parameters": {
         "jsCode": "const allItems = $json.photos;\n\nconst imageParts = allItems.map(item => ({\n  inline_data: {\n    mime_type: 'image/jpeg',\n    data: item.base64Compressed\n  }\n}));\n\nconst titre = $('Nettoyer titre produit').first().json.titre;\n\nconst promptText = `Tu es une copywriter experte pour une boutique de vêtements vintage/seconde main en ligne, au ton complice, girly et inspirant, avec des emojis.\n\nAnalyse les photos fournies de ce vêtement (nom de dossier : \"${titre}\").\n\nRéponds UNIQUEMENT avec un objet JSON valide (aucun texte autour, aucune balise markdown, aucun \\`\\`\\`), avec exactement ces clés :\n{\n  \"emoji\": \"un seul emoji qui représente bien la pièce (type de vêtement, couleur ou motif dominant), à utiliser en préfixe du titre produit\",\n  \"mood\": \"un paragraphe d'intro avec 1-2 emojis, ton décontracté et engageant, qui présente la pièce, sa coupe et ses détails distinctifs visibles sur les photos (poches, col, boutons, matière, motif...). NE PAS inclure de label du type 'Le mood :' au début, juste le texte direct.\",\n  \"conseils_style\": \"1-2 phrases de conseils de stylisme concrets pour porter la pièce\",\n  \"marque\": \"nom de la marque si visible sur une étiquette dans les photos, sinon 'Non précisée'\",\n  \"etat\": \"estimation de l'état du vêtement basé sur les photos, format 'Très bon état 9/10' ou équivalent\",\n  \"composition\": \"composition matière si visible sur étiquette, sinon estimation raisonnable basée sur l'aspect visuel\",\n  \"taille\": \"taille si visible sur étiquette, avec commentaire sur la coupe si pertinent (ajustée/oversize/etc.)\",\n  \"product_type\": \"catégorie du produit (ex: Chemise, Robe, Pantalon, T-shirt...)\",\n  \"tags\": [\"5 à 8 tags pertinents en minuscules pour le SEO et le filtrage boutique (style, couleur, matière, type de pièce)\"]\n}`;\n\nconst body = {\n  contents: [\n    {\n      parts: [\n        { text: promptText },\n        ...imageParts\n      ]\n    }\n  ],\n  generationConfig: {\n    temperature: 0.7,\n    response_mime_type: 'application/json'\n  }\n};\n\nreturn [{ json: { body, titre } }];"
       },
-      "id": "a5c3f7a1-a17a-4ca9-9c69-9a4b4f40892a",
+      "id": "6eb490c7-f649-45a3-a334-a4157ca8ac6b",
       "name": "Préparer requête Gemini",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6832,
-        1424
+        7888,
+        1072
       ]
     },
     {
       "parameters": {
         "jsCode": "const response = $input.first().json;\n\nif (response.error) {\n  return [{ json: { skip: true, raison: JSON.stringify(response.error) } }];\n}\n\nconst rawText = response.candidates[0].content.parts[0].text;\n\nlet fiche;\ntry {\n  fiche = JSON.parse(rawText);\n} catch (e) {\n  throw new Error('Réponse Gemini non-JSON : ' + rawText);\n}\n\nconst titre = $('Préparer requête Gemini').first().json.titre;\nconst titreAvecEmoji = `${fiche.emoji} ${titre}`.trim();\n\nconst body_html =\n  `<p><strong>Le mood :</strong> ${fiche.mood}</p>` +\n  `<p><strong>✨ Nos conseils de style :</strong><br>${fiche.conseils_style}</p>` +\n  `<p><strong>🔍 Les détails de la pépite :</strong></p>` +\n  `<p>- <strong>Marque :</strong> ${fiche.marque} 🏷️<br>` +\n  `- <strong>État :</strong> ${fiche.etat} ✨<br>` +\n  `- <strong>Composition :</strong> ${fiche.composition}<br>` +\n  `- <strong>Taille indiquée / estimée :</strong> ${fiche.taille}</p>` +\n  `<p><strong>📸 Info Mannequin & Fit :</strong><br>Pour t'aider à visualiser : notre mannequin fait une taille 36. Attention, ne te fie pas forcément au tombé sur les photos ! Il nous arrive très souvent de lui faire porter des pièces plus grandes et de les styliser (épinglées, nouées, ceinturées...) pour te donner un max d'inspiration sur la façon de les porter. Pense à bien checker les tailles indiquées ! 📏</p>` +\n  `<p><strong>♻️ À propos de notre sélection :</strong><br>Chaque vêtement de la boutique est une pièce de seconde main, chinée et triée à la main avec énormément d'amour. Même si on vérifie tout avec soin, il s'agit de vêtements qui ont déjà vécu leur best life : de minuscules traces d'usure ou une petite marge d'erreur dans les mesures sont toujours possibles. C'est aussi ça la magie du vintage ! 🫶🌍</p>`;\n\n// Pas d'images ici : elles seront uploadées une par une après la création du produit\nconst payload = {\n  product: {\n    title: titreAvecEmoji,\n    body_html,\n    vendor: fiche.marque,\n    product_type: fiche.product_type,\n    tags: fiche.tags.join(', '),\n    status: 'draft',\n    variants: [\n      {\n        inventory_management: 'shopify',\n        inventory_policy: 'deny',\n        inventory_quantity: 1\n      }\n    ]\n  }\n};\n\nreturn [{ json: payload }];"
       },
-      "id": "a7b6264f-55e5-4e70-a4fa-50b12f180445",
+      "id": "98bc21f2-fd05-447e-b6c2-8eced9774701",
       "name": "Construire payload Shopify",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7280,
-        1424
+        8336,
+        1072
       ]
     },
     {
@@ -339,27 +383,29 @@
         "jsonBody": "={{ JSON.stringify($json) }}",
         "options": {}
       },
-      "id": "caff1e9a-7a80-4d6f-baba-4a315a350bad",
+      "id": "23e1d1e0-cbcb-4693-999f-f2c70d99aa0a",
       "name": "Créer produit Shopify",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        7728,
-        1424
+        8784,
+        1072
       ],
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 2
     },
     {
       "parameters": {
         "jsCode": "const response = $input.first().json;\nconst productId = response.product.id;\n\nconst allPhotos = $('Agréger toutes les photos').first().json.photos;\n\n// L'ordre est celui du dossier (1, 2, 3...) : la première image devient l'image principale.\nconst EXT = { 'image/webp': 'webp', 'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif' };\n\nreturn allPhotos.map((item, idx) => {\n  const ext = EXT[item.mimeType] || String(item.nom || '').split('.').pop() || 'jpg';\n  return {\n    json: {\n      productId,\n      base64Data: item.base64Data,\n      filename: `photo-${idx + 1}.${ext}`,\n      position: idx + 1,\n    },\n  };\n});\n"
       },
-      "id": "0ac9f486-3ed4-4222-be4f-38782f395e97",
+      "id": "b3f61600-b59c-4b97-80e8-044b72144ac6",
       "name": "Préparer upload images",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7952,
-        1424
+        9008,
+        1072
       ],
       "notes": "L'extension du fichier suit le vrai type d'image (webp), sinon Shopify refuse l'upload."
     },
@@ -367,13 +413,13 @@
       "parameters": {
         "options": {}
       },
-      "id": "d687cfc5-467b-4cf4-bdb6-1943876f176b",
+      "id": "12a323a5-1f52-42fc-9deb-ba0f683fc791",
       "name": "Loop Over Images Upload",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        8176,
-        1424
+        9232,
+        1072
       ]
     },
     {
@@ -396,15 +442,17 @@
         "jsonBody": "={{ JSON.stringify({ image: { attachment: $json.base64Data, filename: $json.filename, position: $json.position } }) }}",
         "options": {}
       },
-      "id": "19f5666a-3fcc-41b1-ad41-e47124e2c7ad",
+      "id": "54d6ee03-ad62-4bfc-9329-061f265b5d78",
       "name": "Uploader image Shopify",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8400,
-        1664
+        9456,
+        1312
       ],
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "maxTries": 2
     },
     {
       "parameters": {
@@ -417,15 +465,17 @@
         "newUpdatedFileName": "={{ '$_' + $('Nettoyer titre produit').first().json.titre }}",
         "options": {}
       },
-      "id": "07a91bc5-5ec8-4898-99cd-112dff1822fa",
+      "id": "95c6aed3-2f03-413c-9d19-b6b120492bd5",
       "name": "Marquer dossier traité",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        8400,
-        1448
+        9456,
+        1088
       ],
-      "notes": "Renomme le dossier en $_<titre> = produit publié sur Shopify. Le dossier sort ainsi du périmètre des deux workflows. En cas d'échec Gemini ou Shopify, le dossier reste en ✓_ et sera retenté."
+      "notes": "Renomme le dossier en $_<titre> = produit publié sur Shopify. Le dossier sort ainsi du périmètre des deux workflows. En cas d'échec Gemini ou Shopify, le dossier reste en ✓_ et sera retenté. 3 tentatives avant d'abandonner : une erreur Drive transitoire ici arrêtait tout le reste du lot (les dossiers suivants ne passaient jamais).",
+      "retryOnFail": true,
+      "maxTries": 3
     },
     {
       "parameters": {
@@ -455,10 +505,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        7504,
-        1424
+        8560,
+        1072
       ],
-      "id": "89835b3e-9eb5-48ff-8fd5-e8a4f5eeae34",
+      "id": "36019bb3-3ed0-4d19-8538-31f3d4fd3084",
       "name": "If"
     }
   ],
@@ -468,6 +518,17 @@
         [
           {
             "node": "Construire payload Shopify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Déclenché par le workflow images": {
+      "main": [
+        [
+          {
+            "node": "Rechercher dossiers",
             "type": "main",
             "index": 0
           }
@@ -535,6 +596,17 @@
         [
           {
             "node": "Filtrer et trier les images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrer et trier les images": {
+      "main": [
+        [
+          {
+            "node": "Le dossier a-t-il des images ?",
             "type": "main",
             "index": 0
           }
@@ -716,18 +788,7 @@
         ]
       ]
     },
-    "Déclenché par le workflow images": {
-      "main": [
-        [
-          {
-            "node": "Rechercher dossiers",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filtrer et trier les images": {
+    "Le dossier a-t-il des images ?": {
       "main": [
         [
           {
@@ -735,13 +796,16 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Loop Over Folders",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }
   },
-  "pinData": {},
-  "name": "Lil'OG — Publication Shopify (fiches Gemini)",
-  "settings": {
-    "executionOrder": "v1"
-  }
+  "pinData": {}
 }
