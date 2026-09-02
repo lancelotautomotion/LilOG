@@ -7193,11 +7193,25 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
      recouvrir la photo. */
   /* Le dock devient à son tour une carte sombre, posée sur le châssis
      comme les deux baies : même rayon, même liseré, même ombre. */
+  /* Marge basse constante, sans `env(safe-area-inset-bottom)`.
+
+     C'était la cause du saut de taille au défilement : quand Safari
+     replie ses barres, l'encoche du bas passe de 0 à 34px. La borne,
+     elle, garde la hauteur d'un `100svh` fixe — ces 34px étaient donc
+     pris sur `.dm-screen`, et les deux cartes rétrécissaient de 17px
+     chacune, en plein geste. Mesuré tel quel : 207,8px → 190,8px par
+     carte.
+
+     Cette réserve ne servait à rien ici : `svh` est la hauteur écran
+     barres du navigateur DÉPLOYÉES. Barres déployées, ce sont elles qui
+     occupent le bas ; barres repliées, la borne s'arrête bien au-dessus
+     du bord puisqu'elle ne fait toujours qu'un `svh`. Dans les deux cas
+     le dock ne touche jamais la barre d'accueil. */
   .dm-console {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 0 10px calc(10px + env(safe-area-inset-bottom));
+    margin: 0 10px 10px;
     padding: 9px 11px;
     border-top: none;
     border: 1px solid rgba(150, 120, 220, 0.38);
@@ -7291,7 +7305,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-titlebar { padding: 3px 8px; }
   .dm-toolbar { padding: 0 6px; }
   .dm-toolbar-btn { padding: 3px 7px; }
-  .dm-console { margin-bottom: calc(7px + env(safe-area-inset-bottom)); padding: 7px 10px; }
+  .dm-console { margin-bottom: 7px; padding: 7px 10px; }
   .dm-screen { gap: 24px; padding: 8px; }
   .dm-bay { padding: 9px 10px; gap: 3px; }
   .dm-bay-label { padding: 2px 7px; font-size: 0.625rem; }
