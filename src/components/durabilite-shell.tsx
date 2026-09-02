@@ -532,7 +532,11 @@ function RecycleBin() {
           <span className={`${MONO} hidden truncate text-[0.8125rem] font-bold tracking-[0.03em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)] sm:inline`}>
             🗑️ C:\LILOG\RESCUE_MISSION.TXT
           </span>
-          <div className="flex shrink-0 items-center gap-1.5">
+          {/* `ml-auto` : sur mobile, le titre disparaît (`hidden`) et les
+              boutons deviennent le seul enfant du `justify-between` — sans
+              ça, un unique enfant se cale au début de la barre au lieu de
+              rester à droite. */}
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
             <WindowButton label="Réduire" glyph="_" />
             <WindowButton label="Agrandir" glyph="🗖" />
             <WindowButton label="Fermer" glyph="×" />
@@ -543,8 +547,10 @@ function RecycleBin() {
           {/* Icône : corbeille Win95 d'où sortent des vêtements étincelants */}
           {/* `h-40 w-40` sur mobile (au lieu de `h-28 w-28`) : en pile sur une
               seule colonne, la corbeille se noyait dans la large bande de
-              papier millimétré vide qui l'entoure de part et d'autre. */}
-          <div className="relative mx-auto h-40 w-40 shrink-0 sm:mx-0 sm:h-28 sm:w-28" aria-hidden>
+              papier millimétré vide qui l'entoure de part et d'autre.
+              `mt-3` : légèrement descendue par rapport au haut de la
+              fenêtre, pour ne pas coller à la barre de titre. */}
+          <div className="relative mx-auto mt-3 h-40 w-40 shrink-0 sm:mx-0 sm:mt-0 sm:h-28 sm:w-28" aria-hidden>
             <span className="absolute inset-0 grid place-items-center">
               <RecycleBinIcon className="h-24 w-24 sm:h-16 sm:w-16" />
             </span>
