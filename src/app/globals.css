@@ -6852,9 +6852,8 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
      portée — sur un écran de téléphone, ces 24px de décor coûtent plus
      qu'ils ne racontent. Le fronton suffit à tenir l'identité.
 
-     Le châssis passe au léopard de la maison, le même `/leo.jpeg` que
-     /histoire, /contact, /faq et la fiche produit, sous le même voile
-     sombre : c'est lui qu'on voit tout autour des cartes et du dock. */
+     Le châssis reprend le bureau de la page panier : c'est lui qu'on
+     voit tout autour des cartes et du dock. */
   .dm-main {
     height: 100%;
     max-height: none;
@@ -6863,16 +6862,23 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     border: none;
     border-radius: 0;
     box-shadow: none;
+    /* Même bureau que la page panier : les deux halos de `.oc-root` —
+       rose en haut à droite, violet en bas à gauche — posés sur le
+       papier millimétré de `.bg-grid-pattern`, trame fine de 22px et
+       trame large de 110px. Recopié plutôt que partagé : la borne n'est
+       pas bâtie sur `.oc-root`, et lui greffer cette classe
+       l'embarquerait avec son `min-height` et son `overflow`. */
+    background-color: #ece8fa;
     background-image:
-      linear-gradient(rgba(18, 6, 44, 0.34), rgba(18, 6, 44, 0.34)),
-      url("/leo.jpeg");
-    /* Motif répété à taille lisible plutôt qu'une photo étirée en plein
-       cadre : ce qu'on en voit, ce sont les 12px autour des cartes et les
-       32px entre elles. En `cover`, l'image y était si agrandie qu'elle
-       ne se lisait plus que comme une tache. */
-    background-size: auto, 300px auto;
-    background-position: center, center;
-    background-repeat: no-repeat, repeat;
+      radial-gradient(60vw 45vh at 82% 8%,  rgba(255, 63, 176, 0.16), transparent 70%),
+      radial-gradient(65vw 50vh at 12% 92%, rgba(113, 71, 212, 0.18), transparent 72%),
+      linear-gradient(rgba(113, 71, 212, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(113, 71, 212, 0.07) 1px, transparent 1px),
+      linear-gradient(rgba(113, 71, 212, 0.13) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(113, 71, 212, 0.13) 1px, transparent 1px);
+    background-size: auto, auto, 22px 22px, 22px 22px, 110px 110px, 110px 110px;
+    background-position: 0 0;
+    background-repeat: no-repeat, no-repeat, repeat, repeat, repeat, repeat;
   }
 
   /* ---- Barres de tête, au régime ---- */
@@ -7163,13 +7169,19 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   .dm-lock:active { transform: translateY(3px); }
   .dm-lock:focus-visible { outline: 2px dotted #fff; outline-offset: 3px; }
   /* Enfoncé sans décaler, comme le cœur coché : il doit rester aligné. */
+  /* Fermé, le jeton change de matière et de couleur, pas seulement de
+     relief : l'ambre du témoin de marche. Un simple enfoncement se
+     voyait mal — le cadenas est déjà jaune, et sur un bouton de 44px
+     l'écart de profondeur ne suffisait pas à dire l'état. */
   .dm-lock.on {
-    background: linear-gradient(180deg, #ece6f8 0%, #ded5f1 44%, #c8bee1 100%);
+    border-color: rgba(120, 74, 8, 0.5);
+    background: linear-gradient(180deg, #ffdf9a 0%, #ffc24a 46%, #e79a12 100%);
     box-shadow:
-      inset 0 4px 9px rgba(70, 45, 125, 0.42),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.5),
-      0 0 0 2px rgba(255, 255, 255, 0.55),
-      0 2px 0 #9c94b0;
+      inset 0 3px 7px rgba(120, 74, 8, 0.4),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.6),
+      0 0 0 2px rgba(255, 210, 120, 0.6),
+      0 0 12px rgba(255, 194, 74, 0.75),
+      0 2px 0 #b07a12;
   }
 
   /* ---- La jonction : pointillé dans le vide, bulle centrée dessus ---- */
@@ -7226,6 +7238,10 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
      occupent le bas ; barres repliées, la borne s'arrête bien au-dessus
      du bord puisqu'elle ne fait toujours qu'un `svh`. Dans les deux cas
      le dock ne touche jamais la barre d'accueil. */
+  /* Le dock prend le plastique gris de SYSTEM_LOGIN.EXE — le même
+     dégradé que `.dm-win`, coque de toutes les fenêtres de la borne. Il
+     cesse d'être une troisième carte sombre et redevient la tranche du
+     cabinet, sous les deux baies. */
   .dm-console {
     display: flex;
     align-items: center;
@@ -7233,29 +7249,35 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     margin: 0 10px 10px;
     padding: 9px 11px;
     border-top: none;
-    border: 1px solid rgba(150, 120, 220, 0.38);
+    border: 1px solid #9b97b3;
     border-radius: 18px;
-    background: var(--dm-well);
+    background: linear-gradient(180deg, #f6f5fb 0%, #e2e0ee 34%, #c6c2d8 72%, #a9a5bd 100%);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.16),
-      0 8px 20px rgba(24, 12, 58, 0.4);
+      inset 0 2px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -5px 12px rgba(60, 40, 110, 0.24),
+      0 8px 20px rgba(24, 12, 58, 0.3);
   }
   .dm-scanner { display: none; }
   .dm-cop { display: contents; }
-  /* L'afficheur perd son puits : il est déjà dans le sombre. Reste un
-     filet vertical qui le sépare de la zone d'action, comme sur la
-     maquette. */
+  /* L'afficheur perd son puits : il est déjà sur le plastique. Reste un
+     filet vertical qui le sépare de la zone d'action. */
   .dm-cop-readout {
     order: 1;
     flex: 0 0 auto;
     align-items: flex-start;
     padding: 1px 12px 1px 2px;
     border: none;
-    border-right: 1px solid rgba(150, 120, 220, 0.42);
+    border-right: 1px solid rgba(90, 80, 130, 0.35);
     background: none;
   }
-  .dm-cop-label { font-size: 0.6875rem; letter-spacing: 0.08em; }
-  .dm-cop-total { font-size: 1.35rem; }
+  /* Encre sombre : le libellé était blanc pour le puits violet, il
+     disparaîtrait sur le plastique clair. */
+  .dm-cop-label { font-size: 0.6875rem; letter-spacing: 0.08em; color: #4b4560; }
+  .dm-cop-total {
+    font-size: 1.35rem;
+    color: #c2117a;          /* rose de la maison, assombri pour le clair */
+    text-shadow: none;
+  }
   /* Les deux outils tombent à l'icône : le libellé complet ne tient pas
      sur la même ligne que le prix et le bouton d'achat. */
   .dm-modules { order: 2; flex: 0 0 auto; }
@@ -7290,6 +7312,11 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   /* La barre d'état est le premier décor sacrifié : trois cellules de
      journal contre 26px de photo, l'arbitrage est vite fait. */
   .dm-statusbar { display: none; }
+
+  /* Le rappel « plusieurs choix possibles » quitte SYSTEM_LOGIN.EXE :
+     les cases à cocher le disent déjà, et sur un écran étroit il pousse
+     chaque rangée de tailles d'une ligne. */
+  .dm-gate-hint { display: none; }
 
   /* Filet de sécurité pour les deux fenêtres modales. Elles sont posées
      en `fixed` et centrées : ce qui les dépasse est hors d'atteinte, et
