@@ -793,6 +793,13 @@ export function FaqShell() {
                   <Link
                     href="/contact"
                     className={`${MONO} w-full max-w-[420px] rounded-full bg-purple-600 px-4 py-4 text-[clamp(0.875rem,1.7vw,0.9375rem)] font-bold tracking-[0.04em] text-white no-underline shadow-[inset_0_2px_4px_rgba(255,255,255,0.7),0_4px_6px_rgba(0,0,0,0.15)] transition hover:brightness-110 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4]`}
+                    style={{
+                      /* `text-white` seul ne suffit pas : `a { color: inherit }`
+                         (globals.css) est hors `@layer`, donc il l'emporte sur
+                         n'importe quelle classe Tailwind malgré sa spécificité —
+                         un style inline reste la seule façon fiable de gagner. */
+                      color: "#fff",
+                    }}
                   >
                     [ 📞 CONTACTER_LA_HOTLINE.EXE ]
                   </Link>

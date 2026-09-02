@@ -152,6 +152,11 @@ export function GiftCardPromo() {
                 style={{
                   background: "linear-gradient(180deg,#ff9ee4 0%,#ff45b4 42%,#d61f8f 74%,#a6106b 100%)",
                   textShadow: "0 2px 0 rgba(90,0,60,.55)",
+                  /* `text-white` seul ne suffit pas : `a { color: inherit }`
+                     (globals.css) est hors `@layer`, donc il l'emporte sur
+                     n'importe quelle classe Tailwind malgré sa spécificité —
+                     un style inline reste la seule façon fiable de gagner. */
+                  color: "#fff",
                 }}
               >
                 [ 💾 Graver un disque (dès 20€) ]
