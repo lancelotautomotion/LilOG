@@ -6311,6 +6311,9 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 .dm-modules { display: flex; flex-direction: column; justify-content: center; min-width: 0; min-height: 0; }
 
 @keyframes dmBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+/* Témoin de marche des baies : respiration lente, pas un clignotement
+   d'alarme. */
+@keyframes dmBayLed { 0%, 100% { opacity: 1; } 50% { opacity: 0.32; } }
 .dm-caret { animation: dmBlink 500ms step-end infinite; }
 
 /* ================================================================
@@ -6891,26 +6894,66 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     position: relative;
     overflow: hidden;
     padding: 11px 12px;
-    border-radius: 18px;
-    border: 1px solid rgba(190, 165, 255, 0.5);
-    background: var(--dm-violet);
+    /* Moins arrondi qu'avant : une machine est plus équarrie qu'une
+       vignette. */
+    border-radius: 12px;
+    border: none;
+    background-color: var(--dm-violet);
+    /* Tôle perforée, très faible : la carte cesse d'être un aplat et
+       devient un capot. */
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1.4px);
+    background-size: 9px 9px;
+    /* Biseau de la maison, celui des puits et des jetons de la borne :
+       lumière en haut à gauche, ombre en bas à droite. C'est ce relief
+       qui fait lire la carte comme une façade vissée, pas comme une
+       carte de contenu. */
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      inset 2px 2px 0 rgba(255, 255, 255, 0.3),
+      inset -2px -2px 0 rgba(26, 9, 72, 0.55),
+      inset 0 0 0 1px rgba(20, 8, 52, 0.45),
       0 8px 20px rgba(24, 12, 58, 0.45);
   }
 
-  /* La photo n'est plus le fond de la carte : elle occupe la partie
-     droite, à côté du panneau uni.
+  /* ---- Les quatre vis du capot ----
+     Deux pseudo-éléments seulement : chacun est une bande invisible qui
+     porte deux têtes de vis en fond, calées à gauche et à droite. Quatre
+     vis pour deux éléments, et aucun balisage ajouté. */
+  .dm-bay::before,
+  .dm-bay::after {
+    content: "";
+    position: absolute;
+    left: 9px;
+    right: 9px;
+    height: 8px;
+    z-index: 4;
+    pointer-events: none;
+    /* `closest-side` et non le défaut `farthest-corner` : sinon le cercle
+       est calculé sur la diagonale, déborde de sa boîte de 8px, et la
+       butée transparente n'y est jamais atteinte — la tête de vis
+       sortait carrée. */
+    background-image:
+      radial-gradient(circle closest-side at 50% 42%, #f8f7fd 0%, #d6d1e6 36%, #8a83a8 66%, #47406a 92%, transparent 100%),
+      radial-gradient(circle closest-side at 50% 42%, #f8f7fd 0%, #d6d1e6 36%, #8a83a8 66%, #47406a 92%, transparent 100%);
+    background-size: 8px 8px;
+    background-position: left center, right center;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 1px 1px rgba(14, 4, 40, 0.65));
+  }
+  .dm-bay::before { top: 9px; }
+  .dm-bay::after { bottom: 9px; }
 
-     Aucune marge, aucun cadre : le hublot est transparent et la doublure
-     floue est retirée. Ce qui n'est pas le vêtement est donc exactement
-     le violet du panneau — la zone photo semble épouser la pièce, quelles
-     que soient ses proportions, et il n'y a plus ces bandes grises en
-     haut, en bas et sur les côtés.
+  /* ---- Le hublot : la vitre de la machine ----
+     La pièce remplit la totalité du hublot (`cover`) : plus une seule
+     bande violette au-dessus, en dessous ni sur les côtés.
 
-     `object-position` la plaque à droite : elle touche ainsi le bord de
-     la carte, et tout le vide se rassemble d'un seul côté, contre le
-     panneau, au lieu de l'encadrer. */
+     C'est le seul moyen de tenir cette promesse sans casser le reste.
+     Faire au contraire rétrécir la carte jusqu'à la photo demanderait
+     deux cartes de hauteurs différentes — or la jonction, donc le
+     pointillé et la bulle STYLE_ME, est posée à mi-hauteur de l'écran :
+     elle ne tomberait plus entre les deux. `cover` garde les deux cartes
+     égales, la jonction juste, l'écran rempli, et ne rogne que les
+     marges de la photo, jamais sa hauteur (les photos du catalogue sont
+     plus larges que le hublot, le recadrage se fait donc sur les côtés). */
   .dm-viewport {
     position: absolute;
     inset: 0 0 0 var(--dm-panel);
@@ -6920,10 +6963,26 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     background: transparent;
   }
   .dm-reel-bg { display: none; }
-  .dm-reel-img { object-position: 100% 50%; }
-  /* Le voile disparaît complètement : posé sur du transparent, il aurait
-     assombri le panneau autant que la pièce, et le raccord se serait vu. */
+  .dm-reel-img { object-fit: cover; object-position: 50% 50%; }
+  /* Le voile est porté par le hublot, pas par la roulette : posé sur
+     `.dm-reel`, il défilerait avec elle à chaque tirage. */
   .dm-reel-shade { display: none; }
+  .dm-viewport::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    /* Reflet oblique de la vitre, cantonné au coin haut-gauche : la
+       couleur de la pièce reste intacte partout ailleurs. */
+    background: linear-gradient(118deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 24%, transparent 44%);
+    /* Cerclage encastré : la photo est derrière une vitre sertie dans le
+       capot, pas collée dessus. Dessiné en ombre interne, donc sans
+       décaler l'image d'un pixel. */
+    box-shadow:
+      inset 0 0 0 2px rgba(22, 8, 56, 0.7),
+      inset 0 0 20px rgba(16, 5, 46, 0.4);
+  }
 
   /* ---- La colonne d'infos, dans le panneau uni ----
      Bandeau, plaque et boutons quittent leur bande pleine largeur pour
@@ -6947,21 +7006,55 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   }
   .dm-bay-head { justify-content: flex-start; gap: 8px; }
   /* Le rayon devient une pastille, comme les jetons du reste du site. */
+  /* Plaque gravée plutôt que pastille : arêtes vives, biseau, et une
+     LED de fonctionnement à gauche du nom du rayon. */
   .dm-bay-label {
+    display: inline-flex;
+    align-items: center;
     padding: 3px 9px;
-    border: 1px solid rgba(255, 255, 255, 0.55);
-    border-radius: 8px;
-    background: rgba(24, 10, 62, 0.42);
+    border: none;
+    border-radius: 5px;
+    background: rgba(24, 10, 62, 0.5);
+    box-shadow:
+      inset 1px 1px 0 rgba(255, 255, 255, 0.34),
+      inset -1px -1px 0 rgba(12, 4, 40, 0.6);
     font-size: 0.6875rem;
     letter-spacing: 0.16em;
   }
-  /* Le vert LCD posé à même le violet du panneau est trop peu
-     contrasté : le compteur repasse en blanc, le prix garde le vert mais
-     dans un puits sombre (voir plus bas). */
+  /* Témoin de marche : vert quand le rayon tourne, ambre quand le
+     cadenas le fige. `:has()` lit l'état du bouton, deux blocs plus
+     bas — c'est la carte entière qui change de témoin. */
+  .dm-bay-label::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    margin-right: 7px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--dm-lcd);
+    box-shadow: 0 0 6px rgba(90, 255, 160, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+    animation: dmBayLed 2.4s ease-in-out infinite;
+  }
+  .dm-bay:has(.dm-lock.on) .dm-bay-label::before {
+    background: #ffc24a;
+    box-shadow: 0 0 6px rgba(255, 194, 74, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+    animation: none;
+  }
+
+  /* Le compteur passe en afficheur encastré : chiffres verts de la
+     borne dans un puits sombre. À même le violet, le vert n'avait pas
+     assez de contraste ; dans son puits, il le retrouve et devient le
+     compteur de bobine de la machine. */
   .dm-bay-count {
-    font-size: 0.9375rem;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(18, 6, 48, 0.6);
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(11, 3, 32, 0.72);
+    box-shadow:
+      inset 0 2px 5px rgba(0, 0, 0, 0.6),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    font-size: 0.875rem;
+    color: var(--dm-lcd);
+    text-shadow: 0 0 7px rgba(90, 255, 160, 0.55);
   }
 
   .dm-bay-plate { flex-direction: column; align-items: flex-start; gap: 3px; }
@@ -7223,7 +7316,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .dm-reel.spin-a, .dm-reel.spin-b { animation: none; }
   .dm-caret, .dm-term-opt.in:hover .dm-term-cursor { animation: none; }
-  .dm-titlebar::before { animation: none; }
+  .dm-titlebar::before, .dm-bay-label::before { animation: none; }
   .dm-strass { animation: none; transform: rotate(var(--r, 0deg)); }
 }
 
