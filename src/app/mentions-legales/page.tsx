@@ -14,7 +14,7 @@ const SECTIONS: DocSection[] = [
     title: "Éditeur du site",
     content: (
       <>
-        <P>Le site lil-og.vercel.app est édité par :</P>
+        <P>Le site lilog.shop est édité par :</P>
         <P>
           <strong>Lil&apos;OG</strong>, entreprise individuelle
           <br />
@@ -131,7 +131,7 @@ export default function MentionsLegalesPage() {
       activeHref="/mentions-legales"
       icon="💬"
       title="Mentions Légales"
-      subtitle="Informations légales relatives à l'exploitation du site lil-og.vercel.app."
+      subtitle="Informations légales relatives à l'exploitation du site lilog.shop."
       folder="MENTIONS"
       date="14 juillet 2026"
       sections={SECTIONS}

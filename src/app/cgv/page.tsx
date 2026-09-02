@@ -20,7 +20,7 @@ const SECTIONS: DocSection[] = [
         </Tldr>
         <P>
           Les présentes Conditions Générales de Vente (ci-après « CGV ») régissent l&apos;ensemble des ventes conclues entre
-          Lil&apos;OG (ci-après « le Vendeur ») et tout acheteur (ci-après « le Client ») via le site lil-og.vercel.app.
+          Lil&apos;OG (ci-après « le Vendeur ») et tout acheteur (ci-après « le Client ») via le site lilog.shop.
         </P>
         <P>
           Toute commande implique l&apos;acceptation sans réserve des présentes CGV. Le Vendeur se réserve le droit de les
@@ -253,7 +253,7 @@ export default function CgvPage() {
       activeHref="/cgv"
       icon="📜"
       title="Conditions Générales de Vente"
-      subtitle="Conditions applicables à tout achat effectué sur lil-og.vercel.app."
+      subtitle="Conditions applicables à tout achat effectué sur lilog.shop."
       folder="CGV"
       date="14 juillet 2026"
       sections={SECTIONS}

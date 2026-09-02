@@ -15,7 +15,7 @@ const SECTIONS: DocSection[] = [
     content: (
       <>
         <P>
-          Le responsable du traitement des données personnelles collectées via le site lil-og.vercel.app est :
+          Le responsable du traitement des données personnelles collectées via le site lilog.shop est :
         </P>
         <P>
           <strong>Louna Lili Guitton · Lil&apos;OG</strong>

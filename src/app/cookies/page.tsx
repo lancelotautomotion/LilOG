@@ -109,7 +109,7 @@ const SECTIONS: DocSection[] = [
     title: "Contact",
     content: (
       <P>
-        Pour toute question relative à l&apos;utilisation des cookies sur lil-og.vercel.app, contactez-nous à :{" "}
+        Pour toute question relative à l&apos;utilisation des cookies sur lilog.shop, contactez-nous à :{" "}
         <strong>lilog.shop@gmail.com</strong>
       </P>
     ),
