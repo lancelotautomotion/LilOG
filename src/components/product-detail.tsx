@@ -370,7 +370,7 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
           {/* Mini écran LED : même famille que PRICE_TAG.SYS au-dessus. */}
           <div className={`lpi-crt relative shrink-0 overflow-hidden rounded-md border-2 border-[#2b2b3d] bg-black px-2 py-1 ${BEVEL_IN}`}>
             <span className="relative z-[2] flex items-baseline gap-1.5">
-              <span className={`${LCD} text-[1.25rem] leading-none tracking-[0.02em]`} style={{ color: NEON, textShadow: `0 0 8px ${NEON}b3` }}>
+              <span className={`${LCD} text-[1.25rem] leading-none tracking-[0.02em] text-green-400`} style={{ textShadow: "0 0 8px rgba(74,222,128,.55)" }}>
                 {product.price}€
               </span>
               {product.was && <s className={`${MONO} text-[0.8125rem] text-white/35`}>{product.was}€</s>}
