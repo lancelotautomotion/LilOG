@@ -766,16 +766,6 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                 <SystemLogs tabs={logTabs} />
               </div>
             </div>
-
-            {/* Barre d'état */}
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-b-2xl border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2">
-              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#3b3550] uppercase`}>
-                1 objet · 100% one of one
-              </span>
-              <span className={`${MONO} text-[0.8125rem] tracking-[0.1em] text-[#6B7280] uppercase`}>
-                {t.pdp.ref} {product.handle}
-              </span>
-            </div>
           </WindowFrame>
 
           {/* RECOMMENDED_COMBO.EXE : une seconde fenêtre sous la fiche, pas
