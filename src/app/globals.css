@@ -1880,6 +1880,25 @@ textarea {
   object-fit: contain !important;
   display: block !important;
 }
+
+/* ---- Téléphone : la photo remplit son cadre ----
+   Le `max-height` ci-dessus écrasait l'`aspect-ratio: 3/4` déclaré : sur
+   un écran de téléphone le cadre retombait à 360x375, soit un ratio de
+   0,96 — presque carré — alors que les photos de la boutique sont en
+   3:4. `contain` les y posait donc en boîte aux lettres, avec 39px de
+   fond de part et d'autre. C'est la marge blanche visible sur le panier.
+
+   Le plafond est relevé pour que le ratio 3:4 reprenne la main : en
+   portrait il ne mord plus, le cadre épouse la photo, et il ne reste
+   rien à combler. Il est gardé pour les cas extrêmes (téléphone couché),
+   où `cover` prend le relais et remplit le cadre plutôt que de le
+   border. Sur une photo 3:4, c'est-à-dire la quasi-totalité du
+   catalogue, `cover` ne rogne rien : le cadre a exactement ses
+   proportions. */
+@media (max-width: 900px) {
+  .oc-screen-bg { max-height: min(70vh, 560px); }
+  .oc-img-wrap img, .oc-img-wrap span { object-fit: cover !important; }
+}
 /* Scan beam overlay : sweeps top→bottom over the photo during 'filling' phase */
 .oc-scan-overlay {
   position: absolute;
