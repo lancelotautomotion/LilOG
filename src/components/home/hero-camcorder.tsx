@@ -29,7 +29,7 @@ import { MONO, NEON } from "@/components/y2k/kit";
 const HERO_VIDEO = "/hero/camcorder.mp4";
 
 /** Still de repli : photographie maison, pas de banque d'images. */
-const HERO_STILL = "/Design sans titre.png";
+const HERO_STILL = "/Design sans titre (1).png";
 
 const HERO_CSS = `
 /* Lignes de balayage du viseur. */
