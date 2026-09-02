@@ -524,16 +524,6 @@ export function FilterControl({
           >
             [ ⟲ RESET ]
           </button>
-          {onClose && (
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Fermer les filtres"
-              className={`${MONO} shrink-0 rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1 text-[0.8125rem] font-bold whitespace-nowrap text-[#262626] uppercase transition hover:brightness-105 ${PLASTIC} ${PLASTIC_PRESS}`}
-            >
-              [ × ]
-            </button>
-          )}
       </div>
     </div>
   );
@@ -591,7 +581,7 @@ export function FilterControl({
                   title={c.key}
                   className={`lde-gem h-8 w-8${on ? " lde-gem-on" : ""}`}
                 >
-                  <ColorGem uid={`lde-gem-${norm(c.key)}`} gem={c.gem} />
+                  <ColorGem uid={`lde-gem-${bare ? "d" : "m"}-${norm(c.key)}`} gem={c.gem} />
                 </button>
               );
             })}
@@ -643,7 +633,7 @@ export function FilterControl({
   }
 
   return (
-    <WindowFrame title="FILTER_CONTROL.SYS" icon="🎛️" className="w-full">
+    <WindowFrame title="FILTER_CONTROL.SYS" icon="🎛️" className="w-full" onClose={onClose}>
       {statusBar}
       {sections}
     </WindowFrame>

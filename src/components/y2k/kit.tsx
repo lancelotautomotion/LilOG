@@ -152,13 +152,31 @@ function MaximizeGlyph() {
   );
 }
 
-/** Le trio complet, aligné à droite de chaque barre de titre. */
-export function WindowControls() {
+/**
+ * Le trio complet, aligné à droite de chaque barre de titre.
+ * `onClose` : par défaut, les trois boutons sont purement décoratifs (comme
+ * partout ailleurs sur le site). Le seul cas où « × » doit vraiment fermer
+ * quelque chose est le tiroir de filtres mobile — dans ce cas précis, ce
+ * bouton devient un vrai `<button>` plutôt qu'un `<span role="presentation">`.
+ */
+export function WindowControls({ onClose }: { onClose?: () => void }) {
   return (
     <div className="flex shrink-0 items-center gap-1">
       <WindowButton label="Réduire" glyph="_" />
       <WindowButton label="Agrandir" glyph={<MaximizeGlyph />} />
-      <WindowButton label="Fermer" glyph="×" />
+      {onClose ? (
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Fermer"
+          title="Fermer"
+          className={`grid h-6 w-7 shrink-0 place-items-center rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} text-[0.875rem] leading-none font-bold text-[#262626] ${PLASTIC} ${PLASTIC_PRESS}`}
+        >
+          ×
+        </button>
+      ) : (
+        <WindowButton label="Fermer" glyph="×" />
+      )}
     </div>
   );
 }
@@ -176,6 +194,7 @@ export function WindowFrame({
   bodyStyle,
   children,
   clip = true,
+  onClose,
 }: {
   title: React.ReactNode;
   icon?: React.ReactNode;
@@ -184,6 +203,8 @@ export function WindowFrame({
   bodyClassName?: string;
   bodyStyle?: React.CSSProperties;
   children: React.ReactNode;
+  /** Rend le « × » de la barre de titre fonctionnel au lieu de décoratif. */
+  onClose?: () => void;
   /**
    * `overflow-hidden` sur le cadre, nécessaire pour que la barre de titre
    * (coins carrés) épouse les coins arrondis du cadre. Passe à `false`
@@ -215,7 +236,7 @@ export function WindowFrame({
         >
           {title}
         </span>
-        <WindowControls />
+        <WindowControls onClose={onClose} />
       </div>
 
       <div className={bodyClassName} style={bodyStyle}>
