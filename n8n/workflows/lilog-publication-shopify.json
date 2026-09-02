@@ -2,7 +2,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Publication Shopify — cycle de vie des dossiers\n\n`✓_Nom du produit` → posé par le **workflow images** quand les photos sont prêtes.\n`$_Nom du produit` → posé **ici**, une fois le produit créé sur Shopify avec ses images.\n`⚠_Nom du produit` → détourage en échec, à relire à la main : ignoré par ce workflow.\n\n**Déclenchement** : automatique via `Déclenché par le workflow images` (nœud *Execute Workflow Trigger*), ou à la main avec `Manual Trigger`. Les deux entrent au même endroit.\n\n**Reprise sur erreur** : si Gemini ou Shopify échoue, le dossier n'est pas renommé — il reste en `✓_` et sera retenté à la prochaine exécution. Rien n'est publié deux fois.\n\n**Ordre des images** : les photos sont triées numériquement (1.webp, 2.webp...), la n°1 devient l'image principale de la fiche produit.\n\nProduits créés en **brouillon** (`status: draft`) : ils ne sont pas mis en ligne sans relecture.\n\n**Traite tous les dossiers `✓_` en une seule exécution**, pas un seul : la boucle `Loop Over Folders` reprend automatiquement dès qu'un dossier est terminé (renommé `$_`, ou sauté s'il n'a aucune image). Si un run précédent semblait n'en traiter qu'un, c'est qu'un nœud sans filet (recherche Drive, renommage...) avait échoué en silence sur le 2ᵉ dossier, arrêtant tout le reste du lot — corrigé par les tentatives automatiques ajoutées partout, et par le nœud `Le dossier a-t-il des images ?` qui empêche un dossier vide de bloquer la suite.",
+        "content": "## Publication Shopify — cycle de vie des dossiers\n\n`✓_Nom du produit` → posé par le **workflow images** quand les photos sont prêtes.\n`$_Nom du produit` → posé **ici**, une fois le produit créé sur Shopify avec ses images.\n`⚠_Nom du produit` → détourage en échec, à relire à la main : ignoré par ce workflow.\n\n**Déclenchement** : automatique via `Déclenché par le workflow images` (nœud *Execute Workflow Trigger*), ou à la main avec `Manual Trigger`. Les deux entrent au même endroit.\n\n**Reprise sur erreur** : si Gemini ou Shopify échoue, le dossier n'est pas renommé — il reste en `✓_` et sera retenté à la prochaine exécution. Rien n'est publié deux fois.\n\n**Ordre des images** : les photos sont triées numériquement (1.webp, 2.webp...), la n°1 devient l'image principale de la fiche produit.\n\nProduits créés en **brouillon** (`status: draft`) : ils ne sont pas mis en ligne sans relecture.\n\n**Traite tous les dossiers `✓_` en une seule exécution.** La boucle `Loop Over Folders` reprend automatiquement dès qu'un dossier est terminé. Deux causes différentes pouvaient donner l'impression qu'un seul dossier était traité :\n1. Un nœud sans filet (recherche Drive, renommage...) qui échouait en silence sur le 2ᵉ dossier et arrêtait tout le reste du lot — corrigé par les tentatives automatiques ajoutées partout.\n2. **L'index de recherche Google Drive n'avait pas encore rattrapé les photos tout juste uploadées** par le workflow images (déclenchement quasi immédiat entre les deux workflows) : `Lister les photos` trouvait 0 fichier pour un dossier qui en avait pourtant, et `Le dossier a-t-il des images ?` le sautait à tort. `Attendre l'indexation Drive` (8 s avant chaque recherche) laisse le temps à Drive de se mettre à jour.",
         "height": 420,
         "width": 1340,
         "color": 4
@@ -39,7 +39,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8112,
+        8336,
         1072
       ],
       "onError": "continueRegularOutput"
@@ -164,6 +164,21 @@
     },
     {
       "parameters": {
+        "amount": 8,
+        "unit": "seconds"
+      },
+      "id": "wait-drive-index-repo",
+      "name": "Attendre l'indexation Drive",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        6656,
+        1264
+      ],
+      "notes": "Ce workflow est déclenché automatiquement dès que le workflow images renomme un dossier en ✓_ — parfois quelques secondes seulement après l'upload des .webp. L'index de recherche Google Drive met un peu de temps à rattraper des fichiers tout juste créés : sans cette pause, « Lister les photos » peut renvoyer 0 résultat pour un dossier qui a pourtant bien ses photos, et le dossier est alors sauté à tort par « Le dossier a-t-il des images ? »."
+    },
+    {
+      "parameters": {
         "resource": "fileFolder",
         "filter": {
           "folderId": {
@@ -186,7 +201,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        6768,
+        6992,
         1264
       ],
       "alwaysOutputData": true,
@@ -203,7 +218,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6992,
+        7216,
         1264
       ],
       "notes": "Émet toujours ≥1 item (marqueur { empty: true } si le dossier n'a aucune image) : sinon la boucle sur les dossiers se bloquerait en silence sur celui-ci."
@@ -239,7 +254,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7216,
+        7440,
         1264
       ],
       "notes": "Faux = dossier ✓_ sans aucune image (cas anormal, le workflow images ne devrait jamais poser ✓_ sur un dossier vide) : on repart directement dans la boucle, sans créer de produit ni renommer — le dossier reste ✓_ et sera réexaminé au prochain run."
@@ -253,7 +268,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        7440,
+        7664,
         1264
       ]
     },
@@ -272,7 +287,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        7664,
+        7888,
         1264
       ],
       "retryOnFail": true,
@@ -287,7 +302,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7888,
+        8112,
         1264
       ]
     },
@@ -304,7 +319,7 @@
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
-        8112,
+        8336,
         1264
       ]
     },
@@ -317,7 +332,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8336,
+        8560,
         1328
       ],
       "notes": "base64Data = image pleine résolution (pour Shopify), base64Compressed = version 1200px (pour Gemini)."
@@ -333,7 +348,7 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        7664,
+        7888,
         1072
       ]
     },
@@ -346,7 +361,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7888,
+        8112,
         1072
       ]
     },
@@ -359,7 +374,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8336,
+        8560,
         1072
       ]
     },
@@ -388,7 +403,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8784,
+        9008,
         1072
       ],
       "onError": "continueRegularOutput",
@@ -404,7 +419,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9008,
+        9232,
         1072
       ],
       "notes": "L'extension du fichier suit le vrai type d'image (webp), sinon Shopify refuse l'upload."
@@ -418,7 +433,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        9232,
+        9456,
         1072
       ]
     },
@@ -447,7 +462,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        9456,
+        9680,
         1312
       ],
       "onError": "continueRegularOutput",
@@ -470,7 +485,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        9456,
+        9680,
         1088
       ],
       "notes": "Renomme le dossier en $_<titre> = produit publié sur Shopify. Le dossier sort ainsi du périmètre des deux workflows. En cas d'échec Gemini ou Shopify, le dossier reste en ✓_ et sera retenté. 3 tentatives avant d'abandonner : une erreur Drive transitoire ici arrêtait tout le reste du lot (les dossiers suivants ne passaient jamais).",
@@ -505,7 +520,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        8560,
+        8784,
         1072
       ],
       "id": "36019bb3-3ed0-4d19-8538-31f3d4fd3084",
@@ -584,7 +599,7 @@
       "main": [
         [
           {
-            "node": "Lister les photos",
+            "node": "Attendre l'indexation Drive",
             "type": "main",
             "index": 0
           }
@@ -800,6 +815,17 @@
         [
           {
             "node": "Loop Over Folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attendre l'indexation Drive": {
+      "main": [
+        [
+          {
+            "node": "Lister les photos",
             "type": "main",
             "index": 0
           }
