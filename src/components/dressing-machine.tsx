@@ -792,7 +792,7 @@ function MatchScanner({ keys }: { keys: string[] }) {
 }
 
 /* ================================================================== *
- * ÉTAPE 2 : VIRTUAL_CLOSET.EXE
+ * ÉTAPE 2 : DRESSING_MACHINE.EXE
  * ================================================================== */
 
 export function DressingMachine({ items }: { items: ClosetItem[] }) {
@@ -1088,7 +1088,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
         <div className="dm-win dm-main">
           {/* ---- Barre de titre ---- */}
           <div className="dm-titlebar">
-            <span className="dm-titlebar-text">VIRTUAL_CLOSET.EXE</span>
+            <span className="dm-titlebar-text">DRESSING_MACHINE.EXE</span>
             <div className="dm-chrome">
               <span className="dm-chrome-btn" aria-hidden>_</span>
               <span className="dm-chrome-btn" aria-hidden>□</span>

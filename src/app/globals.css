@@ -5578,7 +5578,7 @@ html, body {
 }
 
 /* ============================================================
-   /dressing-machine : VIRTUAL_CLOSET.EXE
+   /dressing-machine : DRESSING_MACHINE.EXE
    Borne d'arcade / écran de contrôle rétro façon Clueless.
 
    Le châssis extérieur reste celui de /account (fenêtre blanche,
@@ -6872,15 +6872,19 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
        et le texte s'arrête un peu avant : c'est cette variable unique qui
        garantit que le nom du produit n'empiète jamais sur la photo. */
     --dm-panel: 47%;
+    /* Le violet du panneau, repris par le hublot : c'est ce qui fait que
+       la zone photo n'a plus de bord visible — ce qui n'est pas le
+       vêtement est exactement de la même couleur que le panneau. */
+    --dm-violet: #663FC7;
 
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    /* Réparti sur toute la hauteur plutôt qu'entassé en haut : le panneau
-       est plus haut que ses trois blocs, les tasser laissait les deux
-       tiers inférieurs en aplat vide. */
-    justify-content: space-between;
-    gap: 5px;
+    /* Groupé et centré dans le panneau. Réparti sur toute la hauteur
+       (`space-between`), le trio pastille / nom / boutons s'étirait aux
+       deux extrémités et laissait deux grands trous entre ses blocs. */
+    justify-content: center;
+    gap: 10px;
     flex: 1 1 0;          /* base 0 : les deux cartes sont égales au pixel,
                              quelle que soit la longueur des noms */
     min-height: 0;
@@ -6888,29 +6892,38 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     overflow: hidden;
     padding: 11px 12px;
     border-radius: 18px;
-    border: 1px solid rgba(220, 150, 245, 0.45);
-    background: #aa43c4;   /* le violet du panneau, demandé */
+    border: 1px solid rgba(190, 165, 255, 0.5);
+    background: var(--dm-violet);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.22),
       0 8px 20px rgba(24, 12, 58, 0.45);
   }
 
   /* La photo n'est plus le fond de la carte : elle occupe la partie
-     droite, à côté du panneau uni. Le texte ne se pose donc plus dessus,
-     et n'a plus besoin d'être assombri pour rester lisible. */
+     droite, à côté du panneau uni.
+
+     Aucune marge, aucun cadre : le hublot est transparent et la doublure
+     floue est retirée. Ce qui n'est pas le vêtement est donc exactement
+     le violet du panneau — la zone photo semble épouser la pièce, quelles
+     que soient ses proportions, et il n'y a plus ces bandes grises en
+     haut, en bas et sur les côtés.
+
+     `object-position` la plaque à droite : elle touche ainsi le bord de
+     la carte, et tout le vide se rassemble d'un seul côté, contre le
+     panneau, au lieu de l'encadrer. */
   .dm-viewport {
     position: absolute;
     inset: 0 0 0 var(--dm-panel);
     z-index: 0;
     height: auto;
     border: none;
+    background: transparent;
   }
-  /* Voile réduit à la seule texture de balayage de la borne : le
-     dégradé violet qui couvrait la pièce lui faussait la couleur, ce
-     qui, sur une friperie, est un défaut et pas un effet. */
-  .dm-reel-shade {
-    background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px 3px);
-  }
+  .dm-reel-bg { display: none; }
+  .dm-reel-img { object-position: 100% 50%; }
+  /* Le voile disparaît complètement : posé sur du transparent, il aurait
+     assombri le panneau autant que la pièce, et le raccord se serait vu. */
+  .dm-reel-shade { display: none; }
 
   /* ---- La colonne d'infos, dans le panneau uni ----
      Bandeau, plaque et boutons quittent leur bande pleine largeur pour
@@ -6938,17 +6951,17 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     padding: 3px 9px;
     border: 1px solid rgba(255, 255, 255, 0.55);
     border-radius: 8px;
-    background: rgba(58, 12, 74, 0.42);
+    background: rgba(24, 10, 62, 0.42);
     font-size: 0.6875rem;
     letter-spacing: 0.16em;
   }
-  /* Le vert LCD sur le violet #aa43c4 est trop peu contrasté : le
-     compteur repasse en blanc, le prix garde le vert mais dans un puits
-     sombre (voir plus bas). */
+  /* Le vert LCD posé à même le violet du panneau est trop peu
+     contrasté : le compteur repasse en blanc, le prix garde le vert mais
+     dans un puits sombre (voir plus bas). */
   .dm-bay-count {
     font-size: 0.9375rem;
     color: #fff;
-    text-shadow: 0 1px 2px rgba(40, 8, 54, 0.6);
+    text-shadow: 0 1px 2px rgba(18, 6, 48, 0.6);
   }
 
   .dm-bay-plate { flex-direction: column; align-items: flex-start; gap: 3px; }
@@ -6959,7 +6972,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     font-size: clamp(0.75rem, 3.3vw, 0.9375rem);
     line-height: 1.25;
     font-weight: 600;
-    text-shadow: 0 1px 2px rgba(40, 8, 54, 0.55);
+    text-shadow: 0 1px 2px rgba(18, 6, 48, 0.55);
     /* Trois lignes au lieu d'une coupée net : c'est la ligne la plus lue
        de la carte, et le panneau est étroit. Les mots trop longs pour la
        colonne se brisent plutôt que de dépasser. */
@@ -6976,7 +6989,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     align-self: flex-start;
     padding: 2px 9px;
     border-radius: 8px;
-    background: rgba(30, 8, 58, 0.55);
+    background: rgba(20, 8, 52, 0.58);
     font-size: clamp(1.1rem, 4.6vw, 1.4rem);
     color: var(--dm-lcd);
     text-shadow: 0 0 9px rgba(90, 255, 160, 0.4);
@@ -7042,7 +7055,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     height: 2px;
     width: auto;
     margin-top: -1px;
-    background: repeating-linear-gradient(90deg, #8a63e8 0 5px, transparent 5px 11px);
+    background: repeating-linear-gradient(90deg, #fff 0 5px, transparent 5px 11px);
   }
   .dm-style-cell {
     position: absolute;
@@ -7203,7 +7216,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     width: 2px;
     height: auto;
     margin: 0 0 0 -1px;
-    background: repeating-linear-gradient(180deg, #8a63e8 0 5px, transparent 5px 11px);
+    background: repeating-linear-gradient(180deg, #fff 0 5px, transparent 5px 11px);
   }
 }
 
