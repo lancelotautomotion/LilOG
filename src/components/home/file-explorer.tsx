@@ -194,7 +194,7 @@ export function FileExplorer() {
             className={`relative aspect-[3/4] overflow-hidden rounded-xl border-2 border-[#b8b4cc] lg:aspect-auto lg:h-full ${HARD_SHADOW}`}
           >
             <Image
-              src="/5.png"
+              src="/14.jpg"
               alt="Look Lil'OG porté, sac à main en avant"
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
