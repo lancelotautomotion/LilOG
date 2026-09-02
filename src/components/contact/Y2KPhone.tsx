@@ -972,7 +972,7 @@ export default function Y2KPhone() {
       </div>
 
       <div className="y2kp-hint">
-        <span>[#] EFFACE · [✆] APPEL</span>
+        <span className="hidden sm:inline">[#] EFFACE · [✆] APPEL</span>
         <button
           type="button"
           className="y2kp-mute"

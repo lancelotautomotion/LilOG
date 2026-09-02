@@ -383,7 +383,7 @@ export default function ContactPage() {
                                   setSubject(id);
                                   setSubjectError(false);
                                 }}
-                                className={`${MONO} rounded-2xl border px-2 py-1.5 text-center leading-tight text-[0.75rem] font-bold transition sm:rounded-full sm:px-4 sm:py-2 sm:text-[0.875rem] ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
+                                className={`${MONO} flex min-h-[2.6rem] items-center justify-center rounded-2xl border px-2 py-1.5 text-center leading-tight text-[0.75rem] font-bold transition sm:min-h-0 sm:rounded-full sm:px-4 sm:py-2 sm:text-[0.875rem] ${PLASTIC_PRESS} hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${
                                   on
                                     ? "border-purple-700 bg-purple-600 text-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.45),inset_0_-2px_5px_rgba(0,0,0,0.3),0_2px_4px_rgba(80,30,140,0.35)]"
                                     : `border-[#c6c2d8] bg-[linear-gradient(180deg,#fdfdff_0%,#ebe9f4_48%,#d3d0e1_100%)] text-[#262626] ${PLASTIC}`
@@ -459,21 +459,31 @@ export default function ContactPage() {
                 <span className="h-px flex-1 bg-[#5b2fb8]/20" />
               </div>
               <div className="grid grid-cols-1 gap-[clamp(14px,2.4vw,26px)] sm:grid-cols-2 lg:grid-cols-3">
-                <Floppy
-                  variant="pink"
-                  name="LIVRAISON.DOC"
-                  text="Expédition sous 24/48h. Numéro de suivi envoyé par email dès le départ du colis."
-                />
-                <Floppy
-                  variant="purple"
-                  name="RETOURS.SYS"
-                  text="14 jours pour changer d'avis. Article non porté, non lavé, étiquette d'origine."
-                />
-                <Floppy
-                  variant="black"
-                  name="PAIEMENT.EXE"
-                  text="Transactions 100% cryptées. CB, Apple Pay et PayPal acceptés en toute sécurité."
-                />
+                {/* `max-w-[220px]` uniquement sur mobile : en pile sur une
+                    seule colonne, la disquette prenait toute la largeur de
+                    la fenêtre (jusqu'à 340px, son plafond normal, pensé pour
+                    une carte de grille à plusieurs colonnes). */}
+                <div className="mx-auto w-full max-w-[220px] sm:max-w-none">
+                  <Floppy
+                    variant="pink"
+                    name="LIVRAISON.DOC"
+                    text="Expédition sous 24/48h. Numéro de suivi envoyé par email dès le départ du colis."
+                  />
+                </div>
+                <div className="mx-auto w-full max-w-[220px] sm:max-w-none">
+                  <Floppy
+                    variant="purple"
+                    name="RETOURS.SYS"
+                    text="14 jours pour changer d'avis. Article non porté, non lavé, étiquette d'origine."
+                  />
+                </div>
+                <div className="mx-auto w-full max-w-[220px] sm:max-w-none">
+                  <Floppy
+                    variant="black"
+                    name="PAIEMENT.EXE"
+                    text="Transactions 100% cryptées. CB, Apple Pay et PayPal acceptés en toute sécurité."
+                  />
+                </div>
               </div>
             </div>
           </div>
