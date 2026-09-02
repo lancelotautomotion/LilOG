@@ -251,27 +251,29 @@ export function AccountDashboard({
                           <a href="/#drops" className="account-btn primary acct-orders-cta-btn">SETUP_MY_LOOK.EXE →</a>
                         </div>
                       ) : (
-                        <table className="acct-order-table">
-                          <thead>
-                            <tr>
-                              <th>N° Commande</th><th>Date</th><th>Statut</th><th>Total</th><th></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {orders.map((order) => {
-                              const st = statusInfo(order.fulfillmentStatus);
-                              return (
-                                <tr key={order.id}>
-                                  <td><span style={{ fontFamily: "var(--mono)", fontWeight: 700, color: "#000080", fontSize: "0.875rem" }}>{order.name}</span></td>
-                                  <td style={{ color: "#555", fontSize: "0.875rem" }}>{fmtDate(order.processedAt)}</td>
-                                  <td><span className={`acct-badge acct-badge-${st.cls}`}>{st.icon} {st.label}</span></td>
-                                  <td style={{ fontWeight: 700, color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.875rem" }}>{fmt(order.currentTotalPrice.amount, order.currentTotalPrice.currencyCode)}</td>
-                                  <td><a href={`/account/orders/${encodeURIComponent(order.id)}`} className="acct-see-btn">Voir →</a></td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
+                        <div className="acct-order-table-wrap">
+                          <table className="acct-order-table">
+                            <thead>
+                              <tr>
+                                <th>N° Commande</th><th>Date</th><th>Statut</th><th>Total</th><th></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {orders.map((order) => {
+                                const st = statusInfo(order.fulfillmentStatus);
+                                return (
+                                  <tr key={order.id}>
+                                    <td><span style={{ fontFamily: "var(--mono)", fontWeight: 700, color: "#000080", fontSize: "0.875rem" }}>{order.name}</span></td>
+                                    <td style={{ color: "#555", fontSize: "0.875rem" }}>{fmtDate(order.processedAt)}</td>
+                                    <td><span className={`acct-badge acct-badge-${st.cls}`}>{st.icon} {st.label}</span></td>
+                                    <td style={{ fontWeight: 700, color: "#d4006e", fontFamily: "var(--mono)", fontSize: "0.875rem" }}>{fmt(order.currentTotalPrice.amount, order.currentTotalPrice.currencyCode)}</td>
+                                    <td><a href={`/account/orders/${encodeURIComponent(order.id)}`} className="acct-see-btn">Voir →</a></td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
                       )}
                     </div>
                   </>

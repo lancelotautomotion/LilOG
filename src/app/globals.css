@@ -2999,7 +2999,10 @@ textarea {
   white-space: nowrap;
   background: var(--ldl-surface);
 }
-.account-status-cell.grow { flex: 1; }
+/* `min-width: 0` : sans lui, un enfant flex `nowrap` refuse de descendre
+   sous la largeur de son propre texte (l'email peut être long), et pousse
+   toute la barre de statut hors de `.acct-window` au lieu de se tronquer. */
+.account-status-cell.grow { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .account-status-pink { color: var(--ldl-accent); font-weight: 700; }
 
 /* Order detail */
@@ -3224,7 +3227,13 @@ textarea {
   background-position: center;
   background-repeat: no-repeat;
 }
-.acct-col { display: flex; flex-direction: column; gap: 12px; }
+/* `min-width: 0` : sans ça, une piste de grille `1fr` reste quand même
+   large d'au moins le contenu min-content de son enfant (comportement par
+   défaut de Grid). Le tableau de commandes, en `white-space: nowrap`,
+   imposait ainsi sa largeur à toute la colonne — jusqu'à faire déborder
+   `.acct-window` (qui masque l'excédent en `overflow: hidden`) plutôt que
+   de se contenter des 358px réellement disponibles sur mobile. */
+.acct-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 
 /* Profile avatar */
 .acct-avatar {
@@ -3244,7 +3253,15 @@ textarea {
   box-shadow: 0 2px 8px rgba(0,0,128,0.2);
 }
 
-/* Orders table */
+/* Orders table : ses cellules ne sont pas prévues pour se tasser (dates,
+   statuts et prix restent en `nowrap`), donc plutôt que de les couper, le
+   tableau défile horizontalement dès qu'il dépasse son cadre — utile sur
+   mobile, invisible sur desktop où il tient déjà dans la largeur. */
+.acct-order-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 .acct-order-table {
   width: 100%;
   border-collapse: collapse;
