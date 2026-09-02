@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   /contact : LIL_OG_SUPPORT_CENTER.EXE
+   /contact : CONTACT_CENTER.EXE
    Direction artistique Y2K / Windows 95 / Chunky Plastic.
 
    ⚠ PAREFEU : cette page est 100 % autonome.
@@ -243,7 +243,7 @@ export default function ContactPage() {
               <h1
                 className={`${MONO} truncate text-[clamp(0.875rem,2.1vw,1rem)] font-bold tracking-[0.05em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
               >
-                LIL_OG_SUPPORT_CENTER.EXE
+                CONTACT_CENTER.EXE
               </h1>
             </div>
             <div className="flex shrink-0 items-center gap-1.5">
