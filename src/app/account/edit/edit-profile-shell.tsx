@@ -37,7 +37,7 @@ export function EditProfileShell({
         <div className="account-win95 account-win95--wide">
           {/* Title bar */}
           <div className="account-win95-bar">
-            <span className="account-win95-title">♛ Lil&apos;OG · Modifier le profil</span>
+            <span className="account-win95-title">Modifier le profil</span>
             <div className="account-win95-chrome">
               <span>_</span>
               <span>□</span>
