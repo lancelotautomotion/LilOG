@@ -6808,6 +6808,22 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     overflow: hidden;
   }
 
+  /* ---- Le défilement ne coupe plus la borne en deux ----
+     La borne fait exactement un écran et le pied de page suit : la page
+     était donc défilable de la hauteur du pied, et n'importe quel geste
+     un peu vif laissait l'écran à moitié — le haut de la borne glissé
+     sous la barre de navigation (qui est `fixed`), le bas rempli de pied
+     de page. Un demi-appareil, en somme.
+
+     Deux points d'ancrage, et deux seulement : la borne entière en haut,
+     le pied de page entier en bas. Le défilement reste libre, mais il ne
+     se repose plus au milieu. `end` sur le pied de page plutôt que
+     `start` : il est plus court qu'un écran, son point d'ancrage haut
+     serait hors d'atteinte et le navigateur y renoncerait. */
+  html:has(main.dm-desktop) { scroll-snap-type: y mandatory; }
+  .dm-desktop { scroll-snap-align: start; }
+  main.dm-desktop ~ footer { scroll-snap-align: end; }
+
   /* Écartés de la barre d'outils et du dock sur téléphone : la place y
      est comptée, et chacun a une autre porte d'entrée (la bulle
      STYLE_ME pour MÉLANGER, le menu pour MES LOOKS). */
