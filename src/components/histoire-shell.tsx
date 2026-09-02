@@ -229,10 +229,7 @@ function CameraWidget() {
           <div
             className={`relative z-10 w-[clamp(220px,26vw,300px)] rounded-[28px] border-2 border-[#b8b4cc] bg-[linear-gradient(160deg,#f4f3fa_0%,#dcd9ea_55%,#c3bfd8_100%)] p-3 ${PLASTIC}`}
           >
-            <div
-              className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-white"
-              style={{ boxShadow: "inset 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(255,255,255,0.8)" }}
-            >
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-white">
               <Image
                 src="/Lou.png"
                 alt="Louna Lili Guitton, fondatrice de Lil'OG"
