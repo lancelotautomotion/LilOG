@@ -163,7 +163,7 @@ export function ReadmeWindow() {
 
           {/* ---- Polaroid scotché ---- */}
           <div
-            className={`lhr-polaroid relative z-20 mx-auto -mt-[58px] w-[190px] bg-[#fafafa] p-2 pb-3 sm:w-[210px] md:absolute md:top-16 md:right-0 md:mt-0 md:w-[262px] ${HARD_SHADOW}`}
+            className={`lhr-polaroid relative z-20 mx-auto -mt-[58px] w-[190px] bg-[#fafafa] p-2 pb-5 sm:w-[210px] md:absolute md:top-16 md:right-0 md:mt-0 md:w-[262px] ${HARD_SHADOW}`}
             style={{ transform: "rotate(-3deg)", border: "1px solid #e5e7eb" }}
           >
             <Tape rotate="-6deg" className="top-[-11px] left-[38%]" wide />
