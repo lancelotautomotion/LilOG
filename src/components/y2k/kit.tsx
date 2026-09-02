@@ -177,7 +177,7 @@ export function WindowFrame({
   children,
   clip = true,
 }: {
-  title: string;
+  title: React.ReactNode;
   icon?: React.ReactNode;
   bar?: string;
   className?: string;

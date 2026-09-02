@@ -386,7 +386,7 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
           )}
           {product.etat && (
             <span
-              className={`${MONO} min-w-0 truncate rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1.5 text-[0.8125rem] font-bold tracking-[0.04em] text-[#3b3550] uppercase ${PLASTIC}`}
+              className={`${MONO} hidden min-w-0 truncate rounded-md border border-[#c6c2d8] ${PLASTIC_FACE} px-2 py-1.5 text-[0.8125rem] font-bold tracking-[0.04em] text-[#3b3550] uppercase sm:inline-block ${PLASTIC}`}
             >
               💎 {stripEtatWord(product.etat) || product.etat}
             </span>
@@ -398,7 +398,7 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
             type="button"
             onClick={add}
             disabled={sold}
-            className={`${MONO} flex-1 rounded-md border-b-[3px] px-2 py-1.5 text-[1rem] font-black tracking-[0.04em] text-white uppercase transition active:translate-y-[3px] active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${
+            className={`${MONO} flex-1 rounded-md border-b-[3px] px-1.5 py-1 text-[0.75rem] whitespace-nowrap sm:px-2 sm:py-1.5 sm:text-[1rem] font-black tracking-[0.04em] text-white uppercase transition active:translate-y-[3px] active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${
               added ? "border-[#0f5c26] bg-gradient-to-b from-[#4fbe84] to-[#1B8A3C]" : "border-[#7a0a52] bg-gradient-to-b from-[#ff5ec4] to-[#c3128a]"
             }`}
             style={{ boxShadow: "0 3px 0 rgba(0,0,0,0.18)" }}
@@ -786,7 +786,12 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
           {related.length > 0 && (
             <div className="mt-[clamp(20px,3vw,32px)]">
               <WindowFrame
-                title="C:\ LIL_OG \ RECOMMENDED_COMBO.EXE"
+                title={
+                  <>
+                    <span className="sm:hidden">RECOMMENDATION.EXE</span>
+                    <span className="hidden sm:inline">C:\ LIL_OG \ RECOMMENDED_COMBO.EXE</span>
+                  </>
+                }
                 icon={<Icon.folderOpen width={15} height={12} />}
                 bodyStyle={{ backgroundColor: "#ffffff" }}
               >
