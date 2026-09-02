@@ -175,10 +175,17 @@ export function HeroCamcorder() {
 
       {/* ---- Fond : still de la marque, puis vidéo si elle existe ---- */}
       <div aria-hidden className="absolute inset-0">
-        <Image src={HERO_STILL} alt="" fill priority sizes="100vw" className="object-cover" />
+        <Image
+          src={HERO_STILL}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[64%_center] md:object-center"
+        />
 
         <video
-          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
+          className="absolute inset-0 h-full w-full object-cover object-[64%_center] transition-opacity duration-700 md:object-center"
           style={{ opacity: videoOn ? 1 : 0 }}
           src={HERO_VIDEO}
           autoPlay
