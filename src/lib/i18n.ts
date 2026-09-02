@@ -131,7 +131,7 @@ export const DICT: Record<LangCode, Dict> = {
       outerwear: "Vestes & Manteaux", dressesSkirts: "Robes & Jupes", bottoms: "Pantalons & Jeans",
     },
     foot: { selltous: "Vendez-nous", tagline: "Seconde main depuis le Y2K · Paris" },
-    hero: { kicker: "Lil'OG · Vintage, Renaissance", line: "Nous sommes nés pour",
+    hero: { kicker: "Lil'OG · Vintage, Renaissance", line: "Nous sommes nées pour",
       words: ["Briller.", "Conquérir.", "Régner.", "Flamber."], shop: "Voir le drop", story: "Notre histoire", avail: "Prochain drop · 3 juin" },
     home: {
       scroll: "DÉFILER",
