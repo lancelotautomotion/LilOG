@@ -53,8 +53,15 @@ const JOURNAL_CSS = `
 .lj-polaroid { transition: transform 220ms ease, box-shadow 220ms ease; }
 .lj-polaroid:hover { transform: rotate(0deg) scale(1.08) !important; box-shadow: 0 12px 26px rgba(0,0,0,0.28); z-index: 30; }
 
+/* Invite à faire défiler la bande de polaroids mobile. */
+@keyframes ljSwipe {
+  0%, 100% { transform: translateX(0); opacity: 0.55; }
+  50%      { transform: translateX(5px); opacity: 1; }
+}
+.lj-swipe-hint { animation: ljSwipe 1.6s ease-in-out infinite; }
+
 @media (prefers-reduced-motion: reduce) {
-  .lj-sticker, .lj-led { animation: none !important; }
+  .lj-sticker, .lj-led, .lj-swipe-hint { animation: none !important; }
 }
 `;
 
@@ -248,12 +255,26 @@ function CameraWidget() {
           </div>
         </div>
 
-        {/* Bande mobile : les mêmes polaroids en scroll horizontal. */}
-        <div className="mt-6 flex w-full max-w-full gap-4 overflow-x-auto px-2 pt-2 pb-3 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* Bande mobile : les mêmes polaroids en scroll horizontal.
+            `pt-5` (au lieu de `pt-2`) : posant `overflow-x: auto`, le
+            navigateur force aussi `overflow-y` à se comporter en `auto`
+            (les deux axes ne peuvent pas rester dépareillés) — le scotch de
+            chaque polaroid, qui déborde de ~9px au-dessus de la carte (plus
+            encore une fois tourné), se faisait donc rogner faute de place
+            au-dessus. */}
+        <div className="mt-6 flex w-full max-w-full gap-4 overflow-x-auto px-2 pt-5 pb-3 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {POLAROIDS.map((p) => (
             <PolaroidCard key={p.src} p={p} mobile />
           ))}
         </div>
+
+        {/* Invite à faire défiler, mobile uniquement : sans elle, rien ne
+            signale que la bande continue au-delà du bord de l'écran. */}
+        <p
+          className={`${MONO} lj-swipe-hint mt-1 flex items-center justify-center gap-1.5 text-[0.75rem] font-bold tracking-[0.14em] text-[#6b6480] uppercase md:hidden`}
+        >
+          Glisse pour voir plus <span aria-hidden>▶</span>
+        </p>
       </div>
     </section>
   );
