@@ -27,8 +27,16 @@
       font-family: 'Courier New', Courier, monospace !important;
     }
 
-    .body h2 { font-size: 22px !important; color: #1E2430 !important; }
+    .body h2 { font-size: 22px !important; color: #1E2430 !important; margin: 12px 0 14px !important; }
     a, a:hover, a:active, a:visited { color: #7147d4 !important; }
+
+    /* Retire le cadre/fond par défaut de Shopify autour du bloc d'actions,
+       pour ne garder que la pastille du bouton. */
+    .row.actions, .actions__cell, .main-action-cell, .secondary-action-cell {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
 
     /* Barre de titre : le dégradé des fenêtres du site. */
     .header__cell {
@@ -103,7 +111,7 @@
 </table>
 <table class="row" width="100%">
   <tr>
-    <td align="center" style="background:#ffffff;padding:30px 12px 0;">
+    <td align="center" style="background:#ffffff;padding:34px 12px 20px;">
       <img src="https://lilog.shop/logo-black.png" width="140" alt="Lil'OG" style="display:block;margin:0 auto;width:140px;max-width:55%;height:auto;border:0;">
     </td>
   </tr>
@@ -143,10 +151,10 @@
               <tr>
                 <td class="actions__cell">
                   <table class="button main-action-cell">
-                    <tr><td class="button__cell"><a href="{{ customer.account_activation_url }}" class="button__text">Activer mon compte</a></td></tr>
+                    <tr><td class="button__cell"><a href="https://lilog.shop" class="button__text">Découvrir la boutique</a></td></tr>
                   </table>
                   <table class="link secondary-action-cell">
-                    <tr><td class="link__cell">ou <a href="https://lilog.shop">visiter la boutique</a></td></tr>
+                    <tr><td class="link__cell">ou <a href="{{ customer.account_activation_url }}">activer mon compte</a></td></tr>
                   </table>
                 </td>
               </tr>
