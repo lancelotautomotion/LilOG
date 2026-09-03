@@ -206,6 +206,7 @@ function Chip({
   onClick,
   title,
   compact = false,
+  dense = false,
   children,
 }: {
   on: boolean;
@@ -213,6 +214,9 @@ function Chip({
   title?: string;
   /** Rubriques à longue liste (matières, types) : un cran plus bas. */
   compact?: boolean;
+  /** TRIER PAR : un cran de plus que `compact`, pour que ses trois jetons
+   *  tiennent sur une seule ligne dans les 270px de la colonne filtres. */
+  dense?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -222,7 +226,7 @@ function Chip({
       aria-pressed={on}
       title={title}
       className={`${MONO} rounded-md border font-bold tracking-[0.04em] whitespace-nowrap uppercase transition active:translate-y-0.5 ${
-        compact ? "px-2 py-1 text-[0.8125rem]" : "px-2.5 py-1.5 text-[0.875rem]"
+        dense ? "px-1.5 py-1 text-[0.8125rem]" : compact ? "px-2 py-1 text-[0.8125rem]" : "px-2.5 py-1.5 text-[0.875rem]"
       } ${
         on
           ? "border-[#3b1d8f] bg-[linear-gradient(180deg,#a86fe8_0%,#7147d4_48%,#4b2a9e_100%)] text-white shadow-[inset_0_2px_5px_rgba(0,0,0,0.4),inset_0_-1px_0_rgba(255,255,255,0.25)]"
@@ -531,9 +535,9 @@ export function FilterControl({
   const sections = (
     <>
       <Section n="01" label="TRIER PAR">
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-nowrap gap-1">
           {(Object.keys(SORT_LABELS) as Sort[]).map((s) => (
-            <Chip key={s} on={sort === s} onClick={() => setSort(s)}>
+            <Chip key={s} on={sort === s} onClick={() => setSort(s)} dense>
               {SORT_LABELS[s]}
             </Chip>
           ))}
