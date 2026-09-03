@@ -5671,9 +5671,9 @@ html, body {
   --dm-plastic-edge: #a5a1bd;
   /* Tranche du cabinet autour de l'écran (voir .dm-win) : le fronton s'y
      soustrait en marge négative pour remplir tout le haut de la fenêtre,
-     comme les barres de titre du reste du site. Remise à 0 en plein cadre
-     mobile, où .dm-main n'a elle-même plus de tranche. */
-  --dm-win-pad: 10px;
+     comme les barres de titre du reste du site. Retirée par défaut
+     (contenu jusqu'aux bords) ; déjà à 0 en plein cadre mobile. */
+  --dm-win-pad: 0px;
 }
 
 .dm-desktop {
