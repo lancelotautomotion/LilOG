@@ -132,7 +132,7 @@ export function SearchShell({ query, results }: { query: string; results: Produc
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-[clamp(8px,1.4vw,14px)] md:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-2 gap-[clamp(8px,1.4vw,14px)] md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                   {results.map((p, idx) => (
                     <ProductWindow key={p.id} product={p} idx={idx} />
                   ))}
