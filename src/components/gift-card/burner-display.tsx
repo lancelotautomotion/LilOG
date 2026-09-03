@@ -35,6 +35,19 @@ const BURNER_CSS = `
 }
 `;
 
+/** Les spécs, purement décoratives : le contenu réel (capacité, prix) vit
+ *  dans l'écran LCD au-dessus, choisi par l'utilisateur à l'étape 1. */
+const SPECS: [string, string][] = [
+  ["FORMAT", "CD-R VIRTUEL"],
+  ["VALIDITÉ", "ILLIMITÉE"],
+  ["COMPAT.", "TOUTE LA BOUTIQUE"],
+  ["LIVRAISON", "EMAIL INSTANTANÉ"],
+];
+
+/** Largeurs des barres du faux code-barres — fixes plutôt que `Math.random()`,
+ *  pour que le rendu serveur et l'hydratation client tombent d'accord. */
+const BARCODE_WIDTHS = [2, 1, 1, 3, 1, 2, 4, 1, 1, 2, 3, 1, 4, 1, 2, 1, 3, 2, 1, 4, 1, 1, 2, 3, 1, 2, 4, 1, 3, 1, 2, 1];
+
 export function BurnerDisplay({
   /** Le graveur travaille : le disque tourne, le curseur de l'écran clignote. */
   spinning,
@@ -79,6 +92,44 @@ export function BurnerDisplay({
           sizes="(min-width: 1024px) 280px, 70vw"
           className={`burner-disc object-contain drop-shadow-xl${spinning ? " spin" : ""}`}
         />
+      </div>
+
+      {/* ---- Fiche technique, purement décorative : comble le vide sous le
+             disque plutôt que de laisser la colonne de gauche se terminer
+             sur du blanc. Même écran encastré que le LCD du haut. ---- */}
+      <div className="w-full rounded-md border-2 border-[#3f3d55] bg-black px-3.5 py-2.5 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)]">
+        <p
+          className={`${LCD} text-[0.75rem] tracking-[0.06em] uppercase`}
+          style={{ color: MATRIX, textShadow: `0 0 6px ${MATRIX}80` }}
+        >
+          ▶ Spécifications système
+        </p>
+        <div className="mt-1.5 space-y-0.5">
+          {SPECS.map(([k, v]) => (
+            <p
+              key={k}
+              className={`${LCD} flex items-baseline justify-between gap-3 text-[0.75rem] tracking-[0.04em] text-[#3f6f57] uppercase`}
+            >
+              <span>{k}</span>
+              <span className="truncate text-right" style={{ color: `${MATRIX}cc` }}>
+                {v}
+              </span>
+            </p>
+          ))}
+        </div>
+        {/* Code-barres esthétique, comme sur le dos d'un vrai boîtier de CD. */}
+        <div className="mt-2.5 flex h-6 items-end gap-[2px] opacity-70" aria-hidden="true">
+          {BARCODE_WIDTHS.map((w, i) => (
+            <span
+              key={i}
+              style={{
+                width: `${w}px`,
+                height: i % 6 === 0 ? "100%" : "65%",
+                background: MATRIX,
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
