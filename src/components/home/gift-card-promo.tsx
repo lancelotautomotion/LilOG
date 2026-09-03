@@ -147,7 +147,7 @@ export function GiftCardPromo() {
 
               <Link
                 href="/gift-card"
-                className={`${MONO} lhg-cta mt-6 inline-block rounded-2xl border-2 border-[#5d0b46] px-[clamp(16px,3vw,30px)] py-3.5 text-[clamp(0.875rem,2vw,1rem)] font-black tracking-[0.06em] text-white uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
+                className={`${MONO} lhg-cta mt-6 inline-block rounded-2xl border-2 border-[#5d0b46] px-[clamp(16px,3vw,30px)] py-3.5 text-[clamp(0.8125rem,2vw,1rem)] font-black whitespace-nowrap tracking-[0.06em] text-white uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
                 style={{
                   background: "linear-gradient(180deg,#ff9ee4 0%,#ff45b4 42%,#d61f8f 74%,#a6106b 100%)",
                   textShadow: "0 2px 0 rgba(90,0,60,.55)",
@@ -158,7 +158,7 @@ export function GiftCardPromo() {
                   color: "#fff",
                 }}
               >
-                [ 💾 Graver un disque (dès 20€) ]
+                [ 🎁 Offrir une carte cadeau ]
               </Link>
             </div>
           </div>
