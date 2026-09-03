@@ -101,6 +101,10 @@ export default async function ProductPage({
   const take = (candidates: Product[]) => {
     for (const p of candidates) {
       if (related.length >= RELATED_COUNT) return;
+      // Chaque pièce est unique : une fois vendue elle ne redeviendra
+      // jamais disponible, elle n'a donc rien à faire dans une suggestion
+      // (même logique que le `notFound()` de la fiche elle-même plus haut).
+      if (p.tag === "SOLD") continue;
       if (seen.has(p.handle)) continue;
       seen.add(p.handle);
       related.push(p);
