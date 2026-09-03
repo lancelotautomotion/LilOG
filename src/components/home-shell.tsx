@@ -142,9 +142,15 @@ export function HomeShell({ highlights = [] }: { highlights?: Product[] }) {
           <GiftCardPromo />
           <ReadmeWindow />
         </div>
-      </main>
 
-      <Footer />
+        {/* Pied de page à l'intérieur de `<main>` : le fond WALLPAPER est
+            posé sur cet élément, pas en décor `fixed` plein viewport (voir
+            le commentaire sur WALLPAPER dans y2k/kit.tsx). Un `<Footer>`
+            resté sibling s'arrêtait donc à la même hauteur que `<main>` et
+            retombait sur son propre fond gris opaque, pas de continuité
+            possible avec le bureau. */}
+        <Footer />
+      </main>
     </>
   );
 }

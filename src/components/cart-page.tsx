@@ -571,8 +571,14 @@ export function CartPage() {
             )}
           </div>
         )}
+
+        {/* Pied de page à l'intérieur de `<main>` : le fond `.oc-root` +
+            `.bg-grid-pattern` est posé sur cet élément, pas en décor plein
+            viewport. Un `<Footer>` resté sibling s'arrêtait à la même
+            hauteur que `<main>` et retombait sur son propre fond gris
+            opaque, pas de continuité possible avec le bureau. */}
+        <Footer />
       </main>
-      <Footer />
 
       {showHeart && (
         <CheckoutModal
