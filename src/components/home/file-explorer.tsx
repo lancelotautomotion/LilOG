@@ -5,8 +5,8 @@
    ------------------------------------------------------------
    Les rayons de la boutique ne sont pas présentés en grille de
    produits mais en icônes de bureau : onze dossiers et une
-   disquette, posés sur du papier millimétré, dans une fenêtre
-   d'explorateur complète (menus, barre d'adresse, barre d'état).
+   disquette, sur fond blanc uni, dans une fenêtre d'explorateur
+   complète (menus, barre d'adresse, barre d'état).
 
    Au survol, l'icône se soulève, pivote et prend une ombre
    violette ; l'étiquette passe en surbrillance de sélection,
@@ -20,7 +20,7 @@ import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import { Icon } from "@/components/icons";
 import { CATEGORIES } from "@/lib/categories";
-import { GRID_BG, HARD_SHADOW, MONO, PLASTIC, PLASTIC_FACE, WindowFrame } from "@/components/y2k/kit";
+import { HARD_SHADOW, MONO, PLASTIC, PLASTIC_FACE, WindowFrame } from "@/components/y2k/kit";
 
 /** Nom de fichier affiché sous chaque dossier, par clé de catégorie. */
 const FILENAMES: Record<string, string> = {
@@ -246,7 +246,7 @@ export function FileExplorer() {
             </div>
 
             {/* En-tête de contenu */}
-            <div className="border-b border-[#d8d5e6] px-4 pt-4 pb-3 lg:shrink-0" style={GRID_BG}>
+            <div className="border-b border-[#d8d5e6] bg-white px-4 pt-4 pb-3 lg:shrink-0">
               <h2 className={`${MONO} text-[1.25rem] font-bold tracking-[0.1em] text-[#3b1d8f] uppercase`}>
                 {t.home.filesTitle}
               </h2>
@@ -259,10 +259,7 @@ export function FileExplorer() {
                 interne (`lg:overflow-y-auto`) si les 12 tuiles ne tiennent
                 pas dans la hauteur restante : les barres autour d'elle
                 (menus, adresse, en-tête, état) restent toujours visibles. */}
-            <div
-              className="grid grid-cols-2 gap-x-3 gap-y-6 p-[clamp(16px,3vw,30px)] sm:grid-cols-3 sm:gap-y-8 lg:min-h-0 lg:flex-1 lg:content-start lg:overflow-y-auto xl:grid-cols-4"
-              style={GRID_BG}
-            >
+            <div className="grid grid-cols-2 gap-x-3 gap-y-6 bg-white p-[clamp(16px,3vw,30px)] sm:grid-cols-3 sm:gap-y-8 lg:min-h-0 lg:flex-1 lg:content-start lg:overflow-y-auto xl:grid-cols-4">
               {folders.map((f) => (
                 <Tile key={f.href} href={f.href} filename={f.filename} caption={f.caption}>
                   {/* Le dossier du site, agrandi : jamais un dessin propre à

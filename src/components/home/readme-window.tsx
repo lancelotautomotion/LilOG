@@ -88,7 +88,7 @@ export function ReadmeWindow() {
             </div>
 
             {/* Feuille */}
-            <div className="flex bg-[#FFFEF2]">
+            <div className="flex bg-white">
               {/* En desktop, la colonne s'arrête avant la zone que le polaroid
                   recouvre : la photo mord sur le cadre de la fenêtre, jamais
                   sur une fin de ligne. */}

@@ -24,7 +24,7 @@
 
 import Link from "next/link";
 import { CdRom } from "@/components/gift-card/cd-rom";
-import { GRID_BG, MONO, PLASTIC, PLASTIC_FACE, WindowFrame } from "@/components/y2k/kit";
+import { MONO, PLASTIC, PLASTIC_FACE, WindowFrame } from "@/components/y2k/kit";
 
 /** Les six raccourcis de montant, alignés sur les capacités réelles du
  *  produit Shopify. Si l'une d'elles disparaissait du catalogue, le lien
@@ -78,8 +78,7 @@ export function GiftCardPromo() {
         <WindowFrame
           title="CARTE_CADEAU.ISO"
           icon="💿"
-          bodyClassName="px-[clamp(16px,4vw,48px)] py-[clamp(24px,4vw,44px)]"
-          bodyStyle={GRID_BG}
+          bodyClassName="bg-white px-[clamp(16px,4vw,48px)] py-[clamp(24px,4vw,44px)]"
         >
           <div className="grid items-center gap-[clamp(24px,4vw,48px)] lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
             {/* ---------- Colonne gauche : le boîtier ---------- */}
