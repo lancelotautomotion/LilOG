@@ -133,6 +133,9 @@ export const CATALOG_PRODUCTS_QUERY = /* GraphQL */ `
           materialMeta: metafield(namespace: "shopify", key: "fabric") { ${RICH_METAFIELD_FIELDS} }
           materialMeta2: metafield(namespace: "custom", key: "matiere") { ${RICH_METAFIELD_FIELDS} }
           materialMeta3: metafield(namespace: "custom", key: "composition") { ${RICH_METAFIELD_FIELDS} }
+          etat: metafield(namespace: "custom", key: "etat") {
+            value
+          }
           variants(first: 1) {
             edges {
               node {
@@ -249,9 +252,13 @@ const SIZE_METAFIELD_FRAGMENT = /* GraphQL */ `
 // Recherche texte libre : `query` accepte la syntaxe de recherche standard
 // Storefront et, laissé en texte brut (sans préfixe de champ), fait déjà une
 // recherche plein texte sur le titre, le type de produit, le vendeur et les
-// tags, pas besoin de construire un filtre `title:*...*` à la main. Même
-// sélection de champs que FEATURED_PRODUCTS_QUERY : le résultat passe par le
-// même mapProduct() et rend avec les mêmes ProductWindow que le catalogue.
+// tags, pas besoin de construire un filtre `title:*...*` à la main. Le
+// résultat passe par le même mapProduct() et rend avec les mêmes
+// ProductWindow que le catalogue : même sélection de champs méta Taille/État
+// que TAGGED_PRODUCTS_QUERY, sans quoi la pastille de taille retomberait sur
+// les options de variante (souvent vide sur ces pièces vintage vendues en
+// "Default Title") et la pastille État n'aurait tout simplement rien à
+// afficher.
 export const SEARCH_PRODUCTS_QUERY = /* GraphQL */ `
   query SearchProducts($query: String!, $first: Int!) {
     products(first: $first, query: $query, sortKey: RELEVANCE) {
@@ -286,6 +293,17 @@ export const SEARCH_PRODUCTS_QUERY = /* GraphQL */ `
               amount
               currencyCode
             }
+          }
+          options {
+            name
+            values
+          }
+          sizeMeta: metafield(namespace: "shopify", key: "size") { ${RICH_METAFIELD_FIELDS} }
+          sizeMeta2: metafield(namespace: "custom", key: "taille") { ${RICH_METAFIELD_FIELDS} }
+          sizeMeta3: metafield(namespace: "shopify", key: "clothing-size") { ${RICH_METAFIELD_FIELDS} }
+          sizeMeta4: metafield(namespace: "shopify", key: "shoe-size") { ${RICH_METAFIELD_FIELDS} }
+          etat: metafield(namespace: "custom", key: "etat") {
+            value
           }
           variants(first: 1) {
             edges {

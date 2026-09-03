@@ -33,6 +33,7 @@ import { Icon } from "@/components/icons";
 import { SmartImg } from "@/components/smart-img";
 import { ProductGallery } from "@/components/product-gallery";
 import { CATEGORIES } from "@/lib/categories";
+import { stripEtatWord } from "@/lib/etat";
 import {
   BEVEL_IN,
   LCD,
@@ -79,16 +80,6 @@ function parseDescription(html: string): {
   return {
     sections: raw.map((s) => ({ label: s.label, content: s.chunks.join(""), accordion: s.accordion })),
   };
-}
-
-/* La case ÉTAT (ITEM_STATS.SYS) et la pastille des cartes suggérées portent
-   déjà l'info par leur icône/libellé : le mot ne doit pas se répéter dans la
-   valeur (« Très bon état » → « Très bon »).
-   `\b` ne reconnaît que [A-Za-z0-9_] comme caractère de mot : sans le flag
-   `u` et des frontières en `\p{L}`, il ne voit aucune frontière avant un
-   « é » et ne matche jamais. */
-function stripEtatWord(raw: string): string {
-  return raw.replace(/(?<![\p{L}\p{N}])état(?![\p{L}\p{N}])/giu, "").replace(/\s{2,}/g, " ").trim();
 }
 
 const PDP_CSS = `

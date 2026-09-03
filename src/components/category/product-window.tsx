@@ -20,6 +20,7 @@ import { SmartImg } from "@/components/smart-img";
 import { Icon } from "@/components/icons";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/hooks/use-wishlist";
+import { stripEtatWord } from "@/lib/etat";
 import { BEVEL_IN, MONO, NAVY_BAR, PLASTIC, PLASTIC_FACE, PLASTIC_PRESS } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
 
@@ -101,6 +102,15 @@ function lounaPickSticker(product: Product): Sticker | null {
 const CHIP_H = "h-[26px]";
 const CHIP_BASE =
   `${CHIP_H} inline-flex items-center justify-center text-[0.75rem] leading-none ` +
+  "font-bold whitespace-nowrap";
+/* Même gabarit que CHIP_BASE, mais masqué en mobile : la pastille État
+   s'ajoute à prix + taille sans faire déborder la carte à deux colonnes du
+   téléphone, qui garde sa version allégée (prix + taille seuls). `hidden`
+   non préfixé puis `sm:` l'emporte dès le breakpoint grâce à l'ordre mobile-
+   first des variantes Tailwind — même mécanique que la pastille État de la
+   fiche produit (product-detail.tsx). */
+const CHIP_BASE_SM =
+  `${CHIP_H} hidden sm:inline-flex items-center justify-center text-[0.75rem] leading-none ` +
   "font-bold whitespace-nowrap";
 
 function StickerChip({
@@ -244,6 +254,18 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
     </span>
   );
 
+  /* État à côté de la taille, comme sur la fiche produit : sur mobile, la
+     carte à deux colonnes garde sa version allégée (prix + taille), l'état
+     n'apparaît qu'à partir de `sm`, cf. CHIP_BASE_SM. */
+  const etatChip = product.etat && (
+    <span
+      className={`${MONO} ${CHIP_BASE_SM} max-w-full shrink-0 justify-start truncate rounded border border-[#c6c2d8] px-1 text-[#3b3550] uppercase ${PLASTIC_FACE} ${PLASTIC}`}
+      title={`État ${stripEtatWord(product.etat) || product.etat}`}
+    >
+      💎 {stripEtatWord(product.etat) || product.etat}
+    </span>
+  );
+
   const cartButton = (
     <button
       type="button"
@@ -332,6 +354,7 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
         <span className="flex min-w-0 flex-wrap items-center gap-1">
           {price}
           {sizeChip}
+          {etatChip}
         </span>
         <span className="flex items-center gap-1">
           {cartButton}
