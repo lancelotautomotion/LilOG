@@ -293,8 +293,14 @@ export function HeroCamcorder() {
         </h1>
 
         <p
-          className={`${MONO} mt-6 text-[0.8125rem] tracking-[0.24em] text-[#5affa0] uppercase md:text-[0.875rem]`}
-          style={{ textShadow: "0 0 10px rgba(90,255,160,.5), 0 2px 10px rgba(0,0,0,.8)" }}
+          className={`${MONO} mt-6 text-[0.8125rem] font-bold tracking-[0.24em] text-[#5affa0] uppercase md:text-[0.875rem]`}
+          style={{
+            /* Halo vert d'origine gardé tel quel ; le trait sombre serré qui
+               l'entoure (au lieu d'un simple flou porté) est ce qui manquait
+               pour tenir sur un fond clair (pull, fourrure). */
+            textShadow:
+              "0 0 1px #000, 0 1px 1px #000, 0 -1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 2px 10px rgba(0,0,0,.85), 0 0 10px rgba(90,255,160,.5)",
+          }}
         >
           ▸ LIL_OG_DESKTOP.EXE · {t.hero.avail}
         </p>
