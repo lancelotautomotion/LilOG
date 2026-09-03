@@ -310,7 +310,7 @@ export function HeroCamcorder() {
               "0 0 1px #000, 0 1px 1px #000, 0 -1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 2px 10px rgba(0,0,0,.85), 0 0 10px rgba(90,255,160,.5)",
           }}
         >
-          ▸ LIL_OG_DESKTOP.EXE · {t.hero.avail}
+          ▸ LIL_OG_DESKTOP.EXE · <span className="whitespace-nowrap">{t.hero.avail}</span>
         </p>
       </div>
 
