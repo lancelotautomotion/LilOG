@@ -5690,7 +5690,7 @@ html, body {
    Le rembourrage de 10px est la tranche du cabinet : l'écran n'affleure
    plus le bord, il est encastré dedans. */
 .dm-win {
-  background: linear-gradient(180deg, #f6f5fb 0%, #e2e0ee 34%, #c6c2d8 72%, #a9a5bd 100%);
+  background: var(--dm-chassis-2);
   border: 2px solid #9b97b3;
   border-radius: 22px;
   box-shadow:
@@ -6593,6 +6593,10 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   align-items: center;
   flex-wrap: wrap;
   flex-shrink: 0;
+  /* Dernier bloc du châssis : sans ce rayon propre, ses angles carrés
+     peuvent dépasser du clip arrondi de .dm-win selon le navigateur. */
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 .dm-status-cell {
   font-family: var(--mono);
