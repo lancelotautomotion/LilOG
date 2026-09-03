@@ -8,6 +8,7 @@ import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { SmartImg } from "@/components/smart-img";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
+import { LeopardBackdrop } from "@/components/y2k/kit";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { compareSizes, STANDARD_SHOE_SIZES, STANDARD_SIZES } from "@/lib/sizes";
@@ -1108,7 +1109,9 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
       <Drawer open={menu} onClose={() => setMenu(false)} />
 
       <main className="dm-desktop">
-        <div className="dm-win dm-main">
+        <LeopardBackdrop />
+
+        <div className="dm-win dm-main relative z-[1]">
           {/* ---- Barre de titre ---- */}
           <div className="dm-titlebar">
             <span className="dm-titlebar-text">DRESSING_MACHINE.EXE</span>
