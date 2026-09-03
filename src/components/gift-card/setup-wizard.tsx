@@ -279,7 +279,21 @@ export function SetupWizard({
           qu'un bloc à l'intérieur réclame une taille minimale pour que toute
           la fenêtre déborde de l'écran. Avec `w-full`, elle prend la largeur
           disponible, `max-w` la plafonne, `mx-auto` la centre. */}
-      <div className={`relative z-[1] mx-auto w-full max-w-[1180px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#f0f0f5] ${HARD_SHADOW}`}>
+      {/* Halo d'ambiance : sans lui, la fenêtre — claire, posée sur le
+          léopard sombre — flotte au milieu de l'écran sans point d'ancrage.
+          Flou et large, il ne dessine rien de net : juste de quoi ancrer le
+          regard avant même que l'œil atteigne la bordure de la fenêtre. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute top-1/2 left-1/2 z-0 hidden h-[70%] w-full max-w-[1100px] -translate-x-1/2 -translate-y-1/2 sm:block"
+        style={{
+          background:
+            "radial-gradient(60% 55% at 50% 50%, rgba(255,63,176,0.22), transparent 70%)",
+          filter: "blur(40px)",
+        }}
+      />
+
+      <div className={`relative z-[1] mx-auto w-full max-w-[1100px] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#f0f0f5] ${HARD_SHADOW}`}>
         {/* ---- Barre de titre ---- */}
         <div className="flex items-center justify-between gap-3 px-3 py-2" style={{ background: VIOLET_BAR }}>
           <div className="flex min-w-0 items-center gap-2">
@@ -300,7 +314,7 @@ export function SetupWizard({
         </div>
 
         {/* ---- Corps : aplat clair uni, plus de papier millimétré ---- */}
-        <div className="relative bg-[#f0f0f5] px-[clamp(14px,3vw,32px)] py-[clamp(10px,2vh,22px)]">
+        <div className="relative bg-[#f0f0f5] px-[clamp(14px,3vw,32px)] py-[clamp(16px,2.6vh,28px)]">
           {/* Pastilles décoratives, comme /faq et /contact. */}
           <span aria-hidden className="pointer-events-none absolute inset-0 z-[2] hidden sm:block">
             <span
@@ -317,7 +331,7 @@ export function SetupWizard({
             </span>
           </span>
 
-          <div className="relative z-[1] grid gap-x-[clamp(20px,3vw,36px)] gap-y-[clamp(14px,2vh,24px)] lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]">
+          <div className="relative z-[1] grid gap-x-[clamp(20px,3vw,36px)] gap-y-[clamp(14px,2vh,24px)] lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
             {/* ================= COLONNE GAUCHE : LE DISQUE =================
                 `h-full` prend la hauteur que la grille lui étire déjà (elle
                 égale par défaut celle de la colonne de droite, la plus
@@ -325,7 +339,18 @@ export function SetupWizard({
                 intrinsèque et `flex-1` dans CdRom n'a rien à occuper.
                 Le boîtier repose à même le fond clair de la fenêtre — plus
                 de plaque blanche ni de voyant sous l'image, l'état du
-                lecteur vit désormais dans la barre d'état, tout en bas. */}
+                lecteur vit désormais dans la barre d'état, tout en bas.
+
+                La colonne fait 360px maxi (au lieu de 400) : c'est très
+                exactement la largeur du contenu de BurnerDisplay, plus
+                aucun couloir vide entre le disque et le formulaire. Le
+                `position: sticky` évoqué en alternative ne s'applique pas
+                ici : la fenêtre porte `overflow-hidden` pour que la barre de
+                titre épouse ses coins arrondis (voir WindowFrame dans
+                y2k/kit.tsx), et un sticky ne franchit pas cet ancêtre. Le
+                centrage vertical ci-dessous, combiné à la fiche technique
+                qui comble le bas de BurnerDisplay, fait le même travail
+                sans toucher au `overflow-hidden`. */}
             <div className="flex h-full items-center justify-center">
               <BurnerDisplay spinning={burning} status={lcdStatus} detail={lcdDetail} />
             </div>
