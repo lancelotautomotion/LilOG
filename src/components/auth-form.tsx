@@ -333,7 +333,7 @@ export function AuthForm() {
                   Se souvenir de moi sur cet ordinateur
                 </label>
                 <Link
-                  href="/contact"
+                  href="/mot-de-passe-oublie"
                   className="text-[0.875rem] text-[#5b3fa8] underline decoration-dotted underline-offset-2 hover:text-[#ff3fb0]"
                 >
                   Mot de passe oublié ?

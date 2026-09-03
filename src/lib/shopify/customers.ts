@@ -113,6 +113,23 @@ const CUSTOMER_ORDER_QUERY = /* GraphQL */ `
   }
 `;
 
+const CUSTOMER_RECOVER = /* GraphQL */ `
+  mutation customerRecover($email: String!) {
+    customerRecover(email: $email) {
+      customerUserErrors { code field message }
+    }
+  }
+`;
+
+const CUSTOMER_RESET = /* GraphQL */ `
+  mutation customerReset($id: ID!, $input: CustomerResetInput!) {
+    customerReset(id: $id, input: $input) {
+      customerAccessToken { accessToken expiresAt }
+      customerUserErrors { code field message }
+    }
+  }
+`;
+
 const CUSTOMER_UPDATE = /* GraphQL */ `
   mutation customerUpdate($token: String!, $customer: CustomerUpdateInput!) {
     customerUpdate(customerAccessToken: $token, customer: $customer) {
@@ -203,6 +220,41 @@ export async function shopifyCustomerLogin(
   if (errs.length > 0) return { token: null, error: errs[0].message };
   const token = data.customerAccessTokenCreate.customerAccessToken?.accessToken ?? null;
   return { token, error: token ? null : "Identifiants incorrects" };
+}
+
+/* Toujours "succès" côté appelant, qu'un compte existe ou non pour cet
+   email : sans ça, ce formulaire deviendrait un moyen de vérifier quels
+   emails ont un compte Lil'OG. */
+export async function shopifyCustomerRecover(email: string): Promise<{ error: string | null }> {
+  const data = await shopifyFetch<{
+    customerRecover: { customerUserErrors: { message: string }[] };
+  }>(CUSTOMER_RECOVER, { email }, 0).catch(() => null);
+
+  if (!data) return { error: "Erreur réseau" };
+  const errs = data.customerRecover.customerUserErrors;
+  if (errs.length > 0) return { error: errs[0].message };
+  return { error: null };
+}
+
+/* `id` est le GID complet (gid://shopify/Customer/<id>), reconstruit à
+   partir de l'identifiant brut porté par le lien de l'email. */
+export async function shopifyCustomerReset(
+  id: string,
+  resetToken: string,
+  password: string,
+): Promise<{ token: string | null; error: string | null }> {
+  const data = await shopifyFetch<{
+    customerReset: {
+      customerAccessToken: { accessToken: string; expiresAt: string } | null;
+      customerUserErrors: { message: string }[];
+    };
+  }>(CUSTOMER_RESET, { id, input: { resetToken, password } }, 0).catch(() => null);
+
+  if (!data) return { token: null, error: "Erreur réseau" };
+  const errs = data.customerReset.customerUserErrors;
+  if (errs.length > 0) return { token: null, error: errs[0].message };
+  const token = data.customerReset.customerAccessToken?.accessToken ?? null;
+  return { token, error: token ? null : "Lien invalide ou expiré" };
 }
 
 export async function shopifyGetCustomer(token: string): Promise<ShopifyCustomer | null> {

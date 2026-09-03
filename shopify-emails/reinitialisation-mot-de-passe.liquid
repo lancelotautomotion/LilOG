@@ -1,6 +1,18 @@
 {% capture email_title %}Réinitialiser votre mot de passe{% endcapture %}
 {% capture email_body %}Suivez ce lien pour réinitialiser le mot de passe de votre compte client sur <a href="https://lilog.shop">{{shop.name}}</a>. Si vous n'avez pas demandé de nouveau mot de passe, vous pouvez supprimer cet e-mail en toute sécurité.{% endcapture %}
 
+{%- comment -%}
+  customer.reset_password_url pointe vers l'interface Shopify native
+  (…/account/reset/<id>/<token>), pas vers le site. On en extrait
+  l'identifiant client et le jeton pour reconstruire un lien vers notre
+  propre page /reinitialiser-mot-de-passe, qui appelle la mutation
+  Storefront customerReset elle-même.
+{%- endcomment -%}
+{%- assign reset_parts = customer.reset_password_url | split: '/' -%}
+{%- assign reset_token = reset_parts | last -%}
+{%- assign reset_customer_id = reset_parts[-2] -%}
+{%- assign reset_url = 'https://lilog.shop/reinitialiser-mot-de-passe?id=' | append: reset_customer_id | append: '&token=' | append: reset_token -%}
+
 <!DOCTYPE html>
 <html lang="fr">
   <head>
@@ -106,7 +118,7 @@
   <tr>
     <td class="actions__cell">
       <table class="button main-action-cell">
-        <tr><td class="button__cell"><a href="{{ customer.reset_password_url }}" class="button__text">Réinitialiser mon mot de passe</a></td></tr>
+        <tr><td class="button__cell"><a href="{{ reset_url }}" class="button__text">Réinitialiser mon mot de passe</a></td></tr>
       </table>
       <table class="link secondary-action-cell">
         <tr><td class="link__cell">ou <a href="https://lilog.shop">visiter la boutique</a></td></tr>
