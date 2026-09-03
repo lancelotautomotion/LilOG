@@ -62,6 +62,18 @@
      Six dégradés différents cohabitaient avant, du navy Win95 au rose. */
   --y2k-titlebar: linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%);
   --acct-titlebar: var(--y2k-titlebar);
+  /* Boutons [ _ ] [ 🗖 ] [ × ] des barres de titre : plastique clair
+     « chunky », mêmes valeurs que PLASTIC_FACE/PLASTIC dans
+     components/y2k/kit.tsx, pour que les fenêtres en CSS pur (menu,
+     compte, panier, wishlist, Dressing Machine) portent les mêmes
+     boutons que les fenêtres en Tailwind (catalogue, accueil). */
+  --y2k-chrome-face: linear-gradient(180deg, #fdfdff 0%, #ebe9f4 48%, #d3d0e1 100%);
+  --y2k-chrome-border: #c6c2d8;
+  --y2k-chrome-text: #262626;
+  --y2k-chrome-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.25),
+    0 2px 3px rgba(30, 36, 48, 0.18);
   --ldl-shadow: 0 2px 8px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.04);
   --ldl-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.11), 0 2px 4px rgba(0, 0, 0, 0.06);
 
@@ -436,22 +448,23 @@ textarea {
 .drawer-w95-dots span,
 .drawer-w95-close {
   width: 26px; height: 18px;
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: var(--y2k-chrome-face);
+  border: 1px solid var(--y2k-chrome-border);
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.92);
+  font-weight: 700;
+  color: var(--y2k-chrome-text);
   font-family: var(--mono);
   line-height: 1;
   padding: 0;
   cursor: default;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 1px 2px rgba(0,0,0,0.18);
+  box-shadow: var(--y2k-chrome-shadow);
 }
-.drawer-w95-close { cursor: pointer; transition: background 120ms; }
-.drawer-w95-close:hover { background: rgba(255,255,255,0.22); }
+.drawer-w95-close { cursor: pointer; transition: filter 120ms; }
+.drawer-w95-close:hover { filter: brightness(1.05); }
 
 /* Nav content : liste de cartes arrondies, façon /account (acct-nav-btn) */
 .drawer-nav {
@@ -2707,27 +2720,27 @@ textarea {
 .account-win95-chrome a {
   width: 28px;
   height: 20px;
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: var(--y2k-chrome-face);
+  border: 1px solid var(--y2k-chrome-border);
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--y2k-chrome-text);
   font-family: var(--mono);
-  font-weight: 400;
+  font-weight: 700;
   cursor: default;
   text-decoration: none;
   flex-shrink: 0;
   line-height: 1;
   user-select: none;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 1px 2px rgba(0,0,0,0.18);
-  transition: background 120ms;
+  box-shadow: var(--y2k-chrome-shadow);
+  transition: filter 120ms;
 }
 .account-win95-chrome a { cursor: pointer; }
 .account-win95-chrome a:hover,
-.account-win95-chrome span:hover { background: rgba(255,255,255,0.22); }
+.account-win95-chrome span:hover { filter: brightness(1.05); }
 
 /* Toolbar */
 .account-win95-toolbar {
@@ -3152,24 +3165,25 @@ textarea {
 .acct-panel-chrome a {
   width: 22px;
   height: 16px;
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: var(--y2k-chrome-face);
+  border: 1px solid var(--y2k-chrome-border);
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+  color: var(--y2k-chrome-text);
   font-family: var(--mono);
-  font-weight: 400;
   cursor: default;
   text-decoration: none;
   line-height: 1;
   user-select: none;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 1px 2px rgba(0,0,0,0.18);
+  box-shadow: var(--y2k-chrome-shadow);
+  transition: filter 120ms;
 }
 .acct-panel-chrome a { cursor: pointer; }
-.acct-panel-chrome a:hover { background: rgba(255,255,255,0.22); }
+.acct-panel-chrome a:hover { filter: brightness(1.05); }
 
 /* Toolbar row */
 .acct-toolbar {
@@ -5655,6 +5669,11 @@ html, body {
   /* Plastique bombé des boutons (jeton PLASTIC_FACE du kit y2k). */
   --dm-plastic: linear-gradient(180deg, #fdfdff 0%, #ebe9f4 46%, #c9c6da 100%);
   --dm-plastic-edge: #a5a1bd;
+  /* Tranche du cabinet autour de l'écran (voir .dm-win) : le fronton s'y
+     soustrait en marge négative pour remplir tout le haut de la fenêtre,
+     comme les barres de titre du reste du site. Remise à 0 en plein cadre
+     mobile, où .dm-main n'a elle-même plus de tranche. */
+  --dm-win-pad: 10px;
 }
 
 .dm-desktop {
@@ -5678,7 +5697,7 @@ html, body {
     inset 0 3px 0 rgba(255, 255, 255, 0.95),
     inset 0 -6px 14px rgba(60, 40, 110, 0.28),
     var(--y2k-win-shadow);
-  padding: 10px;
+  padding: var(--dm-win-pad);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -5694,8 +5713,14 @@ html, body {
    clignotent en décalé, posées en pseudo-élément (aucun balisage ajouté). */
 .dm-titlebar {
   background: var(--dm-fronton);
-  border: 2px solid var(--dm-deep);
-  border-radius: 12px 12px 0 0;
+  border: none;
+  border-bottom: 2px solid var(--dm-deep);
+  border-radius: 0;
+  /* Déborde de la tranche du châssis (.dm-win) pour affleurer ses bords :
+     comme les autres fenêtres du site, le fronton remplit tout le haut au
+     lieu de flotter dedans avec du plastique visible de chaque côté.
+     `overflow: hidden` sur .dm-win reprend ses coins arrondis. */
+  margin: calc(-1 * var(--dm-win-pad)) calc(-1 * var(--dm-win-pad)) 0;
   padding: 6px 14px;
   display: flex;
   align-items: center;
@@ -5741,24 +5766,25 @@ html, body {
   width: 28px;
   height: 20px;
   padding: 0;
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: var(--y2k-chrome-face);
+  border: 1px solid var(--y2k-chrome-border);
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--mono);
   font-size: 0.875rem;
+  font-weight: 700;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--y2k-chrome-text);
   text-decoration: none;
   cursor: default;
   user-select: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 1px 2px rgba(0, 0, 0, 0.18);
-  transition: background 120ms;
+  box-shadow: var(--y2k-chrome-shadow);
+  transition: filter 120ms;
 }
 a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
-.dm-chrome-btn:hover { background: rgba(255, 255, 255, 0.22); }
+.dm-chrome-btn:hover { filter: brightness(1.05); }
 
 .dm-toolbar {
   background: var(--ldl-surface);
@@ -6606,7 +6632,10 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
 }
 .dm-float-bar {
   background: var(--dm-fronton);
-  border-radius: 8px 8px 0 0;
+  border-radius: 0;
+  /* Déborde de la tranche de .dm-float (padding: 6px) pour affleurer ses
+     bords, comme .dm-titlebar — voir ce commentaire pour le détail. */
+  margin: -6px -6px 0;
   padding: 7px 10px;
   display: flex;
   align-items: center;
@@ -6891,6 +6920,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
     height: 100%;
     max-height: none;
     max-width: none;
+    --dm-win-pad: 0px;
     padding: 0;
     border: none;
     border-radius: 0;
@@ -6915,7 +6945,7 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   }
 
   /* ---- Barres de tête, au régime ---- */
-  .dm-titlebar { border-radius: 0; border-width: 0 0 2px; padding: 5px 10px; }
+  .dm-titlebar { padding: 5px 10px; }
   .dm-titlebar-text { font-size: 0.8125rem; }
   .dm-titlebar::before { margin-right: 30px; }
   /* Une seule ligne qui défile latéralement : en `wrap`, l'étiquette de
