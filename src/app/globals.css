@@ -5599,12 +5599,17 @@ html, body {
   border-bottom-width: 0;
 }
 
-/* Ligne d'attente de la borne, en vert écran. */
+/* Ligne d'attente de la borne, en vert écran. Taille et `letter-spacing`
+   resserrés : à 0.8125rem/0.12em, l'accroche (la plus longue des neuf
+   langues) retombait sur trois lignes dans les ~200px que lui laisse le
+   bouton en mobile, où l'icône et « ▶ PLAY » mangent déjà l'essentiel de
+   la largeur du tiroir. Vérifié langue par langue : FR, EN, DE (les plus
+   longues) tiennent maintenant en deux. */
 .dm-tile-sub {
   font-family: var(--mono);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.03em;
   color: #5affa0;
   text-shadow: 0 0 8px rgba(90, 255, 160, 0.5);
   animation: dmTileBlink 2.2s step-end infinite;
