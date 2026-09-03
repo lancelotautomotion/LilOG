@@ -34,8 +34,16 @@
       font-family: 'Courier New', Courier, monospace !important;
     }
 
-    .body h2 { font-size: 22px !important; color: #1E2430 !important; }
+    .body h2 { font-size: 22px !important; color: #1E2430 !important; margin: 12px 0 14px !important; }
     a, a:hover, a:active, a:visited { color: #7147d4 !important; }
+
+    /* Retire le cadre/fond par défaut de Shopify autour du bloc d'actions,
+       pour ne garder que la pastille du bouton. */
+    .row.actions, .actions__cell, .main-action-cell, .secondary-action-cell {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
 
     /* Barre de titre : le dégradé des fenêtres du site. */
     .header__cell {
@@ -50,11 +58,11 @@
       text-decoration: none !important;
     }
 
-    /* Bouton : la pastille « DRESSING MACHINE » de la navbar. */
+    /* Bouton : la pastille « DRESSING MACHINE » de la navbar, sans liseré. */
     .button__cell, .actions-buttons .button__cell--primary {
       background: #e7e5f1 !important;
       background-image: linear-gradient(180deg, #f6f5fb, #e7e5f1 48%, #d3d0e1) !important;
-      border: 1px solid #c6c2d8 !important;
+      border: none !important;
       border-radius: 999px !important;
     }
     .button__text {
@@ -97,7 +105,7 @@
 </table>
 <table class="row" width="100%">
   <tr>
-    <td align="center" style="background:#ffffff;padding:30px 12px 0;">
+    <td align="center" style="background:#ffffff;padding:34px 12px 20px;">
       <img src="https://lilog.shop/logo-black.png" width="140" alt="Lil'OG" style="display:block;margin:0 auto;width:140px;max-width:55%;height:auto;border:0;">
     </td>
   </tr>
