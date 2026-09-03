@@ -5323,7 +5323,21 @@ html, body {
 /* ── Wishlist "Burn Book" (Mean Girls / Y2K scrapbook) ── */
 .burnbook-bar { background: var(--y2k-titlebar); }
 .burnbook-body {
-  background: #fff;
+  /* Même bureau que l'accueil, le panier et la Dressing Machine : halos
+     rose (haut-droite) et violet (bas-gauche) sur un papier millimétré à
+     deux trames (22px, 110px). Recopié plutôt que partagé — voir le
+     commentaire de WALLPAPER dans components/y2k/kit.tsx. */
+  background-color: #ece8fa;
+  background-image:
+    radial-gradient(60vw 45vh at 82% 8%,  rgba(255, 63, 176, 0.16), transparent 70%),
+    radial-gradient(65vw 50vh at 12% 92%, rgba(113, 71, 212, 0.18), transparent 72%),
+    linear-gradient(rgba(113, 71, 212, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(113, 71, 212, 0.07) 1px, transparent 1px),
+    linear-gradient(rgba(113, 71, 212, 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(113, 71, 212, 0.13) 1px, transparent 1px);
+  background-size: auto, auto, 22px 22px, 22px 22px, 110px 110px, 110px 110px;
+  background-position: 0 0;
+  background-repeat: no-repeat, no-repeat, repeat, repeat, repeat, repeat;
   flex: 1;
   display: flex;
   flex-direction: column;
