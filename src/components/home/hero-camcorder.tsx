@@ -267,7 +267,13 @@ export function HeroCamcorder() {
               lui-même, pas à un fond assombri. */}
           <span
             className="block text-[clamp(0.9375rem,2.2vw,1.125rem)] tracking-[0.28em] text-white uppercase"
-            style={{ textShadow: "0 2px 14px rgba(0,0,0,.85), 0 0 4px rgba(0,0,0,.6)" }}
+            style={{
+              /* Même trait sombre serré que la ligne verte du dessous : le
+                 flou seul ne détachait pas assez le blanc d'un fond clair
+                 (mur, mèches). */
+              textShadow:
+                "0 0 1px #000, 0 1px 1px #000, 0 -1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 2px 14px rgba(0,0,0,.85), 0 0 4px rgba(0,0,0,.6)",
+            }}
           >
             {t.hero.line}
           </span>
@@ -276,9 +282,11 @@ export function HeroCamcorder() {
             style={{
               color: NEON,
               /* Halo rose pour le néon, ombre sombre pour tenir aussi sur un
-                 plan clair : le voile ne fait plus le travail à sa place. */
+                 plan clair : le voile ne fait plus le travail à sa place. Le
+                 trait serré supplémentaire tient le texte sur la peau/les
+                 mèches claires, là où le halo seul se diluait. */
               textShadow:
-                "0 0 12px rgba(255,94,196,.75), 0 0 38px rgba(255,94,196,.45), 0 3px 18px rgba(0,0,0,.7)",
+                "0 0 1px #000, 0 1px 1px #000, 0 -1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 0 12px rgba(255,94,196,.75), 0 0 38px rgba(255,94,196,.45), 0 3px 18px rgba(0,0,0,.7)",
             }}
           >
             <Typewriter
