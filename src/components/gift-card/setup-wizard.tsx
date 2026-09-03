@@ -42,7 +42,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
-import { CdRom } from "@/components/gift-card/cd-rom";
+import { BurnerDisplay } from "@/components/gift-card/burner-display";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 import { BEVEL_IN, HARD_SHADOW, LeopardBackdrop, MONO, NEON, PLASTIC, PLASTIC_FACE, PLASTIC_PRESS, VIOLET_BAR, WindowButton } from "@/components/y2k/kit";
 
@@ -167,8 +167,15 @@ export function SetupWizard({
       : (capacities.find((c) => c.available && c.amount === initialAmount) ?? null);
   const [picked, setPicked] = useState<Capacity | null>(requested ?? firstAvailable);
 
+  /* Coché : le disque part chez quelqu'un d'autre (comportement historique
+     de l'assistant). Décoché : ajout classique, comme n'importe quel
+     article — aucun attribut de destinataire n'est posé sur la ligne, et
+     Shopify envoie alors le code à l'email du compte qui paie. */
+  const [sendAsGift, setSendAsGift] = useState(true);
   const [email, setEmail] = useState("");
+  const [recipientName, setRecipientName] = useState("");
   const [message, setMessage] = useState("");
+  const [sendOn, setSendOn] = useState("");
   const [touched, setTouched] = useState(false);
 
   const [burning, setBurning] = useState(false);
@@ -185,7 +192,24 @@ export function SetupWizard({
 
   const noDisc = capacities.length === 0;
   const emailOk = EMAIL_RE.test(email.trim());
-  const ready = !noDisc && picked !== null && emailOk;
+  const ready = !noDisc && picked !== null && (!sendAsGift || emailOk);
+  /* Plancher du sélecteur de date : on ne programme pas un envoi dans le
+     passé. Calculé au rendu plutôt qu'une fois pour toutes : le composant
+     ne reste jamais monté d'un jour sur l'autre. */
+  const todayISO = new Date().toISOString().slice(0, 10);
+
+  const lcdStatus = noDisc
+    ? "NO_DISC_LOADED"
+    : burning
+      ? `TRACK_01 // WRITING ${progress}%`
+      : done
+        ? "TRACK_01 // BURN OK"
+        : "TRACK_01 // READY";
+  const lcdDetail = noDisc
+    ? "INSERT A DISC TO CONTINUE"
+    : picked
+      ? `CAP ${megabytes(picked.amount)} · ${euros(picked.amount)}`
+      : "SELECT A CAPACITY";
 
   async function burn() {
     setTouched(true);
@@ -210,15 +234,22 @@ export function SetupWizard({
           quantity: 1,
           // Clés réservées du thème Dawn (gift-card-recipient-form.liquid) :
           // ce sont les seules que Shopify reconnaît pour dérouter l'envoi
-          // natif de la carte cadeau vers ce destinataire. Un intitulé libre
-          // ("E-mail du bénéficiaire", par ex.) n'est qu'une note visible
-          // sur la commande — Shopify continue alors d'envoyer le code à
-          // l'e-mail du compte qui paie, sans jamais lire cet attribut-là.
-          attributes: [
-            { key: "__shopify_send_gift_card_to_recipient", value: "if_present" },
-            { key: "Recipient email", value: email.trim() },
-            ...(message.trim() ? [{ key: "Message", value: message.trim() }] : []),
-          ],
+          // natif de la carte cadeau vers ce destinataire (email, nom, date
+          // d'envoi programmée). Un intitulé libre ("E-mail du
+          // bénéficiaire", par ex.) n'est qu'une note visible sur la
+          // commande — Shopify continue alors d'envoyer le code à l'e-mail
+          // du compte qui paie, sans jamais lire cet attribut-là. Décoché,
+          // on ne pose aucun de ces attributs : ajout au panier classique,
+          // Shopify livre le code à l'acheteur comme n'importe quel article.
+          attributes: sendAsGift
+            ? [
+                { key: "__shopify_send_gift_card_to_recipient", value: "if_present" },
+                { key: "Recipient email", value: email.trim() },
+                ...(recipientName.trim() ? [{ key: "Recipient name", value: recipientName.trim() }] : []),
+                ...(message.trim() ? [{ key: "Message", value: message.trim() }] : []),
+                ...(sendOn ? [{ key: "Send on", value: sendOn }] : []),
+              ]
+            : [],
         },
       ]);
       setProgress(100);
@@ -296,7 +327,7 @@ export function SetupWizard({
                 de plaque blanche ni de voyant sous l'image, l'état du
                 lecteur vit désormais dans la barre d'état, tout en bas. */}
             <div className="flex h-full items-center justify-center">
-              <CdRom spinning={burning} />
+              <BurnerDisplay spinning={burning} status={lcdStatus} detail={lcdDetail} />
             </div>
 
             {/* ================= COLONNE DROITE : LES RÉGLAGES ================= */}
@@ -364,6 +395,32 @@ export function SetupWizard({
               {/* ---------- ÉTAPE 2 ---------- */}
               <Fieldset n="2. Informations de licence">
                 <div className="space-y-[clamp(10px,1.6vh,16px)]">
+                  {/* Bascule : cadeau programmé pour quelqu'un d'autre, ou
+                      ajout classique au panier (pour soi-même). */}
+                  <label
+                    className={`${MONO} flex items-start gap-2.5 rounded-[3px] border border-[#9b97b3] bg-white px-3 py-2.5 ${BEVEL_IN}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={sendAsGift}
+                      disabled={noDisc || burning}
+                      onChange={(e) => setSendAsGift(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-[#7147d4] disabled:cursor-not-allowed"
+                    />
+                    <span className="min-w-0">
+                      <span className="block text-[0.875rem] font-bold tracking-[0.03em] text-[#2b0f6b] uppercase">
+                        🎁 Offrir ce disque à quelqu&apos;un d&apos;autre
+                      </span>
+                      <span className="mt-0.5 block text-[0.8125rem] text-[#5b5670] normal-case">
+                        {sendAsGift
+                          ? "Le code est envoyé par email au destinataire, à la date de ton choix."
+                          : "Ajout classique au panier : le code t'arrive directement, comme n'importe quel article."}
+                      </span>
+                    </span>
+                  </label>
+
+                  {sendAsGift && (
+                  <>
                   <div>
                     <label
                       htmlFor="gc-email"
@@ -400,6 +457,25 @@ export function SetupWizard({
 
                   <div>
                     <label
+                      htmlFor="gc-recipient-name"
+                      className={`${MONO} mb-1.5 block text-[0.8125rem] font-bold tracking-[0.05em] text-[#2b0f6b] uppercase`}
+                    >
+                      NOM_DU_DESTINATAIRE.TXT (FACULTATIF)
+                    </label>
+                    <input
+                      id="gc-recipient-name"
+                      type="text"
+                      autoComplete="name"
+                      disabled={noDisc || burning}
+                      value={recipientName}
+                      onChange={(e) => setRecipientName(e.target.value)}
+                      placeholder="Prénom du destinataire"
+                      className={`${MONO} ${FIELD}`}
+                    />
+                  </div>
+
+                  <div>
+                    <label
                       htmlFor="gc-message"
                       className={`${MONO} mb-1.5 block text-[0.8125rem] font-bold tracking-[0.05em] text-[#2b0f6b] uppercase`}
                     >
@@ -419,6 +495,29 @@ export function SetupWizard({
                       {message.length} / {MESSAGE_MAX} octets
                     </p>
                   </div>
+
+                  <div>
+                    <label
+                      htmlFor="gc-send-on"
+                      className={`${MONO} mb-1.5 block text-[0.8125rem] font-bold tracking-[0.05em] text-[#2b0f6b] uppercase`}
+                    >
+                      ENVOYER_LE.DAT (FACULTATIF)
+                    </label>
+                    <input
+                      id="gc-send-on"
+                      type="date"
+                      min={todayISO}
+                      disabled={noDisc || burning}
+                      value={sendOn}
+                      onChange={(e) => setSendOn(e.target.value)}
+                      className={`${MONO} ${FIELD}`}
+                    />
+                    <p className={`${MONO} mt-1.5 text-[0.75rem] text-[#5b5670]`}>
+                      Laisse vide pour un envoi dès la commande validée.
+                    </p>
+                  </div>
+                  </>
+                  )}
                 </div>
               </Fieldset>
             </div>
