@@ -64,7 +64,7 @@ et le bouton changent. Les plus utiles à traiter ensuite :
 
 | Notification Shopify | Ce qu'elle doit viser sur le site |
 | --- | --- |
-| Activation du compte client | `{{ customer.account_activation_url }}` (imposé par Shopify) |
+| Invitation à créer un compte (objet « Activation du compte client ») | fait : voir [invitation-compte-client.liquid](invitation-compte-client.liquid) — habillé en « Bienvenue + code -10% » (`BIENVENUE10`, une utilisation par client). Le bouton principal reste `{{ customer.account_activation_url }}`, imposé par Shopify. |
 | Confirmation de commande | fait : voir [confirmation-commande.md](confirmation-commande.md) |
 | Confirmation d'expédition | fait : voir [confirmation-expedition.liquid](confirmation-expedition.liquid) |
 | Panier abandonné | `https://lilog.shop/cart` |
