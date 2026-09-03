@@ -32,7 +32,7 @@ import {
 } from "@/components/y2k/kit";
 
 /** Photographie maison : la même campagne que /histoire. */
-const POLAROID_SRC = "/histoire/look-07.jpg";
+const POLAROID_SRC = "/8.jpg";
 
 const README_CSS = `
 /* Curseur de saisie en fin de texte. */
@@ -88,7 +88,7 @@ export function ReadmeWindow() {
             </div>
 
             {/* Feuille */}
-            <div className="flex bg-[#FFFEF2]">
+            <div className="flex bg-white">
               {/* En desktop, la colonne s'arrête avant la zone que le polaroid
                   recouvre : la photo mord sur le cadre de la fenêtre, jamais
                   sur une fin de ligne. */}
@@ -163,7 +163,7 @@ export function ReadmeWindow() {
 
           {/* ---- Polaroid scotché ---- */}
           <div
-            className={`lhr-polaroid relative z-20 mx-auto -mt-[58px] w-[190px] bg-[#fafafa] p-2 pb-7 sm:w-[210px] md:absolute md:top-16 md:right-0 md:mt-0 md:w-[262px] ${HARD_SHADOW}`}
+            className={`lhr-polaroid relative z-20 mx-auto -mt-[58px] w-[190px] bg-[#fafafa] p-2 pb-8 sm:w-[210px] md:absolute md:top-16 md:right-0 md:mt-0 md:w-[262px] ${HARD_SHADOW}`}
             style={{ transform: "rotate(-3deg)", border: "1px solid #e5e7eb" }}
           >
             <Tape rotate="-6deg" className="top-[-11px] left-[38%]" wide />
@@ -178,10 +178,6 @@ export function ReadmeWindow() {
                 className="object-cover"
               />
             </div>
-
-            <p className="mt-2 text-center text-[1rem] leading-none text-[#3b3550] font-[family-name:var(--mono)]">
-              Lil&apos;OG archive · vol. 001
-            </p>
           </div>
         </div>
       </div>

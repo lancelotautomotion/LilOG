@@ -29,7 +29,7 @@ import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { ChromeStar, GemSticker, HoloAlien, HoloSmiley } from "@/components/contact/stickers";
-import { WALLPAPER, WALLPAPER_GRID } from "@/components/y2k/kit";
+import { WALLPAPER } from "@/components/y2k/kit";
 import { HeroCamcorder } from "@/components/home/hero-camcorder";
 import { ArcadeSlot } from "@/components/home/arcade-slot";
 import { GiftCardPromo } from "@/components/home/gift-card-promo";
@@ -74,7 +74,6 @@ export function HomeShell({ highlights = [] }: { highlights?: Product[] }) {
 
       <main className="relative overflow-hidden" style={WALLPAPER}>
         <style>{SHELL_CSS}</style>
-        <div aria-hidden className="pointer-events-none absolute inset-0" style={WALLPAPER_GRID} />
 
         {/* Pastilles du bureau : décoratives, jamais cliquables. Réparties sur
             toute la hauteur de la page (`<main>` couvre les six modules), en
@@ -143,9 +142,15 @@ export function HomeShell({ highlights = [] }: { highlights?: Product[] }) {
           <GiftCardPromo />
           <ReadmeWindow />
         </div>
-      </main>
 
-      <Footer />
+        {/* Pied de page à l'intérieur de `<main>` : le fond WALLPAPER est
+            posé sur cet élément, pas en décor `fixed` plein viewport (voir
+            le commentaire sur WALLPAPER dans y2k/kit.tsx). Un `<Footer>`
+            resté sibling s'arrêtait donc à la même hauteur que `<main>` et
+            retombait sur son propre fond gris opaque, pas de continuité
+            possible avec le bureau. */}
+        <Footer />
+      </main>
     </>
   );
 }

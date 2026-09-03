@@ -79,7 +79,7 @@ export const DICT: Record<LangCode, Dict> = {
     },
     foot: { selltous: "Sell to us", tagline: "Pre-loved since the Y2K · Paris" },
     hero: { kicker: "Lil'OG · Vintage, Reborn", line: "We are born to",
-      words: ["Shine.", "Conquer.", "Slay.", "Burn."], shop: "Shop the drop", story: "Our story", avail: "Next drop · June 3" },
+      words: ["Shine.", "Conquer.", "Slay.", "Burn."], shop: "Shop the drop", story: "Our story", avail: "Next drop · September 6" },
     home: {
       scroll: "SCROLL",
       slotIntroTitle: "What's the Dressing Machine?",
@@ -131,8 +131,8 @@ export const DICT: Record<LangCode, Dict> = {
       outerwear: "Vestes & Manteaux", dressesSkirts: "Robes & Jupes", bottoms: "Pantalons & Jeans",
     },
     foot: { selltous: "Vendez-nous", tagline: "Seconde main depuis le Y2K · Paris" },
-    hero: { kicker: "Lil'OG · Vintage, Renaissance", line: "Nous sommes nés pour",
-      words: ["Briller.", "Conquérir.", "Régner.", "Flamber."], shop: "Voir le drop", story: "Notre histoire", avail: "Prochain drop · 3 juin" },
+    hero: { kicker: "Lil'OG · Vintage, Renaissance", line: "Nous sommes nées pour",
+      words: ["Briller.", "Conquérir.", "Régner.", "Flamber."], shop: "Voir le drop", story: "Notre histoire", avail: "Prochain drop · 6 septembre" },
     home: {
       scroll: "DÉFILER",
       slotIntroTitle: "C'est quoi la Dressing Machine ?",
@@ -185,7 +185,7 @@ export const DICT: Record<LangCode, Dict> = {
     },
     foot: { selltous: "Véndenos", tagline: "Segunda mano desde el Y2K · París" },
     hero: { kicker: "Lil'OG · Vintage, Renacido", line: "Nacimos para",
-      words: ["Brillar.", "Conquistar.", "Reinar.", "Arder."], shop: "Ver el drop", story: "Nuestra historia", avail: "Próximo drop · 3 de junio" },
+      words: ["Brillar.", "Conquistar.", "Reinar.", "Arder."], shop: "Ver el drop", story: "Nuestra historia", avail: "Próximo drop · 6 de septiembre" },
     home: {
       scroll: "DESLIZA",
       slotIntroTitle: "¿Qué es la Dressing Machine?",
@@ -238,7 +238,7 @@ export const DICT: Record<LangCode, Dict> = {
     },
     foot: { selltous: "Vendi a noi", tagline: "Seconda mano dal Y2K · Parigi" },
     hero: { kicker: "Lil'OG · Vintage, Rinato", line: "Siamo nati per",
-      words: ["Brillare.", "Conquistare.", "Regnare.", "Ardere."], shop: "Vedi il drop", story: "La nostra storia", avail: "Prossimo drop · 3 giugno" },
+      words: ["Brillare.", "Conquistare.", "Regnare.", "Ardere."], shop: "Vedi il drop", story: "La nostra storia", avail: "Prossimo drop · 6 settembre" },
     home: {
       scroll: "SCORRI",
       slotIntroTitle: "Cos'è la Dressing Machine?",
@@ -291,7 +291,7 @@ export const DICT: Record<LangCode, Dict> = {
     },
     foot: { selltous: "Verkauf an uns", tagline: "Pre-loved seit dem Y2K · Paris" },
     hero: { kicker: "Lil'OG · Vintage, Wiedergeboren", line: "Wir sind geboren, um zu",
-      words: ["Strahlen.", "Erobern.", "Herrschen.", "Brennen."], shop: "Zum Drop", story: "Unsere Geschichte", avail: "Nächster Drop · 3. Juni" },
+      words: ["Strahlen.", "Erobern.", "Herrschen.", "Brennen."], shop: "Zum Drop", story: "Unsere Geschichte", avail: "Nächster Drop · 6. September" },
     home: {
       scroll: "SCROLLEN",
       slotIntroTitle: "Was ist die Dressing Machine?",
@@ -344,7 +344,7 @@ export const DICT: Record<LangCode, Dict> = {
     },
     foot: { selltous: "Продать нам", tagline: "Секонд-хенд со времён Y2K · Париж" },
     hero: { kicker: "Lil'OG · Винтаж, Возрождённый", line: "Мы рождены, чтобы",
-      words: ["Сиять.", "Покорять.", "Править.", "Гореть."], shop: "Смотреть дроп", story: "Наша история", avail: "Следующий дроп · 3 июня" },
+      words: ["Сиять.", "Покорять.", "Править.", "Гореть."], shop: "Смотреть дроп", story: "Наша история", avail: "Следующий дроп · 6 сентября" },
     home: {
       scroll: "ЛИСТАТЬ",
       slotIntroTitle: "Что такое Dressing Machine?",
@@ -397,7 +397,7 @@ export const DICT: Record<LangCode, Dict> = {
     },
     foot: { selltous: "卖给我们", tagline: "自 Y2K 起的二手好物 · 巴黎" },
     hero: { kicker: "Lil'OG · 复古，重生", line: "我们生来",
-      words: ["闪耀。", "征服。", "称王。", "燃烧。"], shop: "查看上新", story: "我们的故事", avail: "下次上新 · 6月3日" },
+      words: ["闪耀。", "征服。", "称王。", "燃烧。"], shop: "查看上新", story: "我们的故事", avail: "下次上新 · 9月6日" },
     home: {
       scroll: "向下滚动",
       slotIntroTitle: "DRESSING MACHINE 是什么？",
@@ -450,7 +450,7 @@ export const DICT: Record<LangCode, Dict> = {
     },
     foot: { selltous: "買取", tagline: "Y2K以来の古着 · パリ" },
     hero: { kicker: "Lil'OG · ヴィンテージ、再生", line: "私たちは生まれた",
-      words: ["輝くために。", "制すために。", "魅せるために。", "燃えるために。"], shop: "ドロップを見る", story: "私たちの物語", avail: "次のドロップ · 6月3日" },
+      words: ["輝くために。", "制すために。", "魅せるために。", "燃えるために。"], shop: "ドロップを見る", story: "私たちの物語", avail: "次のドロップ · 9月6日" },
     home: {
       scroll: "スクロール",
       slotIntroTitle: "ドレッシングマシンって何？",
@@ -503,7 +503,7 @@ export const DICT: Record<LangCode, Dict> = {
     },
     foot: { selltous: "판매하기", tagline: "Y2K부터의 빈티지 · 파리" },
     hero: { kicker: "Lil'OG · 빈티지, 다시 태어나다", line: "우리는 태어났다",
-      words: ["빛나기 위해.", "정복하기 위해.", "군림하기 위해.", "불태우기 위해."], shop: "드롭 보기", story: "우리의 이야기", avail: "다음 드롭 · 6월 3일" },
+      words: ["빛나기 위해.", "정복하기 위해.", "군림하기 위해.", "불태우기 위해."], shop: "드롭 보기", story: "우리의 이야기", avail: "다음 드롭 · 9월 6일" },
     home: {
       scroll: "스크롤",
       slotIntroTitle: "드레싱 머신이 뭐예요?",

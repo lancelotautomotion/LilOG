@@ -29,7 +29,10 @@ import { MONO, NEON } from "@/components/y2k/kit";
 const HERO_VIDEO = "/hero/camcorder.mp4";
 
 /** Still de repli : photographie maison, pas de banque d'images. */
-const HERO_STILL = "/Design sans titre.png";
+const HERO_STILL = "/Design sans titre (1).png";
+
+/** Still dédié au mobile : cadrage portrait qui montre le sujet en entier. */
+const HERO_STILL_MOBILE = "/mobile-hero.jpg";
 
 const HERO_CSS = `
 /* Lignes de balayage du viseur. */
@@ -173,12 +176,34 @@ export function HeroCamcorder() {
     >
       <style>{HERO_CSS}</style>
 
-      {/* ---- Fond : still de la marque, puis vidéo si elle existe ---- */}
+      {/* ---- Fond : still de la marque, puis vidéo si elle existe ----
+           Deux stills, jamais le même cadrage : le portrait pris pour le
+           bureau, recadré au centre sur la photo large, coupait le sujet en
+           mobile. `HERO_STILL_MOBILE` est un cadrage dédié (portrait, sujet
+           déjà centré) qui garde toute la hauteur de la photo au lieu de la
+           rogner. */}
       <div aria-hidden className="absolute inset-0">
-        <Image src={HERO_STILL} alt="" fill priority sizes="100vw" className="object-contain" />
+        {/* Le toggle mobile/bureau vit sur ces `<div>`, jamais directement sur
+            l'`<Image>` : `img{display:block}` (globals.css, hors des layers
+            Tailwind) bat "hidden"/"md:block" posées sur un `<img>` quelle que
+            soit la largeur d'écran, les deux photos restaient affichées en
+            même temps. */}
+        <div className="absolute inset-0 block md:hidden">
+          <Image
+            src={HERO_STILL_MOBILE}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
+        <div className="absolute inset-0 hidden md:block">
+          <Image src={HERO_STILL} alt="" fill priority sizes="100vw" className="object-cover object-center" />
+        </div>
 
         <video
-          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
+          className="absolute inset-0 h-full w-full object-cover object-[64%_center] transition-opacity duration-700 md:object-center"
           style={{ opacity: videoOn ? 1 : 0 }}
           src={HERO_VIDEO}
           autoPlay
@@ -231,14 +256,24 @@ export function HeroCamcorder() {
         </div>
       </div>
 
-      {/* ---- Texte de marque ---- */}
-      <div className="relative z-30 w-full max-w-[min(92vw,1000px)] px-5 text-center">
+      {/* ---- Texte de marque ----
+           `mt-[11svh]` en mobile : le cadrage dédié au portrait laisse le
+           visage dans la moitié basse de l'écran, pile au niveau du bloc de
+           texte (centré par le `flex items-center` du header) sans cette
+           marge. Le bureau garde le centrage d'origine. */}
+      <div className="relative z-30 mt-[20svh] w-full max-w-[min(92vw,1000px)] px-5 text-center md:mt-0">
         <h1 className={`${MONO} leading-[1.15] font-bold text-white`}>
           {/* Voile allégé oblige : la lisibilité tient au halo du texte
               lui-même, pas à un fond assombri. */}
           <span
             className="block text-[clamp(0.9375rem,2.2vw,1.125rem)] tracking-[0.28em] text-white uppercase"
-            style={{ textShadow: "0 2px 14px rgba(0,0,0,.85), 0 0 4px rgba(0,0,0,.6)" }}
+            style={{
+              /* Même trait sombre serré que la ligne verte du dessous : le
+                 flou seul ne détachait pas assez le blanc d'un fond clair
+                 (mur, mèches). */
+              textShadow:
+                "0 0 1px #000, 0 1px 1px #000, 0 -1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 2px 14px rgba(0,0,0,.85), 0 0 4px rgba(0,0,0,.6)",
+            }}
           >
             {t.hero.line}
           </span>
@@ -247,9 +282,11 @@ export function HeroCamcorder() {
             style={{
               color: NEON,
               /* Halo rose pour le néon, ombre sombre pour tenir aussi sur un
-                 plan clair : le voile ne fait plus le travail à sa place. */
+                 plan clair : le voile ne fait plus le travail à sa place. Le
+                 trait serré supplémentaire tient le texte sur la peau/les
+                 mèches claires, là où le halo seul se diluait. */
               textShadow:
-                "0 0 12px rgba(255,94,196,.75), 0 0 38px rgba(255,94,196,.45), 0 3px 18px rgba(0,0,0,.7)",
+                "0 0 1px #000, 0 1px 1px #000, 0 -1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 0 12px rgba(255,94,196,.75), 0 0 38px rgba(255,94,196,.45), 0 3px 18px rgba(0,0,0,.7)",
             }}
           >
             <Typewriter
@@ -264,10 +301,16 @@ export function HeroCamcorder() {
         </h1>
 
         <p
-          className={`${MONO} mt-6 text-[0.8125rem] tracking-[0.24em] text-[#5affa0] uppercase md:text-[0.875rem]`}
-          style={{ textShadow: "0 0 10px rgba(90,255,160,.5), 0 2px 10px rgba(0,0,0,.8)" }}
+          className={`${MONO} mt-6 text-[0.8125rem] font-bold tracking-[0.24em] text-[#5affa0] uppercase md:text-[0.875rem]`}
+          style={{
+            /* Halo vert d'origine gardé tel quel ; le trait sombre serré qui
+               l'entoure (au lieu d'un simple flou porté) est ce qui manquait
+               pour tenir sur un fond clair (pull, fourrure). */
+            textShadow:
+              "0 0 1px #000, 0 1px 1px #000, 0 -1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 2px 10px rgba(0,0,0,.85), 0 0 10px rgba(90,255,160,.5)",
+          }}
         >
-          ▸ LIL_OG_DESKTOP.EXE · {t.hero.avail}
+          ▸ LIL_OG_DESKTOP.EXE · <span className="whitespace-nowrap">{t.hero.avail}</span>
         </p>
       </div>
 

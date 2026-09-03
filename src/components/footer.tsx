@@ -416,7 +416,7 @@ export function Footer() {
   const [openSection, setOpenSection] = useState<"shop" | "support" | null>(null);
 
   return (
-    <footer className="liltb relative z-30 bg-[#BBB6CD] px-4 pt-5 pb-4 sm:px-6 md:pt-[clamp(26px,4vw,48px)] md:pb-[clamp(20px,3vw,36px)]">
+    <footer className="liltb relative z-30 px-4 pt-5 pb-4 sm:px-6 md:pt-[clamp(26px,4vw,48px)] md:pb-[clamp(20px,3vw,36px)]">
       <style>{TASKBAR_CSS}</style>
 
       {/* Le conteneur relatif porte les pastilles : elles débordent de la
