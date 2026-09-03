@@ -58,8 +58,13 @@ export const GRID_BG: React.CSSProperties = {
 export const HARD_SHADOW = "shadow-[var(--y2k-win-shadow)]";
 
 /**
- * Le fond d'écran du bureau : page d'accueil uniquement. Calé sur
- * `#a86fe8`, le violet clair qui termine le dégradé des barres de titre.
+ * Le fond d'écran du bureau : page d'accueil uniquement. Le même bureau
+ * que la page panier (`.oc-root` + `.bg-grid-pattern` dans globals.css) —
+ * les deux halos (rose en haut à droite, violet en bas à gauche) posés sur
+ * le papier millimétré à deux trames, 22px et 110px. Recopié plutôt que
+ * partagé : `.oc-root` porte son propre `min-height`/`overflow` en CSS,
+ * que cette page n'a pas à embarquer (voir aussi `.dm-main`, qui reprend
+ * le même bureau pour la Dressing Machine).
  *
  * Posé en `style` inline sur `<main>` plutôt qu'en décor `fixed` plein
  * viewport : un décor `fixed` couvrant tout l'écran peint par-dessus le
@@ -67,19 +72,17 @@ export const HARD_SHADOW = "shadow-[var(--y2k-win-shadow)]";
  * propres visuels, c'est justement ce que ce fond évite.
  */
 export const WALLPAPER: React.CSSProperties = {
-  background:
-    "radial-gradient(ellipse at 16% -8%, rgba(255,150,222,0.42) 0%, transparent 52%)," +
-    "radial-gradient(ellipse at 88% 20%, rgba(255,255,255,0.20) 0%, transparent 46%)," +
-    "radial-gradient(ellipse at 50% 106%, rgba(59,29,143,0.30) 0%, transparent 62%)," +
-    "linear-gradient(180deg, #9a63e4 0%, #a86fe8 38%, #b98cef 72%, #9d68e6 100%)",
-};
-
-/** Quadrillage du fond d'écran : le même pas que le papier millimétré. */
-export const WALLPAPER_GRID: React.CSSProperties = {
+  backgroundColor: "#ece8fa",
   backgroundImage:
-    "linear-gradient(rgba(59,29,143,0.10) 1px, transparent 1px)," +
-    "linear-gradient(90deg, rgba(59,29,143,0.10) 1px, transparent 1px)",
-  backgroundSize: "44px 44px",
+    "radial-gradient(60vw 45vh at 82% 8%, rgba(255,63,176,0.16), transparent 70%)," +
+    "radial-gradient(65vw 50vh at 12% 92%, rgba(113,71,212,0.18), transparent 72%)," +
+    "linear-gradient(rgba(113,71,212,0.07) 1px, transparent 1px)," +
+    "linear-gradient(90deg, rgba(113,71,212,0.07) 1px, transparent 1px)," +
+    "linear-gradient(rgba(113,71,212,0.13) 1px, transparent 1px)," +
+    "linear-gradient(90deg, rgba(113,71,212,0.13) 1px, transparent 1px)",
+  backgroundSize: "auto, auto, 22px 22px, 22px 22px, 110px 110px, 110px 110px",
+  backgroundPosition: "0 0",
+  backgroundRepeat: "no-repeat, no-repeat, repeat, repeat, repeat, repeat",
 };
 
 /**
