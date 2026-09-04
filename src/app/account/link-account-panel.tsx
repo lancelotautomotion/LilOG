@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { signIn } from "next-auth/react";
+import { Icon } from "@/components/icons";
 import { actionLinkGoogleAccount } from "./link-actions";
 
 /* Panneau affiché quand la connexion Google est tombée sur un compte Lil'OG
@@ -10,6 +11,7 @@ import { actionLinkGoogleAccount } from "./link-actions";
    dise pourquoi ni comment y remédier. */
 export function LinkAccountPanel({ email }: { email: string }) {
   const [password, setPassword] = useState("");
+  const [visible, setVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -60,17 +62,46 @@ export function LinkAccountPanel({ email }: { email: string }) {
               <label className="account-label" htmlFor="link-password" style={{ width: "100%" }}>
                 Mot de passe Lil&apos;OG
               </label>
-              <input
-                id="link-password"
-                className="account-input"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Ton mot de passe"
-                style={{ flex: "1 1 220px" }}
-                required
-              />
+              {/* Œil d'affichage, comme sur le formulaire de connexion : une
+                  faute de frappe dans un mot de passe masqué est invisible, et
+                  ici la cliente n'a droit qu'à cinq essais. Le bouton est en
+                  position absolue DANS le champ, d'où le conteneur relatif. */}
+              <div style={{ position: "relative", flex: "1 1 220px", display: "flex" }}>
+                <input
+                  id="link-password"
+                  className="account-input"
+                  type={visible ? "text" : "password"}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Ton mot de passe"
+                  style={{ flex: 1, paddingRight: 44 }}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setVisible((v) => !v)}
+                  aria-label={visible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                  aria-pressed={visible}
+                  title={visible ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    bottom: 0,
+                    right: 0,
+                    width: 40,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "#6b6480",
+                  }}
+                >
+                  {visible ? <Icon.eyeOff /> : <Icon.eye />}
+                </button>
+              </div>
               <button className="account-btn primary" type="submit" disabled={pending}>
                 {pending ? "Vérification…" : "Relier mon compte"}
               </button>
