@@ -17,12 +17,12 @@ export function MsnProfile({
   firstName,
   fullName,
   email,
-  shopifyToken,
+  hasShopifyAccount,
 }: {
   firstName: string;
   fullName: string;
   email: string;
-  shopifyToken: string | null;
+  hasShopifyAccount: boolean;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   /* Index de l'avatar affiché dans le carrousel (préparé à l'ouverture) */
@@ -147,7 +147,7 @@ export function MsnProfile({
             </div>
           </div>
 
-          {shopifyToken && (
+          {hasShopifyAccount && (
             <a href="/account/edit" className="account-btn primary msn-edit-btn">
               ✏️ Modifier le profil
             </a>

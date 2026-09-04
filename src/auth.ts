@@ -38,13 +38,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user, account, profile }) {
       if (user) {
-        token.shopifyToken = (user as { shopifyToken?: string }).shopifyToken ?? null;
+        token.shopifyToken = user.shopifyToken ?? null;
       }
       // Google sign-in: relie (ou crée) un compte Shopify miroir pour que
       // le panier et l'historique de commandes fonctionnent comme pour un
       // compte email/mot de passe.
       if (account?.provider === "google" && token.email) {
-        const g = profile as { given_name?: string; family_name?: string } | undefined;
+        const g = profile as
+          | { given_name?: string; family_name?: string; email_verified?: boolean }
+          | undefined;
+
+        /* On ne relie un compte Shopify qu'à un email dont Google atteste la
+           vérification. Sans ce contrôle, un compte Google dont l'adresse
+           n'est pas confirmée pourrait revendiquer l'email d'une cliente
+           existante — et le compte miroir est justement retrouvé par email. */
+        if (g?.email_verified === false) {
+          token.shopifyToken = null;
+          return token;
+        }
+
         const displayName = (token.name as string) ?? "";
         token.shopifyToken = await getOrCreateShopifyTokenForEmail(
           token.email,
@@ -54,8 +66,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return token;
     },
+    /* Ce callback définit ce que le NAVIGATEUR reçoit : l'objet renvoyé ici
+       est sérialisé en clair par GET /api/auth/session et injecté dans le
+       SessionProvider. Le customerAccessToken Shopify n'a donc rien à y
+       faire — il donne accès à l'historique de commandes, aux adresses, et
+       à customerUpdate, qui accepte `password` (prise de contrôle du
+       compte). Il reste dans le JWT, d'où `getShopifyToken()` le relit
+       côté serveur (@/lib/shopify/session-token).
+
+       Le client, lui, n'a besoin que de savoir si un compte Shopify est
+       relié : c'est ce qui conditionne l'affichage du bouton « Modifier le
+       profil ». */
     async session({ session, token }) {
-      (session as { shopifyToken?: string | null }).shopifyToken = token.shopifyToken as string | null ?? null;
+      session.hasShopifyAccount =
+        typeof token.shopifyToken === "string" && token.shopifyToken.length > 0;
       return session;
     },
   },

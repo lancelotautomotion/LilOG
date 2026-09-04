@@ -63,7 +63,7 @@ export function AccountDashboard({
   email,
   firstName,
   fullName,
-  shopifyToken,
+  hasShopifyAccount,
   initialAddresses,
   initialDefaultAddressId,
 }: {
@@ -72,7 +72,7 @@ export function AccountDashboard({
   email: string;
   firstName: string;
   fullName: string;
-  shopifyToken: string | null;
+  hasShopifyAccount: boolean;
   initialAddresses: ShopifyAddress[];
   initialDefaultAddressId: string | null;
 }) {
@@ -191,7 +191,7 @@ export function AccountDashboard({
         {/* ── Toolbar ───────────────────────────────────────── */}
         <div className="acct-toolbar">
           <a href="/wishlist" className="account-toolbar-btn">♥ Wishlist</a>
-          {shopifyToken && <a href="/account/edit" className="account-toolbar-btn">Modifier le profil</a>}
+          {hasShopifyAccount && <a href="/account/edit" className="account-toolbar-btn">Modifier le profil</a>}
           <div className="account-toolbar-sep" />
           <button className="account-toolbar-btn danger" onClick={() => signOut({ callbackUrl: "/" })}>
             Déconnexion
@@ -209,7 +209,7 @@ export function AccountDashboard({
               firstName={firstName}
               fullName={fullName}
               email={email}
-              shopifyToken={shopifyToken}
+              hasShopifyAccount={hasShopifyAccount}
             />
 
             {/* Navigation : bascule le contenu de la fenêtre de droite */}
@@ -235,7 +235,7 @@ export function AccountDashboard({
             <div className="account-panel" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
 
               {section === "orders" && (
-                shopifyToken ? (
+                hasShopifyAccount ? (
                   <>
                     <div className="account-panel-bar">
                       <span className="account-panel-title">📦 Dernières commandes</span>
@@ -297,7 +297,7 @@ export function AccountDashboard({
               )}
 
               {section === "addresses" && (
-                !shopifyToken ? (
+                !hasShopifyAccount ? (
                   <>
                     <div className="account-panel-bar">
                       <span className="account-panel-title">📖 My City Contacts - Adresses</span>

@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { auth } from "@/auth";
+import { getShopifyToken } from "@/lib/shopify/session-token";
 import {
   addCartLines,
   cartBuyerIdentityUpdate,
@@ -16,9 +17,58 @@ import type { Cart } from "@/lib/shopify/types";
 
 const CART_COOKIE = "lilog_cart_id";
 
-async function getShopifyToken(): Promise<string | null> {
-  const session = await auth();
-  return (session as { shopifyToken?: string | null } | null)?.shopifyToken ?? null;
+/* ── Validation des lignes entrantes ───────────────────────────────────────
+ *
+ * Une Server Action `"use server"` n'est pas un appel de fonction privé :
+ * c'est un endpoint HTTP public, appelable directement, sans passer par le
+ * formulaire qui l'utilise normalement. Ce qui arrive ici n'est donc pas
+ * « ce que le tunnel carte cadeau a envoyé », mais n'importe quoi.
+ *
+ * Les attributs comptent double : Shopify les attache à la commande et les
+ * rend dans les emails de notification, dont les gabarits Liquid n'échappent
+ * rien (`confirmation-commande.liquid`, `{{ property.last }}` — y compris
+ * dans un href). Sans liste blanche, ce point d'entrée injecte du HTML dans
+ * un email portant votre marque.
+ */
+const ALLOWED_ATTR_KEYS = new Set([
+  // Clés réservées Shopify du tunnel carte cadeau (cf. setup-wizard.tsx).
+  "__shopify_send_gift_card_to_recipient",
+  "Recipient email",
+  "Recipient name",
+  "Message",
+  "Send on",
+]);
+
+const MAX_LINES = 30;
+const MAX_ATTRS_PER_LINE = 8;
+const MAX_ATTR_VALUE = 500;
+const MAX_QUANTITY = 20;
+
+function sanitizeLines(lines: CartLineInput[]): CartLineInput[] {
+  return lines.slice(0, MAX_LINES).map((l) => ({
+    variantId: String(l.variantId ?? ""),
+    /* La quantité n'était bornée nulle part : un décimal ou un négatif
+       partait tel quel dans la mutation Shopify. */
+    quantity: Math.min(Math.max(Math.trunc(Number(l.quantity) || 1), 1), MAX_QUANTITY),
+    attributes: (Array.isArray(l.attributes) ? l.attributes : [])
+      .filter((a) => a && ALLOWED_ATTR_KEYS.has(a.key))
+      .slice(0, MAX_ATTRS_PER_LINE)
+      .map((a) => ({
+        key: a.key,
+        // Chevrons et guillemets n'ont aucun usage légitime dans un nom, un
+        // email ou un message de carte cadeau, et sont exactement ce qui
+        // casse le rendu HTML des notifications.
+        value: String(a.value ?? "").replace(/[<>"']/g, "").slice(0, MAX_ATTR_VALUE),
+      })),
+  }));
+}
+
+/* Le panier se lie au client Shopify connecté, mais reste utilisable sans
+   compte : pas de session, pas de token, et l'ajout au panier fonctionne
+   quand même. */
+async function currentShopifyToken(): Promise<string | null> {
+  if (!(await auth())) return null;
+  return getShopifyToken();
 }
 
 /* Lie le panier au client Shopify connecté s'il ne l'est pas déjà,
@@ -37,7 +87,7 @@ export async function getCartAction(): Promise<Cart | null> {
   try {
     const node = await getCartNode(cartId);
     if (!node) return null;
-    const token = await getShopifyToken();
+    const token = await currentShopifyToken();
     if (token && node.buyerIdentity?.customer?.id == null) {
       const linked = await ensureLinkedToCustomer(cartId, token);
       if (linked) return linked;
@@ -74,16 +124,30 @@ export interface AddToCartResult {
  * sans identifiant et recréent chacun leur panier. Une seule mutation Shopify
  * pour tout le look supprime la course.
  */
-export async function addLinesToCartAction(lines: CartLineInput[]): Promise<AddToCartResult> {
+export async function addLinesToCartAction(rawLines: CartLineInput[]): Promise<AddToCartResult> {
+  if (!Array.isArray(rawLines) || rawLines.length === 0) {
+    return { cart: null, error: "Aucune ligne à ajouter au panier." };
+  }
+  const lines = sanitizeLines(rawLines).filter((l) => l.variantId !== "");
   if (lines.length === 0) return { cart: null, error: "Aucune ligne à ajouter au panier." };
 
   const jar = await cookies();
   const cartId = jar.get(CART_COOKIE)?.value;
-  const token = await getShopifyToken();
+  const token = await currentShopifyToken();
 
   const createFresh = async () => {
     const cart = await createCartWithLines(lines, token);
-    jar.set(CART_COOKIE, cart.id, { sameSite: "lax", secure: true, maxAge: 60 * 60 * 24 * 30 });
+    /* httpOnly : ce cookie n'est lu que côté serveur (seul `cookies()` y
+       touche, dans ce fichier). Un identifiant de panier donne accès au
+       contenu du panier et à sa checkoutUrl — il n'a rien à faire à portée
+       du JavaScript de la page. */
+    jar.set(CART_COOKIE, cart.id, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: true,
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+    });
     return cart;
   };
 
@@ -127,7 +191,9 @@ export async function addToCartAction(variantId: string, quantity = 1): Promise<
 export async function updateCartLineAction(lineId: string, quantity: number): Promise<Cart | null> {
   const cartId = (await cookies()).get(CART_COOKIE)?.value;
   if (!cartId) return null;
-  return updateCartLine(cartId, lineId, quantity);
+  // Même endpoint public que l'ajout : la quantité se borne ici aussi.
+  const qty = Math.min(Math.max(Math.trunc(Number(quantity) || 0), 0), MAX_QUANTITY);
+  return updateCartLine(cartId, lineId, qty);
 }
 
 export async function removeCartLineAction(lineId: string): Promise<Cart | null> {
