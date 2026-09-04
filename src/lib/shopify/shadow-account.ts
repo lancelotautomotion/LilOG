@@ -36,22 +36,58 @@ function derivePassword(email: string): string {
   return `Lg${hash.slice(0, 28)}!9`;
 }
 
+/* Le mot de passe dérivé de cet email, pour aligner un compte existant
+   dessus une fois que la cliente a prouvé qu'il est bien le sien.
+   Voir actionLinkGoogleAccount (@/app/account/link-actions). */
+export function shadowPasswordFor(email: string): string {
+  return derivePassword(email);
+}
+
+/**
+ * Pourquoi la connexion Google n'a pas abouti à un compte Shopify.
+ *
+ * Le `null` qui servait de réponse à tout confondait trois situations très
+ * différentes, et la cliente se retrouvait devant un espace compte vide
+ * sans la moindre explication :
+ *
+ * - `linked`      tout va bien, le compte miroir répond.
+ * - `email-taken` un compte Lil'OG existe déjà avec cet email, avec un mot
+ *                 de passe que la cliente a choisi elle-même. On ne peut
+ *                 pas le deviner — mais elle, elle le connaît : c'est le
+ *                 cas qui se répare, en le lui demandant une fois.
+ * - `unavailable` Shopify n'a pas répondu. Rien à réparer, ça repassera.
+ */
+export type ShadowAccountResult =
+  | { status: "linked"; token: string }
+  | { status: "email-taken"; token: null }
+  | { status: "unavailable"; token: null };
+
 export async function getOrCreateShopifyTokenForEmail(
   email: string,
   firstName: string,
   lastName: string,
-): Promise<string | null> {
+): Promise<ShadowAccountResult> {
   const password = derivePassword(email);
 
-  const { token } = await shopifyCustomerLogin(email, password);
-  if (token) return token;
+  const first = await shopifyCustomerLogin(email, password);
+  if (first.token) return { status: "linked", token: first.token };
 
-  // Pas encore de compte miroir : on le crée. Si l'email est déjà pris par
-  // un vrai compte Shopify (mot de passe différent), la création échoue et
-  // on abandonne, impossible de deviner le mot de passe existant.
+  // Pas de compte miroir joignable : on tente de le créer.
   const { error } = await shopifyCustomerCreate(email, password, firstName, lastName);
-  if (error) return null;
+
+  if (error) {
+    /* On ne compare PAS le texte du message : Shopify le traduit selon la
+       langue de la boutique, et s'y fier a déjà coûté un bug ici (voir
+       addLinesToCartAction). Seul « Erreur réseau » est produit par notre
+       propre code, il est donc fiable. Tout autre refus sur un email
+       valide et un mot de passe fort signifie en pratique une seule chose :
+       l'adresse est déjà prise. */
+    if (error === "Erreur réseau") return { status: "unavailable", token: null };
+    return { status: "email-taken", token: null };
+  }
 
   const retry = await shopifyCustomerLogin(email, password);
-  return retry.token;
+  return retry.token
+    ? { status: "linked", token: retry.token }
+    : { status: "unavailable", token: null };
 }

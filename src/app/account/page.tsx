@@ -36,6 +36,7 @@ export default async function AccountPage() {
       firstName={firstName}
       fullName={fullName}
       hasShopifyAccount={shopifyToken !== null}
+      linkStatus={session.shopifyLinkStatus ?? null}
       initialAddresses={addresses}
       initialDefaultAddressId={defaultAddressId}
     />

@@ -58,11 +58,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         const displayName = (token.name as string) ?? "";
-        token.shopifyToken = await getOrCreateShopifyTokenForEmail(
+        const result = await getOrCreateShopifyTokenForEmail(
           token.email,
           g?.given_name || displayName.split(" ")[0] || "Cliente",
           g?.family_name || displayName.split(" ").slice(1).join(" ") || "",
-        ).catch(() => null);
+        ).catch(() => ({ status: "unavailable", token: null }) as const);
+
+        token.shopifyToken = result.token;
+        /* Conservé pour expliquer la situation à la cliente plutôt que de
+           lui présenter un espace compte vide sans un mot. */
+        token.shopifyLinkStatus = result.status;
       }
       return token;
     },
@@ -80,6 +85,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       session.hasShopifyAccount =
         typeof token.shopifyToken === "string" && token.shopifyToken.length > 0;
+      /* Un statut, pas un secret : il dit POURQUOI le compte n'est pas relié,
+         ce que le client a besoin de savoir pour proposer la réparation. */
+      session.shopifyLinkStatus = token.shopifyLinkStatus ?? null;
       return session;
     },
   },

@@ -14,6 +14,7 @@ export function AccountShell({
   firstName,
   fullName,
   hasShopifyAccount,
+  linkStatus,
   initialAddresses,
   initialDefaultAddressId,
 }: {
@@ -23,6 +24,7 @@ export function AccountShell({
   firstName: string;
   fullName: string;
   hasShopifyAccount: boolean;
+  linkStatus: "linked" | "email-taken" | "unavailable" | null;
   initialAddresses: ShopifyAddress[];
   initialDefaultAddressId: string | null;
 }) {
@@ -39,6 +41,7 @@ export function AccountShell({
         firstName={firstName}
         fullName={fullName}
         hasShopifyAccount={hasShopifyAccount}
+        linkStatus={linkStatus}
         initialAddresses={initialAddresses}
         initialDefaultAddressId={initialDefaultAddressId}
       />
