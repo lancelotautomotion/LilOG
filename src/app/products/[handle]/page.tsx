@@ -68,8 +68,16 @@ function fitsSize(product: Product, wanted: ReadonlySet<string>): boolean {
   return product.sizes.some((s) => sizeEquivalents(s).some((e) => wanted.has(e)));
 }
 
+/* Les suggestions sont décoratives : elles ne doivent jamais emporter la
+   fiche avec elles. Sans ce `catch` par collection, un simple 429 du
+   Storefront API (le cas typique d'un pic de trafic) faisait échouer le
+   Promise.all, donc le rendu de la page, alors que la pièce regardée
+   s'était chargée sans problème. Une collection en échec est simplement
+   absente du tirage. */
 async function poolFrom(handles: string[]): Promise<Product[]> {
-  const results = await Promise.all(handles.map((h) => getCollectionProducts(h, POOL_PER_COLLECTION)));
+  const results = await Promise.all(
+    handles.map((h) => getCollectionProducts(h, POOL_PER_COLLECTION).catch(() => null)),
+  );
   return shuffle(results.flatMap((r) => r?.products ?? []));
 }
 
@@ -137,7 +145,7 @@ export default async function ProductPage({
 
   // 4. Dernier recours : la sélection du moment, pour ne jamais afficher une
   //    fenêtre de suggestions vide sur une pièce hors rayon.
-  if (missing()) take(await getFeaturedProducts(12));
+  if (missing()) take(await getFeaturedProducts(12).catch(() => []));
 
   return <ProductDetail product={product} related={related} />;
 }
