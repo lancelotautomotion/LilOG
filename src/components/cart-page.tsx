@@ -135,7 +135,7 @@ function DesktopIcon({
 export function CartPage() {
   const { t } = useLanguage();
   const { data: session } = useSession();
-  const { cart, pending, removeItem, addItem } = useCart();
+  const { cart, pending, loaded, removeItem, addItem } = useCart();
   const firstName = session?.user?.name?.split(" ")[0] ?? null;
   const [menu, setMenu] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -262,7 +262,10 @@ export function CartPage() {
               <div className="oc-win95-screen">
                 {total === 0 ? (
                   <div className="oc-screen-empty">
-                    <p>Votre dressing est vide.</p>
+                    {/* Le panier arrive maintenant après hydratation : sans
+                        cette distinction, la page annoncerait un dressing
+                        vide pendant l'aller-retour, puis se remplirait. */}
+                    <p>{loaded ? "Votre dressing est vide." : "Chargement du dressing…"}</p>
                     {/* Le catalogue complet, le « Tout voir » du menu, et non
                         l'accueil : depuis un panier vide on veut des pièces à
                         parcourir tout de suite, pas la page d'entrée. */}
@@ -376,7 +379,7 @@ export function CartPage() {
 
               <div className="oc-summary-body">
                 {total === 0 ? (
-                  <p className="oc-summary-empty">Panier vide.</p>
+                  <p className="oc-summary-empty">{loaded ? "Panier vide." : "Chargement…"}</p>
                 ) : (
                   <ul className="m-0 flex list-none flex-col gap-2 p-0">
                     {lines.map((line, i) => {
