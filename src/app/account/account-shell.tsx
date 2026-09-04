@@ -13,7 +13,7 @@ export function AccountShell({
   email,
   firstName,
   fullName,
-  shopifyToken,
+  hasShopifyAccount,
   initialAddresses,
   initialDefaultAddressId,
 }: {
@@ -22,7 +22,7 @@ export function AccountShell({
   email: string;
   firstName: string;
   fullName: string;
-  shopifyToken: string | null;
+  hasShopifyAccount: boolean;
   initialAddresses: ShopifyAddress[];
   initialDefaultAddressId: string | null;
 }) {
@@ -38,7 +38,7 @@ export function AccountShell({
         email={email}
         firstName={firstName}
         fullName={fullName}
-        shopifyToken={shopifyToken}
+        hasShopifyAccount={hasShopifyAccount}
         initialAddresses={initialAddresses}
         initialDefaultAddressId={initialDefaultAddressId}
       />

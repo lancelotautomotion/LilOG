@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { shopifyGetCustomer, shopifyUpdateCustomer } from "@/lib/shopify/customers";
+import { getShopifyToken } from "@/lib/shopify/session-token";
 import { EditProfileShell } from "./edit-profile-shell";
 
 export const metadata: Metadata = { title: "Modifier le profil · Lil'OG" };
@@ -10,7 +11,7 @@ export default async function EditProfilePage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const shopifyToken = (session as { shopifyToken?: string | null }).shopifyToken ?? null;
+  const shopifyToken = await getShopifyToken();
   if (!shopifyToken) redirect("/account");
 
   const customer = await shopifyGetCustomer(shopifyToken);
@@ -18,8 +19,11 @@ export default async function EditProfilePage() {
 
   async function updateProfile(formData: FormData) {
     "use server";
-    const s = await auth();
-    const token = (s as { shopifyToken?: string | null })?.shopifyToken;
+    /* La session est revérifiée à chaque appel : cette Server Action est
+       un endpoint public, l'avoir rendue depuis une page authentifiée ne
+       prouve rien sur l'appelant. */
+    if (!(await auth())) return { error: "Session expirée" };
+    const token = await getShopifyToken();
     if (!token) return { error: "Session expirée" };
 
     const firstName = (formData.get("firstName") as string | null)?.trim() || undefined;

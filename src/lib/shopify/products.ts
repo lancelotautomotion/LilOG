@@ -70,7 +70,7 @@ function extractColorValues(node: ShopifyProductNode): string[] {
   // Dernier recours : trace de diagnostic, pour vérifier en prod quel champ
   // méta porte réellement la couleur sur ce catalogue.
   if (process.env.NODE_ENV !== "production") {
-    console.log("[colors] no color found for", node.handle,
+    if (process.env.NODE_ENV === "development") console.log("[colors] no color found for", node.handle,
       "options:", node.options?.map((o) => o.name));
   }
   return [];
@@ -104,7 +104,7 @@ function extractSizeValues(node: ShopifyProductNode): string[] {
   if (seen.size > 0) return [...seen].sort(compareSizes);
 
   if (process.env.NODE_ENV !== "production") {
-    console.log("[sizes] no size found for", node.handle,
+    if (process.env.NODE_ENV === "development") console.log("[sizes] no size found for", node.handle,
       "options:", node.options?.map((o) => o.name));
   }
   return [];
@@ -122,7 +122,7 @@ function extractMaterialValues(node: ShopifyProductNode): string[] {
     if (vals.length) return vals;
   }
   if (process.env.NODE_ENV !== "production") {
-    console.log("[materials] no material found for", node.handle);
+    if (process.env.NODE_ENV === "development") console.log("[materials] no material found for", node.handle);
   }
   return [];
 }
@@ -155,7 +155,7 @@ export function extractSizeValue(
   if (fromMeta) return fromMeta;
 
   if (process.env.NODE_ENV !== "production" && handle) {
-    console.log("[size] no sizeMeta, options for", handle, JSON.stringify(options));
+    if (process.env.NODE_ENV === "development") console.log("[size] no sizeMeta, options for", handle, JSON.stringify(options));
   }
   const sizeOption = options?.find((o) =>
     /taille|size|pointure|dimension/i.test(o.name) ||

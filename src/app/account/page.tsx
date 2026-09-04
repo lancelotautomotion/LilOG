@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { shopifyGetCustomerWithOrders, shopifyGetAddresses } from "@/lib/shopify/customers";
+import { getShopifyToken } from "@/lib/shopify/session-token";
 import { AccountShell } from "./account-shell";
 
 export const metadata: Metadata = { title: "Mon compte · Lil'OG" };
@@ -10,7 +11,7 @@ export default async function AccountPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const shopifyToken = (session as { shopifyToken?: string | null }).shopifyToken ?? null;
+  const shopifyToken = await getShopifyToken();
 
   const displayName = session.user?.name ?? session.user?.email ?? "Cliente";
   const firstName = displayName.split(" ")[0];
@@ -34,7 +35,7 @@ export default async function AccountPage() {
       email={email}
       firstName={firstName}
       fullName={fullName}
-      shopifyToken={shopifyToken}
+      hasShopifyAccount={shopifyToken !== null}
       initialAddresses={addresses}
       initialDefaultAddressId={defaultAddressId}
     />

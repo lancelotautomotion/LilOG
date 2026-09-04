@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { shopifyGetCustomerOrder } from "@/lib/shopify/customers";
+import { getShopifyToken } from "@/lib/shopify/session-token";
 import { OrderDetailShell } from "./order-detail-shell";
 
 export const metadata: Metadata = { title: "Détail commande · Lil'OG" };
@@ -10,7 +11,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const session = await auth();
   if (!session) redirect("/login");
 
-  const shopifyToken = (session as { shopifyToken?: string | null }).shopifyToken ?? null;
+  const shopifyToken = await getShopifyToken();
   if (!shopifyToken) redirect("/account");
 
   const { id } = await params;

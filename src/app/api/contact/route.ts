@@ -51,6 +51,46 @@ function bad(error: string, status = 400) {
   return Response.json({ ok: false, error }, { status });
 }
 
+/* ── Garde-fou de débit ────────────────────────────────────────────────────
+ *
+ * Chaque appel accepté déclenche un envoi réel chez Resend : sans limite,
+ * ce formulaire est un relais d'emails gratuit (le `reply_to` porte une
+ * adresse arbitraire) et un moyen de brûler le quota du compte, après quoi
+ * plus aucun message de cliente ne passe.
+ *
+ * Le compteur est en mémoire : une instance serverless ne voit que son
+ * propre trafic, donc ce n'est PAS un rate limiting distribué. Il plafonne
+ * le coût d'une instance chaude et absorbe les rafales ; la protection de
+ * fond est à poser dans le pare-feu Vercel (Firewall → Rate Limiting), qui,
+ * lui, voit toutes les requêtes. Les deux sont complémentaires.
+ */
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_PER_WINDOW = 5;
+const MAX_TRACKED_IPS = 5000;
+
+const hits = new Map<string, number[]>();
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  if (recent.length >= MAX_PER_WINDOW) return true;
+  recent.push(now);
+  hits.set(ip, recent);
+  // Borne mémoire : sans elle, une instance de longue vie accumulerait une
+  // entrée par IP vue. Purge simple, le compteur est de toute façon
+  // approximatif par nature.
+  if (hits.size > MAX_TRACKED_IPS) hits.clear();
+  return false;
+}
+
+function clientIp(request: Request): string {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+    request.headers.get("x-real-ip") ||
+    "unknown"
+  );
+}
+
 /* Le corps du mail part en texte brut : la boîte de réception est un
    Gmail lu à la main, pas un gabarit à mettre en forme. On échappe
    quand même les chevrons dans la version HTML pour qu'un message
@@ -63,6 +103,12 @@ function escapeHtml(value: string) {
 }
 
 export async function POST(request: Request) {
+  /* Contrôlé avant tout le reste : inutile de lire le corps d'une requête
+     qu'on ne traitera pas. */
+  if (rateLimited(clientIp(request))) {
+    return bad("Trop de messages envoyés. Réessaie dans quelques minutes.", 429);
+  }
+
   let payload: unknown;
   try {
     payload = await request.json();
