@@ -20,10 +20,17 @@ import type { DefaultSession } from "next-auth";
  * est le seul point d'entrée pour le relire, côté serveur uniquement.
  */
 
+/** Pourquoi la connexion Google n'a pas abouti à un compte Shopify.
+ *  Défini dans @/lib/shopify/shadow-account. */
+type ShopifyLinkStatus = "linked" | "email-taken" | "unavailable";
+
 declare module "next-auth" {
   interface Session extends DefaultSession {
     /** Un compte Shopify est relié à cette session. Jamais le token lui-même. */
     hasShopifyAccount?: boolean;
+    /** Le motif, quand il ne l'est pas : sert à expliquer plutôt qu'à
+     *  laisser la cliente devant un espace vide. Ce n'est pas un secret. */
+    shopifyLinkStatus?: ShopifyLinkStatus | null;
   }
 
   interface User {
@@ -36,6 +43,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     /** Le customerAccessToken Shopify. Reste dans le cookie chiffré. */
     shopifyToken?: string | null;
+    shopifyLinkStatus?: ShopifyLinkStatus | null;
   }
 }
 

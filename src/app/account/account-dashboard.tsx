@@ -5,6 +5,7 @@ import { signOut } from "next-auth/react";
 import type { ShopifyCustomer, ShopifyOrder, ShopifyAddress, AddressInput } from "@/lib/shopify/customers";
 import { actionCreateAddress, actionUpdateAddress, actionDeleteAddress, actionSetDefaultAddress } from "./address-actions";
 import { MsnProfile } from "./msn-profile";
+import { LinkAccountPanel } from "./link-account-panel";
 
 function fmt(amount: string, currency: string) {
   return new Intl.NumberFormat("fr-FR", { style: "currency", currency }).format(Number(amount));
@@ -64,6 +65,7 @@ export function AccountDashboard({
   firstName,
   fullName,
   hasShopifyAccount,
+  linkStatus,
   initialAddresses,
   initialDefaultAddressId,
 }: {
@@ -73,6 +75,7 @@ export function AccountDashboard({
   firstName: string;
   fullName: string;
   hasShopifyAccount: boolean;
+  linkStatus: "linked" | "email-taken" | "unavailable" | null;
   initialAddresses: ShopifyAddress[];
   initialDefaultAddressId: string | null;
 }) {
@@ -198,6 +201,10 @@ export function AccountDashboard({
           </button>
         </div>
 
+        {/* Compte Google tombé sur un compte Lil'OG existant : on explique
+            et on propose la liaison, au lieu d'un espace vide silencieux. */}
+        {linkStatus === "email-taken" && <LinkAccountPanel email={email} />}
+
         {/* ── Body ──────────────────────────────────────────── */}
         <div className="acct-body">
 
@@ -284,12 +291,31 @@ export function AccountDashboard({
                       <PanelChrome />
                     </div>
                     <div className="account-panel-body" style={{ padding: "8px", flex: 1 }}>
+                      {/* Cette branche affichait exactement le même écran que
+                          celle du dessus : une cliente dont le compte n'était
+                          pas relié lisait « ta première pépite t'attend » alors
+                          qu'elle avait déjà commandé. On dit maintenant ce
+                          qu'il en est, et ce qu'elle peut y faire. */}
                       <div className="account-orders-empty acct-orders-cta">
-                        <p className="acct-orders-cta-text">
-                          ⚠️ Alerte style : Get in, babe.<br />
-                          Ta première pépite t&apos;attend déjà.
-                        </p>
-                        <a href="/#drops" className="account-btn primary acct-orders-cta-btn">SETUP_MY_LOOK.EXE →</a>
+                        {linkStatus === "email-taken" ? (
+                          <p className="acct-orders-cta-text">
+                            📦 Tes commandes sont sur ton compte Lil&apos;OG.<br />
+                            Relie-le avec l&apos;encadré au-dessus pour les afficher ici.
+                          </p>
+                        ) : linkStatus === "unavailable" ? (
+                          <p className="acct-orders-cta-text">
+                            ⏳ La boutique est momentanément injoignable.<br />
+                            Recharge la page dans un instant.
+                          </p>
+                        ) : (
+                          <>
+                            <p className="acct-orders-cta-text">
+                              ⚠️ Alerte style : Get in, babe.<br />
+                              Ta première pépite t&apos;attend déjà.
+                            </p>
+                            <a href="/#drops" className="account-btn primary acct-orders-cta-btn">SETUP_MY_LOOK.EXE →</a>
+                          </>
+                        )}
                       </div>
                     </div>
                   </>
