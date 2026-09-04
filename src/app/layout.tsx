@@ -8,7 +8,6 @@ import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
 import { CookieConsent } from "@/components/cookie-consent";
 import { MetaPixel } from "@/components/meta-pixel";
-import { getCartAction } from "@/lib/actions/cart-actions";
 import "./globals.css";
 
 const serif = IBM_Plex_Mono({
@@ -90,9 +89,14 @@ try{
 }catch(e){}
 `;
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const initialCart = await getCartAction().catch(() => null);
-
+/* Ce layout ne doit RIEN faire de dynamique. Il chargeait le panier via
+   getCartAction(), qui appelle `cookies()` : dans un layout racine, cela
+   bascule l'intégralité du site en rendu dynamique — aucune page mise en
+   cache, un rendu serveur complet à chaque visite de chaque page, et un
+   appel Shopify non caché par page vue pour toute visiteuse ayant un
+   panier. C'est ce qui aurait cédé en premier sur un pic de trafic.
+   Le panier est désormais chargé par CartProvider après hydratation. */
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr" className={`${serif.variable} ${lcd.variable} ${gothic.variable}`}>
       <body className="grain">
@@ -103,7 +107,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         )}
         <SessionProvider>
           <LanguageProvider>
-            <CartProvider initialCart={initialCart}>{children}</CartProvider>
+            <CartProvider>{children}</CartProvider>
           </LanguageProvider>
         </SessionProvider>
         <CookieConsent />

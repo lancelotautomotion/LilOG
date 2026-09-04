@@ -16,6 +16,28 @@ const BOTTOMS_HANDLES = ["jupes", "shorts-bermudas", "pantalons", "jeans"];
 const FALLBACK_SIZED_HANDLES = ["manteaux-et-vestes"];
 const FALLBACK_ANY_SIZE_HANDLES = ["accessoires", "sacs", "chaussures"];
 
+/* ── Mise en cache des fiches ──────────────────────────────────────────────
+ *
+ * La fiche produit est la page la plus exposée à un pic : c'est elle qu'on
+ * partage. Sans cache, chaque visiteuse déclenchait un rendu serveur
+ * complet et sa propre requête Shopify.
+ *
+ * Liste vide à dessein : on ne prérend rien au build. Le catalogue bouge
+ * tous les jours et une pièce vendue ne doit pas rester figée dans un cache
+ * de build. Combinée à `dynamicParams` (actif par défaut), elle donne de
+ * l'ISR à la demande — la première visite rend la fiche et la met en cache,
+ * les suivantes la servent sans retoucher Shopify.
+ *
+ * Aucune fraîcheur perdue au passage : `shopifyFetch` cachait déjà ces
+ * données 60 secondes. C'est le rendu qu'on évite de refaire, pas la
+ * donnée qu'on garde plus longtemps.
+ */
+export function generateStaticParams() {
+  return [];
+}
+
+export const revalidate = 60;
+
 const RELATED_COUNT = 4;
 /* De quoi avoir encore du choix une fois le filtre de taille passé : sur un
    rayon donné, une taille précise ne représente qu'une poignée de pièces. */
