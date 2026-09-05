@@ -434,12 +434,14 @@ export function SetupWizard({
                     />
                     <span className="min-w-0">
                       <span className="block text-[0.875rem] font-bold tracking-[0.03em] text-[#2b0f6b] uppercase">
-                        🎁 Offrir ce disque à quelqu&apos;un d&apos;autre
+                        🎁 Offrir cette carte cadeau à quelqu&apos;un
                       </span>
+                      {/* Formulation constante, cochée ou non : la case décrit ce
+                          qui se passera si on la coche, plutôt que de changer de
+                          discours au moment où on la lit. */}
                       <span className="mt-0.5 block text-[0.8125rem] text-[#5b5670] normal-case">
-                        {sendAsGift
-                          ? "Le code est envoyé par email au destinataire, à la date de ton choix."
-                          : "Ajout classique au panier : le code t'arrive directement, comme n'importe quel article."}
+                        Elle sera ajoutée au panier mais une fois payée, elle sera envoyée au
+                        destinataire immédiatement ou à la date souhaitée.
                       </span>
                     </span>
                   </label>
