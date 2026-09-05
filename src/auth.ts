@@ -37,6 +37,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user, account, profile }) {
+      /* Le fournisseur n'est présent qu'à la connexion : on le retient, il
+         détermine si l'adresse e-mail du compte Shopify peut être modifiée
+         (voir updateProfile dans account/edit/page.tsx). */
+      if (account?.provider) token.authProvider = account.provider;
       if (user) {
         token.shopifyToken = user.shopifyToken ?? null;
       }
@@ -88,6 +92,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       /* Un statut, pas un secret : il dit POURQUOI le compte n'est pas relié,
          ce que le client a besoin de savoir pour proposer la réparation. */
       session.shopifyLinkStatus = token.shopifyLinkStatus ?? null;
+      session.authProvider = token.authProvider ?? null;
       return session;
     },
   },

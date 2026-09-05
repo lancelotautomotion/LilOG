@@ -8,9 +8,11 @@ type UpdateAction = (formData: FormData) => Promise<{ error: string | null | und
 export function EditProfileForm({
   customer,
   updateAction,
+  emailLocked,
 }: {
   customer: ShopifyCustomer;
   updateAction: UpdateAction;
+  emailLocked: boolean;
 }) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +71,12 @@ export function EditProfileForm({
               id="email"
               name="email"
               type="email"
+              /* Compte relié à Google : le compte miroir Shopify est retrouvé
+                 par l'e-mail Google à chaque connexion. Le laisser diverger
+                 dédoublerait la cliente côté Shopify. Le serveur refuse aussi
+                 le changement — ceci n'est que la version visible. */
+              readOnly={emailLocked}
+              title={emailLocked ? "Adresse gérée par ton compte Google" : undefined}
               className="account-input"
               defaultValue={customer.email}
               placeholder="votre@email.com"
