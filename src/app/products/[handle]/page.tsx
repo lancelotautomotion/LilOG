@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ProductDetail } from "@/components/product-detail";
+import { GALLERY_SIZES } from "@/components/product-gallery";
+import { fallbackSrc, imageSrcSet } from "@/lib/shopify/image-url";
 import { getProductByHandle, getFeaturedProducts, getCollectionProducts } from "@/lib/shopify/products";
 import { looksLikeSize, sizeEquivalents } from "@/lib/sizes";
 import type { Product, ProductDetail as ProductDetailType } from "@/lib/shopify/types";
@@ -169,5 +171,33 @@ export default async function ProductPage({
   //    fenêtre de suggestions vide sur une pièce hors rayon.
   if (missing()) take(await getFeaturedProducts(12).catch(() => []));
 
-  return <ProductDetail product={product} related={related} />;
+  /* ── Préchargement de la première photo ────────────────────────────────
+   *
+   * C'est la plus grande image de la page, la seule visible sans défiler, et
+   * celle que Lighthouse chronomètre en LCP. Sans cette ligne, le navigateur
+   * ne la découvre qu'en parcourant le corps du document ; posée ici, React
+   * la remonte dans le `<head>` et la requête part dès les premiers octets
+   * d'HTML, avant même que la feuille de style soit lue.
+   *
+   * `imageSrcSet` / `imageSizes` reprennent mot pour mot ce que la galerie
+   * déclare (GALLERY_SIZES) : c'est ce qui garantit que le navigateur
+   * précharge exactement la variante qu'il affichera ensuite, et pas une
+   * autre — auquel cas il paierait les deux. */
+  const firstPhoto = product.images[0];
+
+  return (
+    <>
+      {firstPhoto && (
+        <link
+          rel="preload"
+          as="image"
+          href={fallbackSrc(firstPhoto)}
+          imageSrcSet={imageSrcSet(firstPhoto)}
+          imageSizes={GALLERY_SIZES}
+          fetchPriority="high"
+        />
+      )}
+      <ProductDetail product={product} related={related} />
+    </>
+  );
 }
