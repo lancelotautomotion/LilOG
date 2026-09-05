@@ -459,25 +459,30 @@ export default function ContactPage() {
                 <span className="h-px flex-1 bg-[#5b2fb8]/20" />
               </div>
               <div className="grid grid-cols-1 gap-[clamp(14px,2.4vw,26px)] sm:grid-cols-2 lg:grid-cols-3">
-                {/* `max-w-[220px]` uniquement sur mobile : en pile sur une
+                {/* `max-w-[300px]` uniquement sur mobile : en pile sur une
                     seule colonne, la disquette prenait toute la largeur de
                     la fenêtre (jusqu'à 340px, son plafond normal, pensé pour
-                    une carte de grille à plusieurs colonnes). */}
-                <div className="mx-auto w-full max-w-[220px] sm:max-w-none">
+                    une carte de grille à plusieurs colonnes). En dessous de
+                    ~260px, le texte de l'étiquette (taille de police à son
+                    plancher, cf. Floppy) dépasse de la zone à `overflow:
+                    hidden` et se retrouve tronqué ; 300px garde une carte
+                    resserrée tout en laissant le texte le plus long
+                    (PAIEMENT.EXE) tenir en entier. */}
+                <div className="mx-auto w-full max-w-[300px] sm:max-w-none">
                   <Floppy
                     variant="pink"
                     name="LIVRAISON.DOC"
                     text="Expédition sous 24/48h. Numéro de suivi envoyé par email dès le départ du colis."
                   />
                 </div>
-                <div className="mx-auto w-full max-w-[220px] sm:max-w-none">
+                <div className="mx-auto w-full max-w-[300px] sm:max-w-none">
                   <Floppy
                     variant="purple"
                     name="RETOURS.SYS"
                     text="14 jours pour changer d'avis. Article non porté, non lavé, étiquette d'origine."
                   />
                 </div>
-                <div className="mx-auto w-full max-w-[220px] sm:max-w-none">
+                <div className="mx-auto w-full max-w-[300px] sm:max-w-none">
                   <Floppy
                     variant="black"
                     name="PAIEMENT.EXE"
