@@ -31,6 +31,9 @@ declare module "next-auth" {
     /** Le motif, quand il ne l'est pas : sert à expliquer plutôt qu'à
      *  laisser la cliente devant un espace vide. Ce n'est pas un secret. */
     shopifyLinkStatus?: ShopifyLinkStatus | null;
+    /** « google » ou « credentials ». Détermine notamment si l'e-mail du
+     *  compte Shopify peut être modifié depuis le profil. */
+    authProvider?: string | null;
   }
 
   interface User {
@@ -44,6 +47,7 @@ declare module "next-auth/jwt" {
     /** Le customerAccessToken Shopify. Reste dans le cookie chiffré. */
     shopifyToken?: string | null;
     shopifyLinkStatus?: ShopifyLinkStatus | null;
+    authProvider?: string | null;
   }
 }
 

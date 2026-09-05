@@ -1,4 +1,5 @@
 import { shopifyFetch } from "./client";
+import { sanitizeDescription } from "./sanitize-description";
 import { compareSizes, normalizeSize } from "@/lib/sizes";
 import {
   CATALOG_PRODUCTS_QUERY,
@@ -367,7 +368,10 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
     id: node.id,
     handle: node.handle,
     name: stripEmoji(node.title),
-    descriptionHtml: node.descriptionHtml,
+    /* Assaini ICI, à la frontière : le HTML est généré par un modèle de
+       langage à partir des photos, et finit en dangerouslySetInnerHTML.
+       Aucun composant ne doit pouvoir en recevoir une version brute. */
+    descriptionHtml: sanitizeDescription(node.descriptionHtml),
     tags: node.tags,
     price,
     was: compareAt > price ? compareAt : null,

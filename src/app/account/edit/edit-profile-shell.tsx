@@ -22,9 +22,11 @@ type UpdateAction = (formData: FormData) => Promise<{ error: string | null | und
 export function EditProfileShell({
   customer,
   updateAction,
+  emailLocked,
 }: {
   customer: ShopifyCustomer;
   updateAction: UpdateAction;
+  emailLocked: boolean;
 }) {
   const [menu, setMenu] = useState(false);
 
@@ -54,7 +56,7 @@ export function EditProfileShell({
 
           {/* Content */}
           <div className="account-win95-full-content">
-            <EditProfileForm customer={customer} updateAction={updateAction} />
+            <EditProfileForm customer={customer} updateAction={updateAction} emailLocked={emailLocked} />
           </div>
 
           {/* Status bar */}
