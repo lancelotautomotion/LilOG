@@ -28,6 +28,20 @@ const BURNER_CSS = `
 @keyframes burnerBlink{ 0%,100%{opacity:1} 50%{opacity:.35} }
 .burner-blink{ animation:burnerBlink 900ms step-end infinite; }
 
+/* Montants du châssis : un filet vertical le long du bord, doublé de
+   graduations horizontales tournées vers l'intérieur — le vocabulaire d'un
+   plan technique, pas une simple bordure. La variante .is-right retourne le
+   motif pour que le filet reste toujours du côté extérieur. */
+.burner-rail{
+  background-image:
+    linear-gradient(to bottom, rgba(63,61,85,.85), rgba(63,61,85,.85)),
+    repeating-linear-gradient(to bottom, rgba(63,61,85,.5) 0 1px, transparent 1px 13px);
+  background-size:1px 100%, 7px 100%;
+  background-repeat:no-repeat, no-repeat;
+  background-position:left top, left top;
+}
+.burner-rail.is-right{ background-position:right top, right top; }
+
 @media (prefers-reduced-motion: reduce){
   .burner-disc.spin{ animation:none }
   .burner-halo.spin{ animation:none }
@@ -61,7 +75,7 @@ export function BurnerDisplay({
   detail: string;
 }) {
   return (
-    <div className="flex h-full w-full max-w-[360px] flex-col items-center gap-4">
+    <div className="flex h-full w-full max-w-[360px] flex-col items-center">
       <style>{BURNER_CSS}</style>
 
       {/* ---- Écran LCD, juste au-dessus du disque ---- */}
@@ -78,20 +92,63 @@ export function BurnerDisplay({
         </p>
       </div>
 
-      {/* ---- Le disque ---- */}
-      <div className="relative aspect-square w-full max-w-[280px]">
+      {/* ---- Le disque, dans son châssis ----
+             Le disque flottait entre deux blocs noirs sans rien qui les
+             relie. Deux montants verticaux courent maintenant d'un bloc à
+             l'autre (le padding vertical de ce conteneur remplace l'ancien
+             `gap`, pour que les filets touchent vraiment les bordures des
+             écrans), des équerres cadrent le disque, et deux traverses à
+             mi-hauteur rattachent le cadre aux montants : le disque est
+             tenu dans un bâti, plus posé dans le vide. Le padding
+             horizontal réserve exactement la largeur de ces traverses. */}
+      <div className="relative flex w-full flex-1 items-center justify-center px-[clamp(16px,7%,34px)] py-[clamp(16px,2.6vh,26px)]">
         <span
           aria-hidden
-          className={`burner-halo pointer-events-none absolute inset-[4%] rounded-full opacity-0${spinning ? " spin" : ""}`}
-          style={{ background: "radial-gradient(circle, rgba(90,255,160,0.5) 0%, transparent 70%)" }}
+          className="burner-rail pointer-events-none absolute inset-y-0 left-0 w-[7px]"
         />
-        <Image
-          src="/CD_LilOG.png"
-          alt="Le disque de la carte cadeau Lil'OG"
-          fill
-          sizes="(min-width: 1024px) 280px, 70vw"
-          className={`burner-disc object-contain drop-shadow-xl${spinning ? " spin" : ""}`}
+        <span
+          aria-hidden
+          className="burner-rail is-right pointer-events-none absolute inset-y-0 right-0 w-[7px]"
         />
+        {/* Traverses : du montant jusqu'à l'équerre, à mi-hauteur du disque. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 left-0 h-px w-[clamp(16px,7%,34px)] bg-[#3f3d55]/70"
+        />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 right-0 h-px w-[clamp(16px,7%,34px)] bg-[#3f3d55]/70"
+        />
+
+        <div className="relative aspect-square w-full max-w-[280px]">
+          {/* Équerres de cadrage, aux quatre coins du disque. */}
+          {(
+            [
+              ["-top-2 -left-2 rounded-tl-[3px] border-t-2 border-l-2", "tl"],
+              ["-top-2 -right-2 rounded-tr-[3px] border-t-2 border-r-2", "tr"],
+              ["-bottom-2 -left-2 rounded-bl-[3px] border-b-2 border-l-2", "bl"],
+              ["-bottom-2 -right-2 rounded-br-[3px] border-r-2 border-b-2", "br"],
+            ] as [string, string][]
+          ).map(([pos, key]) => (
+            <span
+              key={key}
+              aria-hidden
+              className={`pointer-events-none absolute h-[clamp(16px,11%,26px)] w-[clamp(16px,11%,26px)] border-[#3f3d55]/80 ${pos}`}
+            />
+          ))}
+          <span
+            aria-hidden
+            className={`burner-halo pointer-events-none absolute inset-[4%] rounded-full opacity-0${spinning ? " spin" : ""}`}
+            style={{ background: "radial-gradient(circle, rgba(90,255,160,0.5) 0%, transparent 70%)" }}
+          />
+          <Image
+            src="/CD_LilOG.png"
+            alt="Le disque de la carte cadeau Lil'OG"
+            fill
+            sizes="(min-width: 1024px) 280px, 70vw"
+            className={`burner-disc object-contain drop-shadow-xl${spinning ? " spin" : ""}`}
+          />
+        </div>
       </div>
 
       {/* ---- Fiche technique, purement décorative : comble le vide sous le
