@@ -27,10 +27,26 @@
 /** Le seul hôte dont on réécrit les URLs. Aligné sur `img-src` de la CSP. */
 const CDN_HOST = "cdn.shopify.com";
 
-/* Palier de largeurs proposées au navigateur. Il monte assez haut pour le
-   zoom plein écran de la galerie produit, et descend assez bas pour les
-   vignettes de 40 px du détail de commande. */
-const LADDER = [160, 240, 320, 480, 640, 900, 1200, 1600];
+/* Palier de largeurs proposées au navigateur.
+ *
+ * Il est court À DESSEIN. Chaque largeur demandée est une entrée de cache
+ * distincte que le CDN doit d'abord fabriquer : mesuré à ~0,5 s au premier
+ * appel, puis 0,15 s une fois chaude. Multiplier les paliers, c'est
+ * multiplier ces attentes — payées par la première visiteuse de chaque
+ * photo, et il arrive une pièce neuve presque tous les jours.
+ *
+ * Cinq barreaux suffisent à couvrir tous les emplacements du site, densité
+ * d'écran comprise (la largeur d'affichage × le DPR donne le besoin réel) :
+ *
+ *    200   vignette de commande (40px), panier (64px), miniature (96px)
+ *    400   vignette de grille sur téléphone et au bureau
+ *    640   pochette du Cover Flow, grille en écran dense
+ *    900   grille au bureau en retina
+ *   1200   lecteur de la fiche produit en retina
+ *
+ * Les emplacements se partagent ainsi les mêmes variantes au lieu d'en
+ * réclamer chacun une : le cache se réchauffe d'autant plus vite. */
+const LADDER = [200, 400, 640, 900, 1200];
 
 /** La largeur du `src` de repli, pour les navigateurs qui ignorent `srcset`. */
 const FALLBACK_WIDTH = 900;
