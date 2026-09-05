@@ -333,24 +333,14 @@ export function SetupWizard({
 
           <div className="relative z-[1] grid gap-x-[clamp(20px,3vw,36px)] gap-y-[clamp(14px,2vh,24px)] lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
             {/* ================= COLONNE GAUCHE : LE DISQUE =================
-                `h-full` prend la hauteur que la grille lui étire déjà (elle
-                égale par défaut celle de la colonne de droite, la plus
-                grande des deux) : sans elle, ce flex a une hauteur
-                intrinsèque et `flex-1` dans CdRom n'a rien à occuper.
-                Le boîtier repose à même le fond clair de la fenêtre — plus
-                de plaque blanche ni de voyant sous l'image, l'état du
-                lecteur vit désormais dans la barre d'état, tout en bas.
-
-                La colonne fait 360px maxi (au lieu de 400) : c'est très
-                exactement la largeur du contenu de BurnerDisplay, plus
-                aucun couloir vide entre le disque et le formulaire. Le
-                `position: sticky` évoqué en alternative ne s'applique pas
-                ici : la fenêtre porte `overflow-hidden` pour que la barre de
-                titre épouse ses coins arrondis (voir WindowFrame dans
-                y2k/kit.tsx), et un sticky ne franchit pas cet ancêtre. Le
-                centrage vertical ci-dessous, combiné à la fiche technique
-                qui comble le bas de BurnerDisplay, fait le même travail
-                sans toucher au `overflow-hidden`. */}
+                La platine garde sa hauteur propre et se centre dans la
+                colonne : elle ne suit pas la hauteur du formulaire, sinon le
+                disque grandissait dès que la case « offrir » dépliait ses
+                champs. Le `position: sticky` évoqué en alternative ne
+                s'applique pas ici : la fenêtre porte `overflow-hidden` pour
+                que la barre de titre épouse ses coins arrondis (voir
+                WindowFrame dans y2k/kit.tsx), et un sticky ne franchit pas
+                cet ancêtre. */}
             <div className="flex h-full items-center justify-center">
               <BurnerDisplay spinning={burning} status={lcdStatus} detail={lcdDetail} />
             </div>

@@ -3,10 +3,14 @@
 /* ============================================================
    L'écran LCD + le disque, dans le Setup Wizard de /gift-card
    ------------------------------------------------------------
-   Le disque (public/CD_LilOG.png) est déjà un visuel complet,
-   centré, fond transparent : pas besoin du montage à deux calques
-   (boîtier + disque décalé) de CdRom. Il tourne sur son propre
-   centre pendant la gravure — rien d'autre.
+   Le disque est public/gift-card-disc-lilog.webp : le visuel
+   d'origine (CD_LilOG.png) recadré au rond exact — il était
+   légèrement elliptique (1175 × 1148) et son trou tombait vingt
+   pixels au-dessus du centre de l'image, ce qui le décentrait sur
+   son plateau — puis ramené dans la palette de la maison, violet
+   → fuchsia → rose : l'irisation arc-en-ciel d'origine jurait avec
+   le reste du site. Il tourne sur son propre centre pendant la
+   gravure — rien d'autre.
 
    Le disque est posé sur une platine : plateau, axe central et
    bras de lecture. Le socle de la platine joint l'écran du haut à
@@ -87,8 +91,11 @@ export function BurnerDisplay({
   status: string;
   detail: string;
 }) {
+  /* Pas de hauteur imposée : l'appareil garde sa taille propre. Avec
+     h-full il se calait sur la colonne du formulaire, et le socle — donc le
+     disque — grandissait à chaque champ dévoilé par la case « offrir ». */
   return (
-    <div className="flex h-full w-full max-w-[360px] flex-col items-center">
+    <div className="flex w-full max-w-[360px] flex-col items-center">
       <style>{BURNER_CSS}</style>
 
       {/* ---- Écran LCD, juste au-dessus du disque ---- */}
@@ -110,21 +117,22 @@ export function BurnerDisplay({
              haut et à la fiche du bas, dont les coins intérieurs sont eux
              aussi carrés. Les trois panneaux ne font plus qu'un appareil, et
              le disque n'est plus posé dans le vide. */}
-      <div className="relative flex w-full flex-1 items-center justify-center border-x-2 border-[#3f3d55] bg-[linear-gradient(180deg,#eceaf6_0%,#dedbec_55%,#cbc7dd_100%)] px-[clamp(14px,5%,26px)] py-[clamp(16px,2.6vh,26px)] shadow-[inset_0_2px_6px_rgba(255,255,255,0.8),inset_0_-3px_8px_rgba(63,61,85,0.18)]">
-        {/* Plateau + disque + axe. */}
-        <div className="relative aspect-square w-full max-w-[268px]">
+      <div className="relative flex w-full items-center justify-center border-x-2 border-[#3f3d55] bg-[linear-gradient(180deg,#eceaf6_0%,#dedbec_55%,#cbc7dd_100%)] px-[10px] py-[14px] shadow-[inset_0_2px_6px_rgba(255,255,255,0.8),inset_0_-3px_8px_rgba(63,61,85,0.18)]">
+        {/* Plateau + disque + axe : le disque occupe toute la largeur du
+            socle, le plateau ne dépasse plus que d'une jante. */}
+        <div className="relative aspect-square w-full">
           <span aria-hidden className="burner-platter pointer-events-none absolute inset-0 rounded-full" />
           <span
             aria-hidden
-            className={`burner-halo pointer-events-none absolute inset-[8%] rounded-full opacity-0${spinning ? " spin" : ""}`}
+            className={`burner-halo pointer-events-none absolute inset-[10%] rounded-full opacity-0${spinning ? " spin" : ""}`}
             style={{ background: "radial-gradient(circle, rgba(90,255,160,0.5) 0%, transparent 70%)" }}
           />
           <Image
-            src="/CD_LilOG.png"
+            src="/gift-card-disc-lilog.webp"
             alt="Le disque de la carte cadeau Lil'OG"
             fill
-            sizes="(min-width: 1024px) 268px, 70vw"
-            className={`burner-disc object-contain p-[6%] drop-shadow-xl${spinning ? " spin" : ""}`}
+            sizes="(min-width: 1024px) 340px, 90vw"
+            className={`burner-disc object-contain p-[2.5%] drop-shadow-xl${spinning ? " spin" : ""}`}
           />
           {/* Axe central : le disque est enfilé dessus, il passe donc
               par-dessus l'image et ne tourne pas avec elle. */}
@@ -141,11 +149,11 @@ export function BurnerDisplay({
               socle : ses pourcentages se lisent alors sur le diamètre du
               disque, et la géométrie du bras reste la même quelle que soit
               la hauteur que la grille donne à la colonne. Pivot juste
-              au-dessus du coin haut-droit, pointe posée entre le bord et
-              l'étiquette. */}
+              dans le coin haut-droit, hors du cercle, pointe posée entre
+              la jante et l'étiquette. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute top-[-3%] right-[-6%] h-[10%] w-[10%] rounded-full border border-[#8e8aa8]"
+            className="pointer-events-none absolute top-[5%] right-[5%] h-[9%] w-[9%] rounded-full border border-[#8e8aa8]"
             style={{
               background: "radial-gradient(circle at 35% 30%,#ffffff 0%,#dcd9e8 45%,#9b97b3 100%)",
               boxShadow: "0 2px 4px rgba(30,36,48,.3), inset 0 1px 2px rgba(255,255,255,.9)",
@@ -153,7 +161,7 @@ export function BurnerDisplay({
           />
           <span
             aria-hidden
-            className={`burner-arm pointer-events-none absolute top-[1.2%] right-[-2%] h-[1.9%] w-[38%] rounded-full${spinning ? " spin" : ""}`}
+            className={`burner-arm pointer-events-none absolute top-[9%] right-[8%] h-[1.6%] w-[31%] rounded-full${spinning ? " spin" : ""}`}
             style={{
               background: "linear-gradient(180deg,#ffffff 0%,#dedbec 40%,#8e8aa8 100%)",
               boxShadow: "0 2px 3px rgba(30,36,48,.28)",
