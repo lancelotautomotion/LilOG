@@ -18,6 +18,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { SmartImg } from "@/components/smart-img";
+import { fallbackSrc, imageSrcSet } from "@/lib/shopify/image-url";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { HARD_SHADOW, MONO, NAVY_BAR, PLASTIC, PLASTIC_FACE, PLASTIC_PRESS, WindowControls } from "@/components/y2k/kit";
 
@@ -34,6 +35,15 @@ const VIEWER_CSS = `
   .lpi-blink{animation:none}
 }
 `;
+
+/* La place réelle du lecteur : pleine largeur sur téléphone, ~520 px au
+   bureau (cadre 2/3 plafonné à 760 px de haut).
+ *
+ * Exportée parce que `app/products/[handle]/page.tsx` s'en sert pour
+ * précharger la première photo depuis le serveur. Les deux DOIVENT dire la
+ * même chose : si elles divergent, le navigateur précharge une variante puis
+ * en télécharge une autre — deux fois le poids au lieu d'une avance. */
+export const GALLERY_SIZES = "(max-width: 640px) 100vw, 520px";
 
 export function ProductGallery({ images, name }: { images: string[]; name: string }) {
   const pics = images.length > 0 ? images : [""];
@@ -57,6 +67,32 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoom]);
+
+  /* Les photos voisines, tirées d'avance. Le CDN Shopify fabrique chaque
+     variante au premier appel — mesuré à ~0,5 s — puis la sert en 0,15 s :
+     autant payer ce délai pendant que la cliente regarde la photo courante
+     plutôt qu'au moment où elle clique. Rien ne s'affiche, on ne fait que
+     remplir le cache du navigateur. */
+  useEffect(() => {
+    if (pics.length < 2) return;
+    const around = new Set([
+      pics[(index + 1) % pics.length],
+      pics[(index - 1 + pics.length) % pics.length],
+    ]);
+    for (const src of around) {
+      if (!src) continue;
+      const img = new Image();
+      const srcSet = imageSrcSet(src);
+      /* `sizes` avant `srcset`, `srcset` avant `src` : le navigateur choisit
+         au moment où l'URL est posée, avec ce qu'il connaît déjà. */
+      if (srcSet) {
+        img.sizes = GALLERY_SIZES;
+        img.srcset = srcSet;
+      }
+      img.src = srcSet ? fallbackSrc(src) : src;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchX.current = e.touches[0].clientX;
@@ -113,6 +149,10 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
             src={pics[index]}
             alt={`${name}, vue ${index + 1}`}
             tone={index}
+            /* Plus grande image de la fiche produit, visible sans défilement :
+               c'est elle que Lighthouse mesure en LCP. */
+            sizes={GALLERY_SIZES}
+            priority
           />
           {pics.length > 1 && (
             <span
@@ -161,7 +201,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
               style={{ transform: `rotate(${i === index ? 0 : (i % 2 ? 1 : -1) * (3 + (i % 3) * 2)}deg)` }}
             >
               <span className="block h-20 w-20 overflow-hidden bg-[#e7e5f1] sm:h-24 sm:w-24">
-                <SmartImg className="h-full w-full object-cover" src={src} alt="" tone={i} />
+                <SmartImg className="h-full w-full object-cover" src={src} alt="" tone={i} sizes="96px" />
               </span>
             </button>
           ))}

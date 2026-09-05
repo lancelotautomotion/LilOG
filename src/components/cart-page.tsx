@@ -275,7 +275,7 @@ export function CartPage() {
                   <div className="oc-screen-item">
                     <div className="oc-screen-bg">
                       <Link href={`/products/${item.handle}`} className="oc-img-wrap">
-                        <SmartImg src={item.image} alt={item.title} />
+                        <SmartImg src={item.image} alt={item.title} sizes="(max-width: 700px) 92vw, 420px" />
                       </Link>
                       {/* Scan beam : monté uniquement pendant la phase filling, en sync avec la barre */}
                       {scanPhase === 'filling' && (
@@ -400,7 +400,7 @@ export function CartPage() {
                             }`}
                           >
                             <div className="oc-summary-thumb">
-                              <SmartImg src={line.image} alt={line.title} />
+                              <SmartImg src={line.image} alt={line.title} sizes="64px" />
                             </div>
 
                             <div className="flex min-w-0 flex-1 flex-col gap-1.5">

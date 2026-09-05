@@ -7,6 +7,10 @@ import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
 import { Footer } from "@/components/footer";
 import { SmartImg } from "@/components/smart-img";
+
+/* Une baie occupe une colonne de la machine : pleine largeur sur téléphone,
+   un tiers de l'écran à partir de md. */
+const REEL_SIZES = "(max-width: 767px) 92vw, 33vw";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 import { LeopardBackdrop } from "@/components/y2k/kit";
 import { useCart } from "@/lib/cart-context";
@@ -397,9 +401,9 @@ function Bay({
       <div className="dm-viewport" style={cell}>
         {item ? (
           <div className={"dm-reel" + reel.className}>
-            <SmartImg className="dm-reel-bg" src={item.image} alt="" />
+            <SmartImg className="dm-reel-bg" src={item.image} alt="" sizes={REEL_SIZES} />
             <Link href={`/products/${item.handle}`} className="dm-reel-link" title={item.name}>
-              <SmartImg className="dm-reel-img" src={item.image} alt={item.name} />
+              <SmartImg className="dm-reel-img" src={item.image} alt={item.name} sizes={REEL_SIZES} />
             </Link>
             <span className="dm-reel-shade" aria-hidden />
           </div>
@@ -700,7 +704,7 @@ function ModuleWindow({
         <div className="dm-float-img">
           <div className={"dm-reel" + reel.className} style={{ position: "relative", inset: "auto", height: "100%" }}>
             <Link href={`/products/${item.handle}`} title={item.name}>
-              <SmartImg className="dm-reel-img" src={item.image} alt={item.name} />
+              <SmartImg className="dm-reel-img" src={item.image} alt={item.name} sizes={REEL_SIZES} />
             </Link>
           </div>
         </div>

@@ -26,6 +26,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { SmartImg } from "@/components/smart-img";
+import { fallbackSrc, imageSrcSet } from "@/lib/shopify/image-url";
 import { MATRIX, MONO, PLASTIC_FACE, WindowFrame } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
 
@@ -157,7 +158,14 @@ function trackTitleSize(longestName: number): string {
  * Un vrai élément miroir plutôt que `-webkit-box-reflect`, qui n'existe
  * toujours pas dans Firefox : rendu identique, mais visible partout.
  */
+/* La pochette fait `clamp(150px, min(24vw, 30svh), 300px)` de large. */
+const SLIDE_SIZES = "(max-width: 900px) 45vw, 300px";
+
 function Reflection({ src }: { src: string }) {
+  /* Exactement le `srcset` et le `sizes` de la pochette : le navigateur
+     retient donc la même variante, déjà en cache, au lieu d'en télécharger
+     une seconde pour un reflet flouté. */
+  const srcSet = imageSrcSet(src);
   return (
     <div
       aria-hidden
@@ -165,8 +173,12 @@ function Reflection({ src }: { src: string }) {
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- copie miroir de la pochette, jamais une vraie image de contenu. */}
       <img
-        src={src}
+        src={srcSet ? fallbackSrc(src) : src}
+        srcSet={srcSet}
+        sizes={srcSet ? SLIDE_SIZES : undefined}
         alt=""
+        loading="lazy"
+        decoding="async"
         className="h-[200%] w-full object-cover blur-[1.5px]"
         style={{ transform: "scaleY(-1)" }}
       />
@@ -351,7 +363,7 @@ export function CoverFlow({ products }: { products: Product[] }) {
 
                 const cover = (
                   <>
-                    <SmartImg className="h-full w-full object-cover" src={p.imageA} alt={p.name} tone={i} />
+                    <SmartImg className="h-full w-full object-cover" src={p.imageA} alt={p.name} tone={i} sizes={SLIDE_SIZES} />
                     {isActive && <Reflection src={p.imageA} />}
                   </>
                 );
