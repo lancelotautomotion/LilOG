@@ -84,8 +84,12 @@ export const FEATURED_PRODUCTS_QUERY = /* GraphQL */ `
 // de variante, FILTER_CONTROL.SYS et la pastille de taille de ProductWindow
 // n'ont rien à afficher, comme pour FEATURED_PRODUCTS_QUERY plus haut.
 export const CATALOG_PRODUCTS_QUERY = /* GraphQL */ `
-  query CatalogProducts($first: Int!) {
-    products(first: $first, sortKey: CREATED_AT, reverse: true) {
+  query CatalogProducts($first: Int!, $after: String) {
+    products(first: $first, after: $after, sortKey: CREATED_AT, reverse: true) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
       edges {
         node {
           id
@@ -247,7 +251,7 @@ const SIZE_METAFIELD_FRAGMENT = /* GraphQL */ `
   }
 `;
 
-// Whole-catalogue sweep for the Virtual Closet: needs the collection handles
+// Whole-catalogue sweep for the Dressing Machine: needs the collection handles
 // (to slot a piece into Hauts / Bas / module) and every source of sizing.
 // Recherche texte libre : `query` accepte la syntaxe de recherche standard
 // Storefront et, laissé en texte brut (sans préfixe de champ), fait déjà une

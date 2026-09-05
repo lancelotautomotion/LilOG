@@ -12,6 +12,7 @@ import {
 import type {
   CollectionByHandleResponse,
   FeaturedProductsResponse,
+  PagedProductsResponse,
   Product,
   ProductByHandleResponse,
   ProductDetail,
@@ -288,6 +289,13 @@ export async function getLounaPicks(count = 10): Promise<Product[]> {
   return weeklySample(available, count);
 }
 
+/* Le Storefront API plafonne `first` à 250 : au-delà, il faut pager. Le
+   catalogue frôlait déjà ce plafond, si bien que les pièces suivantes
+   auraient disparu de "Tout voir" sans le moindre signe. Borné, pour qu'une
+   boutique devenue énorme ne bloque pas le rendu de la page. */
+const CATALOG_PAGE_SIZE = 250;
+const CATALOG_MAX_PAGES = 4;
+
 /**
  * Le catalogue entier, toutes catégories confondues, pour le bouton
  * "Tout voir" du menu. Aucun filtre de collection côté Shopify, mais
@@ -295,12 +303,33 @@ export async function getLounaPicks(count = 10): Promise<Product[]> {
  * COLLECTION_BY_HANDLE_QUERY (couleur/taille/matière/options) : sans elle,
  * FILTER_CONTROL.SYS et la pastille de taille des fiches n'ont rien à
  * afficher, contrairement à FEATURED_PRODUCTS_QUERY, allégée pour l'accueil.
+ *
+ * Même balayage paginé que getClosetCatalogue() (/dressing-machine) : les
+ * deux pages partent ainsi du même catalogue, et l'écart entre leurs deux
+ * compteurs ne tient plus qu'à ce que la machine écarte volontairement
+ * (pièces vendues, robes et maillots, pièces sans photo).
  */
-export async function getAllProducts(count = 250): Promise<Product[]> {
-  const data = await shopifyFetch<FeaturedProductsResponse>(CATALOG_PRODUCTS_QUERY, { first: count });
-  return data.products.edges
-    .map((e) => mapProduct(e.node))
-    .filter((p) => !(GIFT_CARD_HANDLES as readonly string[]).includes(p.handle));
+export async function getAllProducts(): Promise<Product[]> {
+  const products: Product[] = [];
+  let cursor: string | null = null;
+
+  for (let page = 0; page < CATALOG_MAX_PAGES; page++) {
+    const data: PagedProductsResponse = await shopifyFetch<PagedProductsResponse>(
+      CATALOG_PRODUCTS_QUERY,
+      { first: CATALOG_PAGE_SIZE, after: cursor },
+    );
+
+    for (const edge of data.products.edges) {
+      const product = mapProduct(edge.node);
+      if ((GIFT_CARD_HANDLES as readonly string[]).includes(product.handle)) continue;
+      products.push(product);
+    }
+
+    if (!data.products.pageInfo.hasNextPage) break;
+    cursor = data.products.pageInfo.endCursor;
+  }
+
+  return products;
 }
 
 /**

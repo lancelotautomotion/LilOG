@@ -53,6 +53,14 @@ export interface FeaturedProductsResponse {
   products: { edges: { node: ShopifyProductNode }[] };
 }
 
+/** Même charge utile, avec le curseur : pour les requêtes qui paginent. */
+export interface PagedProductsResponse {
+  products: {
+    pageInfo: { hasNextPage: boolean; endCursor: string | null };
+    edges: { node: ShopifyProductNode }[];
+  };
+}
+
 export interface CollectionByHandleResponse {
   collection: { id: string; title: string; products: { edges: { node: ShopifyProductNode }[] } } | null;
 }
@@ -133,7 +141,7 @@ export interface Product {
   variantId: string | null;
 }
 
-// ---- Virtual Closet (/dressing-machine) ----
+// ---- Dressing Machine (/dressing-machine) ----
 
 /** Taxonomy metaobject holding one taxonomy value ("M", "Rouge", …). */
 export interface ShopifyTaxonomyValue {
@@ -186,7 +194,7 @@ export interface AllProductsResponse {
   };
 }
 
-/** Where a catalogue piece hangs in the Virtual Closet. */
+/** Where a catalogue piece hangs in the Dressing Machine. */
 export type ClosetSlot = "top" | "bottom" | "jewelry" | "bag" | "accessory" | "shoes";
 
 export interface ClosetVariant {

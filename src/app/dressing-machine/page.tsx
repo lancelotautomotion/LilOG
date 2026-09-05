@@ -4,7 +4,7 @@ import { DressingMachine } from "@/components/dressing-machine";
 import { getClosetCatalogue } from "@/lib/shopify/closet";
 
 export const metadata: Metadata = {
-  title: "Virtual Closet · Lil'OG",
+  title: "Dressing Machine · Lil'OG",
   description:
     "La Dressing Machine Lil'OG : compose ton look Y2K pièce par pièce, comme dans la penderie virtuelle de Cher Horowitz.",
 };
