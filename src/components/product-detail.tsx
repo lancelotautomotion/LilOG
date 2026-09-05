@@ -336,6 +336,8 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
           src={product.imageA}
           alt={product.name}
           tone={idx}
+          /* Grille « tu aimeras aussi » : 2 colonnes, 4 à partir de md. */
+          sizes="(max-width: 767px) 48vw, 23vw"
         />
         {badge && (
           <span

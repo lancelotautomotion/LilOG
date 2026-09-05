@@ -169,6 +169,9 @@ function MinimizeGlyph() {
    Fiche
    ============================================================ */
 
+/* Grille du catalogue : 2 colonnes, 3 à partir de md, 4 à partir de xl. */
+const WINDOW_SIZES = "(max-width: 767px) 48vw, (max-width: 1279px) 31vw, 22vw";
+
 export function ProductWindow({ product, idx }: { product: Product; idx: number }) {
   const { addItem } = useCart();
   const { has, toggle } = useWishlist();
@@ -205,8 +208,8 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
   const mediaClassName = `lde-media group/media relative block shrink-0 overflow-hidden bg-[#e7e5f1] aspect-[3/4] w-full ${BEVEL_IN}`;
   const mediaContent = (
     <>
-      <SmartImg className="lde-img lde-img-a" src={product.imageA} alt={product.name} tone={idx} />
-      <SmartImg className="lde-img lde-img-b" src={product.imageB} alt={product.name} tone={idx + 1} />
+      <SmartImg className="lde-img lde-img-a" src={product.imageA} alt={product.name} tone={idx} sizes={WINDOW_SIZES} />
+      <SmartImg className="lde-img lde-img-b" src={product.imageB} alt={product.name} tone={idx + 1} sizes={WINDOW_SIZES} />
 
       {badge && <StickerChip sticker={badge} className="top-1.5 left-1.5 -rotate-3" />}
       {pick && <StickerChip sticker={pick} className="right-1.5 bottom-1.5 rotate-2" smallOnMobile />}

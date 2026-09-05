@@ -113,6 +113,10 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
             src={pics[index]}
             alt={`${name}, vue ${index + 1}`}
             tone={index}
+            /* Plus grande image de la fiche produit, visible sans défilement :
+               c'est elle que Lighthouse mesure en LCP. */
+            sizes="(max-width: 640px) 100vw, 520px"
+            priority
           />
           {pics.length > 1 && (
             <span
@@ -161,7 +165,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
               style={{ transform: `rotate(${i === index ? 0 : (i % 2 ? 1 : -1) * (3 + (i % 3) * 2)}deg)` }}
             >
               <span className="block h-20 w-20 overflow-hidden bg-[#e7e5f1] sm:h-24 sm:w-24">
-                <SmartImg className="h-full w-full object-cover" src={src} alt="" tone={i} />
+                <SmartImg className="h-full w-full object-cover" src={src} alt="" tone={i} sizes="96px" />
               </span>
             </button>
           ))}

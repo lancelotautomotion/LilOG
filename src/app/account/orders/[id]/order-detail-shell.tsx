@@ -218,6 +218,7 @@ export function OrderDetailShell({ order }: { order: ShopifyOrder }) {
                         src={item.variant.image.url}
                         alt={item.variant.image.altText ?? item.title}
                         className="account-detail-img"
+                        sizes="40px"
                       />
                     ) : (
                       <div className="account-detail-img" style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.25rem" }}>
