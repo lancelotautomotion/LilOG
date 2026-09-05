@@ -12,17 +12,16 @@ Deux workflows enchaînés, reliés par le nom des dossiers Drive :
 Le workflow 1 appelle le workflow 2 en fin d'exécution (`Execute Workflow`), et chacun ne traite que
 les dossiers portant le préfixe qui le concerne : un dossier ne peut donc pas être traité deux fois.
 
-## `workflows/lilog-traitement-images.json`
+## Workflow de traitement des images
 
 Traitement automatique des photos produits : Google Drive → détourage via un Space Hugging Face →
 superposition du template → WebP → Drive, puis déclenchement du workflow de publication Shopify.
 100 % gratuit : aucune API payante, un Space Gradio sur CPU et les nœuds natifs n8n.
 
-### Import
+> Comme le workflow de publication, son export JSON n'est plus versionné ici : la version
+> qui fait foi est celle qui tourne dans n8n.
 
-n8n → **Workflows** → **Import from File…** (ou coller le JSON sur le canvas).
-
-### À renseigner après import
+### Réglages du workflow
 
 | Où | Quoi |
 |---|---|
