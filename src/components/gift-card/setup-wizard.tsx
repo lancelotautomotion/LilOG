@@ -333,15 +333,17 @@ export function SetupWizard({
 
           <div className="relative z-[1] grid gap-x-[clamp(20px,3vw,36px)] gap-y-[clamp(14px,2vh,24px)] lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
             {/* ================= COLONNE GAUCHE : LE DISQUE =================
-                La platine garde sa hauteur propre et se centre dans la
-                colonne : elle ne suit pas la hauteur du formulaire, sinon le
-                disque grandissait dès que la case « offrir » dépliait ses
-                champs. Le `position: sticky` évoqué en alternative ne
-                s'applique pas ici : la fenêtre porte `overflow-hidden` pour
-                que la barre de titre épouse ses coins arrondis (voir
-                WindowFrame dans y2k/kit.tsx), et un sticky ne franchit pas
-                cet ancêtre. */}
-            <div className="flex h-full items-center justify-center">
+                La platine garde sa hauteur propre (elle ne suit pas celle du
+                formulaire, sinon le disque grandissait dès que la case
+                « offrir » dépliait ses champs) et se cale en haut de la
+                colonne. Centrée, elle descendait à chaque champ dévoilé,
+                puisque le centre d'une colonne plus haute est plus bas ;
+                alignée en haut, elle ne bouge plus. Le `position: sticky`
+                évoqué en alternative ne s'applique pas ici : la fenêtre porte
+                `overflow-hidden` pour que la barre de titre épouse ses coins
+                arrondis (voir WindowFrame dans y2k/kit.tsx), et un sticky ne
+                franchit pas cet ancêtre. */}
+            <div className="flex justify-center">
               <BurnerDisplay spinning={burning} status={lcdStatus} detail={lcdDetail} />
             </div>
 
