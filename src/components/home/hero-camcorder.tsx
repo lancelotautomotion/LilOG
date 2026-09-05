@@ -16,7 +16,7 @@
    ============================================================ */
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import { useLanguage } from "@/lib/i18n-context";
 import { Typewriter } from "@/components/typewriter";
 import { MONO, NEON } from "@/components/y2k/kit";
@@ -147,6 +147,18 @@ function Brackets() {
 export function HeroCamcorder() {
   const { t } = useLanguage();
   const [videoOn, setVideoOn] = useState(false);
+
+  /* Deux cadrages, jamais le même : le portrait pris pour le bureau, recadré
+     au centre, coupait le sujet en mobile. Dimensions déclarées à la main —
+     `getImageProps` les réclame quand la source est un chemin plutôt qu'un
+     import statique. */
+  const heroCommon = { alt: "", sizes: "100vw", priority: true };
+  const { props: { srcSet: heroDesktopSrcSet } } = getImageProps({
+    ...heroCommon, src: HERO_STILL, width: 1920, height: 900,
+  });
+  const { props: heroMobileProps } = getImageProps({
+    ...heroCommon, src: HERO_STILL_MOBILE, width: 1787, height: 2907,
+  });
   const [date, setDate] = useState<string | null>(null);
 
   /* La date du viseur est celle du visiteur, dans sa langue et son fuseau :
@@ -183,24 +195,63 @@ export function HeroCamcorder() {
            déjà centré) qui garde toute la hauteur de la photo au lieu de la
            rogner. */}
       <div aria-hidden className="absolute inset-0">
-        {/* Le toggle mobile/bureau vit sur ces `<div>`, jamais directement sur
-            l'`<Image>` : `img{display:block}` (globals.css, hors des layers
-            Tailwind) bat "hidden"/"md:block" posées sur un `<img>` quelle que
-            soit la largeur d'écran, les deux photos restaient affichées en
-            même temps. */}
-        <div className="absolute inset-0 block md:hidden">
-          <Image
-            src={HERO_STILL_MOBILE}
+        {/* Un seul `<img>`, deux sources : c'est le navigateur qui choisit,
+            AVANT de télécharger.
+
+            La version précédente montait les deux photos et masquait l'une
+            des deux en CSS. Or masquer n'annule pas le téléchargement : un
+            `<img>` dans un conteneur `display:none` est quand même chargé, et
+            les deux portaient `priority`, donc les deux étaient AUSSI
+            préchargées en priorité haute. Un téléphone tirait ainsi le still
+            de bureau — 45 Ko mesurés — au moment précis où l'image LCP avait
+            besoin de toute la bande passante.
+
+            `<picture>` supprime le problème à la racine : une seule requête
+            part. Au passage, cela règle aussi ce qui avait imposé le montage
+            précédent — `img{display:block}` (globals.css, hors des layers
+            Tailwind) battait "hidden"/"md:block" posées sur un `<img>`, d'où
+            le toggle déporté sur des `<div>`. Avec une seule balise, plus
+            rien à masquer.
+
+            `getImageProps` donne les mêmes URL optimisées que `<Image>` —
+            même redimensionnement, même WebP, même cache. Le seuil 768px est
+            celui de `md:` en Tailwind, comme avant. */}
+        {/* `getImageProps` ne pose pas de balise de préchargement, à la
+            différence de `<Image priority>` : on la remet à la main, mais
+            cadrée par `media`, si bien que le navigateur n'en suit qu'une —
+            exactement celle que `<picture>` affichera. C'est ce qu'on
+            cherchait : garder l'avance au démarrage sans payer les deux
+            photos. React remonte ces balises dans le `<head>`. */}
+        <link
+          rel="preload"
+          as="image"
+          media="(min-width: 768px)"
+          imageSrcSet={heroDesktopSrcSet}
+          imageSizes="100vw"
+          fetchPriority="high"
+        />
+        <link
+          rel="preload"
+          as="image"
+          media="(max-width: 767px)"
+          imageSrcSet={heroMobileProps.srcSet}
+          imageSizes="100vw"
+          fetchPriority="high"
+        />
+        <picture>
+          <source media="(min-width: 768px)" srcSet={heroDesktopSrcSet} sizes="100vw" />
+          {/* `fetchPriority` explicite : sans lui, l'image LCP part au même
+              rang que les logos et les six polices préchargées. */}
+          <img
+            {...heroMobileProps}
+            /* Décorative : le hero n'apporte aucune information que le texte
+               par-dessus ne porte déjà. Répété après le spread pour que ce
+               soit lisible ici, et pas seulement dans `heroCommon`. */
             alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center"
+            fetchPriority="high"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
-        </div>
-        <div className="absolute inset-0 hidden md:block">
-          <Image src={HERO_STILL} alt="" fill priority sizes="100vw" className="object-cover object-center" />
-        </div>
+        </picture>
 
         <video
           className="absolute inset-0 h-full w-full object-cover object-[64%_center] transition-opacity duration-700 md:object-center"

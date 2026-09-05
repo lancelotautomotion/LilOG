@@ -37,8 +37,14 @@ export function Nav({ onMenu, forceSolid }: { onMenu: () => void; forceSolid?: b
         </Link>
       </div>
       <a className="nav-brand" href="/" aria-label="Lil'OG">
-        <Image className="brand-logo light" src={logoWhite} alt="Lil'OG" priority />
-        <Image className="brand-logo dark" src={logoBlack} alt="Lil'OG" priority />
+        {/* `sizes` est indispensable ici : sans lui, next/image suppose
+            100vw et PRÉCHARGE le logo en 1920 px de large — pour une image
+            qui s'affiche à une centaine de pixels, en priorité haute, dans
+            la même fenêtre que l'image LCP. Mesuré : 14 Ko au lieu de 8 Ko,
+            et ce, deux fois (les deux logos sont montés, le thème et le
+            défilement décidant lequel se voit). */}
+        <Image className="brand-logo light" src={logoWhite} alt="Lil'OG" priority sizes="120px" />
+        <Image className="brand-logo dark" src={logoBlack} alt="Lil'OG" priority sizes="120px" />
       </a>
       <div className="nav-right">
         <div className="nav-account">
