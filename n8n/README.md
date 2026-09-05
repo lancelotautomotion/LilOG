@@ -156,12 +156,16 @@ retraiter une image déjà produite par le workflow.
 
 ---
 
-## `workflows/lilog-publication-shopify.json`
+## Workflow de publication Shopify
 
 Génère la fiche produit avec Gemini à partir des photos, crée le produit Shopify en **brouillon**,
 y attache les images, puis marque le dossier comme publié.
 
-### À renseigner après import
+> L'export JSON de ce workflow n'est plus versionné ici : la version qui fait foi est celle
+> qui tourne dans n8n. Le fichier du dépôt avait divergé, et un export figé qui prend du retard
+> induit en erreur plus qu'il n'aide. La documentation ci-dessous, elle, reste valable.
+
+### Réglages du workflow
 
 | Où | Quoi |
 |---|---|
