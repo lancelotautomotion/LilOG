@@ -40,20 +40,49 @@ import { AnnounceBar } from "@/components/home/announce-bar";
 import type { Product } from "@/lib/shopify/types";
 
 const SHELL_CSS = `
+/* ── Balancement des pastilles du bureau ───────────────────────────────────
+ *
+ * L'inclinaison de repos (--r) et le balancement vivent sur DEUX éléments
+ * distincts, et ce n'est pas un détail de style.
+ *
+ * La version précédente écrivait la variable dans l'image-clé elle-même
+ * ('rotate(calc(var(--r) + 6deg))'). Or le compositeur ne sait pas résoudre
+ * 'var()' : une animation qui en contient est refusée au GPU et retombe sur
+ * le thread principal, où chaque image coûte un recalcul de style, un layout
+ * et la repeinture du 'drop-shadow'. Neuf pastilles, soixante fois par
+ * seconde. Lighthouse le chiffrait à 2 077 ms de Style & Layout et 1 670 ms
+ * de blocage — sur grand écran seulement, puisque 'hidden lg:block' les
+ * retire du téléphone. C'était à soi seul l'écart entre la note mobile et la
+ * note bureau.
+ *
+ * Le '<span>' porte donc l'inclinaison, une fois pour toutes ; le '<svg>'
+ * qu'il contient porte le balancement, en valeurs littérales. L'animation
+ * redevient compositable, et le thread principal n'a plus rien à faire.
+ *
+ * Différence de rendu : le déplacement se fait désormais dans le repère
+ * incliné du parent. Au pic du cycle, sur la pastille la plus inclinée
+ * (16°) et la plus grande (48px), cela vaut 1,2px de dérive latérale.
+ */
 @keyframes lhsBob{
-  0%,100%{transform:translate3d(0,0,0) rotate(var(--r,0deg)) scale(1)}
-  50%{transform:translate3d(0,-9%,0) rotate(calc(var(--r,0deg) + 6deg)) scale(1.06)}
+  0%,100%{transform:translate3d(0,0,0) rotate(0deg) scale(1)}
+  50%{transform:translate3d(0,-9%,0) rotate(6deg) scale(1.06)}
 }
-.lhs-sticker{animation:lhsBob 7.6s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(10,4,30,.55))}
-.lhs-s2{animation-duration:9.1s;animation-delay:-3.4s}
-.lhs-s3{animation-duration:8.2s;animation-delay:-1.7s}
-.lhs-s4{animation-duration:6.9s;animation-delay:-2.1s}
-.lhs-s5{animation-duration:8.7s;animation-delay:-4.6s}
-.lhs-s6{animation-duration:7.3s;animation-delay:-0.8s}
-.lhs-s7{animation-duration:9.5s;animation-delay:-5.2s}
-.lhs-s8{animation-duration:6.4s;animation-delay:-3.1s}
+.lhs-sticker{transform:rotate(var(--r,0deg))}
+.lhs-sticker>*{
+  display:block;height:100%;width:100%;
+  animation:lhsBob 7.6s ease-in-out infinite;
+  filter:drop-shadow(0 4px 8px rgba(10,4,30,.55));
+  will-change:transform;
+}
+.lhs-s2>*{animation-duration:9.1s;animation-delay:-3.4s}
+.lhs-s3>*{animation-duration:8.2s;animation-delay:-1.7s}
+.lhs-s4>*{animation-duration:6.9s;animation-delay:-2.1s}
+.lhs-s5>*{animation-duration:8.7s;animation-delay:-4.6s}
+.lhs-s6>*{animation-duration:7.3s;animation-delay:-0.8s}
+.lhs-s7>*{animation-duration:9.5s;animation-delay:-5.2s}
+.lhs-s8>*{animation-duration:6.4s;animation-delay:-3.1s}
 
-@media (prefers-reduced-motion: reduce){ .lhs-sticker{animation:none} }
+@media (prefers-reduced-motion: reduce){ .lhs-sticker>*{animation:none;will-change:auto} }
 `;
 
 export function HomeShell({ highlights = [] }: { highlights?: Product[] }) {

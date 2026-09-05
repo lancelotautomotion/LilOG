@@ -40,8 +40,14 @@ const ARCADE_CSS = `
 .lha-reel{animation-name:lhaReel;animation-timing-function:linear;animation-iteration-count:infinite}
 
 /* Ampoules du fronton. */
-@keyframes lhaBulb{0%,100%{opacity:1;box-shadow:0 0 9px rgba(255,215,240,.95)}50%{opacity:.3;box-shadow:none}}
-.lha-bulb{animation:lhaBulb 1.6s ease-in-out infinite}
+/* Le halo est FIXE, seule l'opacite est animee : une image-cle qui fait
+   varier box-shadow oblige le navigateur a repeindre l'ampoule a chaque
+   image, sur le thread principal. L'opacite, elle, est prise en charge par
+   le compositeur. Six ampoules a l'ecran, c'etait autant de repeintures.
+   Difference de rendu : au creux du battement le halo descend a 30 %
+   d'opacite au lieu de disparaitre — invisible sur une pastille de 8px. */
+@keyframes lhaBulb{0%,100%{opacity:1}50%{opacity:.3}}
+.lha-bulb{box-shadow:0 0 9px rgba(255,215,240,.95);animation:lhaBulb 1.6s ease-in-out infinite;will-change:opacity}
 
 /* Battement de balayage du tube cathodique. */
 @keyframes lhaFlicker{0%,100%{opacity:.42}50%{opacity:.28}}
