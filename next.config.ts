@@ -2,37 +2,50 @@ import type { NextConfig } from "next";
 
 /* ── En-têtes de sécurité ──────────────────────────────────────────────────
  *
- * Le site était servi sans aucun de ces en-têtes.
+ * La CSP est désormais BLOQUANTE. Elle a d'abord vécu en Report-Only, le
+ * temps d'inventorier ce que les pages chargent réellement en production :
  *
- * La CSP est posée en Report-Only À DESSEIN : en mode bloquant, une
- * directive trop stricte casse silencieusement Google Analytics, le pixel
- * Meta, les images Shopify ou la redirection vers le checkout — sans erreur
- * visible, juste une fonctionnalité qui ne marche plus. En Report-Only, le
- * navigateur journalise les violations dans la console SANS RIEN BLOQUER :
- * le rendu et la navigation sont strictement inchangés.
+ *   - scripts : uniquement /_next/static (même origine) + le gtag de Google
+ *   - images  : cdn.shopify.com, plus les data: URI des vignettes de repli
+ *   - polices : auto-hébergées par next/font, aucune requête à Google
+ *   - médias  : /hero/camcorder.mp4 et /sounds/key.mp3, même origine
+ *   - Instagram et TikTok n'apparaissent QUE dans des <a href> : la CSP ne
+ *     gouverne pas la navigation, seulement le chargement de ressources.
  *
- * POUR PASSER EN MODE BLOQUANT (à faire après vérification) :
- *   1. Naviguer sur la preview Vercel — accueil, une fiche produit, le
- *      catalogue, le panier, /account, /contact, /gift-card — avec la
- *      console ouverte, en acceptant les cookies (pour charger GA et Meta).
- *   2. Relever les lignes « Content-Security-Policy-Report-Only … would
- *      have been blocked » et ajouter les domaines légitimes ci-dessous.
- *   3. Renommer la clé en "Content-Security-Policy" et redéployer.
+ * C'est le dernier verrou contre les XSS, et celui qui compte le plus ici :
+ * les descriptions produit sont générées par un modèle de langage à partir
+ * des photos, puis injectées en dangerouslySetInnerHTML. L'assainissement
+ * les nettoie déjà ; la CSP est le filet en dessous.
  *
  * `unsafe-inline` sur script-src reste nécessaire tant que Next.js pose ses
  * propres scripts inline (ainsi que les extraits GA et Meta). S'en passer
- * suppose une CSP à nonce via middleware — chantier séparé.
+ * suppose une CSP à nonce via middleware — chantier séparé, qui obligerait
+ * d'ailleurs à repasser toutes les routes en rendu dynamique.
+ *
+ * POUR REVENIR EN ARRIÈRE en cas de casse : renommer la clé plus bas en
+ * "Content-Security-Policy-Report-Only". La directive redevient une simple
+ * observation, sans rien bloquer.
  */
 const CSP = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://cdn.shopify.com https://www.googletagmanager.com https://www.google-analytics.com https://www.facebook.com",
+  /* Les jokers sur les domaines de Google Analytics ne sont pas de la
+     paresse : GA4 émet vers un point d'entrée régionalisé (region1, region2…)
+     choisi selon la localisation de la visiteuse. Les énumérer un par un
+     laisserait tomber la mesure pour une partie du monde, en silence. */
+  "img-src 'self' data: blob: https://cdn.shopify.com https://www.googletagmanager.com https://*.google-analytics.com https://www.facebook.com",
   "font-src 'self' data:",
-  "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://connect.facebook.net https://www.facebook.com",
-  // Le tunnel de paiement est hébergé par Shopify : le formulaire doit
-  // pouvoir y poster.
-  "form-action 'self' https://shop.app https://checkout.shopify.com https://lilog.shop",
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://connect.facebook.net https://www.facebook.com",
+  // Vidéo de l'accueil et son du téléphone Y2K, tous deux servis par le site.
+  "media-src 'self'",
+  /* Next sert certains travailleurs depuis une URL blob: ; l'omettre est un
+     grand classique des CSP qui cassent après coup. */
+  "worker-src 'self' blob:",
+  /* Le tunnel de paiement est un sous-domaine à part (checkout.lilog.shop),
+     distinct du site : il manquait, et l'oubli ne se serait vu qu'au moment
+     de payer. */
+  "form-action 'self' https://checkout.lilog.shop https://shop.app https://checkout.shopify.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "object-src 'none'",
@@ -40,10 +53,7 @@ const CSP = [
 ].join("; ");
 
 const securityHeaders = [
-  /* Observation seule. Voir le commentaire ci-dessus pour l'activation. */
-  { key: "Content-Security-Policy-Report-Only", value: CSP },
-
-  /* Ceux-ci sont sans effet sur le rendu et peuvent être posés d'emblée. */
+  { key: "Content-Security-Policy", value: CSP },
 
   // Interdit le rendu du site dans une iframe tierce (clickjacking : un
   // ajout au panier ou une validation déclenchés à l'insu de la visiteuse).
