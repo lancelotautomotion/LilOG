@@ -6779,14 +6779,6 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   letter-spacing: 0.16em;
   color: #14161d;
 }
-.dm-gate-hint {
-  font-style: normal;
-  font-size: 0.8125rem;
-  letter-spacing: 0.06em;
-  text-transform: none;
-  font-weight: 400;
-  color: #6f6f7c;
-}
 .dm-size-grid { display: flex; flex-wrap: wrap; gap: 5px; }
 .dm-size {
   position: relative;
@@ -7415,11 +7407,6 @@ a.dm-chrome-btn, button.dm-chrome-btn { cursor: pointer; }
   /* La barre d'état est le premier décor sacrifié : trois cellules de
      journal contre 26px de photo, l'arbitrage est vite fait. */
   .dm-statusbar { display: none; }
-
-  /* Le rappel « plusieurs choix possibles » quitte SYSTEM_LOGIN.EXE :
-     les cases à cocher le disent déjà, et sur un écran étroit il pousse
-     chaque rangée de tailles d'une ligne. */
-  .dm-gate-hint { display: none; }
 
   /* Filet de sécurité pour les deux fenêtres modales. Elles sont posées
      en `fixed` et centrées : ce qui les dépasse est hors d'atteinte, et

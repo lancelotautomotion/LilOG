@@ -193,10 +193,7 @@ function SizeRow({
 }) {
   return (
     <div className="dm-gate-field">
-      <span className="dm-gate-label">
-        {label}
-        <em className="dm-gate-hint">plusieurs choix possibles</em>
-      </span>
+      <span className="dm-gate-label">{label}</span>
       <div className="dm-size-grid">
         {options.map((s) => (
           <label key={s} className={"dm-size" + (selected.has(s) ? " on" : "")}>
@@ -245,12 +242,12 @@ function SizeGate({
   onLaunch: (sizes: Set<string>, shoeSizes: Set<string>) => void;
 }) {
   // Seeded from the current selection so re-opening the gate from the toolbar
-  // shows what the shopper already picked rather than resetting it.
-  const [picked, setPicked] = useState<ReadonlySet<string>>(() =>
-    initialSizes.size > 0
-      ? new Set(initialSizes)
-      : new Set(sizes[Math.floor(sizes.length / 2)] ? [sizes[Math.floor(sizes.length / 2)]] : []),
-  );
+  // shows what the shopper already picked rather than resetting it. À la
+  // première ouverture, rien n'est coché : un ensemble vide, c'est TOUTES.
+  // La machine part donc sur le catalogue entier plutôt que sur une taille
+  // médiane devinée — celle-ci amputait d'emblée la sélection d'une visiteuse
+  // qui n'avait rien demandé, et lui faisait croire à un catalogue maigre.
+  const [picked, setPicked] = useState<ReadonlySet<string>>(() => new Set(initialSizes));
   const [pickedShoes, setPickedShoes] = useState<ReadonlySet<string>>(
     () => new Set(initialShoeSizes),
   );
