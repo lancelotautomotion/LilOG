@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SmartImg } from "@/components/smart-img";
 import { Icon } from "@/components/icons";
 import { useCart } from "@/lib/cart-context";
@@ -14,15 +15,24 @@ import type { Product } from "@/lib/shopify/types";
 const CARD_SIZES = "(max-width: 1000px) 48vw, 24vw";
 
 export function ProductCard({ product, idx }: { product: Product; idx: number }) {
-  const { addItem } = useCart();
+  const { addItem, hasVariant } = useCart();
   const { has, toggle } = useWishlist();
+  const router = useRouter();
   const fav = has(product.handle);
   const [added, setAdded] = useState(false);
   const sold = product.tag === "SOLD" || !product.variantId;
+  /* Pièces uniques : une fois au panier, le bouton n'ajoute plus, il y mène.
+     Voir `hasVariant` dans cart-context. */
+  const inCart = hasVariant(product.variantId);
 
   const add = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (sold || !product.variantId) return;
+    if (added) return;
+    if (inCart) {
+      router.push("/cart");
+      return;
+    }
     setAdded(true);
     await addItem(product.variantId, 1);
     setTimeout(() => setAdded(false), 1400);
@@ -42,8 +52,13 @@ export function ProductCard({ product, idx }: { product: Product; idx: number })
       </button>
       <SmartImg className="img-a" src={product.imageA} alt={product.name} tone={idx} sizes={CARD_SIZES} />
       <SmartImg className="img-b" src={product.imageB} alt={product.name} tone={idx + 1} sizes={CARD_SIZES} />
-      <button className={"quick-add" + (added ? " added" : "")} onClick={add} disabled={sold}>
-        {sold ? "Sold out" : added ? "Added ✓" : "Quick add"}
+      <button
+        className={"quick-add" + (added || inCart ? " added" : "")}
+        onClick={add}
+        disabled={sold}
+        aria-label={inCart && !added ? `${product.name} est déjà dans le panier — voir le panier` : undefined}
+      >
+        {sold ? "Sold out" : added ? "Added ✓" : inCart ? "In cart ✓" : "Quick add"}
       </button>
     </>
   );

@@ -20,6 +20,20 @@ interface CartContextValue {
    *  `count` n'est qu'une estimation locale : une page qui distingue
    *  « vide » de « pas encore chargé » doit lire ce drapeau. */
   loaded: boolean;
+  /** Cette déclinaison est-elle déjà dans le panier ?
+   *
+   *  Les pièces sont uniques : un bouton d'ajout qui redevient neutre au
+   *  bout d'une seconde laisse la cliente douter de son propre geste, sans
+   *  moyen de trancher autrement qu'en ouvrant le panier. L'état « déjà au
+   *  panier » se lit donc du panier lui-même, jamais d'un minuteur local :
+   *  il survit au rechargement, aux allers-retours entre pages, et retombe
+   *  tout seul si la ligne est retirée ailleurs.
+   *
+   *  Vaut `false` tant que le panier n'est pas revenu du serveur (`loaded`) :
+   *  pendant ce court instant le bouton propose l'ajout, ce qui est le
+   *  défaut sans risque — l'inverse annoncerait un ajout qui n'a peut-être
+   *  pas eu lieu. */
+  hasVariant: (variantId: string | null | undefined) => boolean;
   addItem: (variantId: string, quantity?: number) => Promise<void>;
   /** Plusieurs lignes en un seul aller-retour, voir addLinesToCartAction. */
   addItems: (lines: CartLineInput[]) => Promise<void>;
@@ -72,6 +86,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       cancelled = true;
     };
   }, []);
+
+  const hasVariant = useCallback(
+    (variantId: string | null | undefined) =>
+      !!variantId && (cart?.lines.some((l) => l.variantId === variantId) ?? false),
+    [cart],
+  );
 
   const addItem = useCallback(async (variantId: string, quantity = 1) => {
     setPending(true);
@@ -132,7 +152,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ cart, count, pending, loaded, addItem, addItems, updateQuantity, removeItem }}
+      value={{ cart, count, pending, loaded, hasVariant, addItem, addItems, updateQuantity, removeItem }}
     >
       {children}
     </CartContext.Provider>

@@ -301,15 +301,24 @@ function SystemLogs({
    ============================================================ */
 
 function ComboCard({ product, idx }: { product: Product; idx: number }) {
-  const { addItem } = useCart();
+  const { addItem, hasVariant } = useCart();
   const { has, toggle } = useWishlist();
+  const router = useRouter();
   const [added, setAdded] = useState(false);
   const fav = has(product.handle);
   const sold = product.tag === "SOLD" || !product.variantId;
+  const inCart = hasVariant(product.variantId);
 
   const add = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (sold || !product.variantId) return;
+    /* `added` est la seule fenêtre où le bouton ne fait rien : le temps de
+       voir la confirmation, un second clic réflexe n'emmène pas ailleurs. */
+    if (added) return;
+    if (inCart) {
+      router.push("/cart");
+      return;
+    }
     setAdded(true);
     await addItem(product.variantId, 1);
     setTimeout(() => setAdded(false), 1400);
@@ -394,11 +403,12 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
             onClick={add}
             disabled={sold}
             className={`${MONO} flex-1 rounded-md border-b-[3px] px-1.5 py-1 text-[0.75rem] whitespace-nowrap sm:px-2 sm:py-1.5 sm:text-[1rem] font-black tracking-[0.04em] text-white uppercase transition active:translate-y-[3px] active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${
-              added ? "border-[#0f5c26] bg-gradient-to-b from-[#4fbe84] to-[#1B8A3C]" : "border-[#7a0a52] bg-gradient-to-b from-[#ff5ec4] to-[#c3128a]"
+              added || inCart ? "border-[#0f5c26] bg-gradient-to-b from-[#4fbe84] to-[#1B8A3C]" : "border-[#7a0a52] bg-gradient-to-b from-[#ff5ec4] to-[#c3128a]"
             }`}
             style={{ boxShadow: "0 3px 0 rgba(0,0,0,0.18)" }}
+            aria-label={inCart && !added ? `${product.name} est déjà dans le panier — voir le panier` : undefined}
           >
-            {sold ? "[ SOLD ]" : added ? "[ ✓ OK ]" : "[ + CART ]"}
+            {sold ? "[ SOLD ]" : added ? "[ ✓ OK ]" : inCart ? "[ ✓ IN CART ]" : "[ + CART ]"}
           </button>
           <button
             type="button"
@@ -431,7 +441,7 @@ function ComboCard({ product, idx }: { product: Product; idx: number }) {
 
 export function ProductDetail({ product, related }: { product: ProductDetailType; related: Product[] }) {
   const { t } = useLanguage();
-  const { addItem } = useCart();
+  const { addItem, hasVariant } = useCart();
   const router = useRouter();
   const [menu, setMenu] = useState(false);
   const [added, setAdded] = useState(false);
@@ -458,8 +468,22 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
     .find(Boolean);
   const dept = deptKey ? (t.cat[deptKey] ?? deptKey) : (product.collections[0] ?? null);
 
+  /* Les pièces sont uniques : une fois la déclinaison au panier, le bouton
+     n'a plus rien à ajouter. Plutôt que de revenir à « ADD_TO_CART » au bout
+     d'une seconde — ce qui laissait douter d'avoir cliqué —, il reste vert et
+     devient le chemin vers le panier. L'état vient du panier lui-même, donc
+     il tient au rechargement et retombe si la ligne est retirée. */
+  const inCart = hasVariant(variantId);
+
   const add = async () => {
     if (sold || !variantId) return;
+    /* `added` est la seule fenêtre où le bouton ne fait rien : le temps de
+       voir la confirmation, un second clic réflexe n'emmène pas ailleurs. */
+    if (added) return;
+    if (inCart) {
+      router.push("/cart");
+      return;
+    }
     setAdded(true);
     setAddError(null);
     try {
@@ -721,13 +745,20 @@ export function ProductDetail({ product, related }: { product: ProductDetailType
                     onClick={add}
                     disabled={sold || !variantId}
                     className={`${MONO} flex-1 rounded-lg border-b-4 border-[#7a0a52] px-4 py-3.5 text-[1rem] font-black tracking-[0.06em] text-white uppercase transition active:translate-y-1 active:border-b-0 active:shadow-none disabled:cursor-not-allowed disabled:opacity-45 disabled:active:translate-y-0 ${
-                      added
+                      added || inCart
                         ? "bg-gradient-to-b from-[#4fbe84] to-[#1B8A3C] border-[#0f5c26]"
                         : "bg-gradient-to-b from-[#ff5ec4] to-[#c3128a]"
                     }`}
                     style={{ boxShadow: "0 5px 0 rgba(0,0,0,0.18)" }}
+                    aria-label={inCart && !added ? "Déjà dans le panier — voir le panier" : undefined}
                   >
-                    {sold ? "[ × SOLD_OUT.SYS ]" : added ? "[ ✓ ADDED.OK ]" : "[ 🛒 ADD_TO_CART.EXE ]"}
+                    {sold
+                      ? "[ × SOLD_OUT.SYS ]"
+                      : added
+                        ? "[ ✓ ADDED.OK ]"
+                        : inCart
+                          ? "[ ✓ IN_CART.SYS ]"
+                          : "[ 🛒 ADD_TO_CART.EXE ]"}
                   </button>
 
                   <button
