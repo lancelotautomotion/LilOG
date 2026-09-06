@@ -1,0 +1,74 @@
+{%- comment -%}
+  ── Renvoi de la devanture Shopify vers lilog.shop ──────────────────────────
+
+  À coller tout en haut du <head> de `layout/theme.liquid`, dans le thème
+  publié de la boutique Shopify (voir shopify-theme/README.md).
+
+  POURQUOI. Le site est sans devanture Shopify : la boutique vit sur Vercel
+  (lilog.shop), Shopify ne sert que le tunnel de paiement. Mais le domaine
+  principal déclaré dans Shopify est `checkout.lilog.shop`, et c'est LUI que
+  Shopify utilise partout où il écrit « la boutique » — en particulier le
+  bouton bleu « Retour à la boutique » de la page de remerciement, après le
+  paiement. La cliente qui paie et clique dessus atterrit donc sur le thème
+  Horizon par défaut, vide, au lieu de revenir chez nous.
+
+  Ce bouton n'est configurable ni par l'API Storefront, ni par l'admin, ni
+  par une extension de checkout hors Shopify Plus. La seule prise que nous
+  ayons est la page d'arrivée : elle est rendue par le thème, donc par ce
+  fichier. On la renvoie vers le site.
+
+  CE QUI N'EST PAS RENVOYÉ, ET POURQUOI. Le renvoi marche sur liste blanche
+  (`case`), pas sur liste noire : une page dont le type n'est pas cité plus
+  bas est servie normalement. Restent donc intactes :
+
+    - `/policies/*` — les mentions légales liées en pied du paiement
+      (remboursement, expédition, confidentialité…). Elles doivent rester
+      lisibles pendant la commande, et leurs adresses ne correspondent pas
+      une à une aux pages du site.
+    - `/gift_cards/*` — la carte cadeau que reçoit la bénéficiaire ; elle
+      n'existe QUE sur Shopify.
+    - les pages de compte client, de mot de passe et de vérification
+      anti-robot, servies par Shopify dans ses propres parcours.
+
+  Le paiement lui-même n'est pas concerné : depuis la refonte du checkout,
+  il ne passe plus par le thème.
+
+  `request.design_mode` neutralise le renvoi dans l'éditeur de thème, sans
+  quoi l'admin Shopify ne pourrait plus ouvrir le thème pour le modifier.
+{%- endcomment -%}
+
+{%- unless request.design_mode -%}
+  {%- assign lilog_site = 'https://lilog.shop' -%}
+  {%- assign lilog_target = '' -%}
+
+  {%- case request.page_type -%}
+    {%- when 'index' -%}
+      {%- assign lilog_target = lilog_site -%}
+    {%- when 'product' -%}
+      {%- assign lilog_target = lilog_site | append: '/products/' | append: product.handle -%}
+    {%- when 'collection' -%}
+      {%- assign lilog_target = lilog_site | append: '/category/' | append: collection.handle -%}
+    {%- when 'list-collections' -%}
+      {%- assign lilog_target = lilog_site | append: '/catalogue' -%}
+    {%- when 'cart' -%}
+      {%- assign lilog_target = lilog_site | append: '/cart' -%}
+    {%- when 'search' -%}
+      {%- assign lilog_target = lilog_site | append: '/search' -%}
+    {%- when 'page', 'blog', 'article', '404' -%}
+      {%- assign lilog_target = lilog_site -%}
+  {%- endcase -%}
+
+  {%- if lilog_target != '' -%}
+    {%- comment -%}
+      Liquid ne sait pas répondre un 301 : on part donc en meta refresh —
+      lu avant tout script, y compris quand le JavaScript est coupé — et on
+      double d'un `location.replace` qui, lui, ne laisse pas d'entrée dans
+      l'historique (sinon le bouton « précédent » ramènerait ici en boucle).
+      `noindex` évite en prime que checkout.lilog.shop se retrouve indexé en
+      double du vrai site.
+    {%- endcomment -%}
+    <meta http-equiv="refresh" content="0; url={{ lilog_target }}">
+    <meta name="robots" content="noindex">
+    <script>window.location.replace({{ lilog_target | json }});</script>
+  {%- endif -%}
+{%- endunless -%}
