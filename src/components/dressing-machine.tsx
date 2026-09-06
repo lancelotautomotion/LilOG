@@ -230,6 +230,7 @@ function SizeGate({
   initialSizes,
   initialShoeSizes,
   onLaunch,
+  onClose,
 }: {
   sizes: string[];
   /** Empty when the catalogue holds no shoes: the row is then hidden. */
@@ -240,6 +241,11 @@ function SizeGate({
   initialSizes: ReadonlySet<string>;
   initialShoeSizes: ReadonlySet<string>;
   onLaunch: (sizes: Set<string>, shoeSizes: Set<string>) => void;
+  /** Ferme la fenêtre sans rien appliquer : la machine reste en place,
+   *  avec la sélection en cours. La croix renvoyait auparavant à l'accueil,
+   *  ce qui faisait quitter la Dressing Machine à qui voulait seulement
+   *  refermer la boîte de dialogue. La barre d'outils la rouvre. */
+  onClose: () => void;
 }) {
   // Seeded from the current selection so re-opening the gate from the toolbar
   // shows what the shopper already picked rather than resetting it. À la
@@ -258,6 +264,15 @@ function SizeGate({
   const noSizing = "Le catalogue ne renseigne pas encore les tailles : toutes les pièces resteront affichées quel que soit votre choix.";
   const noPointure = "Aucune pointure n'est renseignée : toutes les chaussures resteront affichées.";
 
+  /* Même contrat que AJOUTER_MODULE.EXE plus bas : Échap referme. */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   return (
     <div className="dm-gate-scrim" role="dialog" aria-modal="true" aria-label="SYSTEM_LOGIN.EXE">
       <div className="dm-win dm-gate-win">
@@ -266,7 +281,9 @@ function SizeGate({
           <div className="dm-chrome">
             <span className="dm-chrome-btn" aria-hidden>_</span>
             <span className="dm-chrome-btn" aria-hidden>□</span>
-            <Link className="dm-chrome-btn" href="/" aria-label="Fermer">×</Link>
+            <button type="button" className="dm-chrome-btn" onClick={onClose} aria-label="Fermer">
+              ×
+            </button>
           </div>
         </div>
 
@@ -1310,6 +1327,7 @@ export function DressingMachine({ items }: { items: ClosetItem[] }) {
           initialSizes={sizes}
           initialShoeSizes={shoeSizes}
           onLaunch={launch}
+          onClose={() => setGateOpen(false)}
         />
       )}
 
