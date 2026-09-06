@@ -16,6 +16,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SmartImg } from "@/components/smart-img";
 import { Icon } from "@/components/icons";
 import { useCart } from "@/lib/cart-context";
@@ -173,12 +174,16 @@ function MinimizeGlyph() {
 const WINDOW_SIZES = "(max-width: 767px) 48vw, (max-width: 1279px) 31vw, 22vw";
 
 export function ProductWindow({ product, idx }: { product: Product; idx: number }) {
-  const { addItem } = useCart();
+  const { addItem, hasVariant } = useCart();
   const { has, toggle } = useWishlist();
+  const router = useRouter();
   const [added, setAdded] = useState(false);
 
   const fav = has(product.handle);
   const sold = product.tag === "SOLD" || !product.variantId;
+  /* Pièces uniques : une fois au panier, le bouton n'ajoute plus, il y mène.
+     Voir `hasVariant` dans cart-context. */
+  const inCart = hasVariant(product.variantId);
   const href = `/products/${product.handle}`;
   const badge = primarySticker(product, sold);
   const pick = lounaPickSticker(product);
@@ -186,6 +191,11 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
   const add = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (sold || !product.variantId) return;
+    if (added) return;
+    if (inCart) {
+      router.push("/cart");
+      return;
+    }
     setAdded(true);
     await addItem(product.variantId, 1);
     setTimeout(() => setAdded(false), 1400);
@@ -274,12 +284,18 @@ export function ProductWindow({ product, idx }: { product: Product; idx: number 
       type="button"
       onClick={add}
       disabled={sold}
-      aria-label={sold ? "Épuisé" : `Ajouter ${product.name} au panier`}
+      aria-label={
+        sold
+          ? "Épuisé"
+          : inCart && !added
+            ? `${product.name} est déjà dans le panier — voir le panier`
+            : `Ajouter ${product.name} au panier`
+      }
       className={`${MONO} ${CHIP_BASE} grow rounded-md border border-[#c6c2d8] px-1.5 text-[#262626] uppercase transition disabled:cursor-not-allowed disabled:opacity-45 ${
-        added ? "bg-[linear-gradient(180deg,#d8ffe8_0%,#8ce8b4_48%,#4fbe84_100%)]" : PLASTIC_FACE
+        added || inCart ? "bg-[linear-gradient(180deg,#d8ffe8_0%,#8ce8b4_48%,#4fbe84_100%)]" : PLASTIC_FACE
       } ${PLASTIC} ${sold ? "" : PLASTIC_PRESS} ${sold ? "" : "hover:brightness-105"}`}
     >
-      {sold ? "[×SOLD]" : added ? "[✓ OK]" : "[+CART]"}
+      {sold ? "[×SOLD]" : added ? "[✓ OK]" : inCart ? "[✓ IN CART]" : "[+CART]"}
     </button>
   );
 

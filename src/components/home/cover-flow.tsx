@@ -24,6 +24,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import { SmartImg } from "@/components/smart-img";
 import { fallbackSrc, imageSrcSet } from "@/lib/shopify/image-url";
@@ -83,6 +84,16 @@ const COVER_CSS = `
   box-shadow:0 0 0 #7d0f56, 0 3px 8px rgba(20,6,40,.45), inset 0 2px 0 rgba(255,255,255,.55), inset 0 -3px 8px rgba(120,0,80,.5);
 }
 .lhh-cta:disabled{ filter:grayscale(.6); cursor:default }
+
+/* Même bouton une fois la pièce au panier : la course et le relief ne
+   bougent pas, seule la teinte passe au vert — socle et ombres internes
+   compris, sans quoi une face verte resterait posée sur un pied rose. */
+.lhh-cta-done{
+  box-shadow:0 5px 0 #0d4f21, 0 12px 20px rgba(6,40,20,.4), inset 0 2px 0 rgba(255,255,255,.9), inset 0 -5px 12px rgba(0,70,35,.42);
+}
+.lhh-cta-done:active:not(:disabled){
+  box-shadow:0 0 0 #0d4f21, 0 3px 8px rgba(6,40,20,.45), inset 0 2px 0 rgba(255,255,255,.55), inset 0 -3px 8px rgba(0,70,35,.5);
+}
 
 @media (prefers-reduced-motion: reduce){
   .lhh-slide,.lhh-key,.lhh-cta{ transition:none !important }
@@ -237,7 +248,8 @@ function TransportKey({
 const PINNED_FIRST = "sac porte-monnaie patchwork glacé coloré";
 
 export function CoverFlow({ products }: { products: Product[] }) {
-  const { addItem } = useCart();
+  const { addItem, hasVariant } = useCart();
+  const router = useRouter();
   const pinnedIndex = products.findIndex((p) => p.name.toLowerCase() === PINNED_FIRST);
   const [active, setActive] = useState(pinnedIndex >= 0 ? pinnedIndex : 0);
   const [added, setAdded] = useState(false);
@@ -248,6 +260,9 @@ export function CoverFlow({ products }: { products: Product[] }) {
 
   const current = products[active];
   const sold = current.tag === "SOLD" || !current.variantId;
+  /* Pièces uniques : une fois au panier, le bouton n'ajoute plus, il y mène.
+     Voir `hasVariant` dans cart-context. */
+  const inCart = hasVariant(current.variantId);
   const sizeLabel = current.sizes.length ? current.sizes.join(" / ") : current.meta || "ONE SIZE";
 
   // Une seule taille de titre pour tout le lecteur, dictée par le nom le plus
@@ -262,6 +277,11 @@ export function CoverFlow({ products }: { products: Product[] }) {
   const add = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (sold || !current.variantId) return;
+    if (added) return;
+    if (inCart) {
+      router.push("/cart");
+      return;
+    }
     setAdded(true);
     await addItem(current.variantId, 1);
     setTimeout(() => setAdded(false), 1400);
@@ -444,13 +464,19 @@ export function CoverFlow({ products }: { products: Product[] }) {
               type="button"
               onClick={add}
               disabled={sold}
-              className={`${MONO} lhh-cta min-w-0 rounded-xl border-2 border-[#5d0b46] px-[clamp(12px,3vw,28px)] py-[clamp(9px,1.8vw,14px)] text-[clamp(0.65rem,1.8vw,0.8125rem)] font-bold tracking-[0.1em] text-white uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4]`}
+              className={`${MONO} lhh-cta min-w-0 rounded-xl border-2 px-[clamp(12px,3vw,28px)] py-[clamp(9px,1.8vw,14px)] text-[clamp(0.65rem,1.8vw,0.8125rem)] font-bold tracking-[0.1em] text-white uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5ec4] ${
+                added || inCart ? "lhh-cta-done border-[#0f5c26]" : "border-[#5d0b46]"
+              }`}
               style={{
-                background: "linear-gradient(180deg,#ff9ee4 0%,#ff45b4 42%,#d61f8f 74%,#a6106b 100%)",
-                textShadow: "0 2px 0 rgba(90,0,60,.55)",
+                background:
+                  added || inCart
+                    ? "linear-gradient(180deg,#8ce8b4 0%,#4fbe84 42%,#1B8A3C 74%,#0f5c26 100%)"
+                    : "linear-gradient(180deg,#ff9ee4 0%,#ff45b4 42%,#d61f8f 74%,#a6106b 100%)",
+                textShadow: added || inCart ? "0 2px 0 rgba(0,60,25,.55)" : "0 2px 0 rgba(90,0,60,.55)",
               }}
+              aria-label={inCart && !added ? `${current.name} est déjà dans le panier — voir le panier` : undefined}
             >
-              {sold ? "[ ✕ SOLD OUT ]" : added ? "[ ✓ ADDED ]" : "[ ▶ ADD TO CART ]"}
+              {sold ? "[ ✕ SOLD OUT ]" : added ? "[ ✓ ADDED ]" : inCart ? "[ ✓ IN CART ]" : "[ ▶ ADD TO CART ]"}
             </button>
 
             <TransportKey direction="next" label="Pièce suivante" onClick={() => go(active + 1)} />
