@@ -160,7 +160,7 @@ export function CategoryWindows() {
         <SectionLabel n="02" file="CATEGORIES.EXE" />
 
         {/* `items-stretch` (par défaut) plutôt qu'une hauteur imposée : les
-            trois fenêtres ont la même photo de 380px et la même barre d'état,
+            trois fenêtres ont le même cadre photo (3:4) et la même barre d'état,
             elles s'égalisent donc d'elles-mêmes. `h-full` sur la fenêtre reste
             là comme filet si un nom de rayon passe un jour sur deux lignes
             dans une langue plus bavarde que le français. */}
@@ -191,8 +191,26 @@ export function CategoryWindows() {
                       des boutons. `overflow-hidden` retient le zoom de la
                       photo à l'intérieur du cadre. Fond noir : c'est lui
                       qu'on voit le temps que la photo se charge, pas un
-                      rectangle blanc qui clignote. */}
-                  <div className="relative h-[380px] w-full overflow-hidden border-2 border-t-[#5a5678] border-r-white border-b-white border-l-[#5a5678] bg-black">
+                      rectangle blanc qui clignote.
+
+                      `aspect-[3/4]` et non une hauteur fixe. Une hauteur de
+                      380px dans une colonne d'environ 400px donnait un cadre
+                      presque carré, où trois photos verticales (les sources
+                      font 9:16, 3:4 et 1:1) se faisaient couper la tête et
+                      les pieds : `object-cover` ne gardait qu'une bande
+                      centrale, soit le buste. En 3:4, le cadre suit la
+                      silhouette au lieu de la trancher, et les trois pièces
+                      se voient en entier — c'est la proportion de la photo
+                      des vestes, la plus contrainte des trois.
+
+                      Un rapport plutôt qu'une hauteur en pixels : la hauteur
+                      se recalcule sur la largeur réelle de la colonne, donc
+                      le cadrage est le même sur un écran de 1440px, sur une
+                      tablette et sur un téléphone où les fenêtres passent en
+                      pleine largeur. Une hauteur fixe, elle, aurait rendu le
+                      cadre de plus en plus large et de plus en plus rogné à
+                      mesure que l'écran grandit. */}
+                  <div className="relative aspect-[3/4] w-full overflow-hidden border-2 border-t-[#5a5678] border-r-white border-b-white border-l-[#5a5678] bg-black">
                     <Image
                       src={w.src}
                       alt={w.alt}
@@ -208,11 +226,23 @@ export function CategoryWindows() {
                   </div>
                 </div>
 
-                {/* Barre d'état : le nom lisible du rayon d'un côté, le
-                    bouton d'ouverture de l'autre. `mt-auto` la colle au bas
-                    de la fenêtre si les trois cartes s'égalisent sur la plus
-                    haute. */}
-                <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2.5">
+                {/* Barre d'état : le nom lisible du rayon, puis le bouton
+                    d'ouverture. `mt-auto` la colle au bas de la fenêtre si
+                    les trois cartes s'égalisent sur la plus haute.
+
+                    Empilée par défaut, sur une seule ligne à partir de `xl`,
+                    et non `flex-wrap` : le retour à la ligne se décidait
+                    carte par carte, selon la longueur du nom. « Vestes &
+                    Manteaux » passait à la ligne quand « Tops » tenait sur
+                    une seule — la fenêtre du milieu se retrouvait avec une
+                    barre d'état deux fois plus haute que ses voisines, qui,
+                    égalisées sur elle, affichaient une bande grise vide sous
+                    leur photo. Le point de bascule est à 1280px, la largeur
+                    à partir de laquelle une colonne (~395px) accueille le
+                    plus long des trois noms ET le bouton sur la même ligne :
+                    en dessous, les trois barres s'empilent ensemble, donc
+                    restent de même hauteur. */}
+                <div className="mt-auto flex flex-col items-start gap-2 border-t-2 border-[#c6c2d8] bg-[#e9e7f2] px-3 py-2.5 xl:flex-row xl:items-center xl:justify-between">
                   <span
                     className={`${MONO} text-[0.9375rem] font-bold tracking-[0.1em] text-[#1E2430] uppercase`}
                   >
