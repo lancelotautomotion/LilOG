@@ -8,7 +8,7 @@
 
      00  FREE_SHIPPING.EXE  la bande défilante de la livraison offerte
      01  CAMCORDER_OS       hero plein écran, viseur de caméscope
-     02  CATEGORIES.EXE     trois rayons en mini-fenêtres, sous le hero
+     02  CATEGORIES.EXE     trois rayons en mini-fenêtres (ordinateur seul)
      03  PLAYLIST_HIGHLIGHTS.EXE  Cover Flow 3D des pièces mises en avant
      04  ARCADE_SLOT        la borne qui lance la Dressing Machine
      05  FILE_EXPLORER.SYS  les rayons en dossiers, pas en grille
@@ -166,7 +166,19 @@ export function HomeShell({ highlights = [] }: { highlights?: Product[] }) {
           </span>
         </div>
 
-        <div className="relative">
+        {/* Le retrait d'après le hero vit ici, sur le conteneur des modules,
+            et non sur le premier d'entre eux. Porté par un module, il
+            disparaissait avec lui : CATEGORIES.EXE est masqué sous `md`, et
+            PLAYLIST_HIGHLIGHTS.EXE ne rend rien du tout quand Shopify ne
+            renvoie aucun coup de cœur (`return null` sur liste vide) — dans
+            ces cas la borne d'arcade se retrouvait collée au bas du hero.
+            Ici, l'écart est le même quoi qu'il arrive, et chaque module s'en
+            tient à la règle de la page : ne réserver que l'espace qui le
+            suit.
+
+            `min(8vw,5svh)` : sur un écran large mais bas, c'est la hauteur
+            qui doit céder, pas seulement la largeur. */}
+        <div className="relative pt-[clamp(24px,min(8vw,5svh),96px)]">
           <CategoryWindows />
           <CoverFlow products={highlights} />
           <ArcadeSlot />

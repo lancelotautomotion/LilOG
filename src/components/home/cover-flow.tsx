@@ -318,15 +318,10 @@ export function CoverFlow({ products }: { products: Product[] }) {
   };
 
   return (
-    /* Padding bas seul : ce module n'est plus le premier de la page — c'est
-       CATEGORIES.EXE, inséré juste sous le hero, qui porte désormais le
-       retrait d'après le hero. Un `py` ici ajouterait son padding haut au
-       padding bas de CATEGORIES.EXE et creuserait entre les deux un écart
-       deux fois plus grand qu'ailleurs sur l'accueil, où la règle est que
-       chaque module ne réserve que l'espace qui le suit.
-       `min(8vw,5svh)` : sur un écran large mais bas, c'est la hauteur qui
-       doit céder, pas seulement la largeur — sinon ce padding à lui seul
-       peut suffire à faire déborder le lecteur d'un écran court. */
+    /* Padding bas seul, comme tous les modules de l'accueil : chacun ne
+       réserve que l'espace qui vient après lui. Le retrait d'après le hero
+       est porté par le conteneur des modules dans `home-shell` et non par ce
+       bloc, qui ne rend rien quand Shopify ne renvoie aucun coup de cœur. */
     <section id="highlights" className="px-4 pb-[clamp(24px,min(8vw,5svh),96px)] sm:px-6">
       <div className="mx-auto w-full max-w-[1296px]">
         <style>{COVER_CSS}</style>
