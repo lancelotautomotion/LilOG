@@ -17,13 +17,10 @@ modification de code n'est nécessaire.
 
 - `robes.jpg` — `DSC08745.JPG` (racine du dépôt), redressée et allégée.
 - `tops.jpg` — `public/DSC08486.JPG`, allégée.
-- `vestes.jpg` — **image d'attente.** La photo demandée pour ce rayon
-  (`WhatsApp Image 2026-08-28 at 14.27.17.jpeg`) n'existe nulle part dans le
-  dépôt : elle n'a jamais été versée. En attendant, la fenêtre affiche le
-  blazer en tweed de `public/histoire/look-04.jpg`, qui est bien une photo de
-  veste. Dépose la vraie photo sous le nom `vestes.jpg` et le module la prend
-  telle quelle — pense alors à mettre à jour le texte alternatif dans
-  `category-windows.tsx`, qui décrit la photo actuelle.
+- `vestes.jpg` — `WhatsApp Image 2026-08-28 at 14.27.17.jpeg` (racine du
+  dépôt), reprise telle quelle : 1200 × 1600, 252 Ko, sans métadonnées, elle
+  respectait déjà les recommandations ci-dessous — la réencoder n'aurait fait
+  que lui coûter de la qualité.
 
 ## Recommandations pour les fichiers
 
