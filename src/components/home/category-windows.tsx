@@ -68,7 +68,7 @@ const WINDOWS: {
     catKey: "outerwear",
     href: "/category/manteaux-et-vestes",
     src: "/categories/vestes.jpg",
-    alt: "Blazer en tweed à poignets de fourrure porté avec une jupe et des bas",
+    alt: "Veste en jean courte et délavée portée avec un pantalon en cuir noir",
   },
   {
     file: "TOPS.EXE",
