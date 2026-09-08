@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   FILE_EXPLORER.SYS : module 04 de l'accueil
+   FILE_EXPLORER.SYS : module 05 de l'accueil
    ------------------------------------------------------------
    Les rayons de la boutique ne sont pas présentés en grille de
    produits mais en icônes de bureau : onze dossiers et une

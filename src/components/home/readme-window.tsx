@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   README.TXT : module 06 de l'accueil
+   README.TXT : module 07 de l'accueil
    ------------------------------------------------------------
    « Notre histoire » n'est plus un bloc texte + photo : c'est un
    Bloc-notes ouvert sur le bureau. Barre de titre bleue avec
