@@ -69,8 +69,9 @@ const PROMO_CSS = `
 
 export function GiftCardPromo() {
   return (
-    /* Padding bas seul : CATEGORIES.EXE, premier module de la page, porte
-       seul le retrait d'après le hero. */
+    /* Padding bas seul : le retrait d'après le hero est porté par le
+       conteneur des modules, dans `home-shell`, pas par le premier d'entre
+       eux. */
     <section id="gift-card" className="px-4 pb-[clamp(48px,8vw,96px)] sm:px-6">
       <div className="mx-auto w-full max-w-[1296px]">
         <style>{PROMO_CSS}</style>

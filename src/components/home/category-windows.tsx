@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   CATEGORIES.EXE : module 02 de l'accueil
+   CATEGORIES.EXE : module 02 de l'accueil (ordinateur seul)
    ------------------------------------------------------------
    Trois raccourcis de rayon, posés côte à côte juste sous le
    hero : ROBES, VESTES, TOPS. Chacun est une mini-fenêtre du
@@ -24,7 +24,11 @@
 
    Ce module ne remplace pas FILE_EXPLORER.SYS, qui reste
    l'index complet des onze rayons : il en met trois en avant
-   là où l'œil arrive en premier.
+   là où l'œil arrive en premier. C'est aussi pourquoi il ne
+   sort pas sur téléphone (`hidden md:block` sur la section) :
+   trois grandes photos à faire défiler avant d'arriver au
+   bureau n'y valent pas l'explorateur, qui donne accès aux onze
+   rayons en une grille d'icônes.
 
    ⚠ PAREFEU : Tailwind + feuille locale préfixée `lhc-`. Aucune
    classe de globals.css n'est touchée, donc aucune autre page ne
@@ -136,12 +140,29 @@ export function CategoryWindows() {
   const { t } = useLanguage();
 
   return (
-    /* Padding bas seul, comme les modules qui suivent : sur cette page chaque
-       module ne réserve que l'espace qui vient après lui. Ce bloc est le
-       premier de `<main>`, il porte donc aussi le retrait d'après le hero
-       (`pt`), rôle qui appartenait à PLAYLIST_HIGHLIGHTS.EXE avant qu'il ne
-       passe en deuxième position. */
-    <section id="categories" className="px-4 pt-[clamp(24px,min(8vw,5svh),96px)] pb-[clamp(48px,8vw,96px)] sm:px-6">
+    /* `hidden md:block` : module réservé à l'ordinateur. Il n'a de sens
+       qu'en trois fenêtres côte à côte ; empilées, elles font trois grandes
+       photos à faire défiler avant d'arriver au reste du bureau, alors que
+       FILE_EXPLORER.SYS plus bas donne déjà accès aux onze rayons, en
+       beaucoup plus compact. Le point de bascule est `md` (768px), la
+       largeur à partir de laquelle trois colonnes tiennent : la grille en
+       dessous n'a donc plus de variante empilée, elle est toujours en
+       `grid-cols-3`.
+
+       Conséquence utile : les trois photos ne sont pas téléchargées du tout
+       sur téléphone. `next/image` charge en `loading="lazy"`, et un élément
+       en `display:none` ne croise jamais le viewport — l'observateur ne se
+       déclenche pas, aucune requête n'est émise.
+
+       Padding bas seul, comme tous les modules de l'accueil : chacun ne
+       réserve que l'espace qui vient après lui. Le retrait d'après le hero
+       n'est pas d'ici — il est porté par le conteneur des modules dans
+       `home-shell`, justement pour qu'il ne disparaisse pas avec ce bloc
+       quand il est masqué. */
+    <section
+      id="categories"
+      className="hidden px-4 pb-[clamp(48px,8vw,96px)] sm:px-6 md:block"
+    >
       <style>{CATEGORY_CSS}</style>
 
       {/* 1296px, pas `max-w-7xl` (1280px) : c'est le plafond que partagent
@@ -159,12 +180,16 @@ export function CategoryWindows() {
             disparaissait purement et simplement. */}
         <SectionLabel n="02" file="CATEGORIES.EXE" />
 
-        {/* `items-stretch` (par défaut) plutôt qu'une hauteur imposée : les
-            trois fenêtres ont le même cadre photo (3:4) et la même barre d'état,
-            elles s'égalisent donc d'elles-mêmes. `h-full` sur la fenêtre reste
-            là comme filet si un nom de rayon passe un jour sur deux lignes
-            dans une langue plus bavarde que le français. */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        {/* Trois colonnes, sans variante à une colonne : la section entière
+            est masquée en dessous de `md`, la grille ne peut donc jamais se
+            retrouver empilée.
+
+            `items-stretch` (par défaut) plutôt qu'une hauteur imposée : les
+            trois fenêtres ont le même cadre photo (3:4) et la même barre
+            d'état, elles s'égalisent donc d'elles-mêmes. `h-full` sur la
+            fenêtre reste là comme filet si un nom de rayon passe un jour sur
+            deux lignes dans une langue plus bavarde que le français. */}
+        <div className="grid grid-cols-3 gap-6">
           {WINDOWS.map((w) => (
             <Link
               key={w.href}
@@ -215,10 +240,14 @@ export function CategoryWindows() {
                       src={w.src}
                       alt={w.alt}
                       fill
-                      /* Trois colonnes au-delà de 768px, une seule en
-                         dessous : sans cette indication le navigateur
-                         télécharge la variante « pleine largeur de fenêtre »
-                         pour une vignette qui ne fait qu'un tiers d'écran. */
+                      /* Toujours un tiers d'écran, plafonné à 420px une fois
+                         le conteneur à son maximum (1296px) : la section ne
+                         s'affiche qu'à partir de 768px et toujours en trois
+                         colonnes. Sans cette indication le navigateur
+                         téléchargerait la variante « pleine largeur de
+                         fenêtre » pour une vignette trois fois plus étroite.
+                         Le `100vw` final ne sert que de valeur par défaut
+                         formelle, aucun affichage ne l'atteint. */
                       sizes="(min-width: 1360px) 420px, (min-width: 768px) 33vw, 100vw"
                       className="lhc-photo object-cover object-center"
                     />
