@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   PLAYLIST_HIGHLIGHTS.EXE : module 02 de l'accueil
+   PLAYLIST_HIGHLIGHTS.EXE : module 03 de l'accueil
    ------------------------------------------------------------
    Cover Flow 3D façon iTunes (2003-2007) pour les pièces mises
    en avant, monté dans un vrai lecteur multimédia Y2K façon
@@ -318,12 +318,16 @@ export function CoverFlow({ products }: { products: Product[] }) {
   };
 
   return (
-    /* Padding haut ET bas : premier module de la page, il porte seul le
-       retrait d'après le hero (les suivants n'ont qu'un padding bas).
+    /* Padding bas seul : ce module n'est plus le premier de la page — c'est
+       CATEGORIES.EXE, inséré juste sous le hero, qui porte désormais le
+       retrait d'après le hero. Un `py` ici ajouterait son padding haut au
+       padding bas de CATEGORIES.EXE et creuserait entre les deux un écart
+       deux fois plus grand qu'ailleurs sur l'accueil, où la règle est que
+       chaque module ne réserve que l'espace qui le suit.
        `min(8vw,5svh)` : sur un écran large mais bas, c'est la hauteur qui
        doit céder, pas seulement la largeur — sinon ce padding à lui seul
        peut suffire à faire déborder le lecteur d'un écran court. */
-    <section id="highlights" className="px-4 py-[clamp(24px,min(8vw,5svh),96px)] sm:px-6">
+    <section id="highlights" className="px-4 pb-[clamp(24px,min(8vw,5svh),96px)] sm:px-6">
       <div className="mx-auto w-full max-w-[1296px]">
         <style>{COVER_CSS}</style>
 

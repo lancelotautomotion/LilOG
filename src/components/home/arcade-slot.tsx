@@ -1,7 +1,7 @@
 "use client";
 
 /* ============================================================
-   ARCADE_SLOT : module 03 de l'accueil
+   ARCADE_SLOT : module 04 de l'accueil
    ------------------------------------------------------------
    La borne d'arcade qui envoie sur /dressing-machine : coque de
    plastique gris biseautée, fronton lumineux, écran cathodique
