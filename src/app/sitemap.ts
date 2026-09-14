@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { shopifyFetch } from "@/lib/shopify/client";
 import { ALL_PRODUCTS_QUERY, ALL_COLLECTIONS_QUERY } from "@/lib/shopify/queries";
+import { CATEGORIES } from "@/lib/categories";
 
 const SITE_URL = "https://lilog.shop";
 
@@ -66,6 +67,14 @@ async function getAllCollections(): Promise<
 
     const edges = data.collections.edges;
     for (const edge of edges) {
+      /* Le plan de site ne liste que les rayons du menu. Shopify renvoie
+         TOUTES les collections de la boutique, y compris celles qui n'ont
+         pas de page : /category/[handle] répond 404 hors de CATEGORIES, si
+         bien qu'on soumettait à Google des URL mortes — et qu'une collection
+         privée (la sélection partagée par lien) s'y annonçait d'elle-même.
+         Une nouvelle collection entre ici en étant ajoutée à CATEGORIES, qui
+         est ce qui lui donne une page. */
+      if (!CATEGORIES.some((c) => c.handle === edge.node.handle)) continue;
       collections.push({
         handle: edge.node.handle,
         title: edge.node.title,

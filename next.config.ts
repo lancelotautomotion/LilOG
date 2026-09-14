@@ -71,9 +71,21 @@ const securityHeaders = [
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
 ];
 
+/* Les vitrines privées (/selection/<clé>, partagées par lien à des
+   influenceuses) ne doivent apparaître dans aucun moteur de recherche.
+   La page pose déjà `robots: noindex` dans ses métadonnées ; cet en-tête
+   HTTP dit la même chose une seconde fois, par un autre canal — il
+   s'applique même si la page n'est jamais rendue en HTML (une réponse 404,
+   une redirection, une ressource servie par le cache). robots.txt refuse
+   /selection/ par-dessus, et le plan de site ne la mentionne pas. */
+const noIndexHeaders = [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }];
+
 const nextConfig: NextConfig = {
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      { source: "/selection/:path*", headers: noIndexHeaders },
+    ];
   },
 };
 
