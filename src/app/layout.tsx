@@ -42,6 +42,16 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://lilog.shop"),
   title: "Lil'OG · Pre-loved Y2K",
   description: "Vintage Y2K de seconde main, une pièce à la fois · Paris.",
+  /* Revendication du domaine chez Pinterest : la plateforme lit cette
+     balise sur la page d'accueil pour confirmer que le site nous
+     appartient. Ce n'est pas un secret — elle est publique par
+     construction — mais la retirer ferait perdre le domaine revendiqué
+     (et donc les épingles enrichies et les statistiques). */
+  verification: {
+    other: {
+      "p:domain_verify": "e5b483fe31a2c156482cdd5048206919",
+    },
+  },
 };
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
