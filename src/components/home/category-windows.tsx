@@ -72,7 +72,7 @@ const WINDOWS: {
     catKey: "outerwear",
     href: "/category/manteaux-et-vestes",
     src: "/categories/vestes.jpg",
-    alt: "Veste en jean courte et délavée portée avec un pantalon en cuir noir",
+    alt: "Veste en cuir noir à surpiqûres blanches portée avec un jean et une casquette à carreaux",
   },
   {
     file: "TOPS.EXE",
@@ -225,8 +225,14 @@ export function CategoryWindows() {
                       les pieds : `object-cover` ne gardait qu'une bande
                       centrale, soit le buste. En 3:4, le cadre suit la
                       silhouette au lieu de la trancher, et les trois pièces
-                      se voient en entier — c'est la proportion de la photo
-                      des vestes, la plus contrainte des trois.
+                      se voient en entier.
+
+                      Le rapport reste 3:4 même depuis que la photo des
+                      vestes est passée en 4:5 (échangée avec LOOK_05.PNG de
+                      FILE_EXPLORER.SYS) : un cadre légèrement plus haut que
+                      la source rogne quelques pour cent sur les côtés, sujet
+                      centré, là où l'élargir pour coller au 4:5 recouperait
+                      les deux autres photos, plus verticales.
 
                       Un rapport plutôt qu'une hauteur en pixels : la hauteur
                       se recalcule sur la largeur réelle de la colonne, donc
