@@ -195,7 +195,7 @@ export function FileExplorer() {
           >
             <Image
               src="/14.jpg"
-              alt="Look Lil'OG porté, sac à main en avant"
+              alt="Veste en jean courte et délavée portée avec un pantalon en cuir noir"
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover"

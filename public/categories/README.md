@@ -17,10 +17,12 @@ modification de code n'est nécessaire.
 
 - `robes.jpg` — `DSC08745.JPG` (racine du dépôt), redressée et allégée.
 - `tops.jpg` — `public/DSC08486.JPG`, allégée.
-- `vestes.jpg` — `WhatsApp Image 2026-08-28 at 14.27.17.jpeg` (racine du
-  dépôt), reprise telle quelle : 1200 × 1600, 252 Ko, sans métadonnées, elle
-  respectait déjà les recommandations ci-dessous — la réencoder n'aurait fait
-  que lui coûter de la qualité.
+- `vestes.jpg` — le look en veste de cuir noir, échangé avec
+  `public/14.jpg` (la photo LOOK_05.PNG de FILE_EXPLORER.SYS) : 1080 × 1350,
+  339 Ko, repris tel quel plutôt que réencodé, ce qui n'aurait fait que lui
+  coûter de la qualité. La photo en veste de jean qu'il remplace
+  (`WhatsApp Image 2026-08-28 at 14.27.17.jpeg`, à la racine du dépôt) vit
+  désormais dans `public/14.jpg`.
 
 ## Recommandations pour les fichiers
 
