@@ -86,9 +86,20 @@ const WIZARD_CSS = `
   transition:width 180ms linear;
 }
 
+/* Fenêtre de confirmation : elle se pose depuis le haut, comme une boîte de
+   dialogue qui s'ouvre. Pas d'animation de sortie — React la démonte d'un
+   coup, et une disparition en fondu supposerait de garder le nœud monté le
+   temps de l'animation pour un gain invisible. */
+@keyframes gcPopIn{
+  from{ opacity:0; transform:translateY(-10px) scale(.97) }
+  to  { opacity:1; transform:translateY(0) scale(1) }
+}
+.gc-pop{ animation:gcPopIn 200ms ease-out both }
+
 @media (prefers-reduced-motion: reduce){
   .gc-led.on{ animation:none }
   .gc-gauge-fill{ transition:none }
+  .gc-pop{ animation:none }
 }
 `;
 
@@ -183,11 +194,26 @@ export function SetupWizard({
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /* La fenêtre de confirmation, éphémère : elle annonce l'ajout au panier
+     puis s'efface d'elle-même. `null` = rien à l'écran. Elle retient le
+     montant et le destinataire parce que les champs, eux, viennent d'être
+     vidés : sans ça, la gravure se terminerait sur un formulaire blanc,
+     sans que rien ne dise CE qui est parti au panier. */
+  const [confirm, setConfirm] = useState<{ amount: number; email: string | null } | null>(null);
+
   const timers = useRef<ReturnType<typeof setInterval>[]>([]);
+  /* Minuterie de la fenêtre, à part des jauges : elle doit pouvoir être
+     relancée seule. Graver un second disque pendant que la fenêtre est
+     encore là remet le compte à zéro, sinon la minuterie du premier
+     l'escamoterait presque aussitôt. */
+  const popTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const running = timers.current;
-    return () => running.forEach(clearInterval);
+    return () => {
+      running.forEach(clearInterval);
+      if (popTimer.current) clearTimeout(popTimer.current);
+    };
   }, []);
 
   const noDisc = capacities.length === 0;
@@ -210,6 +236,34 @@ export function SetupWizard({
     : picked
       ? `CAP ${megabytes(picked.amount)} · ${euros(picked.amount)}`
       : "SELECT A CAPACITY";
+
+  /* Combien de temps la fenêtre de confirmation reste à l'écran. Assez long
+     pour être lue sans être guettée, assez court pour ne pas traîner par-
+     dessus le formulaire suivant. */
+  const CONFIRM_MS = 6000;
+
+  /** Vide les champs du destinataire, la gravure faite. */
+  function resetRecipientFields() {
+    setEmail("");
+    setRecipientName("");
+    setMessage("");
+    setSendOn("");
+    /* Indispensable : `touched` resté à true sur un champ e-mail qu'on
+       vient de vider afficherait aussitôt l'erreur rouge « adresse
+       invalide » sur un formulaire que personne n'a encore touché.
+       La capacité choisie et la case « offrir » ne bougent pas : ce sont
+       des décisions d'achat, pas des lignes à remplir, et les reprendre à
+       zéro punirait qui grave deux disques de suite. */
+    setTouched(false);
+  }
+
+  function closeConfirm() {
+    if (popTimer.current) {
+      clearTimeout(popTimer.current);
+      popTimer.current = null;
+    }
+    setConfirm(null);
+  }
 
   async function burn() {
     setTouched(true);
@@ -254,6 +308,18 @@ export function SetupWizard({
       ]);
       setProgress(100);
       setDone(true);
+
+      /* La confirmation d'abord, le vidage ensuite : la fenêtre a déjà pris
+         copie du montant et du destinataire, elle survit donc au formulaire
+         qu'elle annonce. */
+      if (popTimer.current) clearTimeout(popTimer.current);
+      setConfirm({ amount: picked.amount, email: sendAsGift ? email.trim() : null });
+      popTimer.current = setTimeout(() => {
+        popTimer.current = null;
+        setConfirm(null);
+      }, CONFIRM_MS);
+
+      resetRecipientFields();
     } catch (err) {
       setProgress(0);
       setError(
@@ -272,6 +338,88 @@ export function SetupWizard({
     <main className="relative flex min-h-[100svh] flex-col justify-center px-[clamp(12px,4vw,48px)] pt-[clamp(64px,9vh,100px)] pb-[clamp(8px,1.6vh,28px)]">
       <style>{WIZARD_CSS}</style>
       <LeopardBackdrop />
+
+      {/* ================= CONFIRMATION D'AJOUT AU PANIER ================= */}
+      {/* Une vraie petite fenêtre du système, même grammaire que
+          AVERTISSEMENT_SYSTÈME.EXE : barre de titre violette, corps clair,
+          ombre dure. Posée en haut et au centre, sous la barre de
+          navigation (fixe, ~72px) et loin du bandeau cookies, qui occupe le
+          coin bas-droit.
+
+          Elle ne bloque rien : ni voile, ni piège au clavier. C'est une
+          confirmation qui s'efface seule, pas une question — l'enfermer
+          derrière une modale obligerait à la congédier pour continuer.
+
+          Elle n'est PAS une région `aria-live` : la barre d'état du pied de
+          l'assistant en est déjà une et annonce le même « Disque ajouté au
+          panier ». Deux régions vivantes pour un seul événement, et les
+          lecteurs d'écran le liraient deux fois. Le contenu reste
+          atteignable au clavier (le lien et le bouton de fermeture le
+          sont), il n'est simplement pas clamé une seconde fois. */}
+      {confirm && (
+        <div className="gc-pop pointer-events-none fixed inset-x-3 top-[88px] z-[200] flex justify-center sm:inset-x-0">
+          <div
+            className={`pointer-events-auto w-full max-w-[26rem] overflow-hidden rounded-xl border-2 border-[#b8b4cc] bg-[#f0f0f5] ${HARD_SHADOW}`}
+          >
+            <div
+              className="flex items-center gap-2 border-b-2 border-[#2a1370] px-2.5 py-2 select-none"
+              style={{ background: VIOLET_BAR }}
+            >
+              <span
+                className={`${MONO} min-w-0 flex-1 truncate text-[0.875rem] font-bold tracking-[0.1em] text-white uppercase [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]`}
+              >
+                ✅ PANIER_MIS_À_JOUR.EXE
+              </span>
+              {/* Le « × » ferme pour de bon : il annule aussi la minuterie,
+                  sans quoi elle rouvrirait… rien, mais laisserait une
+                  minuterie orpheline courir jusqu'au démontage. */}
+              <button
+                type="button"
+                onClick={closeConfirm}
+                aria-label="Fermer la confirmation"
+                className={`${MONO} grid h-6 w-7 shrink-0 cursor-pointer place-items-center rounded-md border border-[#b6b2c6] ${PLASTIC_FACE} text-[0.875rem] leading-none font-bold text-[#2b2340] ${PLASTIC} ${PLASTIC_PRESS}`}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="flex items-start gap-3 px-3 py-3">
+              <span
+                aria-hidden
+                className={`grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white text-[1.375rem] leading-none ${BEVEL_IN}`}
+              >
+                💿
+              </span>
+              <div className="min-w-0">
+                <p className="text-[0.9375rem] leading-snug font-bold text-[#2b2340]">
+                  La carte cadeau a bien été ajoutée au panier.
+                </p>
+                {/* Le destinataire sur sa propre ligne, et non à la suite du
+                    montant : enchaînés, une adresse un peu longue se coupait
+                    en plein milieu d'un mot (`break-all` est le seul moyen de
+                    replier une chaîne sans espaces). Sur sa ligne, elle tient
+                    d'un bloc dans la fenêtre, et ne se replie que si elle est
+                    vraiment très longue. */}
+                <p className={`${MONO} mt-1 text-[0.8125rem] leading-snug text-[#5b5670]`}>
+                  Disque de {euros(confirm.amount)}
+                </p>
+                {confirm.email ? (
+                  <p className={`${MONO} text-[0.8125rem] leading-snug text-[#5b5670]`}>
+                    Pour <span className="break-all text-[#2b0f6b]">{confirm.email}</span>
+                  </p>
+                ) : null}
+                <Link
+                  href="/cart"
+                  onClick={closeConfirm}
+                  className={`${MONO} mt-2 inline-block text-[0.8125rem] font-bold text-[#5b2fb8] underline`}
+                >
+                  Ouvrir le panier →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ================= FENÊTRE ================= */}
       {/* `w-full` : la fenêtre est un enfant flex à marges automatiques, donc
