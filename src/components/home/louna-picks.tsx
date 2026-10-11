@@ -120,11 +120,6 @@ function PickCard({ product, idx }: { product: Product; idx: number }) {
         >
           <div className={`relative aspect-[3/4] overflow-hidden rounded-xl border-2 border-[#9b97b3] bg-[#f0f0f5] ${BEVEL_IN}`}>
             <SmartImg className="lhp-img h-full w-full object-cover" src={product.imageA} alt={product.name} tone={idx} sizes={CARD_SIZES} />
-            <span
-              className={`${MONO} absolute top-2 left-2 rounded-full border border-white/70 bg-[#2a1370]/85 px-2.5 py-1 text-[0.625rem] font-bold tracking-[0.14em] text-white uppercase`}
-            >
-              ✦ Louna pick
-            </span>
           </div>
 
           <h3
