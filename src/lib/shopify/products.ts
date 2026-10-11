@@ -263,8 +263,8 @@ function weeklySample<T>(pool: T[], count: number, now = new Date()): T[] {
 
 /**
  * Les coups de cœur de Louna qui alimentent LOUNA_PICKS.EXE : les
- * pièces tagguées `louna-pick` dans Shopify **et encore disponibles**, dont
- * `count` sont tirées au sort pour la semaine en cours.
+ * pièces tagguées `louna-pick` dans Shopify **et encore disponibles**, toutes
+ * affichées, dans un ordre mélangé une fois par semaine.
  *
  * Le filtre de disponibilité est posé deux fois, et ce n'est pas un oubli :
  * `available_for_sale:true` évite de rapatrier les pièces vendues, et le
@@ -277,7 +277,7 @@ function weeklySample<T>(pool: T[], count: number, now = new Date()): T[] {
  * est vendu), la section ne s'affiche pas, plutôt que de mettre en avant des
  * pièces qui n'ont pas été choisies.
  */
-export async function getLounaPicks(count = 10): Promise<Product[]> {
+export async function getLounaPicks(): Promise<Product[]> {
   const data = await shopifyFetch<FeaturedProductsResponse>(TAGGED_PRODUCTS_QUERY, {
     query: `tag:'${LOUNA_PICK_TAG}' AND available_for_sale:true`,
     first: 250,
@@ -286,7 +286,7 @@ export async function getLounaPicks(count = 10): Promise<Product[]> {
     .map((e) => mapProduct(e.node))
     .filter((p) => p.tag !== "SOLD" && p.variantId);
 
-  return weeklySample(available, count);
+  return weeklySample(available, available.length);
 }
 
 /* Le Storefront API plafonne `first` à 250 : au-delà, il faut pager. Le
