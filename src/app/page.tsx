@@ -6,9 +6,9 @@ import { getLounaPicks } from "@/lib/shopify/products";
  * classique : les pièces se découvrent surtout par la Dressing Machine ou
  * par les dossiers de FILE_EXPLORER.SYS, qui pointent sur
  * /category/[handle]. Seule la rangée LOUNA_PICKS.EXE interroge
- * Shopify, pour les dix coups de cœur de la semaine.
+ * Shopify, pour toutes les pièces « Louna pick » encore disponibles.
  */
 export default async function Home() {
-  const highlights = await getLounaPicks(10).catch(() => []);
+  const highlights = await getLounaPicks().catch(() => []);
   return <HomeShell highlights={highlights} />;
 }

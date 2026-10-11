@@ -210,7 +210,7 @@ export function LounaPicks({ products }: { products: Product[] }) {
               className={`${MONO} min-w-0 flex-1 text-center text-[clamp(1rem,2.6vw,1.5rem)] font-extrabold tracking-[0.12em] uppercase`}
               style={{ color: PINK }}
             >
-              <span aria-hidden>♡ </span>Les coups de cœur de Louna<span aria-hidden> ♡</span>
+              <span aria-hidden>♡ </span>Les coups de cœur<span aria-hidden> ♡</span>
             </h2>
             <ScrollKey dir={1} onClick={() => scroll(1)} />
           </div>
