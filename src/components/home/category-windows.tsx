@@ -118,8 +118,8 @@ const CATEGORY_CSS = `
 .lhc-link:hover .lhc-photo,
 .lhc-link:focus-visible .lhc-photo{ transform: scale(1.05) }
 
-/* Voile CRT : mêmes lignes de balayage que les écrans du lecteur
-   PLAYLIST_HIGHLIGHTS.EXE et de la borne, en beaucoup plus discret —
+/* Voile CRT : mêmes lignes de balayage que l'écran de la borne
+   ARCADE_SLOT, en beaucoup plus discret —
    la photo doit rester une photo, pas un moniteur. */
 .lhc-scan{
   background-image: repeating-linear-gradient(to bottom, rgba(0,0,0,.34) 0 1px, rgba(0,0,0,0) 1px 3px);
