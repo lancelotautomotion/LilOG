@@ -262,7 +262,7 @@ function weeklySample<T>(pool: T[], count: number, now = new Date()): T[] {
 }
 
 /**
- * Les coups de cœur de Louna qui alimentent PLAYLIST_HIGHLIGHTS.EXE : les
+ * Les coups de cœur de Louna qui alimentent LOUNA_PICKS.EXE : les
  * pièces tagguées `louna-pick` dans Shopify **et encore disponibles**, dont
  * `count` sont tirées au sort pour la semaine en cours.
  *
@@ -270,8 +270,8 @@ function weeklySample<T>(pool: T[], count: number, now = new Date()): T[] {
  * `available_for_sale:true` évite de rapatrier les pièces vendues, et le
  * second passage en JavaScript écarte en plus celles dont Shopify ne renvoie
  * aucune variante achetable — un cas que la recherche ne couvre pas, et que
- * le lecteur afficherait sinon en « SOLD OUT ». C'est exactement la règle
- * qu'applique <CoverFlow> pour griser son bouton d'achat.
+ * la rangée afficherait sinon en « SOLD OUT ». C'est exactement la règle
+ * qu'applique <LounaPicks> pour griser son bouton d'achat.
  *
  * Aucun repli sur le reste du catalogue : si rien n'est taggué (ou si tout
  * est vendu), la section ne s'affiche pas, plutôt que de mettre en avant des

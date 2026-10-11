@@ -8,15 +8,15 @@
 
      00  FREE_SHIPPING.EXE  la bande défilante de la livraison offerte
      01  CAMCORDER_OS       hero plein écran, viseur de caméscope
-     02  CATEGORIES.EXE     trois rayons en mini-fenêtres (ordinateur seul)
-     03  PLAYLIST_HIGHLIGHTS.EXE  Cover Flow 3D des pièces mises en avant
+     02  LOUNA_PICKS.EXE    rangée défilante des coups de cœur de Louna
+     03  CATEGORIES.EXE     trois rayons en mini-fenêtres (ordinateur seul)
      04  ARCADE_SLOT        la borne qui lance la Dressing Machine
      05  FILE_EXPLORER.SYS  les rayons en dossiers, pas en grille
      06  LICENCE_CADEAU.ISO l'encart CD-ROM de la carte cadeau
      07  README.TXT         l'histoire de la maison en Bloc-notes
 
-   Pas de grille de produits classique : hormis le Cover Flow des
-   highlights, la marchandise se découvre par la Dressing Machine
+   Pas de grille de produits classique : hormis la rangée des
+   coups de cœur, la marchandise se découvre par la Dressing Machine
    ou par les dossiers de l'explorateur.
 
    ⚠ PAREFEU : les modules vivent dans `components/home/` et
@@ -35,7 +35,7 @@ import { HeroCamcorder } from "@/components/home/hero-camcorder";
 import { ArcadeSlot } from "@/components/home/arcade-slot";
 import { GiftCardPromo } from "@/components/home/gift-card-promo";
 import { CategoryWindows } from "@/components/home/category-windows";
-import { CoverFlow } from "@/components/home/cover-flow";
+import { LounaPicks } from "@/components/home/louna-picks";
 import { FileExplorer } from "@/components/home/file-explorer";
 import { ReadmeWindow } from "@/components/home/readme-window";
 import { AnnounceBar } from "@/components/home/announce-bar";
@@ -169,7 +169,7 @@ export function HomeShell({ highlights = [] }: { highlights?: Product[] }) {
         {/* Le retrait d'après le hero vit ici, sur le conteneur des modules,
             et non sur le premier d'entre eux. Porté par un module, il
             disparaissait avec lui : CATEGORIES.EXE est masqué sous `md`, et
-            PLAYLIST_HIGHLIGHTS.EXE ne rend rien du tout quand Shopify ne
+            LOUNA_PICKS.EXE ne rend rien du tout quand Shopify ne
             renvoie aucun coup de cœur (`return null` sur liste vide) — dans
             ces cas la borne d'arcade se retrouvait collée au bas du hero.
             Ici, l'écart est le même quoi qu'il arrive, et chaque module s'en
@@ -179,8 +179,8 @@ export function HomeShell({ highlights = [] }: { highlights?: Product[] }) {
             `min(8vw,5svh)` : sur un écran large mais bas, c'est la hauteur
             qui doit céder, pas seulement la largeur. */}
         <div className="relative pt-[clamp(24px,min(8vw,5svh),96px)]">
+          <LounaPicks products={highlights} />
           <CategoryWindows />
-          <CoverFlow products={highlights} />
           <ArcadeSlot />
           <FileExplorer />
           <GiftCardPromo />

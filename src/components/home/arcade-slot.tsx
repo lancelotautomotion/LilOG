@@ -113,7 +113,7 @@ export function ArcadeSlot() {
   return (
     /* Padding bas seul, comme FILE_EXPLORER.SYS et README.TXT : sur cette page
        chaque module ne réserve que l'espace qui le suit, et c'est le premier
-       bloc (PLAYLIST_HIGHLIGHTS.EXE) qui porte le retrait d'après le hero.
+       conteneur des modules (home-shell) qui porte le retrait d'après le hero.
        Un `py` ici ajouterait son padding haut à celui du bloc précédent et
        creuserait un écart deux fois plus grand qu'ailleurs sur l'accueil. */
     <section id="slot" className="px-4 pb-[clamp(48px,8vw,96px)] sm:px-6">

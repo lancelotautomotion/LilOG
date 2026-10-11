@@ -156,7 +156,7 @@ export const CATALOG_PRODUCTS_QUERY = /* GraphQL */ `
 `;
 
 // Les pièces portant un tag Shopify donné ("tag:louna-pick" pour les coups de
-// cœur de la maison, qui alimentent PLAYLIST_HIGHLIGHTS.EXE sur l'accueil).
+// cœur de la maison, qui alimentent LOUNA_PICKS.EXE sur l'accueil).
 // Même sélection de champs que CATALOG_PRODUCTS_QUERY, champs méta Taille
 // compris : sans eux, l'afficheur du lecteur retomberait sur "ONE SIZE" pour
 // toutes les pièces, alors que la taille est justement l'information que le
