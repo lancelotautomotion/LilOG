@@ -249,7 +249,10 @@ export function HeroCamcorder() {
                soit lisible ici, et pas seulement dans `heroCommon`. */
             alt=""
             fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-cover object-center"
+            /* Sur ordinateur, l'image est calée en haut : le visage se trouve
+               dans le haut du cadre, et un recadrage centré coupait les yeux
+               sur les écrans larges. Le cadrage mobile, lui, reste centré. */
+            className="absolute inset-0 h-full w-full object-cover object-center md:object-top"
           />
         </picture>
 
