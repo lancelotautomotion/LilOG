@@ -72,6 +72,15 @@ const HERO_CSS = `
   .lhz-toprow{top:calc(112px + var(--lhb-h, 0px))}
 }
 
+/* Sur ordinateur, la photo démarre sous le bandeau et la navigation, qui
+   sont opaques et posés par-dessus le haut du hero : sans ce retrait, ils
+   masquaient le haut de l'image, c'est-à-dire le visage. 56px couvrent la
+   hauteur de .nav à cette largeur ; le noir du hero comble l'espace, de
+   toute façon caché derrière la navigation. */
+@media (min-width:768px){
+  .lhz-bg{top:calc(56px + var(--lhb-h, 0px))}
+}
+
 @media (prefers-reduced-motion: reduce){
   .lhz-track,.lhz-rec,.lhz-caret,.lhz-bounce{animation:none!important}
 }
@@ -194,7 +203,7 @@ export function HeroCamcorder() {
            mobile. `HERO_STILL_MOBILE` est un cadrage dédié (portrait, sujet
            déjà centré) qui garde toute la hauteur de la photo au lieu de la
            rogner. */}
-      <div aria-hidden className="absolute inset-0">
+      <div aria-hidden className="lhz-bg absolute inset-0">
         {/* Un seul `<img>`, deux sources : c'est le navigateur qui choisit,
             AVANT de télécharger.
 
