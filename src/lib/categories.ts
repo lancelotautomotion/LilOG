@@ -29,8 +29,20 @@ export interface Category {
   title?: string;
 }
 
-/** Types de produit du rayon Pulls & Cardigans, retirés des Tops. */
-const KNIT_TYPES = ["pull", "cardigan"];
+/** Types de produit du rayon Pulls & Cardigans, retirés des Tops. Écrits
+ *  sous leur forme normalisée (voir `normType`) : « Col roulé » dans Shopify
+ *  devient « col-roule ». */
+const KNIT_TYPES = ["pull", "cardigan", "gilet", "col-roule", "sweat", "sweatshirt", "sweat-shirt", "sweat-sweatshirt"];
+
+/** Type de produit comparable : minuscules, sans accents, espaces → tirets. */
+function normType(type: string): string {
+  return type
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .replace(/[\s_/]+/g, "-");
+}
 
 /** Collections Shopify qui alimentent un rayon. */
 export function categorySources(cat: Category): string[] {
@@ -39,7 +51,7 @@ export function categorySources(cat: Category): string[] {
 
 /** Le rayon accepte-t-il une pièce de ce type de produit ? */
 export function categoryAcceptsType(cat: Category, productType: string): boolean {
-  const type = productType.toLowerCase();
+  const type = normType(productType);
   if (cat.types && !cat.types.includes(type)) return false;
   if (cat.excludeTypes?.includes(type)) return false;
   return true;
@@ -87,6 +99,10 @@ export const CATEGORIES: Category[] = [
       { label: "Tout voir", type: "" },
       { label: "Pulls", type: "pull" },
       { label: "Cardigans", type: "cardigan" },
+      { label: "Gilets", type: "gilet" },
+      { label: "Cols roulés", type: "col roulé" },
+      { label: "Sweats", type: "sweat" },
+      { label: "Sweatshirts", type: "sweatshirt" },
     ],
   },
   {
