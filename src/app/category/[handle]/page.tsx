@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { CategoryPage } from "@/components/category-page";
-import { getCollectionProducts } from "@/lib/shopify/products";
+import { getCategoryProducts } from "@/lib/shopify/products";
 import { CATEGORIES, CAT_VIBES } from "@/lib/categories";
 
 const SITE_URL = "https://lilog.shop";
@@ -14,11 +14,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { handle: rawHandle } = await params;
   const handle = decodeURIComponent(rawHandle);
-  const collection = await getCollectionProducts(handle).catch(() => null);
+  const known = CATEGORIES.find((c) => c.handle === handle);
+  if (!known) return { title: "Lil'OG" };
+  const collection = await getCategoryProducts(known).catch(() => null);
   if (!collection) return { title: "Lil'OG" };
 
-  const known = CATEGORIES.find((c) => c.handle === handle);
-  const vibe = known ? CAT_VIBES[known.catKey] : undefined;
+  const vibe = CAT_VIBES[known.catKey];
   const title = `${collection.title} · Lil'OG`;
   const description = vibe?.desc;
   /* Canonical pointe toujours vers l'URL de base du rayon : les variantes
@@ -55,7 +56,7 @@ export default async function Page({
   const known = CATEGORIES.find((c) => c.handle === handle);
   if (!known) notFound();
 
-  const collection = await getCollectionProducts(handle).catch(() => null);
+  const collection = await getCategoryProducts(known).catch(() => null);
   if (!collection) notFound();
 
   return (

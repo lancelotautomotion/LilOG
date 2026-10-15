@@ -10,9 +10,50 @@ export interface SubCategory {
 }
 
 export interface Category {
+  /** Adresse du rayon : /category/<handle>. */
   handle: string;
   catKey: string;
   sub?: SubCategory[];
+  /**
+   * Collections Shopify dont les pièces composent le rayon. Par défaut, la
+   * seule collection qui porte le même handle. Plusieurs collections
+   * fusionnent un rayon côté site sans rien toucher dans Shopify
+   * (« Pantalons & Jeans » réunit `pantalons` et `jeans`).
+   */
+  collections?: string[];
+  /** Ne garder que ces types de produit Shopify (insensible à la casse). */
+  types?: string[];
+  /** Écarter ces types de produit : ils ont leur propre rayon. */
+  excludeTypes?: string[];
+  /** Titre de page, quand il ne vient pas d'une collection Shopify unique. */
+  title?: string;
+}
+
+/** Types de produit du rayon Pulls & Cardigans, retirés des Tops. */
+const KNIT_TYPES = ["pull", "cardigan"];
+
+/** Collections Shopify qui alimentent un rayon. */
+export function categorySources(cat: Category): string[] {
+  return cat.collections ?? [cat.handle];
+}
+
+/** Le rayon accepte-t-il une pièce de ce type de produit ? */
+export function categoryAcceptsType(cat: Category, productType: string): boolean {
+  const type = productType.toLowerCase();
+  if (cat.types && !cat.types.includes(type)) return false;
+  if (cat.excludeTypes?.includes(type)) return false;
+  return true;
+}
+
+/**
+ * Le rayon du site d'une pièce, d'après ses collections Shopify et son type :
+ * un pull rangé dans « tops » appartient au rayon Pulls & Cardigans, un jean
+ * de la collection « jeans » au rayon Pantalons & Jeans.
+ */
+export function categoryForProduct(collections: string[], productType: string): Category | undefined {
+  return CATEGORIES.find(
+    (c) => categorySources(c).some((h) => collections.includes(h)) && categoryAcceptsType(c, productType),
+  );
 }
 
 export interface CategoryVibe {
@@ -25,13 +66,27 @@ export const CATEGORIES: Category[] = [
   {
     handle: "tops",
     catKey: "tops",
+    excludeTypes: KNIT_TYPES,
     sub: [
       { label: "Tout voir", type: "" },
       { label: "T-Shirts", type: "t-shirt" },
-      { label: "Pulls & Cardigans", type: "pull" },
       { label: "Boléros", type: "bolero" },
       { label: "Chemises & Blouses", type: "chemise" },
       { label: "Body", type: "body" },
+    ],
+  },
+  {
+    /* Pas de collection Shopify dédiée : les pulls et cardigans restent
+       rangés dans « tops » côté Shopify, le site les en extrait par type. */
+    handle: "pulls-et-cardigans",
+    catKey: "knitwear",
+    title: "Pulls & Cardigans",
+    collections: ["tops"],
+    types: KNIT_TYPES,
+    sub: [
+      { label: "Tout voir", type: "" },
+      { label: "Pulls", type: "pull" },
+      { label: "Cardigans", type: "cardigan" },
     ],
   },
   {
@@ -75,29 +130,32 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
+    /* Fusion des anciens rayons Pantalons et Jeans. Les deux collections
+       Shopify restent séparées ; /category/jeans redirige ici (next.config). */
     handle: "pantalons",
     catKey: "trousers",
+    title: "Pantalons & Jeans",
+    collections: ["pantalons", "jeans"],
     sub: [
       { label: "Tout voir", type: "" },
       { label: "Taille basses", type: "pantalon-taille-basse" },
       { label: "Taille hautes", type: "pantalon-taille-haute" },
       { label: "Cargos", type: "cargo" },
       { label: "Pantacourts", type: "pantacourt" },
+      {
+        label: "Jeans",
+        type: "jean",
+        sub: [
+          { label: "Slim", type: "jean-slim" },
+          { label: "Droit", type: "jean-droit" },
+          { label: "Large", type: "jean-large" },
+        ],
+      },
     ],
   },
   {
     handle: "maillots-de-bain",
     catKey: "swimwear",
-  },
-  {
-    handle: "jeans",
-    catKey: "jeans",
-    sub: [
-      { label: "Tout voir", type: "" },
-      { label: "Slim", type: "jean-slim" },
-      { label: "Droit", type: "jean-droit" },
-      { label: "Large", type: "jean-large" },
-    ],
   },
   {
     handle: "sacs",
@@ -158,6 +216,11 @@ export const CAT_VIBES: Record<string, CategoryVibe> = {
     desc: "Blazers oversize, manteaux en fausse fourrure, vestes en cuir verni… le outerwear qui fait toute la tenue. Enfile, sors, et laisse les gens regarder.",
     tags: ["Statement Piece", "Faux Fur", "Power Jacket", "It Girl"],
   },
+  knitwear: {
+    tagline: "Cosy but make it Y2K",
+    desc: "Pulls mohair, cardigans courts, mailles torsadées, cols V et petits boutons : la maille douce qui se porte sur un débardeur ou à même la peau.",
+    tags: ["Mohair", "Cropped Cardigan", "Knitwear", "Vintage 2000s"],
+  },
   dresses: {
     tagline: "Main character dress-up",
     desc: "Mini, babydoll, slip dress, asymétrique : des robes qui racontent une histoire. Celle d'une fille qui sait exactement ce qu'elle fait.",
@@ -175,18 +238,13 @@ export const CAT_VIBES: Record<string, CategoryVibe> = {
   },
   trousers: {
     tagline: "Low rise is not a threat, it's a lifestyle",
-    desc: "Pantalons taille basse, bootcut flare, cargos à poches : les silhouettes qui ont défini une époque. Retrouve ce feeling.",
-    tags: ["Low Rise", "Bootcut", "Cargo Pants", "Y2K Uniform"],
+    desc: "Pantalons taille basse, cargos à poches, jeans bootcut, flare ou brodés : les silhouettes qui ont défini une époque. Porte-les comme Paris Hilton en 2003.",
+    tags: ["Low Rise", "Bootcut", "Cargo Pants", "Vintage Denim"],
   },
   swimwear: {
     tagline: "Resort 2002",
     desc: "Maillots bandeau, bikinis imprimés, tankinis Y2K… pour être la fille la plus stylée au bord de la piscine. SPF optionnel, style obligatoire.",
     tags: ["Bikini Season", "Resort Wear", "Print Mix", "Y2K Summer"],
-  },
-  jeans: {
-    tagline: "The original low rise rebellion",
-    desc: "Bootcut, flare, ultra low-rise, brodés, délavés, déchirés : tous les jeans qui ont fait de la taille basse une religion. Porte-les comme Paris Hilton en 2003.",
-    tags: ["Bootcut", "Ultra Low Rise", "Embroidered", "Vintage Denim"],
   },
   bags: {
     tagline: "Arm candy only",

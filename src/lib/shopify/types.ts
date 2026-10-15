@@ -101,6 +101,8 @@ export interface ProductDetail {
   handle: string;
   name: string;
   descriptionHtml: string;
+  /** Type de produit Shopify : départage les rayons qui partagent une collection. */
+  productType: string;
   tags: string[];
   price: number;
   was: number | null;

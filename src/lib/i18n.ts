@@ -70,7 +70,7 @@ export const DICT: Record<LangCode, Dict> = {
     cat: {
       all: "Whole catalog", newin: "New In", clothing: "Clothing", accessories: "Accessories", shoes: "Shoes", luxe: "Luxe edit",
       tops: "Tops", shirts: "Shirts", cardigans: "Cardigans", sweatshirts: "Sweatshirts", dresses: "Dresses",
-      skirts: "Skirts", shorts: "Shorts", jumpsuits: "Jumpsuits", jeans: "Jeans", trousers: "Trousers",
+      skirts: "Skirts", shorts: "Shorts", jumpsuits: "Jumpsuits", jeans: "Jeans", trousers: "Trousers & Jeans", knitwear: "Knitwear",
       leather: "Leather", lingerie: "Lingerie", swimwear: "Swimwear",
       sneakers: "Sneakers", heels: "Heels", flats: "Flats", ballet: "Ballet flats", boots: "Boots", open: "Open-toe",
       jewelry: "Jewelry", scarves: "Scarves", hats: "Hats", bags: "Bags", wallets: "Wallets",
@@ -123,7 +123,7 @@ export const DICT: Record<LangCode, Dict> = {
     cat: {
       all: "Tout le catalogue", newin: "Nouveautés", clothing: "Vêtements", accessories: "Accessoires", shoes: "Chaussures", luxe: "Sélection luxe",
       tops: "Tops", shirts: "Chemises", cardigans: "Cardigans", sweatshirts: "Sweatshirts", dresses: "Robes",
-      skirts: "Jupes", shorts: "Shorts", jumpsuits: "Combinaisons", jeans: "Jeans", trousers: "Pantalons",
+      skirts: "Jupes", shorts: "Shorts", jumpsuits: "Combinaisons", jeans: "Jeans", trousers: "Pantalons & Jeans", knitwear: "Pulls & Cardigans",
       leather: "Cuir", lingerie: "Lingerie", swimwear: "Maillots de bain",
       sneakers: "Baskets", heels: "Talons", flats: "Plates", ballet: "Ballerines", boots: "Bottes", open: "Ouvertes",
       jewelry: "Bijoux", scarves: "Foulards/Écharpes", hats: "Chapeaux", bags: "Sacs", wallets: "Porte-monnaie",
@@ -176,7 +176,7 @@ export const DICT: Record<LangCode, Dict> = {
     cat: {
       all: "Todo el catálogo", newin: "Novedades", clothing: "Ropa", accessories: "Accesorios", shoes: "Zapatos", luxe: "Selección lujo",
       tops: "Tops", shirts: "Camisas", cardigans: "Cárdigans", sweatshirts: "Sudaderas", dresses: "Vestidos",
-      skirts: "Faldas", shorts: "Shorts", jumpsuits: "Monos", jeans: "Vaqueros", trousers: "Pantalones",
+      skirts: "Faldas", shorts: "Shorts", jumpsuits: "Monos", jeans: "Vaqueros", trousers: "Pantalones y vaqueros", knitwear: "Jerséis y cárdigans",
       leather: "Cuero", lingerie: "Lencería", swimwear: "Bañadores",
       sneakers: "Zapatillas", heels: "Tacones", flats: "Planos", ballet: "Bailarinas", boots: "Botas", open: "Abiertos",
       jewelry: "Joyas", scarves: "Pañuelos/Bufandas", hats: "Sombreros", bags: "Bolsos", wallets: "Monederos",
@@ -229,7 +229,7 @@ export const DICT: Record<LangCode, Dict> = {
     cat: {
       all: "Tutto il catalogo", newin: "Novità", clothing: "Abbigliamento", accessories: "Accessori", shoes: "Scarpe", luxe: "Selezione lusso",
       tops: "Top", shirts: "Camicie", cardigans: "Cardigan", sweatshirts: "Felpe", dresses: "Vestiti",
-      skirts: "Gonne", shorts: "Shorts", jumpsuits: "Tute", jeans: "Jeans", trousers: "Pantaloni",
+      skirts: "Gonne", shorts: "Shorts", jumpsuits: "Tute", jeans: "Jeans", trousers: "Pantaloni e jeans", knitwear: "Maglioni e cardigan",
       leather: "Pelle", lingerie: "Lingerie", swimwear: "Costumi",
       sneakers: "Sneakers", heels: "Tacchi", flats: "Basse", ballet: "Ballerine", boots: "Stivali", open: "Aperte",
       jewelry: "Gioielli", scarves: "Foulard/Sciarpe", hats: "Cappelli", bags: "Borse", wallets: "Portamonete",
@@ -282,7 +282,7 @@ export const DICT: Record<LangCode, Dict> = {
     cat: {
       all: "Gesamter Katalog", newin: "Neu", clothing: "Kleidung", accessories: "Accessoires", shoes: "Schuhe", luxe: "Luxus-Auswahl",
       tops: "Tops", shirts: "Hemden", cardigans: "Strickjacken", sweatshirts: "Sweatshirts", dresses: "Kleider",
-      skirts: "Röcke", shorts: "Shorts", jumpsuits: "Overalls", jeans: "Jeans", trousers: "Hosen",
+      skirts: "Röcke", shorts: "Shorts", jumpsuits: "Overalls", jeans: "Jeans", trousers: "Hosen & Jeans", knitwear: "Pullover & Strickjacken",
       leather: "Leder", lingerie: "Dessous", swimwear: "Bademode",
       sneakers: "Sneaker", heels: "Absätze", flats: "Flache", ballet: "Ballerinas", boots: "Stiefel", open: "Offen",
       jewelry: "Schmuck", scarves: "Tücher/Schals", hats: "Hüte", bags: "Taschen", wallets: "Geldbörsen",
@@ -335,7 +335,7 @@ export const DICT: Record<LangCode, Dict> = {
     cat: {
       all: "Весь каталог", newin: "Новинки", clothing: "Одежда", accessories: "Аксессуары", shoes: "Обувь", luxe: "Люкс-подборка",
       tops: "Топы", shirts: "Рубашки", cardigans: "Кардиганы", sweatshirts: "Свитшоты", dresses: "Платья",
-      skirts: "Юбки", shorts: "Шорты", jumpsuits: "Комбинезоны", jeans: "Джинсы", trousers: "Брюки",
+      skirts: "Юбки", shorts: "Шорты", jumpsuits: "Комбинезоны", jeans: "Джинсы", trousers: "Брюки и джинсы", knitwear: "Свитеры и кардиганы",
       leather: "Кожа", lingerie: "Бельё", swimwear: "Купальники",
       sneakers: "Кроссовки", heels: "Каблуки", flats: "Без каблука", ballet: "Балетки", boots: "Ботинки", open: "Открытые",
       jewelry: "Украшения", scarves: "Платки/Шарфы", hats: "Шляпы", bags: "Сумки", wallets: "Кошельки",
@@ -388,7 +388,7 @@ export const DICT: Record<LangCode, Dict> = {
     cat: {
       all: "全部商品", newin: "新品", clothing: "服装", accessories: "配饰", shoes: "鞋履", luxe: "奢选",
       tops: "上衣", shirts: "衬衫", cardigans: "开衫", sweatshirts: "卫衣", dresses: "连衣裙",
-      skirts: "半裙", shorts: "短裤", jumpsuits: "连体衣", jeans: "牛仔", trousers: "长裤",
+      skirts: "半裙", shorts: "短裤", jumpsuits: "连体衣", jeans: "牛仔", trousers: "长裤与牛仔裤", knitwear: "毛衣与开衫",
       leather: "皮革", lingerie: "内衣", swimwear: "泳装",
       sneakers: "运动鞋", heels: "高跟鞋", flats: "平底鞋", ballet: "芭蕾鞋", boots: "靴子", open: "露趾鞋",
       jewelry: "珠宝", scarves: "丝巾/围巾", hats: "帽子", bags: "包袋", wallets: "钱包",
@@ -441,7 +441,7 @@ export const DICT: Record<LangCode, Dict> = {
     cat: {
       all: "全カタログ", newin: "新着", clothing: "ウェア", accessories: "アクセサリー", shoes: "シューズ", luxe: "ラグジュアリー",
       tops: "トップス", shirts: "シャツ", cardigans: "カーディガン", sweatshirts: "スウェット", dresses: "ワンピース",
-      skirts: "スカート", shorts: "ショーツ", jumpsuits: "オールインワン", jeans: "ジーンズ", trousers: "パンツ",
+      skirts: "スカート", shorts: "ショーツ", jumpsuits: "オールインワン", jeans: "ジーンズ", trousers: "パンツ＆ジーンズ", knitwear: "ニット＆カーディガン",
       leather: "レザー", lingerie: "ランジェリー", swimwear: "水着",
       sneakers: "スニーカー", heels: "ヒール", flats: "フラット", ballet: "バレエシューズ", boots: "ブーツ", open: "オープントゥ",
       jewelry: "ジュエリー", scarves: "スカーフ/マフラー", hats: "帽子", bags: "バッグ", wallets: "財布",
@@ -494,7 +494,7 @@ export const DICT: Record<LangCode, Dict> = {
     cat: {
       all: "전체 카탈로그", newin: "신상품", clothing: "의류", accessories: "액세서리", shoes: "신발", luxe: "럭셔리 셀렉션",
       tops: "탑", shirts: "셔츠", cardigans: "가디건", sweatshirts: "스웨트셔츠", dresses: "드레스",
-      skirts: "스커트", shorts: "쇼츠", jumpsuits: "점프수트", jeans: "진", trousers: "팬츠",
+      skirts: "스커트", shorts: "쇼츠", jumpsuits: "점프수트", jeans: "진", trousers: "팬츠 & 진", knitwear: "니트 & 가디건",
       leather: "레더", lingerie: "란제리", swimwear: "수영복",
       sneakers: "스니커즈", heels: "힐", flats: "플랫", ballet: "발레슈즈", boots: "부츠", open: "오픈토",
       jewelry: "주얼리", scarves: "스카프/머플러", hats: "모자", bags: "백", wallets: "지갑",

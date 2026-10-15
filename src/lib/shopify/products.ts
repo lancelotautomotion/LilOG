@@ -1,6 +1,7 @@
 import { shopifyFetch } from "./client";
 import { sanitizeDescription } from "./sanitize-description";
 import { compareSizes, normalizeSize } from "@/lib/sizes";
+import { categoryAcceptsType, categorySources, type Category } from "@/lib/categories";
 import {
   CATALOG_PRODUCTS_QUERY,
   COLLECTION_BY_HANDLE_QUERY,
@@ -384,6 +385,31 @@ export async function getCollectionProducts(
   };
 }
 
+/**
+ * Les pièces d'un rayon du site (voir CATEGORIES) : une ou plusieurs
+ * collections Shopify, éventuellement filtrées par type de produit. Les
+ * collections sont lues en parallèle, puis fusionnées sans doublon (une pièce
+ * peut appartenir à deux collections). `null` si aucune collection n'existe.
+ */
+export async function getCategoryProducts(
+  cat: Category,
+): Promise<{ title: string; products: Product[] } | null> {
+  const results = await Promise.all(categorySources(cat).map((h) => getCollectionProducts(h)));
+  const found = results.filter((r) => r !== null);
+  if (found.length === 0) return null;
+
+  const seen = new Set<string>();
+  const products = found
+    .flatMap((r) => r.products)
+    .filter((p) => {
+      if (seen.has(p.id)) return false;
+      seen.add(p.id);
+      return categoryAcceptsType(cat, p.productType);
+    });
+
+  return { title: cat.title ?? found[0].title, products };
+}
+
 export async function getProductByHandle(handle: string): Promise<ProductDetail | null> {
   const data = await shopifyFetch<ProductByHandleResponse>(PRODUCT_BY_HANDLE_QUERY, { handle });
   const node = data.product;
@@ -401,6 +427,7 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
        langage à partir des photos, et finit en dangerouslySetInnerHTML.
        Aucun composant ne doit pouvoir en recevoir une version brute. */
     descriptionHtml: sanitizeDescription(node.descriptionHtml),
+    productType: node.productType ?? "",
     tags: node.tags,
     price,
     was: compareAt > price ? compareAt : null,
