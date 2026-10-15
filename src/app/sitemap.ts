@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { shopifyFetch } from "@/lib/shopify/client";
 import { ALL_PRODUCTS_QUERY, ALL_COLLECTIONS_QUERY } from "@/lib/shopify/queries";
-import { CATEGORIES } from "@/lib/categories";
+import { CATEGORIES, categorySources } from "@/lib/categories";
 
 const SITE_URL = "https://lilog.shop";
 
@@ -74,7 +74,7 @@ async function getAllCollections(): Promise<
          privée (la sélection partagée par lien) s'y annonçait d'elle-même.
          Une nouvelle collection entre ici en étant ajoutée à CATEGORIES, qui
          est ce qui lui donne une page. */
-      if (!CATEGORIES.some((c) => c.handle === edge.node.handle)) continue;
+      if (!CATEGORIES.some((c) => categorySources(c).includes(edge.node.handle))) continue;
       collections.push({
         handle: edge.node.handle,
         title: edge.node.title,
@@ -170,12 +170,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
 
-    const collectionPages: MetadataRoute.Sitemap = collections.map((collection) => ({
-      url: `${SITE_URL}/category/${collection.handle}`,
-      changeFrequency: "weekly" as const,
-      priority: 0.9,
-      lastModified: new Date(collection.updatedAt),
-    }));
+    /* Une entrée par rayon du site, pas par collection Shopify : un rayon
+       peut en réunir plusieurs (Pantalons & Jeans) ou en extraire une partie
+       (Pulls & Cardigans, tirés de « tops »). Sa date est celle de la plus
+       récente de ses collections ; un rayon sans collection existante n'a
+       pas de page et reste hors du plan. */
+    const collectionPages: MetadataRoute.Sitemap = CATEGORIES.flatMap((cat) => {
+      const sources = collections.filter((c) => categorySources(cat).includes(c.handle));
+      if (sources.length === 0) return [];
+      const updated = Math.max(...sources.map((c) => new Date(c.updatedAt).getTime()));
+      return [
+        {
+          url: `${SITE_URL}/category/${cat.handle}`,
+          changeFrequency: "weekly" as const,
+          priority: 0.9,
+          lastModified: new Date(updated),
+        },
+      ];
+    });
 
     return [...staticPages, ...collectionPages, ...productPages];
   } catch (error) {

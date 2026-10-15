@@ -24,6 +24,7 @@ const MAX_PAGES = 4;
 // under both "tops" and "accessoires" lands in the column that makes sense.
 const SLOT_PRIORITY: [handle: string, slot: ClosetSlot][] = [
   ["tops", "top"],
+  ["pulls-et-cardigans", "top"],
   ["manteaux-et-vestes", "top"],
   ["pantalons", "bottom"],
   ["jeans", "bottom"],

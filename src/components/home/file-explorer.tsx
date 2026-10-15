@@ -25,13 +25,13 @@ import { HARD_SHADOW, MONO, PLASTIC, PLASTIC_FACE, WindowFrame } from "@/compone
 /** Nom de fichier affiché sous chaque dossier, par clé de catégorie. */
 const FILENAMES: Record<string, string> = {
   tops: "TOPS.EXE",
+  knitwear: "MAILLE.DLL",
   outerwear: "VESTES.SYS",
   dresses: "ROBES.DLL",
   skirts: "JUPES.SYS",
   shorts: "SHORTS.BAT",
   trousers: "PANTALONS.INI",
   swimwear: "MAILLOTS.ZIP",
-  jeans: "DENIM.BIN",
   bags: "SACS.ZIP",
   shoes: "CHAUSSURES.COM",
   accessories: "ACCESSORIES.ZIP",

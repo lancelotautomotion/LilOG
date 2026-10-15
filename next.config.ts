@@ -81,6 +81,20 @@ const securityHeaders = [
 const noIndexHeaders = [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }];
 
 const nextConfig: NextConfig = {
+  /* Rayons réorganisés : les anciennes adresses (favoris, liens partagés,
+     résultats Google) mènent au nouveau rayon plutôt qu'à une page 404.
+     Les paramètres (`?sub=jean-slim`…) suivent la redirection. */
+  async redirects() {
+    return [
+      { source: "/category/jeans", destination: "/category/pantalons", permanent: true },
+      {
+        source: "/category/tops",
+        has: [{ type: "query", key: "sub", value: "pull" }],
+        destination: "/category/pulls-et-cardigans",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
