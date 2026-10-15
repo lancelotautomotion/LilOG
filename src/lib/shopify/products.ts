@@ -372,9 +372,12 @@ export async function searchProducts(query: string, count = 60): Promise<Product
   return data.products.edges.map((e) => mapProduct(e.node));
 }
 
+/* 250 : le plafond du Storefront API par requête. À 100, un rayon plus
+   fourni (les tops notamment) perdait ses pièces suivantes sans le moindre
+   signe. */
 export async function getCollectionProducts(
   handle: string,
-  count = 100,
+  count = 250,
 ): Promise<{ title: string; products: Product[] } | null> {
   const data = await shopifyFetch<CollectionByHandleResponse>(COLLECTION_BY_HANDLE_QUERY, { handle, first: count });
   const collection = data.collection;
@@ -387,13 +390,22 @@ export async function getCollectionProducts(
 
 /**
  * Les pièces d'un rayon du site (voir CATEGORIES) : une ou plusieurs
- * collections Shopify, éventuellement filtrées par type de produit. Les
+ * collections Shopify, ou tout le catalogue (`catalog`), filtrées par type
+ * de produit. Les
  * collections sont lues en parallèle, puis fusionnées sans doublon (une pièce
  * peut appartenir à deux collections). `null` si aucune collection n'existe.
  */
 export async function getCategoryProducts(
   cat: Category,
 ): Promise<{ title: string; products: Product[] } | null> {
+  if (cat.catalog) {
+    const all = await getAllProducts();
+    return {
+      title: cat.title ?? cat.handle,
+      products: all.filter((p) => categoryAcceptsType(cat, p.productType)),
+    };
+  }
+
   const results = await Promise.all(categorySources(cat).map((h) => getCollectionProducts(h)));
   const found = results.filter((r) => r !== null);
   if (found.length === 0) return null;

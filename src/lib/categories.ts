@@ -21,7 +21,12 @@ export interface Category {
    * (« Pantalons & Jeans » réunit `pantalons` et `jeans`).
    */
   collections?: string[];
-  /** Ne garder que ces types de produit Shopify (insensible à la casse). */
+  /**
+   * Puiser dans tout le catalogue plutôt que dans des collections : le rayon
+   * n'existe pas côté Shopify et se définit uniquement par `types`.
+   */
+  catalog?: boolean;
+  /** Ne garder que ces types de produit Shopify (casse, accents et séparateurs ignorés). */
   types?: string[];
   /** Écarter ces types de produit : ils ont leur propre rayon. */
   excludeTypes?: string[];
@@ -59,12 +64,13 @@ export function categoryAcceptsType(cat: Category, productType: string): boolean
 
 /**
  * Le rayon du site d'une pièce, d'après ses collections Shopify et son type :
- * un pull rangé dans « tops » appartient au rayon Pulls & Cardigans, un jean
+ * un pull, où qu'il soit rangé, appartient au rayon Pulls & Cardigans, un jean
  * de la collection « jeans » au rayon Pantalons & Jeans.
  */
 export function categoryForProduct(collections: string[], productType: string): Category | undefined {
   return CATEGORIES.find(
-    (c) => categorySources(c).some((h) => collections.includes(h)) && categoryAcceptsType(c, productType),
+    (c) =>
+      (c.catalog || categorySources(c).some((h) => collections.includes(h))) && categoryAcceptsType(c, productType),
   );
 }
 
@@ -88,12 +94,13 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
-    /* Pas de collection Shopify dédiée : les pulls et cardigans restent
-       rangés dans « tops » côté Shopify, le site les en extrait par type. */
+    /* Pas de collection Shopify dédiée : le rayon réunit, dans tout le
+       catalogue, les pièces de ces types — où qu'elles soient rangées dans
+       Shopify (tops, vestes…). */
     handle: "pulls-et-cardigans",
     catKey: "knitwear",
     title: "Pulls & Cardigans",
-    collections: ["tops"],
+    catalog: true,
     types: KNIT_TYPES,
     sub: [
       { label: "Tout voir", type: "" },

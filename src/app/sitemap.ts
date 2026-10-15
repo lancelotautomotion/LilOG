@@ -172,10 +172,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     /* Une entrée par rayon du site, pas par collection Shopify : un rayon
        peut en réunir plusieurs (Pantalons & Jeans) ou en extraire une partie
-       (Pulls & Cardigans, tirés de « tops »). Sa date est celle de la plus
+       (Pulls & Cardigans, tirés de tout le catalogue, sans date). Sa date est celle de la plus
        récente de ses collections ; un rayon sans collection existante n'a
        pas de page et reste hors du plan. */
     const collectionPages: MetadataRoute.Sitemap = CATEGORIES.flatMap((cat) => {
+      if (cat.catalog) {
+        return [{ url: `${SITE_URL}/category/${cat.handle}`, changeFrequency: "weekly" as const, priority: 0.9 }];
+      }
       const sources = collections.filter((c) => categorySources(cat).includes(c.handle));
       if (sources.length === 0) return [];
       const updated = Math.max(...sources.map((c) => new Date(c.updatedAt).getTime()));
