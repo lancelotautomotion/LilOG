@@ -46,12 +46,10 @@ const PINK = "#d3016d";
 
 const VIOLET_BAR = "linear-gradient(90deg, #3b1d8f 0%, #7147d4 45%, #ff3fb0 100%)";
 
-/* Quadrillage « papier millimétré » pastel du fond de fenêtre. */
-const GRID_BG = {
-  backgroundColor: "#f0f0f5",
-  backgroundImage:
-    "linear-gradient(rgba(113,71,212,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(113,71,212,0.08) 1px, transparent 1px)",
-  backgroundSize: "22px 22px",
+/* Fond de fenêtre : le gris plastique des pastilles du header (CONNEXION,
+   panier…), comme le bloc des coups de cœur de l'accueil. */
+const WINDOW_BG = {
+  background: "var(--nav-plastic, linear-gradient(180deg, #f6f5fb 0%, #e7e5f1 48%, #d3d0e1 100%))",
 };
 
 /* Réseaux sociaux : Instagram est le compte réel de Louna (déjà utilisé
@@ -476,8 +474,8 @@ export function Footer() {
             </div>
           </div>
 
-          {/* ---- Corps : papier millimétré + barre des tâches ---- */}
-          <div className="p-2.5 md:p-[clamp(12px,2vw,22px)]" style={GRID_BG}>
+          {/* ---- Corps : gris plastique + barre des tâches ---- */}
+          <div className="p-2.5 md:p-[clamp(12px,2vw,22px)]" style={WINDOW_BG}>
 
             {/* ---------- LIGNE 1 : marque, newsletter, notifications ----------
                 Desktop, inchangée : logo, zone de notification (Tray) et
