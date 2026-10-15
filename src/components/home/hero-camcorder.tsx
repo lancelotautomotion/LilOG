@@ -32,7 +32,7 @@ const HERO_VIDEO = "/hero/camcorder.mp4";
 const HERO_STILL = "/hero-cover.png";
 
 /** Still dédié au mobile : cadrage portrait qui montre le sujet en entier. */
-const HERO_STILL_MOBILE = "/mobile-hero.jpg";
+const HERO_STILL_MOBILE = "/mobile-hero-cover.jpg";
 
 const HERO_CSS = `
 /* Lignes de balayage du viseur. */
@@ -72,16 +72,14 @@ const HERO_CSS = `
   .lhz-toprow{top:calc(112px + var(--lhb-h, 0px))}
 }
 
-/* Sur ordinateur, la photo démarre sous le bandeau et la navigation, qui
+/* La photo démarre sous le bandeau et la navigation, qui
    sont opaques et posés par-dessus le haut du hero : sans ce retrait, ils
    masquaient le haut de l'image, c'est-à-dire le visage. --lhz-nav-b est
    le bas réel de la navigation, mesuré au montage (voir HeroCamcorder) :
    sa hauteur varie avec la largeur d'écran, et une valeur figée laissait
    apparaître une bande noire entre le menu et la photo. La valeur de
    repli, volontairement basse, ne sert qu'avant la mesure. */
-@media (min-width:768px){
-  .lhz-bg{top:var(--lhz-nav-b, calc(44px + var(--lhb-h, 0px)))}
-}
+.lhz-bg{top:var(--lhz-nav-b, calc(44px + var(--lhb-h, 0px)))}
 
 @media (prefers-reduced-motion: reduce){
   .lhz-track,.lhz-rec,.lhz-caret,.lhz-bounce{animation:none!important}
