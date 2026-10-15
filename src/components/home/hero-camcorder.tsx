@@ -29,7 +29,7 @@ import { MONO, NEON } from "@/components/y2k/kit";
 const HERO_VIDEO = "/hero/camcorder.mp4";
 
 /** Still de repli : photographie maison, pas de banque d'images. */
-const HERO_STILL = "/Design sans titre (1).png";
+const HERO_STILL = "/hero-cover.png";
 
 /** Still dédié au mobile : cadrage portrait qui montre le sujet en entier. */
 const HERO_STILL_MOBILE = "/mobile-hero.jpg";
