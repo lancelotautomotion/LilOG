@@ -15,7 +15,7 @@
    écrire, typo mono néon.
    ============================================================ */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getImageProps } from "next/image";
 import { useLanguage } from "@/lib/i18n-context";
 import { Typewriter } from "@/components/typewriter";
@@ -74,11 +74,13 @@ const HERO_CSS = `
 
 /* Sur ordinateur, la photo démarre sous le bandeau et la navigation, qui
    sont opaques et posés par-dessus le haut du hero : sans ce retrait, ils
-   masquaient le haut de l'image, c'est-à-dire le visage. 56px couvrent la
-   hauteur de .nav à cette largeur ; le noir du hero comble l'espace, de
-   toute façon caché derrière la navigation. */
+   masquaient le haut de l'image, c'est-à-dire le visage. --lhz-nav-b est
+   le bas réel de la navigation, mesuré au montage (voir HeroCamcorder) :
+   sa hauteur varie avec la largeur d'écran, et une valeur figée laissait
+   apparaître une bande noire entre le menu et la photo. La valeur de
+   repli, volontairement basse, ne sert qu'avant la mesure. */
 @media (min-width:768px){
-  .lhz-bg{top:calc(56px + var(--lhb-h, 0px))}
+  .lhz-bg{top:var(--lhz-nav-b, calc(44px + var(--lhb-h, 0px)))}
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -190,8 +192,28 @@ export function HeroCamcorder() {
     `${MONO} flex items-center gap-2 rounded-sm bg-black/45 px-2.5 py-1.5 text-[0.8125rem] ` +
     "font-bold tracking-[0.14em] text-white uppercase backdrop-blur-[2px] md:text-[0.875rem]";
 
+  /* Bas réel de la navigation fixe, pour que la photo démarre exactement
+     dessous (voir `.lhz-bg`). Remesuré quand la navigation change de taille
+     (largeur d'écran, passage en mode `solid` au défilement). */
+  const heroRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const hero = heroRef.current;
+    const nav = document.querySelector<HTMLElement>(".lhb-host .nav");
+    if (!hero || !nav) return;
+    const measure = () => hero.style.setProperty("--lhz-nav-b", `${Math.round(nav.getBoundingClientRect().bottom)}px`);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(nav);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
   return (
     <header
+      ref={heroRef}
       id="top"
       className="relative flex h-[100svh] min-h-[560px] w-full items-center justify-center overflow-hidden bg-black"
     >
