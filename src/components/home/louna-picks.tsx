@@ -28,7 +28,7 @@ import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/hooks/use-wishlist";
 import { SmartImg } from "@/components/smart-img";
 import { Icon } from "@/components/icons";
-import { BEVEL_IN, GRID_BG, MONO, PINK, PLASTIC, PLASTIC_FACE, PLASTIC_PRESS, WindowFrame } from "@/components/y2k/kit";
+import { BEVEL_IN, MONO, PINK, PLASTIC, PLASTIC_FACE, PLASTIC_PRESS, WindowFrame } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
 
 /* Une carte fait `clamp(200px, 62vw, 260px)` de large : décrire la place
@@ -198,7 +198,16 @@ export function LounaPicks({ products }: { products: Product[] }) {
       <div className="mx-auto w-full max-w-[1296px]">
         <style>{PICKS_CSS}</style>
 
-        <WindowFrame title="Louna_picks.exe" icon="💘" bodyClassName="py-[clamp(18px,3vw,32px)]" bodyStyle={GRID_BG}>
+        <WindowFrame
+          title="Louna_picks.exe"
+          icon="💘"
+          bodyClassName="py-[clamp(18px,3vw,32px)]"
+          bodyStyle={{
+            /* Le gris plastique des pastilles du header (CONNEXION, panier…),
+               pour détacher le bloc du fond quadrillé du bureau. */
+            background: "var(--nav-plastic, linear-gradient(180deg, #f6f5fb 0%, #e7e5f1 48%, #d3d0e1 100%))",
+          }}
+        >
           <div className="flex items-center justify-center gap-3 px-4">
             <ScrollKey dir={-1} onClick={() => scroll(-1)} />
             <h2
