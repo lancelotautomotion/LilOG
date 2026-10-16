@@ -1,7 +1,7 @@
 import { shopifyFetch } from "./client";
 import { sanitizeDescription } from "./sanitize-description";
 import { compareSizes, normalizeSize } from "@/lib/sizes";
-import { categoryAcceptsType, categorySources, type Category } from "@/lib/categories";
+import { categoryAcceptsType, categorySources, normType, type Category } from "@/lib/categories";
 import {
   CATALOG_PRODUCTS_QUERY,
   COLLECTION_BY_HANDLE_QUERY,
@@ -406,18 +406,23 @@ export async function getCategoryProducts(
     };
   }
 
-  const results = await Promise.all(categorySources(cat).map((h) => getCollectionProducts(h)));
+  const also = cat.alsoTypes;
+  const [results, extra] = await Promise.all([
+    Promise.all(categorySources(cat).map((h) => getCollectionProducts(h))),
+    also ? getAllProducts().then((all) => all.filter((p) => also.includes(normType(p.productType)))) : [],
+  ]);
   const found = results.filter((r) => r !== null);
   if (found.length === 0) return null;
 
   const seen = new Set<string>();
-  const products = found
+  const fromCollections = found
     .flatMap((r) => r.products)
     .filter((p) => {
       if (seen.has(p.id)) return false;
       seen.add(p.id);
       return categoryAcceptsType(cat, p.productType);
     });
+  const products = [...fromCollections, ...extra.filter((p) => !seen.has(p.id))];
 
   return { title: cat.title ?? found[0].title, products };
 }

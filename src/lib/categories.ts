@@ -28,6 +28,12 @@ export interface Category {
   catalog?: boolean;
   /** Ne garder que ces types de produit Shopify (casse, accents et séparateurs ignorés). */
   types?: string[];
+  /**
+   * Ajouter les pièces de ces types, prises dans tout le catalogue, à celles
+   * des collections : elles apparaissent dans le rayon où qu'elles soient
+   * rangées dans Shopify (écharpes et châles dans les Accessoires).
+   */
+  alsoTypes?: string[];
   /** Écarter ces types de produit : ils ont leur propre rayon. */
   excludeTypes?: string[];
   /** Titre de page, quand il ne vient pas d'une collection Shopify unique. */
@@ -39,8 +45,13 @@ export interface Category {
  *  devient « col-roule ». */
 const KNIT_TYPES = ["pull", "cardigan", "gilet", "col-roule", "sweat", "sweatshirt", "sweat-shirt", "sweat-sweatshirt"];
 
+/** Écharpes, châles et foulards : toujours dans le rayon Accessoires. */
+const SCARF_TYPES = [
+  "echarpe", "echarpes", "chale", "chales", "foulard", "foulards", "etole", "etoles",
+];
+
 /** Type de produit comparable : minuscules, sans accents, espaces → tirets. */
-function normType(type: string): string {
+export function normType(type: string): string {
   return type
     .toLowerCase()
     .normalize("NFD")
@@ -65,9 +76,13 @@ export function categoryAcceptsType(cat: Category, productType: string): boolean
 /**
  * Le rayon du site d'une pièce, d'après ses collections Shopify et son type :
  * un pull, où qu'il soit rangé, appartient au rayon Pulls & Cardigans, un jean
- * de la collection « jeans » au rayon Pantalons & Jeans.
+ * de la collection « jeans » au rayon Pantalons & Jeans, une écharpe aux
+ * Accessoires.
  */
 export function categoryForProduct(collections: string[], productType: string): Category | undefined {
+  const type = normType(productType);
+  const claimed = CATEGORIES.find((c) => c.alsoTypes?.includes(type));
+  if (claimed) return claimed;
   return CATEGORIES.find(
     (c) =>
       (c.catalog || categorySources(c).some((h) => collections.includes(h))) && categoryAcceptsType(c, productType),
@@ -204,6 +219,7 @@ export const CATEGORIES: Category[] = [
   {
     handle: "accessoires",
     catKey: "accessories",
+    alsoTypes: SCARF_TYPES,
     sub: [
       { label: "Tout voir", type: "" },
       {
@@ -218,6 +234,8 @@ export const CATEGORIES: Category[] = [
         ],
       },
       { label: "Foulards & Écharpes", type: "foulard" },
+      { label: "Écharpes", type: "écharpe" },
+      { label: "Châles", type: "châle" },
       { label: "Ceintures", type: "ceinture" },
       { label: "Chapeaux", type: "chapeau" },
       { label: "Lunettes", type: "lunettes" },
