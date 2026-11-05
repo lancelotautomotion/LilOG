@@ -521,3 +521,34 @@ export async function shopifyUpdateCustomer(
   if (errs.length > 0) return { customer: null, error: errs[0].message };
   return { customer: data.customerUpdate.customer, error: null };
 }
+
+const CUSTOMER_ACTIVATE_BY_URL = /* GraphQL */ `
+  mutation customerActivateByUrl($activationUrl: URL!, $password: String!) {
+    customerActivateByUrl(activationUrl: $activationUrl, password: $password) {
+      customerAccessToken { accessToken expiresAt }
+      customerUserErrors { code field message }
+    }
+  }
+`;
+
+/**
+ * Active une fiche sans compte (abonnée newsletter, ancienne cliente invitée)
+ * en lui posant ce mot de passe. L'URL vient de l'Admin API et ne quitte
+ * jamais le serveur. Voir @/lib/shopify/dormant-account.
+ */
+export async function shopifyCustomerActivateByUrl(
+  activationUrl: string,
+  password: string,
+): Promise<{ token: string | null; error: string | null }> {
+  const data = await shopifyFetch<{
+    customerActivateByUrl: {
+      customerAccessToken: { accessToken: string } | null;
+      customerUserErrors: { message: string }[];
+    };
+  }>(CUSTOMER_ACTIVATE_BY_URL, { activationUrl, password }, 0).catch(() => null);
+
+  if (!data) return { token: null, error: "Erreur réseau" };
+  const r = data.customerActivateByUrl;
+  if (r.customerUserErrors.length > 0) return { token: null, error: r.customerUserErrors[0].message };
+  return { token: r.customerAccessToken?.accessToken ?? null, error: null };
+}
