@@ -20,6 +20,8 @@ export interface Dict {
   cat: Record<string, string>;
   foot: { selltous: string; tagline: string };
   hero: { kicker: string; line: string; words: string[]; shop: string; story: string; avail: string; promo: string };
+  /** Fenêtre BLACK_FRIDAY.EXE, ouverte à l'arrivée sur le site. */
+  bf: { body: string; cta: string; close: string };
   /** LIL_OG_DESKTOP.EXE : libellés propres à la page d'accueil Y2K OS. */
   home: {
     scroll: string;
@@ -80,6 +82,7 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Sell to us", tagline: "Pre-loved since the Y2K · Paris" },
     hero: { kicker: "Lil'OG · Vintage, Reborn", line: "We are born to",
       words: ["Shine.", "Conquer.", "Slay.", "Burn."], shop: "Shop the drop", story: "Our story", avail: "Next drop · September 6", promo: "-20% on EVERYTHING from Nov 15 to 29" },
+    bf: { body: "on EVERYTHING, from November 15 to 29", cta: "Shop now", close: "Close" },
     home: {
       scroll: "SCROLL",
       slotIntroTitle: "What's the Dressing Machine?",
@@ -133,6 +136,7 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Vendez-nous", tagline: "Seconde main depuis le Y2K · Paris" },
     hero: { kicker: "Lil'OG · Vintage, Renaissance", line: "Nous sommes nées pour",
       words: ["Briller.", "Conquérir.", "Régner.", "Flamber."], shop: "Voir le drop", story: "Notre histoire", avail: "Prochain drop · 6 septembre", promo: "-20% sur TOUT du 15 au 29 novembre" },
+    bf: { body: "sur TOUT le site, du 15 au 29 novembre", cta: "Voir les pièces", close: "Fermer" },
     home: {
       scroll: "DÉFILER",
       slotIntroTitle: "C'est quoi la Dressing Machine ?",
@@ -186,6 +190,7 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Véndenos", tagline: "Segunda mano desde el Y2K · París" },
     hero: { kicker: "Lil'OG · Vintage, Renacido", line: "Nacimos para",
       words: ["Brillar.", "Conquistar.", "Reinar.", "Arder."], shop: "Ver el drop", story: "Nuestra historia", avail: "Próximo drop · 6 de septiembre", promo: "-20% en TODO del 15 al 29 de noviembre" },
+    bf: { body: "en TODA la tienda, del 15 al 29 de noviembre", cta: "Ver las piezas", close: "Cerrar" },
     home: {
       scroll: "DESLIZA",
       slotIntroTitle: "¿Qué es la Dressing Machine?",
@@ -239,6 +244,7 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Vendi a noi", tagline: "Seconda mano dal Y2K · Parigi" },
     hero: { kicker: "Lil'OG · Vintage, Rinato", line: "Siamo nati per",
       words: ["Brillare.", "Conquistare.", "Regnare.", "Ardere."], shop: "Vedi il drop", story: "La nostra storia", avail: "Prossimo drop · 6 settembre", promo: "-20% su TUTTO dal 15 al 29 novembre" },
+    bf: { body: "su TUTTO il sito, dal 15 al 29 novembre", cta: "Vedi i capi", close: "Chiudi" },
     home: {
       scroll: "SCORRI",
       slotIntroTitle: "Cos'è la Dressing Machine?",
@@ -292,6 +298,7 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Verkauf an uns", tagline: "Pre-loved seit dem Y2K · Paris" },
     hero: { kicker: "Lil'OG · Vintage, Wiedergeboren", line: "Wir sind geboren, um zu",
       words: ["Strahlen.", "Erobern.", "Herrschen.", "Brennen."], shop: "Zum Drop", story: "Unsere Geschichte", avail: "Nächster Drop · 6. September", promo: "-20% auf ALLES vom 15. bis 29. November" },
+    bf: { body: "auf ALLES, vom 15. bis 29. November", cta: "Zu den Teilen", close: "Schließen" },
     home: {
       scroll: "SCROLLEN",
       slotIntroTitle: "Was ist die Dressing Machine?",
@@ -345,6 +352,7 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "Продать нам", tagline: "Секонд-хенд со времён Y2K · Париж" },
     hero: { kicker: "Lil'OG · Винтаж, Возрождённый", line: "Мы рождены, чтобы",
       words: ["Сиять.", "Покорять.", "Править.", "Гореть."], shop: "Смотреть дроп", story: "Наша история", avail: "Следующий дроп · 6 сентября", promo: "-20% на ВСЁ с 15 по 29 ноября" },
+    bf: { body: "на ВСЁ, с 15 по 29 ноября", cta: "Смотреть вещи", close: "Закрыть" },
     home: {
       scroll: "ЛИСТАТЬ",
       slotIntroTitle: "Что такое Dressing Machine?",
@@ -398,6 +406,7 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "卖给我们", tagline: "自 Y2K 起的二手好物 · 巴黎" },
     hero: { kicker: "Lil'OG · 复古，重生", line: "我们生来",
       words: ["闪耀。", "征服。", "称王。", "燃烧。"], shop: "查看上新", story: "我们的故事", avail: "下次上新 · 9月6日", promo: "11月15日至29日 全场 -20%" },
+    bf: { body: "11月15日至29日，全场商品", cta: "查看单品", close: "关闭" },
     home: {
       scroll: "向下滚动",
       slotIntroTitle: "DRESSING MACHINE 是什么？",
@@ -451,6 +460,7 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "買取", tagline: "Y2K以来の古着 · パリ" },
     hero: { kicker: "Lil'OG · ヴィンテージ、再生", line: "私たちは生まれた",
       words: ["輝くために。", "制すために。", "魅せるために。", "燃えるために。"], shop: "ドロップを見る", story: "私たちの物語", avail: "次のドロップ · 9月6日", promo: "11月15日〜29日 全品 -20%" },
+    bf: { body: "11月15日〜29日、全品対象", cta: "アイテムを見る", close: "閉じる" },
     home: {
       scroll: "スクロール",
       slotIntroTitle: "ドレッシングマシンって何？",
@@ -504,6 +514,7 @@ export const DICT: Record<LangCode, Dict> = {
     foot: { selltous: "판매하기", tagline: "Y2K부터의 빈티지 · 파리" },
     hero: { kicker: "Lil'OG · 빈티지, 다시 태어나다", line: "우리는 태어났다",
       words: ["빛나기 위해.", "정복하기 위해.", "군림하기 위해.", "불태우기 위해."], shop: "드롭 보기", story: "우리의 이야기", avail: "다음 드롭 · 9월 6일", promo: "11월 15일~29일 전 상품 -20%" },
+    bf: { body: "11월 15일~29일, 전 상품", cta: "아이템 보기", close: "닫기" },
     home: {
       scroll: "스크롤",
       slotIntroTitle: "드레싱 머신이 뭐예요?",

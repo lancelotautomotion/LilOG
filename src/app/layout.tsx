@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
 import { CookieConsent } from "@/components/cookie-consent";
+import { BlackFridayPopup } from "@/components/black-friday-popup";
 import { MetaPixel } from "@/components/meta-pixel";
 import "./globals.css";
 
@@ -118,6 +119,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SessionProvider>
           <LanguageProvider>
             <CartProvider>{children}</CartProvider>
+            <BlackFridayPopup />
           </LanguageProvider>
         </SessionProvider>
         <CookieConsent />

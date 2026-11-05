@@ -21,6 +21,7 @@ import { useLanguage } from "@/lib/i18n-context";
 import { Typewriter } from "@/components/typewriter";
 import { LCD, MONO, NEON, PINK } from "@/components/y2k/kit";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
+import { isPromoLive } from "@/lib/promo";
 
 /**
  * Vidéo de fond. Le fichier n'est pas versionné (poids) : dépose
@@ -162,16 +163,9 @@ function Brackets() {
 /* ============================================================
    Encart promo : Black Friday Month
    ------------------------------------------------------------
-   Visible du 15 au 29 novembre 2026 inclus, heure de Paris.
-   La date est lue au montage, côté visiteur : la page d'accueil
-   est servie en statique, un test fait au rendu serveur figerait
-   la décision au moment du build. `?promo=preview` force
-   l'affichage pour vérifier l'encart avant l'ouverture.
+   Visible du 15 au 29 novembre 2026 inclus, heure de Paris :
+   voir `@/lib/promo`, partagé avec la fenêtre d'accueil.
    ============================================================ */
-
-/** 15 nov. 00:00 et 30 nov. 00:00, heure de Paris (UTC+1 en novembre). */
-const PROMO_START = Date.parse("2026-11-15T00:00:00+01:00");
-const PROMO_END = Date.parse("2026-11-30T00:00:00+01:00");
 
 /** Fond de l'encart : la pastille plastique fournie, recadrée au plus près. */
 const PROMO_PILL = "/black-friday-pill.webp";
@@ -228,11 +222,7 @@ function PromoBadge({ label }: { label: string }) {
   const [on, setOn] = useState(false);
 
   useEffect(() => {
-    const check = () => {
-      const now = Date.now();
-      const preview = new URLSearchParams(window.location.search).get("promo") === "preview";
-      setOn(preview || (now >= PROMO_START && now < PROMO_END));
-    };
+    const check = () => setOn(isPromoLive());
 
     check();
   }, []);
