@@ -1,5 +1,6 @@
 import { createHmac } from "crypto";
 import { shopifyCustomerCreate, shopifyCustomerLogin } from "./customers";
+import { activateDormantCustomer } from "./dormant-account";
 
 /* ── Compte Shopify miroir pour les connexions Google ──
    Le Storefront API n'a pas de notion de client "sans mot de passe" : pour
@@ -71,6 +72,13 @@ export async function getOrCreateShopifyTokenForEmail(
 
   const first = await shopifyCustomerLogin(email, password);
   if (first.token) return { status: "linked", token: first.token };
+
+  /* Fiche sans compte à cette adresse (inscrite à la newsletter, ancienne
+     cliente invitée) : Shopify refuserait la création. Google a vérifié que
+     l'adresse est bien la sienne, on active donc cette fiche avec le mot de
+     passe dérivé — elle retrouve au passage ses commandes en invitée. */
+  const activated = await activateDormantCustomer(email, password, { ownershipProven: true });
+  if (activated) return { status: "linked", token: activated };
 
   // Pas de compte miroir joignable : on tente de le créer.
   const { error } = await shopifyCustomerCreate(email, password, firstName, lastName);

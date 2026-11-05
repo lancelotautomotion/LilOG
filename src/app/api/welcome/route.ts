@@ -6,20 +6,29 @@
    dans le JavaScript du site : il ne sort que d'ici, après une
    adresse valide.
 
-   Enregistrement, par l'API HTTP de Resend (aucune dépendance) :
-     · RESEND_AUDIENCE_ID posée → l'adresse rejoint cette audience
-       Resend (liste exportable, envois groupés possibles) ;
-     · sinon → un e-mail de notification part dans la boîte de la
-       boutique (CONTACT_TO_EMAIL, comme le formulaire de contact).
+   Enregistrement :
+     1. SHOPIFY_ADMIN_ACCESS_TOKEN posé → l'adresse devient une fiche
+        client Shopify abonnée au marketing par e-mail, étiquetée
+        `star-club` (Shopify Email, automatisations). Une fiche
+        existante ne voit changer que son consentement et l'étiquette.
+     2. Sinon, ou si Shopify échoue, par l'API HTTP de Resend :
+        · RESEND_AUDIENCE_ID posée → l'adresse rejoint cette audience ;
+        · sinon → e-mail de notification dans la boîte de la boutique.
+   Une inscrite n'est jamais bloquée ensuite pour créer son compte :
+   voir @/lib/shopify/dormant-account.
 
    Un échec d'enregistrement est journalisé (logs Vercel) mais ne
    prive pas la visiteuse de son code : elle a fait sa part.
 
    Variables (Vercel → Settings → Environment Variables) :
+     · SHOPIFY_ADMIN_ACCESS_TOKEN : jeton d'une app Shopify avec
+                            l'accès write_customers.
      · RESEND_API_KEY      : déjà utilisée par /api/contact.
      · RESEND_AUDIENCE_ID  : facultative, l'identifiant de l'audience.
      · WELCOME_CODE        : facultative, défaut STAR10.
    ============================================================ */
+
+import { adminConfigured, subscribeToNewsletter } from "@/lib/shopify/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -67,6 +76,19 @@ function escapeHtml(value: string) {
 }
 
 async function store(email: string): Promise<void> {
+  if (adminConfigured()) {
+    try {
+      await subscribeToNewsletter(email);
+      return;
+    } catch (err) {
+      /* Repli sur Resend : l'adresse n'est pas perdue. */
+      console.error("[welcome] Shopify a refusé l'inscription :", err instanceof Error ? err.message : err);
+    }
+  }
+  await storeWithResend(email);
+}
+
+async function storeWithResend(email: string): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error("[welcome] RESEND_API_KEY absente : inscription non enregistrée.");
