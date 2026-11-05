@@ -163,7 +163,7 @@ function Brackets() {
 /* ============================================================
    Encart promo : Black Friday Month
    ------------------------------------------------------------
-   Visible du 15 nov. 2026 00:00 au 29 nov. 2026 00:00, heure de Paris :
+   Visible du 15 nov. 2026 00:00 au 29 nov. 2026 23:59 inclus, heure de Paris :
    voir `@/lib/promo`, partagé avec la fenêtre d'accueil.
    ============================================================ */
 

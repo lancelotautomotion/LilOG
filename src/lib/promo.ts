@@ -9,9 +9,9 @@
    l'affichage pour vérifier avant l'ouverture.
    ============================================================ */
 
-/** Du 15 nov. 2026 00:00 au 29 nov. 2026 00:00, heure de Paris (UTC+1 en novembre). */
+/** Du 15 nov. 2026 00:00 au 29 nov. 2026 23:59:59 inclus (fin au 30 nov. 00:00), heure de Paris (UTC+1 en novembre). */
 export const PROMO_START = Date.parse("2026-11-15T00:00:00+01:00");
-export const PROMO_END = Date.parse("2026-11-29T00:00:00+01:00");
+export const PROMO_END = Date.parse("2026-11-30T00:00:00+01:00");
 
 /** À n'appeler que dans le navigateur (effet ou gestionnaire). */
 export function isPromoLive(): boolean {
