@@ -21,7 +21,7 @@ import { useLanguage } from "@/lib/i18n-context";
 import { Typewriter } from "@/components/typewriter";
 import { LCD, MONO, NEON, PINK } from "@/components/y2k/kit";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
-import { isPromoLive } from "@/lib/promo";
+import { isPromoLive, PROMO_CODE } from "@/lib/promo";
 
 /**
  * Vidéo de fond. Le fichier n'est pas versionné (poids) : dépose
@@ -218,7 +218,7 @@ function StrassNode({ k, uid }: { k: "chrome" | "star" | "heart"; uid: string })
   return <GemSticker uid={uid} shape={k} hue={k === "heart" ? STRASS_HEART : STRASS_STAR} />;
 }
 
-function PromoBadge({ label }: { label: string }) {
+function PromoBadge({ label, codeLabel }: { label: string; codeLabel: string }) {
   const [on, setOn] = useState(false);
 
   useEffect(() => {
@@ -240,15 +240,20 @@ function PromoBadge({ label }: { label: string }) {
         {/* VT323 : police LCD de la maison, plus étroite et plus basse sur
             ligne que la mono, d'où un corps plus grand. */}
         <p
-          className={`${LCD} text-[clamp(1.375rem,2.3vw,2.125rem)] leading-[0.85] tracking-[0.08em] whitespace-nowrap text-black uppercase`}
+          className={`${LCD} text-[clamp(1.25rem,2.1vw,2rem)] leading-[0.85] tracking-[0.08em] whitespace-nowrap text-black uppercase`}
         >
           Black Friday Month
         </p>
         <p
-          className={`${MONO} mt-[0.45em] text-[clamp(0.625rem,0.9vw,0.8125rem)] leading-tight font-bold tracking-[0.02em]`}
+          className={`${MONO} mt-[0.3em] text-[clamp(0.625rem,0.9vw,0.8125rem)] leading-tight font-bold tracking-[0.02em]`}
           style={{ color: PINK }}
         >
           {label}
+        </p>
+        <p
+          className={`${MONO} mt-[0.35em] text-[clamp(0.625rem,0.9vw,0.8125rem)] leading-tight font-bold tracking-[0.04em] whitespace-nowrap text-black`}
+        >
+          {codeLabel} <span className="tracking-[0.1em] underline decoration-2 underline-offset-2" style={{ textDecorationColor: PINK }}>{PROMO_CODE}</span>
         </p>
       </div>
 
@@ -524,7 +529,7 @@ export function HeroCamcorder() {
         </p>
       </div>
 
-      <PromoBadge label={t.hero.promo} />
+      <PromoBadge label={t.hero.promo} codeLabel={t.bf.code} />
 
       {/* ---- Ligne basse : date, mode, invite de défilement ---- */}
       <div className="absolute inset-x-10 bottom-4 z-30 flex items-end justify-between gap-3 md:inset-x-24 md:bottom-9">

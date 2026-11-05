@@ -19,3 +19,6 @@ export function isPromoLive(): boolean {
   const preview = new URLSearchParams(window.location.search).get("promo") === "preview";
   return preview || (now >= PROMO_START && now < PROMO_END);
 }
+
+/** Code de réduction à saisir au paiement (créé dans Shopify). */
+export const PROMO_CODE = "BLACKFRIDAY20";
