@@ -149,7 +149,7 @@ export function WelcomePopup() {
         aria-labelledby="lwc-title"
         ref={dialogRef}
         tabIndex={-1}
-        className={`lwc-in relative flex max-h-[calc(100svh-2rem)] w-full max-w-[25rem] flex-col overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#f0f0f5] outline-none md:max-w-[46rem] ${HARD_SHADOW}`}
+        className={`lwc-in relative flex max-h-[calc(100svh-2rem)] w-full max-w-[25rem] flex-col overflow-hidden rounded-2xl border-2 border-[#b8b4cc] bg-[#f0f0f5] outline-none md:w-auto md:max-w-[calc(100vw-3rem)] ${HARD_SHADOW}`}
       >
         {/* ── Barre de titre ── */}
         <div
@@ -174,21 +174,24 @@ export function WelcomePopup() {
 
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto md:flex-row-reverse md:overflow-visible">
           {/* ── Photo : à droite sur ordinateur, en tête sur téléphone ── */}
-          <div className="relative h-40 shrink-0 border-b-2 border-[#b8b4cc] sm:h-52 md:h-auto md:w-[45%] md:border-b-0 md:border-l-2">
+          {/* Sur ordinateur, la colonne prend exactement les proportions de la
+              photo (941 × 1434) : hauteur fixée, largeur déduite, donc rien
+              n'est rogné. Sur téléphone, un bandeau cadré sur le visage. */}
+          <div className="relative h-40 shrink-0 border-b-2 border-[#b8b4cc] sm:h-52 md:aspect-[941/1434] md:h-[min(34rem,calc(100svh-7rem))] md:border-b-0 md:border-l-2">
             <Image
               src={PORTRAIT}
               alt=""
               fill
-              sizes="(min-width: 768px) 340px, 100vw"
+              sizes="(min-width: 768px) 360px, 100vw"
               className="object-cover object-top md:object-[center_22%]"
             />
           </div>
 
           {/* ── Formulaire / code ── */}
-          <div className="flex flex-1 flex-col justify-center bg-[#f0f0f5] px-5 py-6 md:px-7 md:py-8">
+          <div className="flex flex-1 flex-col justify-center bg-[#f0f0f5] px-5 py-6 md:w-[28rem] md:flex-none md:px-8 md:py-8">
             <h2
               id="lwc-title"
-              className={`${LCD} text-[1.75rem] leading-[0.95] tracking-[0.04em] text-black uppercase md:text-[2.125rem]`}
+              className={`${LCD} text-[1.75rem] leading-[0.95] tracking-[0.04em] text-black uppercase md:text-[2rem]`}
             >
               {w.title}
             </h2>
