@@ -26,6 +26,7 @@ import { useEffect, useId, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
+import { requestWelcomeCode } from "@/lib/welcome-client";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 import logoBlack from "../../public/logo-black.png";
 
@@ -292,48 +293,127 @@ function Newsletter({ className = "" }: { className?: string }) {
      `hidden md:flex` + mobile `md:hidden`), un id figé en dur aurait
      dupliqué "liltb-email" dans le DOM et cassé l'association du label. */
   const id = useId();
+  const { t } = useLanguage();
+  const w = t.welcome;
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [website, setWebsite] = useState("");
+  const [focused, setFocused] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "invalid" | "error">("idle");
+  const [code, setCode] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
-  /* Pas de backend newsletter à ce stade : on accuse réception côté
-     client, sans prétendre que l'adresse est partie quelque part. */
-  const submit = (e: React.FormEvent) => {
+  /* Même circuit que la fenêtre STAR_CLUB.EXE (@/lib/welcome-client) :
+     fiche Shopify abonnée, étiquette `star-club`, code -10 % en retour. */
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    setStatus("sending");
+    const result = await requestWelcomeCode(email, website);
+    if (!result.ok) {
+      setStatus(result.reason);
+      return;
+    }
+    setCode(result.code);
+    setStatus("idle");
   };
 
-  if (sent) {
+  const copyCode = async () => {
+    if (!code) return;
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* Presse-papiers refusé : le code reste lisible. */
+    }
+  };
+
+  if (code) {
     return (
-      <p
-        className={`${MONO} flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-3.5 py-2 text-[0.8125rem] font-bold tracking-[0.04em] text-purple-800 ${className}`}
+      <div
+        aria-live="polite"
+        className={`${MONO} flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-purple-200 bg-purple-50 px-3.5 py-2 text-[0.8125rem] font-bold tracking-[0.04em] text-purple-800 ${className}`}
       >
-        <span aria-hidden>💾</span> ADRESSE ENREGISTRÉE · À TRÈS VITE
-        <span style={{ color: PINK }}>★</span>
-      </p>
+        <span>✓ {w.unlocked}</span>
+        <button
+          type="button"
+          onClick={copyCode}
+          aria-label={`${t.bf.copy} ${code}`}
+          className="inline-flex items-center gap-2 rounded-md border border-dashed bg-white px-2 py-0.5"
+          style={{ borderColor: PINK }}
+        >
+          <span className="tracking-[0.1em] text-[#1E2430] select-all">{code}</span>
+          <span className="text-[0.6875rem] uppercase" style={{ color: copied ? "#1f9d55" : PINK }}>
+            {copied ? t.bf.copied : t.bf.copy}
+          </span>
+        </button>
+      </div>
     );
   }
 
+  const showNote = focused || email.length > 0 || status !== "idle";
+
   return (
-    <form onSubmit={submit} className={`flex items-center gap-1.5 ${className}`}>
-      <label htmlFor={id} className="sr-only">
-        Email
-      </label>
-      <input
-        id={id}
-        type="email"
-        required
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="ENTER_EMAIL.EXE"
-        className={`${MONO} h-[42px] w-full min-w-0 rounded-xl border border-gray-300 bg-white px-2.5 text-[0.8125rem] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 md:px-3.5 md:w-[190px]`}
-      />
-      <button
-        type="submit"
-        className={`${MONO} h-[42px] shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-4 text-[1rem] font-bold tracking-[0.04em] text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] ${PLASTIC} ${PLASTIC_PRESS}`}
+    <div className={`flex min-w-0 flex-col gap-1 ${className}`}>
+      <form onSubmit={submit} noValidate className="flex items-center gap-1.5">
+        <label htmlFor={id} className="sr-only">
+          {w.email}
+        </label>
+        <input
+          id={id}
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          required
+          maxLength={200}
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (status === "invalid" || status === "error") setStatus("idle");
+          }}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          aria-invalid={status === "invalid"}
+          aria-describedby={`${id}-note`}
+          placeholder="ENTER_EMAIL.EXE"
+          className={`${MONO} h-[42px] w-full min-w-0 rounded-xl border border-gray-300 bg-white px-2.5 text-[0.8125rem] text-[#1E2430] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.2)] outline-none placeholder:text-gray-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-300/50 md:px-3.5 md:w-[190px]`}
+        />
+        {/* Pot de miel : invisible, seuls les robots le remplissent. */}
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          className="absolute -left-[9999px] h-px w-px opacity-0"
+        />
+        <button
+          type="submit"
+          disabled={status === "sending"}
+          className={`${MONO} h-[42px] shrink-0 rounded-full border border-[#c6c2d8] ${PLASTIC_FACE} px-4 text-[1rem] font-bold tracking-[0.04em] text-[#262626] transition hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7147d4] disabled:opacity-60 ${PLASTIC} ${PLASTIC_PRESS}`}
+        >
+          {status === "sending" ? "[ … ]" : "[ OK ]"}
+        </button>
+      </form>
+
+      {/* Information de consentement au moment de la saisie, et erreurs. */}
+      <p
+        id={`${id}-note`}
+        role={status === "invalid" || status === "error" ? "alert" : undefined}
+        className={`${MONO} text-[0.6875rem] leading-snug ${showNote ? "" : "sr-only"}`}
+        style={{ color: status === "invalid" || status === "error" ? PINK : "#6b6382" }}
       >
-        [ OK ]
-      </button>
-    </form>
+        {status === "invalid" ? w.invalid : status === "error" ? w.error : (
+          <>
+            -10 % · {w.consent}{" "}
+            <Link href="/confidentialite" className="underline">
+              {w.privacy}
+            </Link>
+          </>
+        )}
+      </p>
+    </div>
   );
 }
 

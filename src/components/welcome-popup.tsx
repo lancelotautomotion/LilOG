@@ -19,6 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
+import { readWelcomeCode, requestWelcomeCode } from "@/lib/welcome-client";
 import {
   HARD_SHADOW,
   LCD,
@@ -31,9 +32,7 @@ import {
 } from "@/components/y2k/kit";
 
 const OPEN_EVENT = "lilog:welcome-open";
-const CODE_KEY = "lilog-welcome-code";
 const PORTRAIT = "/welcome-portrait.png";
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Ouvre la fenêtre depuis n'importe quel composant client. */
 export function openWelcome() {
@@ -48,13 +47,6 @@ const POP_CSS = `
 @media (prefers-reduced-motion: reduce){ .lwc-in,.lwc-veil{animation:none} }
 `;
 
-function readCode(): string | null {
-  try {
-    return localStorage.getItem(CODE_KEY);
-  } catch {
-    return null;
-  }
-}
 
 export function WelcomePopup() {
   const { t } = useLanguage();
@@ -71,7 +63,7 @@ export function WelcomePopup() {
   /* Ouverture à la demande : on relit le code déjà obtenu à ce moment-là. */
   useEffect(() => {
     const onOpen = () => {
-      setCode(readCode());
+      setCode(readWelcomeCode());
       setStatus("idle");
       setOpen(true);
     };
@@ -91,33 +83,14 @@ export function WelcomePopup() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const value = email.trim();
-    if (!EMAIL_RE.test(value)) {
-      setStatus("invalid");
+    setStatus("sending");
+    const result = await requestWelcomeCode(email, website);
+    if (!result.ok) {
+      setStatus(result.reason);
       return;
     }
-    setStatus("sending");
-    try {
-      const res = await fetch("/api/welcome", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: value, website }),
-      });
-      const data = (await res.json().catch(() => null)) as { ok?: boolean; code?: string } | null;
-      if (!res.ok || !data?.ok || !data.code) {
-        setStatus(res.status === 400 ? "invalid" : "error");
-        return;
-      }
-      setCode(data.code);
-      setStatus("idle");
-      try {
-        localStorage.setItem(CODE_KEY, data.code);
-      } catch {
-        /* Stockage bloqué : le code reste affiché pour cette ouverture. */
-      }
-    } catch {
-      setStatus("error");
-    }
+    setCode(result.code);
+    setStatus("idle");
   };
 
   const copyCode = async () => {
