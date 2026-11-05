@@ -525,7 +525,14 @@ export function HeroCamcorder() {
               "0 0 1px #000, 0 1px 1px #000, 0 -1px 1px #000, 1px 0 1px #000, -1px 0 1px #000, 0 2px 10px rgba(0,0,0,.85), 0 0 10px rgba(90,255,160,.5)",
           }}
         >
-          ▸ LIL_OG_DESKTOP.EXE · <span className="whitespace-nowrap">{t.hero.avail}</span>
+          ▸ LIL_OG_DESKTOP.EXE ·{" "}
+          {/* Chaque morceau reste d'un bloc ; la ligne ne se coupe qu'aux « · ». */}
+          {t.hero.avail.split(" · ").map((part, i) => (
+            <span key={i}>
+              {i > 0 && " · "}
+              <span className="whitespace-nowrap">{part}</span>
+            </span>
+          ))}
         </p>
       </div>
 
