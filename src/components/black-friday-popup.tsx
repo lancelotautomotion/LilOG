@@ -20,7 +20,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "@/lib/i18n-context";
-import { isPromoLive } from "@/lib/promo";
+import { isPromoLive, PROMO_CODE } from "@/lib/promo";
 import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 import {
   GRID_BG,
@@ -72,6 +72,17 @@ export function BlackFridayPopup() {
   const { t } = useLanguage();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(PROMO_CODE);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* Presse-papiers refusé : le code reste lisible et sélectionnable. */
+    }
+  };
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -170,6 +181,30 @@ export function BlackFridayPopup() {
             </div>
 
             <p className={`${MONO} mt-4 text-[0.9375rem] leading-snug font-bold text-[#2b2340]`}>{t.bf.body}</p>
+
+            {/* Ticket du code : un clic le copie, et il reste sélectionnable
+                à la main si le presse-papiers est refusé. */}
+            <p className={`${MONO} mt-4 text-[0.75rem] font-bold tracking-[0.14em] text-[#5b5370] uppercase`}>
+              {t.bf.code}
+            </p>
+            <button
+              type="button"
+              onClick={copyCode}
+              aria-label={`${t.bf.copy} ${PROMO_CODE}`}
+              className="mt-1.5 inline-flex items-center gap-3 rounded-lg border-2 border-dashed bg-white px-4 py-2 transition hover:bg-[#fff0f8]"
+              style={{ borderColor: PINK }}
+            >
+              <span className={`${LCD} text-[1.75rem] leading-none tracking-[0.08em] text-black select-all`}>
+                {PROMO_CODE}
+              </span>
+              <span
+                className={`${MONO} rounded-md px-2 py-1 text-[0.6875rem] font-bold tracking-[0.1em] uppercase`}
+                style={{ color: "#fff", background: copied ? "#1f9d55" : PINK }}
+                aria-live="polite"
+              >
+                {copied ? t.bf.copied : t.bf.copy}
+              </span>
+            </button>
 
             <Link
               href="/catalogue"
