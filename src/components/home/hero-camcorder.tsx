@@ -88,10 +88,7 @@ const HERO_CSS = `
   0%,100%{transform:translate3d(0,0,0) rotate(var(--r,0deg)) scale(1)}
   50%{transform:translate3d(0,-7%,0) rotate(calc(var(--r,0deg) + 6deg)) scale(1.05)}
 }
-.lhz-strass{animation:lhzBob 7s ease-in-out infinite;filter:drop-shadow(0 3px 4px rgba(30,36,48,.35))}
-.lhz-strass-2{animation-duration:8.4s;animation-delay:-2.2s}
-.lhz-strass-3{animation-duration:6.2s;animation-delay:-3.7s}
-.lhz-strass-4{animation-duration:9s;animation-delay:-5.1s}
+.lhz-strass{display:block;height:100%;width:100%;animation:lhzBob 7s ease-in-out infinite;filter:drop-shadow(0 3px 4px rgba(30,36,48,.35))}
 
 @media (prefers-reduced-motion: reduce){
   .lhz-track,.lhz-rec,.lhz-caret,.lhz-bounce{animation:none!important}
@@ -183,20 +180,61 @@ const PROMO_PILL = "/black-friday-pill.webp";
     posés à cheval sur les bords de la pastille. */
 const STRASS_STAR: [string, string, string] = ["#FFB3D6", "#F0509A", "#B7175C"];
 const STRASS_HEART: [string, string, string] = ["#FFC0DF", "#EE4B96", "#B3155A"];
-const PROMO_STRASS = [
-  { key: "p1", cls: "lhz-strass-1 -top-4 -left-3 h-[clamp(28px,3.4vw,46px)] w-[clamp(28px,3.4vw,46px)]", r: "-14deg", node: <ChromeStar uid="bf-chrome" /> },
-  { key: "p2", cls: "lhz-strass-2 -top-3 right-[14%] h-[clamp(20px,2.4vw,32px)] w-[clamp(20px,2.4vw,32px)]", r: "12deg", node: <GemSticker uid="bf-star-a" shape="star" hue={STRASS_STAR} /> },
-  { key: "p3", cls: "lhz-strass-3 -bottom-3 left-[16%] h-[clamp(20px,2.4vw,32px)] w-[clamp(20px,2.4vw,32px)]", r: "10deg", node: <GemSticker uid="bf-heart" shape="heart" hue={STRASS_HEART} /> },
-  { key: "p4", cls: "lhz-strass-4 -right-3 -bottom-4 h-[clamp(26px,3vw,42px)] w-[clamp(26px,3vw,42px)]", r: "-12deg", node: <GemSticker uid="bf-star-b" shape="star" hue={STRASS_STAR} /> },
+/* Tailles des strass : grand, moyen, petit. */
+const STRASS_SIZE = {
+  L: "clamp(24px,3vw,42px)",
+  M: "clamp(18px,2.2vw,30px)",
+  S: "clamp(12px,1.5vw,20px)",
+} as const;
+
+/** Strass serrés tout autour de la pastille, à cheval sur son bord.
+    x / y en % de la pastille (centre du strass), jamais sur le texte. */
+const PROMO_STRASS: { x: number; y: number; s: keyof typeof STRASS_SIZE; k: "chrome" | "star" | "heart"; r: number }[] = [
+  /* Bord haut */
+  { x: 3, y: 10, s: "L", k: "chrome", r: -14 },
+  { x: 12, y: 0, s: "S", k: "heart", r: 8 },
+  { x: 21, y: -2, s: "M", k: "star", r: 14 },
+  { x: 31, y: 1, s: "S", k: "star", r: -10 },
+  { x: 40, y: -4, s: "M", k: "heart", r: -6 },
+  { x: 50, y: 0, s: "S", k: "chrome", r: 12 },
+  { x: 60, y: -3, s: "M", k: "star", r: -16 },
+  { x: 70, y: 1, s: "S", k: "heart", r: 10 },
+  { x: 79, y: -2, s: "L", k: "star", r: 12 },
+  { x: 89, y: 2, s: "S", k: "chrome", r: -8 },
+  { x: 97, y: 14, s: "M", k: "heart", r: 16 },
+  /* Flancs */
+  { x: -1, y: 52, s: "M", k: "star", r: 18 },
+  { x: 101, y: 50, s: "S", k: "star", r: -12 },
+  /* Bord bas */
+  { x: 3, y: 90, s: "S", k: "heart", r: -12 },
+  { x: 11, y: 100, s: "M", k: "star", r: -8 },
+  { x: 20, y: 103, s: "L", k: "heart", r: 10 },
+  { x: 30, y: 99, s: "S", k: "chrome", r: 14 },
+  { x: 39, y: 104, s: "M", k: "star", r: -14 },
+  { x: 49, y: 100, s: "S", k: "heart", r: 6 },
+  { x: 58, y: 103, s: "M", k: "chrome", r: -10 },
+  { x: 67, y: 99, s: "S", k: "star", r: 16 },
+  { x: 76, y: 103, s: "M", k: "heart", r: -6 },
+  { x: 86, y: 99, s: "S", k: "star", r: 10 },
+  { x: 96, y: 88, s: "L", k: "star", r: -12 },
 ];
+
+function StrassNode({ k, uid }: { k: "chrome" | "star" | "heart"; uid: string }) {
+  if (k === "chrome") return <ChromeStar uid={uid} />;
+  return <GemSticker uid={uid} shape={k} hue={k === "heart" ? STRASS_HEART : STRASS_STAR} />;
+}
 
 function PromoBadge({ label }: { label: string }) {
   const [on, setOn] = useState(false);
 
   useEffect(() => {
-    const now = Date.now();
-    const preview = new URLSearchParams(window.location.search).get("promo") === "preview";
-    setOn(preview || (now >= PROMO_START && now < PROMO_END));
+    const check = () => {
+      const now = Date.now();
+      const preview = new URLSearchParams(window.location.search).get("promo") === "preview";
+      setOn(preview || (now >= PROMO_START && now < PROMO_END));
+    };
+
+    check();
   }, []);
 
   if (!on) return null;
@@ -224,14 +262,24 @@ function PromoBadge({ label }: { label: string }) {
         </p>
       </div>
 
-      {PROMO_STRASS.map((st) => (
+      {PROMO_STRASS.map((st, i) => (
         <span
-          key={st.key}
+          key={i}
           aria-hidden
-          className={`lhz-strass pointer-events-none absolute z-10 ${st.cls}`}
-          style={{ ["--r" as string]: st.r }}
+          className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-1/2"
+          style={{ left: `${st.x}%`, top: `${st.y}%`, width: STRASS_SIZE[st.s], height: STRASS_SIZE[st.s] }}
         >
-          {st.node}
+          {/* Durées et départs décalés : pas de battement synchrone. */}
+          <span
+            className="lhz-strass"
+            style={{
+              ["--r" as string]: `${st.r}deg`,
+              animationDuration: `${6 + ((i * 7) % 5) * 0.8}s`,
+              animationDelay: `${-((i * 1.3) % 6)}s`,
+            }}
+          >
+            <StrassNode k={st.k} uid={`bf-strass-${i}`} />
+          </span>
         </span>
       ))}
     </div>
