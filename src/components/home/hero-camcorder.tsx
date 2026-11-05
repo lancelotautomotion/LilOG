@@ -19,7 +19,8 @@ import { useEffect, useRef, useState } from "react";
 import { getImageProps } from "next/image";
 import { useLanguage } from "@/lib/i18n-context";
 import { Typewriter } from "@/components/typewriter";
-import { MONO, NEON, PINK } from "@/components/y2k/kit";
+import { LCD, MONO, NEON, PINK } from "@/components/y2k/kit";
+import { ChromeStar, GemSticker } from "@/components/contact/stickers";
 
 /**
  * Vidéo de fond. Le fichier n'est pas versionné (poids) : dépose
@@ -81,8 +82,20 @@ const HERO_CSS = `
    repli, volontairement basse, ne sert qu'avant la mesure. */
 .lhz-bg{top:var(--lhz-nav-b, calc(44px + var(--lhb-h, 0px)))}
 
+/* Strass de l'encart promo : même flottement que ceux de /login,
+   durées décalées pour éviter un battement synchrone. */
+@keyframes lhzBob{
+  0%,100%{transform:translate3d(0,0,0) rotate(var(--r,0deg)) scale(1)}
+  50%{transform:translate3d(0,-7%,0) rotate(calc(var(--r,0deg) + 6deg)) scale(1.05)}
+}
+.lhz-strass{animation:lhzBob 7s ease-in-out infinite;filter:drop-shadow(0 3px 4px rgba(30,36,48,.35))}
+.lhz-strass-2{animation-duration:8.4s;animation-delay:-2.2s}
+.lhz-strass-3{animation-duration:6.2s;animation-delay:-3.7s}
+.lhz-strass-4{animation-duration:9s;animation-delay:-5.1s}
+
 @media (prefers-reduced-motion: reduce){
   .lhz-track,.lhz-rec,.lhz-caret,.lhz-bounce{animation:none!important}
+  .lhz-strass{animation:none!important;transform:rotate(var(--r,0deg))}
 }
 `;
 
@@ -166,6 +179,17 @@ const PROMO_END = Date.parse("2026-11-30T00:00:00+01:00");
 /** Fond de l'encart : la pastille plastique fournie, recadrée au plus près. */
 const PROMO_PILL = "/black-friday-pill.webp";
 
+/** Strass de la maison (mêmes pastilles et teintes que /login et /faq),
+    posés à cheval sur les bords de la pastille. */
+const STRASS_STAR: [string, string, string] = ["#FFB3D6", "#F0509A", "#B7175C"];
+const STRASS_HEART: [string, string, string] = ["#FFC0DF", "#EE4B96", "#B3155A"];
+const PROMO_STRASS = [
+  { key: "p1", cls: "lhz-strass-1 -top-4 -left-3 h-[clamp(28px,3.4vw,46px)] w-[clamp(28px,3.4vw,46px)]", r: "-14deg", node: <ChromeStar uid="bf-chrome" /> },
+  { key: "p2", cls: "lhz-strass-2 -top-3 right-[14%] h-[clamp(20px,2.4vw,32px)] w-[clamp(20px,2.4vw,32px)]", r: "12deg", node: <GemSticker uid="bf-star-a" shape="star" hue={STRASS_STAR} /> },
+  { key: "p3", cls: "lhz-strass-3 -bottom-3 left-[16%] h-[clamp(20px,2.4vw,32px)] w-[clamp(20px,2.4vw,32px)]", r: "10deg", node: <GemSticker uid="bf-heart" shape="heart" hue={STRASS_HEART} /> },
+  { key: "p4", cls: "lhz-strass-4 -right-3 -bottom-4 h-[clamp(26px,3vw,42px)] w-[clamp(26px,3vw,42px)]", r: "-12deg", node: <GemSticker uid="bf-star-b" shape="star" hue={STRASS_STAR} /> },
+];
+
 function PromoBadge({ label }: { label: string }) {
   const [on, setOn] = useState(false);
 
@@ -180,14 +204,15 @@ function PromoBadge({ label }: { label: string }) {
   return (
     <div
       className="absolute right-10 bottom-24 z-30 w-[min(70vw,270px)] md:right-24 md:bottom-32 md:w-[clamp(330px,27vw,430px)]"
-      style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,.45))" }}
     >
       <div
         className="flex aspect-[1829/464] w-full flex-col items-center justify-center bg-contain bg-center bg-no-repeat px-[9%] text-center"
-        style={{ backgroundImage: `url(${PROMO_PILL})` }}
+        style={{ backgroundImage: `url(${PROMO_PILL})`, filter: "drop-shadow(0 6px 18px rgba(0,0,0,.45))" }}
       >
+        {/* VT323 : police LCD de la maison, plus étroite et plus basse sur
+            ligne que la mono, d'où un corps plus grand. */}
         <p
-          className={`${MONO} text-[clamp(0.875rem,1.35vw,1.25rem)] leading-none font-bold tracking-[0.1em] whitespace-nowrap text-black uppercase`}
+          className={`${LCD} text-[clamp(1.375rem,2.3vw,2.125rem)] leading-[0.85] tracking-[0.08em] whitespace-nowrap text-black uppercase`}
         >
           Black Friday Month
         </p>
@@ -198,6 +223,17 @@ function PromoBadge({ label }: { label: string }) {
           {label}
         </p>
       </div>
+
+      {PROMO_STRASS.map((st) => (
+        <span
+          key={st.key}
+          aria-hidden
+          className={`lhz-strass pointer-events-none absolute z-10 ${st.cls}`}
+          style={{ ["--r" as string]: st.r }}
+        >
+          {st.node}
+        </span>
+      ))}
     </div>
   );
 }
