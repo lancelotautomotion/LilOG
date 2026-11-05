@@ -111,6 +111,7 @@ const SECTIONS: DocSection[] = [
         <Bullets
           items={[
             { label: "Shopify Inc.", text: ": plateforme e-commerce et paiement" },
+            { label: "Resend", text: ": envoi des e-mails et gestion de la liste d'inscription (formulaire de contact, Star Club)" },
             { label: "Colissimo / Mondial Relay", text: ": transporteurs pour la livraison" },
             { label: "Klarna / Alma", text: ": paiement fractionné (si utilisé)" },
             {

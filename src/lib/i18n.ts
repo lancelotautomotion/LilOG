@@ -22,6 +22,13 @@ export interface Dict {
   hero: { kicker: string; line: string; words: string[]; shop: string; story: string; avail: string; promo: string };
   /** Fenêtre BLACK_FRIDAY.EXE, ouverte à l'arrivée sur le site. */
   bf: { body: string; cta: string; close: string; code: string; copy: string; copied: string };
+  /** Bande + fenêtre STAR_CLUB.EXE : -10 % sur la première commande. */
+  welcome: {
+    band: string; bandShort: string; bandCta: string; title: string; sub: string; body: string;
+    email: string; placeholder: string; submit: string; sending: string;
+    invalid: string; error: string; consent: string; privacy: string;
+    unlocked: string; hint: string;
+  };
   /** LIL_OG_DESKTOP.EXE : libellés propres à la page d'accueil Y2K OS. */
   home: {
     scroll: string;
@@ -83,6 +90,7 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG · Vintage, Reborn", line: "We are born to",
       words: ["Shine.", "Conquer.", "Slay.", "Burn."], shop: "Shop the drop", story: "Our story", avail: "Next drop · September 6", promo: "-20% on EVERYTHING from Nov 15 to 29" },
     bf: { body: "on EVERYTHING, from November 15 to 29", cta: "Shop now", close: "Close", code: "with code", copy: "Copy", copied: "Copied!" },
+    welcome: { band: "First order? Get 10% off", bandShort: "10% off 1st order", bandCta: "Get my code", title: "Join the Star Club", sub: "on your first order", body: "Drops before everyone else, one-of-a-kind pieces first.", email: "Your email", placeholder: "you@email.com", submit: "Unlock my code", sending: "Sending…", invalid: "This email address isn't valid.", error: "Oops, try again in a moment.", consent: "By signing up, you agree to receive Lil'OG emails. Unsubscribe anytime.", privacy: "Privacy policy", unlocked: "Code unlocked!", hint: "Enter it at checkout, on your first order." },
     home: {
       scroll: "SCROLL",
       slotIntroTitle: "What's the Dressing Machine?",
@@ -137,6 +145,7 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG · Vintage, Renaissance", line: "Nous sommes nées pour",
       words: ["Briller.", "Conquérir.", "Régner.", "Flamber."], shop: "Voir le drop", story: "Notre histoire", avail: "Prochain drop · 6 septembre", promo: "-20% sur TOUT du 15 au 29 novembre" },
     bf: { body: "sur TOUT le site, du 15 au 29 novembre", cta: "Voir les pièces", close: "Fermer", code: "avec le code", copy: "Copier", copied: "Copié !" },
+    welcome: { band: "Première commande ? Profite de -10 %", bandShort: "-10 % 1re commande", bandCta: "Obtenir mon code", title: "Rejoins le Star Club", sub: "sur ta première commande", body: "Les drops en avant-première, les pièces uniques avant tout le monde.", email: "Ton e-mail", placeholder: "ton@email.com", submit: "Débloquer mon code", sending: "Envoi…", invalid: "Cette adresse e-mail n'est pas valide.", error: "Oups, réessaie dans un instant.", consent: "En t'inscrivant, tu acceptes de recevoir les e-mails Lil'OG. Désinscription à tout moment.", privacy: "Politique de confidentialité", unlocked: "Code débloqué !", hint: "À saisir au paiement, sur ta première commande." },
     home: {
       scroll: "DÉFILER",
       slotIntroTitle: "C'est quoi la Dressing Machine ?",
@@ -191,6 +200,7 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG · Vintage, Renacido", line: "Nacimos para",
       words: ["Brillar.", "Conquistar.", "Reinar.", "Arder."], shop: "Ver el drop", story: "Nuestra historia", avail: "Próximo drop · 6 de septiembre", promo: "-20% en TODO del 15 al 29 de noviembre" },
     bf: { body: "en TODA la tienda, del 15 al 29 de noviembre", cta: "Ver las piezas", close: "Cerrar", code: "con el código", copy: "Copiar", copied: "¡Copiado!" },
+    welcome: { band: "¿Primer pedido? Disfruta de un -10 %", bandShort: "-10 % 1er pedido", bandCta: "Obtener mi código", title: "Únete al Star Club", sub: "en tu primer pedido", body: "Los drops en primicia, las piezas únicas antes que nadie.", email: "Tu e-mail", placeholder: "tu@email.com", submit: "Desbloquear mi código", sending: "Enviando…", invalid: "Esta dirección de e-mail no es válida.", error: "Ups, inténtalo de nuevo en un momento.", consent: "Al suscribirte, aceptas recibir los e-mails de Lil'OG. Puedes darte de baja cuando quieras.", privacy: "Política de privacidad", unlocked: "¡Código desbloqueado!", hint: "Introdúcelo al pagar, en tu primer pedido." },
     home: {
       scroll: "DESLIZA",
       slotIntroTitle: "¿Qué es la Dressing Machine?",
@@ -245,6 +255,7 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG · Vintage, Rinato", line: "Siamo nati per",
       words: ["Brillare.", "Conquistare.", "Regnare.", "Ardere."], shop: "Vedi il drop", story: "La nostra storia", avail: "Prossimo drop · 6 settembre", promo: "-20% su TUTTO dal 15 al 29 novembre" },
     bf: { body: "su TUTTO il sito, dal 15 al 29 novembre", cta: "Vedi i capi", close: "Chiudi", code: "con il codice", copy: "Copia", copied: "Copiato!" },
+    welcome: { band: "Primo ordine? Approfitta del -10%", bandShort: "-10% 1° ordine", bandCta: "Ottieni il mio codice", title: "Entra nello Star Club", sub: "sul tuo primo ordine", body: "I drop in anteprima, i pezzi unici prima di tutti.", email: "La tua e-mail", placeholder: "tu@email.com", submit: "Sblocca il mio codice", sending: "Invio…", invalid: "Questo indirizzo e-mail non è valido.", error: "Ops, riprova tra un attimo.", consent: "Iscrivendoti, accetti di ricevere le e-mail di Lil'OG. Puoi annullare l'iscrizione in qualsiasi momento.", privacy: "Informativa sulla privacy", unlocked: "Codice sbloccato!", hint: "Inseriscilo al pagamento, sul tuo primo ordine." },
     home: {
       scroll: "SCORRI",
       slotIntroTitle: "Cos'è la Dressing Machine?",
@@ -299,6 +310,7 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG · Vintage, Wiedergeboren", line: "Wir sind geboren, um zu",
       words: ["Strahlen.", "Erobern.", "Herrschen.", "Brennen."], shop: "Zum Drop", story: "Unsere Geschichte", avail: "Nächster Drop · 6. September", promo: "-20% auf ALLES vom 15. bis 29. November" },
     bf: { body: "auf ALLES, vom 15. bis 29. November", cta: "Zu den Teilen", close: "Schließen", code: "mit dem Code", copy: "Kopieren", copied: "Kopiert!" },
+    welcome: { band: "Erste Bestellung? Sichere dir -10 %", bandShort: "-10 % Erstbestellung", bandCta: "Code holen", title: "Werde Teil des Star Club", sub: "auf deine erste Bestellung", body: "Drops vor allen anderen, Unikate zuerst.", email: "Deine E-Mail", placeholder: "du@email.com", submit: "Code freischalten", sending: "Wird gesendet…", invalid: "Diese E-Mail-Adresse ist ungültig.", error: "Ups, versuch es gleich noch einmal.", consent: "Mit deiner Anmeldung stimmst du zu, E-Mails von Lil'OG zu erhalten. Abmeldung jederzeit möglich.", privacy: "Datenschutzerklärung", unlocked: "Code freigeschaltet!", hint: "Beim Bezahlen eingeben, für deine erste Bestellung." },
     home: {
       scroll: "SCROLLEN",
       slotIntroTitle: "Was ist die Dressing Machine?",
@@ -353,6 +365,7 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG · Винтаж, Возрождённый", line: "Мы рождены, чтобы",
       words: ["Сиять.", "Покорять.", "Править.", "Гореть."], shop: "Смотреть дроп", story: "Наша история", avail: "Следующий дроп · 6 сентября", promo: "-20% на ВСЁ с 15 по 29 ноября" },
     bf: { body: "на ВСЁ, с 15 по 29 ноября", cta: "Смотреть вещи", close: "Закрыть", code: "по коду", copy: "Копировать", copied: "Скопировано!" },
+    welcome: { band: "Первый заказ? Скидка -10 %", bandShort: "-10 % на 1-й заказ", bandCta: "Получить код", title: "Вступай в Star Club", sub: "на первый заказ", body: "Дропы раньше всех, уникальные вещи — первой.", email: "Твой e-mail", placeholder: "ty@email.com", submit: "Открыть мой код", sending: "Отправка…", invalid: "Этот адрес e-mail недействителен.", error: "Ой, попробуй ещё раз чуть позже.", consent: "Подписываясь, ты соглашаешься получать письма Lil'OG. Отписаться можно в любой момент.", privacy: "Политика конфиденциальности", unlocked: "Код открыт!", hint: "Введи его при оплате первого заказа." },
     home: {
       scroll: "ЛИСТАТЬ",
       slotIntroTitle: "Что такое Dressing Machine?",
@@ -407,6 +420,7 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG · 复古，重生", line: "我们生来",
       words: ["闪耀。", "征服。", "称王。", "燃烧。"], shop: "查看上新", story: "我们的故事", avail: "下次上新 · 9月6日", promo: "11月15日至29日 全场 -20%" },
     bf: { body: "11月15日至29日，全场商品", cta: "查看单品", close: "关闭", code: "优惠码", copy: "复制", copied: "已复制！" },
+    welcome: { band: "首次下单？立享 9 折", bandShort: "首单 9 折", bandCta: "获取优惠码", title: "加入 Star Club", sub: "首单专享", body: "抢先看上新，独一无二的单品先到先得。", email: "你的邮箱", placeholder: "you@email.com", submit: "解锁优惠码", sending: "发送中…", invalid: "邮箱地址无效。", error: "出错了，请稍后再试。", consent: "订阅即表示你同意接收 Lil'OG 的邮件，可随时退订。", privacy: "隐私政策", unlocked: "优惠码已解锁！", hint: "首单结账时输入即可。" },
     home: {
       scroll: "向下滚动",
       slotIntroTitle: "DRESSING MACHINE 是什么？",
@@ -461,6 +475,7 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG · ヴィンテージ、再生", line: "私たちは生まれた",
       words: ["輝くために。", "制すために。", "魅せるために。", "燃えるために。"], shop: "ドロップを見る", story: "私たちの物語", avail: "次のドロップ · 9月6日", promo: "11月15日〜29日 全品 -20%" },
     bf: { body: "11月15日〜29日、全品対象", cta: "アイテムを見る", close: "閉じる", code: "クーポンコード", copy: "コピー", copied: "コピーしました！" },
+    welcome: { band: "初めてのご注文？10%オフ", bandShort: "初回10%オフ", bandCta: "コードを受け取る", title: "Star Clubに参加", sub: "初回注文限定", body: "新作をいち早く、一点ものを誰よりも先に。", email: "メールアドレス", placeholder: "you@email.com", submit: "コードを表示", sending: "送信中…", invalid: "メールアドレスが正しくありません。", error: "エラーが発生しました。少し待ってからお試しください。", consent: "登録すると、Lil'OGからのメール受信に同意したことになります。配信停止はいつでも可能です。", privacy: "プライバシーポリシー", unlocked: "コードが表示されました！", hint: "初回注文のお支払い時に入力してください。" },
     home: {
       scroll: "スクロール",
       slotIntroTitle: "ドレッシングマシンって何？",
@@ -515,6 +530,7 @@ export const DICT: Record<LangCode, Dict> = {
     hero: { kicker: "Lil'OG · 빈티지, 다시 태어나다", line: "우리는 태어났다",
       words: ["빛나기 위해.", "정복하기 위해.", "군림하기 위해.", "불태우기 위해."], shop: "드롭 보기", story: "우리의 이야기", avail: "다음 드롭 · 9월 6일", promo: "11월 15일~29일 전 상품 -20%" },
     bf: { body: "11월 15일~29일, 전 상품", cta: "아이템 보기", close: "닫기", code: "할인 코드", copy: "복사", copied: "복사됨!" },
+    welcome: { band: "첫 주문이신가요? 10% 할인", bandShort: "첫 주문 10%", bandCta: "코드 받기", title: "Star Club 가입하기", sub: "첫 주문 한정", body: "새 드롭을 가장 먼저, 단 하나뿐인 아이템을 누구보다 빨리.", email: "이메일", placeholder: "you@email.com", submit: "코드 확인하기", sending: "전송 중…", invalid: "유효하지 않은 이메일 주소입니다.", error: "앗, 잠시 후 다시 시도해 주세요.", consent: "가입하면 Lil'OG 이메일 수신에 동의하게 됩니다. 언제든지 수신 거부할 수 있습니다.", privacy: "개인정보 처리방침", unlocked: "코드가 열렸어요!", hint: "첫 주문 결제 시 입력하세요." },
     home: {
       scroll: "스크롤",
       slotIntroTitle: "드레싱 머신이 뭐예요?",
