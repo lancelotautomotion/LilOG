@@ -7,7 +7,7 @@
    adresse valide.
 
    Enregistrement :
-     1. SHOPIFY_ADMIN_ACCESS_TOKEN posé → l'adresse devient une fiche
+     1. Accès Admin Shopify configuré → l'adresse devient une fiche
         client Shopify abonnée au marketing par e-mail, étiquetée
         `star-club` (Shopify Email, automatisations). Une fiche
         existante ne voit changer que son consentement et l'étiquette.
@@ -21,8 +21,9 @@
    prive pas la visiteuse de son code : elle a fait sa part.
 
    Variables (Vercel → Settings → Environment Variables) :
-     · SHOPIFY_ADMIN_ACCESS_TOKEN : jeton d'une app Shopify avec
-                            l'accès write_customers.
+     · SHOPIFY_ADMIN_CLIENT_ID / SHOPIFY_ADMIN_CLIENT_SECRET :
+                            appli du Dev Dashboard Shopify (read_customers,
+                            write_customers), voir @/lib/shopify/admin.
      · RESEND_API_KEY      : déjà utilisée par /api/contact.
      · RESEND_AUDIENCE_ID  : facultative, l'identifiant de l'audience.
      · WELCOME_CODE        : facultative, défaut STAR10.

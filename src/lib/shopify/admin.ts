@@ -10,12 +10,12 @@ import "server-only";
       en invitée) pour l'activer quand sa titulaire crée son compte,
       au lieu que Shopify refuse la création (voir dormant-account).
 
-   Le jeton Admin donne la main sur toutes les fiches clients : il
-   ne vit que dans la variable SHOPIFY_ADMIN_ACCESS_TOKEN (Vercel),
+   L'accès Admin donne la main sur toutes les fiches clients : ses
+   identifiants ne vivent que dans les variables Vercel (voir plus bas),
    `server-only` interdit d'importer ce module dans un composant
    client, et aucune valeur n'est jamais journalisée.
 
-   Sans jeton, `adminConfigured()` vaut false et chaque appelant
+   Sans identifiants, `adminConfigured()` vaut false et chaque appelant
    retombe sur son comportement d'avant : rien ne casse.
 
    Comme pour le Storefront API, une mutation n'est jamais rejouée.
@@ -25,13 +25,56 @@ const domain = process.env.SHOPIFY_STORE_DOMAIN;
 const apiVersion = process.env.SHOPIFY_ADMIN_API_VERSION || "2025-01";
 const TIMEOUT_MS = 8_000;
 
+/* ── Jeton d'accès ────────────────────────────────────────────────────
+   Les applis du Dev Dashboard Shopify n'ont plus de jeton permanent :
+   le serveur en demande un (« client credentials grant ») avec
+   SHOPIFY_ADMIN_CLIENT_ID et SHOPIFY_ADMIN_CLIENT_SECRET, valable 24 h,
+   gardé en mémoire et redemandé un peu avant expiration.
+   Un jeton fixe SHOPIFY_ADMIN_ACCESS_TOKEN (ancienne appli créée dans
+   l'admin) reste accepté et passe en priorité. */
+const EXPIRY_MARGIN_MS = 5 * 60 * 1000;
+let cached: { token: string; expiresAt: number } | null = null;
+
+function hasClientCredentials(): boolean {
+  return Boolean(process.env.SHOPIFY_ADMIN_CLIENT_ID && process.env.SHOPIFY_ADMIN_CLIENT_SECRET);
+}
+
 export function adminConfigured(): boolean {
-  return Boolean(domain && process.env.SHOPIFY_ADMIN_ACCESS_TOKEN);
+  return Boolean(domain && (process.env.SHOPIFY_ADMIN_ACCESS_TOKEN || hasClientCredentials()));
+}
+
+async function accessToken(): Promise<string> {
+  const fixed = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
+  if (fixed) return fixed;
+  if (cached && Date.now() < cached.expiresAt - EXPIRY_MARGIN_MS) return cached.token;
+
+  const res = await fetch(`https://${domain}/admin/oauth/access_token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: process.env.SHOPIFY_ADMIN_CLIENT_ID as string,
+      client_secret: process.env.SHOPIFY_ADMIN_CLIENT_SECRET as string,
+    }),
+    cache: "no-store",
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  /* Le corps d'erreur n'est pas journalisé : il pourrait renvoyer des
+     paramètres de la requête. Le code HTTP suffit au diagnostic. */
+  if (!res.ok) throw new Error(`Shopify token request failed: ${res.status}`);
+
+  const json = (await res.json()) as { access_token?: string; expires_in?: number };
+  if (!json.access_token) throw new Error("Shopify token request: no access_token");
+  cached = {
+    token: json.access_token,
+    expiresAt: Date.now() + (json.expires_in ?? 3600) * 1000,
+  };
+  return cached.token;
 }
 
 async function adminFetch<T>(query: string, variables: Record<string, unknown>): Promise<T> {
-  const token = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
-  if (!domain || !token) throw new Error("Shopify Admin API non configurée");
+  if (!adminConfigured()) throw new Error("Shopify Admin API non configurée");
+  const token = await accessToken();
 
   const res = await fetch(`https://${domain}/admin/api/${apiVersion}/graphql.json`, {
     method: "POST",
@@ -40,6 +83,9 @@ async function adminFetch<T>(query: string, variables: Record<string, unknown>):
     cache: "no-store",
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
+  /* Jeton révoqué ou expiré plus tôt que prévu : on l'oublie pour que le
+     prochain appel en redemande un. */
+  if (res.status === 401) cached = null;
   if (!res.ok) throw new Error(`Shopify Admin API error: ${res.status}`);
 
   const json = (await res.json()) as { data?: T; errors?: { message: string }[] };
