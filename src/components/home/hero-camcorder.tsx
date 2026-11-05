@@ -19,7 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import { getImageProps } from "next/image";
 import { useLanguage } from "@/lib/i18n-context";
 import { Typewriter } from "@/components/typewriter";
-import { MONO, NEON } from "@/components/y2k/kit";
+import { MONO, NEON, PINK } from "@/components/y2k/kit";
 
 /**
  * Vidéo de fond. Le fichier n'est pas versionné (poids) : dépose
@@ -145,6 +145,59 @@ function Brackets() {
       <span className={`${base} top-0 right-0 border-t-2 border-r-2`} />
       <span className={`${base} bottom-0 left-0 border-b-2 border-l-2`} />
       <span className={`${base} right-0 bottom-0 border-r-2 border-b-2`} />
+    </div>
+  );
+}
+
+/* ============================================================
+   Encart promo : Black Friday Month
+   ------------------------------------------------------------
+   Visible du 15 au 29 novembre 2026 inclus, heure de Paris.
+   La date est lue au montage, côté visiteur : la page d'accueil
+   est servie en statique, un test fait au rendu serveur figerait
+   la décision au moment du build. `?promo=preview` force
+   l'affichage pour vérifier l'encart avant l'ouverture.
+   ============================================================ */
+
+/** 15 nov. 00:00 et 30 nov. 00:00, heure de Paris (UTC+1 en novembre). */
+const PROMO_START = Date.parse("2026-11-15T00:00:00+01:00");
+const PROMO_END = Date.parse("2026-11-30T00:00:00+01:00");
+
+/** Fond de l'encart : la pastille plastique fournie, recadrée au plus près. */
+const PROMO_PILL = "/black-friday-pill.webp";
+
+function PromoBadge({ label }: { label: string }) {
+  const [on, setOn] = useState(false);
+
+  useEffect(() => {
+    const now = Date.now();
+    const preview = new URLSearchParams(window.location.search).get("promo") === "preview";
+    setOn(preview || (now >= PROMO_START && now < PROMO_END));
+  }, []);
+
+  if (!on) return null;
+
+  return (
+    <div
+      className="absolute right-10 bottom-24 z-30 w-[min(70vw,270px)] md:right-24 md:bottom-32 md:w-[clamp(330px,27vw,430px)]"
+      style={{ filter: "drop-shadow(0 6px 18px rgba(0,0,0,.45))" }}
+    >
+      <div
+        className="flex aspect-[1829/464] w-full flex-col items-center justify-center bg-contain bg-center bg-no-repeat px-[9%] text-center"
+        style={{ backgroundImage: `url(${PROMO_PILL})` }}
+      >
+        <p
+          className={`${MONO} text-[clamp(0.875rem,1.35vw,1.25rem)] leading-none font-bold tracking-[0.1em] whitespace-nowrap text-black uppercase`}
+        >
+          Black Friday Month
+        </p>
+        <p
+          className={`${MONO} mt-[0.45em] text-[clamp(0.625rem,0.9vw,0.8125rem)] leading-tight font-bold tracking-[0.02em]`}
+          style={{ color: PINK }}
+        >
+          {label}
+        </p>
+      </div>
     </div>
   );
 }
@@ -396,6 +449,8 @@ export function HeroCamcorder() {
           ▸ LIL_OG_DESKTOP.EXE · <span className="whitespace-nowrap">{t.hero.avail}</span>
         </p>
       </div>
+
+      <PromoBadge label={t.hero.promo} />
 
       {/* ---- Ligne basse : date, mode, invite de défilement ---- */}
       <div className="absolute inset-x-10 bottom-4 z-30 flex items-end justify-between gap-3 md:inset-x-24 md:bottom-9">
