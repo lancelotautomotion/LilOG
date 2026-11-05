@@ -11,7 +11,7 @@
    le remontre directement, sans redemander l'adresse.
 
    Habillage maison : cadre #b8b4cc, barre de titre violette,
-   papier millimétré, VT323 pour les afficheurs ; la photo
+   fond uni, VT323 pour les afficheurs ; la photo
    occupe la colonne de droite (le haut, sur téléphone).
    ============================================================ */
 
@@ -20,7 +20,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
 import {
-  GRID_BG,
   HARD_SHADOW,
   LCD,
   MONO,
@@ -186,7 +185,7 @@ export function WelcomePopup() {
           </div>
 
           {/* ── Formulaire / code ── */}
-          <div className="flex flex-1 flex-col justify-center px-5 py-6 md:px-7 md:py-8" style={GRID_BG}>
+          <div className="flex flex-1 flex-col justify-center bg-[#f0f0f5] px-5 py-6 md:px-7 md:py-8">
             <h2
               id="lwc-title"
               className={`${LCD} text-[1.75rem] leading-[0.95] tracking-[0.04em] text-black uppercase md:text-[2.125rem]`}
