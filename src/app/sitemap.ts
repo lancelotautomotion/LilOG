@@ -3,7 +3,7 @@ import { shopifyFetch } from "@/lib/shopify/client";
 import { ALL_PRODUCTS_QUERY, ALL_COLLECTIONS_QUERY } from "@/lib/shopify/queries";
 import { CATEGORIES, categorySources } from "@/lib/categories";
 
-const SITE_URL = "https://lilog.shop";
+import { SITE_URL, productPath } from "@/lib/site";
 
 interface ProductsResponse {
   products: {
@@ -165,7 +165,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]);
 
     const productPages: MetadataRoute.Sitemap = products.map((product) => ({
-      url: `${SITE_URL}/products/${product.handle}`,
+      url: `${SITE_URL}${productPath(product.handle)}`,
       changeFrequency: "weekly" as const,
       priority: 0.8,
     }));

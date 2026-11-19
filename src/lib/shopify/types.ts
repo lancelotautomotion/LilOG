@@ -22,6 +22,7 @@ export interface ShopifyProductNode {
   handle: string;
   title: string;
   productType: string;
+  vendor?: string;
   tags: string[];
   availableForSale: boolean;
   options?: { name: string; values?: string[]; optionValues?: { name: string }[] }[];
@@ -101,6 +102,8 @@ export interface ProductDetail {
   handle: string;
   name: string;
   descriptionHtml: string;
+  /** Marque (champ Fournisseur de Shopify). */
+  vendor: string;
   /** Type de produit Shopify : départage les rayons qui partagent une collection. */
   productType: string;
   tags: string[];
@@ -231,12 +234,14 @@ export interface ShopifyCartLineNode {
     id: string;
     title: string;
     availableForSale: boolean;
+    requiresShipping?: boolean;
     price: ShopifyMoney;
     image: ShopifyImage | null;
     product: {
       title: string;
       handle: string;
       vendor: string;
+      isGiftCard?: boolean;
       etat: { value: string } | null;
       sizeMeta: RichMetafield | null;
       options?: { name: string; optionValues?: { name: string }[] }[];
@@ -285,6 +290,11 @@ export interface CartLine {
   vendor: string;
   etat: string | null;
   size: string | null;
+  /** Carte cadeau : produit numérique, sans taille ni marque, qui n'entre
+   *  pas dans le calcul de la livraison offerte. */
+  isGiftCard: boolean;
+  /** Faux pour un produit sans expédition (carte cadeau numérique). */
+  requiresShipping: boolean;
 }
 
 export interface Cart {

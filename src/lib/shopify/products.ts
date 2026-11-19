@@ -130,8 +130,14 @@ function extractMaterialValues(node: ShopifyProductNode): string[] {
   return [];
 }
 
-function stripEmoji(str: string): string {
-  return str.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/u, "").trim();
+/* Retire les emojis (et leurs résidus invisibles) en tête et en queue de
+   titre. Le sélecteur de variation U+FE0F, le liant U+200D et les espaces
+   de largeur nulle ne sont NI Emoji_Presentation NI Extended_Pictographic :
+   un « ️VESTE EN CUIR » gardait donc son résidu invisible au début. */
+const EMOJI_JUNK = "\\p{Emoji_Presentation}\\p{Extended_Pictographic}\\p{Emoji_Modifier}\\p{Regional_Indicator}\\uFE0E\\uFE0F\\u200B-\\u200D\\u2060\\uFEFF\\s";
+const EMOJI_EDGES = new RegExp(`^[${EMOJI_JUNK}]+|[${EMOJI_JUNK}]+$`, "gu");
+export function stripEmoji(str: string): string {
+  return str.replace(EMOJI_EDGES, "");
 }
 
 // Un champ méta Catégorie Shopify (namespace "shopify") peut être du texte
@@ -444,6 +450,7 @@ export async function getProductByHandle(handle: string): Promise<ProductDetail 
        langage à partir des photos, et finit en dangerouslySetInnerHTML.
        Aucun composant ne doit pouvoir en recevoir une version brute. */
     descriptionHtml: sanitizeDescription(node.descriptionHtml),
+    vendor: node.vendor ?? "",
     productType: node.productType ?? "",
     tags: node.tags,
     price,

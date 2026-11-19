@@ -28,7 +28,10 @@ export function normalizeSize(raw: string): string | null {
     // "38 / 40" and "38/40" are the same combined size, one chip, not two.
     .replace(/\s*([/-])\s*/g, "$1");
   if (ONE_SIZE.has(upper)) return null;
-  const mapped = WORD_SIZES[upper] ?? upper;
+  /* « 2XL » = « XXL », « 3XL » = « XXXL » : deux écritures de la même taille
+     ne doivent pas faire deux pastilles dans le filtre. */
+  const multiX = upper.match(/^([2-4])XL$/);
+  const mapped = multiX ? `${"X".repeat(Number(multiX[1]))}L` : (WORD_SIZES[upper] ?? upper);
   return ONE_SIZE.has(mapped) ? null : mapped;
 }
 
@@ -148,4 +151,35 @@ export function compareSizes(a: string, b: string): number {
   if (aNum) return -1;
   if (bNum) return 1;
   return a.localeCompare(b);
+}
+
+/* ── Tailles et pointures ───────────────────────────────────────────────
+   Le filtre mélangeait « XL », « 2XL » et « 37 / 39 / 40 / 41 » dans une
+   seule rangée. Les pointures et les tailles de vêtement partagent les
+   mêmes nombres (un 38 se porte au pied comme à la taille) : seul le type
+   de la pièce permet de les distinguer. */
+const SHOE_WORDS =
+  /chaussure|basket|sneaker|botte|bottine|boots?\b|mule|sandale|escarpin|talon|ballerine|derby|mocassin|loafer|tong|claquette|espadrille|compens/i;
+
+/** Cette pièce est-elle une chaussure ? Lue sur le type Shopify, puis les tags. */
+export function isShoeProduct(p: { productType?: string; tags?: string[] }): boolean {
+  if (p.productType && SHOE_WORDS.test(p.productType)) return true;
+  return (p.tags ?? []).some((t) => SHOE_WORDS.test(t));
+}
+
+/** Préfixe des clés de pointure : « P:38 » ne se confond jamais avec la taille 38. */
+const SHOE_KEY = "P:";
+
+/** Clé de filtre d'une taille de cette pièce (pointure préfixée si chaussure). */
+export function sizeFilterKey(p: { productType?: string; tags?: string[] }, size: string): string {
+  return isShoeProduct(p) ? `${SHOE_KEY}${size}` : size;
+}
+
+export function isShoeKey(key: string): boolean {
+  return key.startsWith(SHOE_KEY);
+}
+
+/** Libellé affiché d'une clé de filtre. */
+export function sizeKeyLabel(key: string): string {
+  return isShoeKey(key) ? key.slice(SHOE_KEY.length) : key;
 }

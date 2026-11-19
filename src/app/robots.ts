@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -12,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
          X-Robots-Tag posé dans next.config.ts. */
       disallow: ["/api/", "/account/", "/admin/", "/selection/", "/labo/"],
     },
-    sitemap: "https://lilog.shop/sitemap.xml",
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

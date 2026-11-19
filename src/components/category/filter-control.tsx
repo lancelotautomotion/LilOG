@@ -15,7 +15,7 @@
    ============================================================ */
 
 import { useMemo, useState } from "react";
-import { compareSizes } from "@/lib/sizes";
+import { compareSizes, isShoeKey, sizeFilterKey, sizeKeyLabel } from "@/lib/sizes";
 import {
   BEVEL_IN,
   LCD,
@@ -490,10 +490,16 @@ export function FilterControl({
     return [...set].sort();
   }, [products]);
 
-  const sizes = useMemo(() => {
+  /* Deux rangées : tailles de vêtement d'un côté, pointures de l'autre. */
+  const { sizes, shoeSizes } = useMemo(() => {
     const set = new Set<string>();
-    for (const p of products) for (const s of p.sizes) set.add(s);
-    return [...set].sort(compareSizes);
+    for (const p of products) for (const s of p.sizes) set.add(sizeFilterKey(p, s));
+    const all = [...set];
+    const byLabel = (a: string, b: string) => compareSizes(sizeKeyLabel(a), sizeKeyLabel(b));
+    return {
+      sizes: all.filter((k) => !isShoeKey(k)).sort(byLabel),
+      shoeSizes: all.filter(isShoeKey).sort(byLabel),
+    };
   }, [products]);
 
   const colors = useMemo(() => extractColors(products), [products]);
@@ -562,6 +568,18 @@ export function FilterControl({
             {sizes.map((s) => (
               <Chip key={s} on={activeSizes.has(s)} onClick={() => toggleSize(s)}>
                 {s}
+              </Chip>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {shoeSizes.length > 0 && (
+        <Section n={nextN()} label="POINTURE">
+          <div className="flex flex-wrap gap-1.5">
+            {shoeSizes.map((s) => (
+              <Chip key={s} on={activeSizes.has(s)} onClick={() => toggleSize(s)}>
+                {sizeKeyLabel(s)}
               </Chip>
             ))}
           </div>

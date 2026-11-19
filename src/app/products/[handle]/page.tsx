@@ -1,10 +1,12 @@
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ProductDetail } from "@/components/product-detail";
 import { GALLERY_SIZES } from "@/components/product-gallery";
 import { fallbackSrc, imageSrcSet } from "@/lib/shopify/image-url";
 import { getProductByHandle, getFeaturedProducts, getCollectionProducts } from "@/lib/shopify/products";
 import { looksLikeSize, sizeEquivalents } from "@/lib/sizes";
+import { jsonLdString, productDescription, productJsonLd } from "@/lib/product-seo";
+import { SITE_NAME, SITE_URL, cleanHandle, isDirtyHandle, productPath } from "@/lib/site";
 import type { Product, ProductDetail as ProductDetailType } from "@/lib/shopify/types";
 
 const TOPS_HANDLES = ["tops"];
@@ -53,10 +55,30 @@ export async function generateMetadata({
   const { handle } = await params;
   const product = await getProductByHandle(decodeURIComponent(handle)).catch(() => null);
   if (!product) return { title: "Lil'OG" };
-  const plainDescription = product.descriptionHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  const title = `${product.name} · Lil'OG`;
+  const description = productDescription(product);
+  const canonical = `${SITE_URL}${productPath(product.handle)}`;
   return {
-    title: `${product.name} · Lil'OG`,
-    description: plainDescription || undefined,
+    title,
+    description,
+    alternates: { canonical },
+    /* Aperçu d'un lien collé en DM Insta, sur WhatsApp, iMessage… : photo,
+       titre et description (avec le prix) viennent de là. */
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: SITE_NAME,
+      locale: "fr_FR",
+      type: "website",
+      images: product.images.slice(0, 3).map((url) => ({ url, alt: product.name })),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: product.images.slice(0, 1),
+    },
   };
 }
 
@@ -117,6 +139,17 @@ export default async function ProductPage({
   const { handle: rawHandle } = await params;
   const handle = decodeURIComponent(rawHandle);
   const product = await getProductByHandle(handle).catch(() => null);
+
+  /* Anciennes adresses à emoji (`/products/👢-bottes-en-cuir`) : une fois le
+     handle nettoyé dans Shopify, l'ancienne adresse ne répond plus. Plutôt
+     qu'une 404 (liens partagés, résultats Google), on cherche la version
+     propre et on redirige en 301. Tant que le handle n'a pas été renommé
+     dans Shopify, la fiche reste servie telle quelle, sans redirection. */
+  if (!product && isDirtyHandle(handle)) {
+    const clean = cleanHandle(handle);
+    const moved = clean ? await getProductByHandle(clean).catch(() => null) : null;
+    if (moved) permanentRedirect(productPath(moved.handle));
+  }
   // Pièce vendue = fiche introuvable : chaque pièce est unique, une fois
   // vendue elle ne redeviendra jamais disponible, la fiche ne sert donc plus
   // à rien (ni pour le SEO, ni pour un lien resté dans la nature).
@@ -197,6 +230,12 @@ export default async function ProductPage({
           fetchPriority="high"
         />
       )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdString(productJsonLd(product)) }}
+      />
+      <meta property="product:price:amount" content={product.price.toFixed(2)} />
+      <meta property="product:price:currency" content={product.currency} />
       <ProductDetail product={product} related={related} />
     </>
   );

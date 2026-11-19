@@ -4,6 +4,8 @@ import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n-context";
+import { isPromoLive, PROMO_CODE } from "@/lib/promo";
+import { useHydrated } from "@/lib/stored";
 import { useCart } from "@/lib/cart-context";
 import { Nav } from "@/components/nav";
 import { Drawer } from "@/components/drawer";
@@ -135,7 +137,11 @@ function DesktopIcon({
 export function CartPage() {
   const { t } = useLanguage();
   const { data: session } = useSession();
-  const { cart, pending, loaded, removeItem, addItem } = useCart();
+  const { cart, count, pending, loaded, removeItem, addItem } = useCart();
+  /* Le test de la fenêtre promo lit la date du navigateur : il ne peut se
+     faire qu'une fois hydraté (les pages sont servies en statique). */
+  const hydrated = useHydrated();
+  const promoLive = hydrated && isPromoLive();
   const firstName = session?.user?.name?.split(" ")[0] ?? null;
   const [menu, setMenu] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -206,10 +212,20 @@ export function CartPage() {
      Le remplissage est animé en CSS (voir .oc-ship-bar-fill) : rien à
      cadencer côté React, la largeur posée en style inline suffit. */
   const subtotal = cart?.subtotal ?? 0;
-  const ratio = Math.min(1, subtotal / FREE_SHIPPING_TARGET);
+  /* Seules les pièces expédiées comptent pour le seuil : une carte cadeau
+     est numérique, elle ne génère aucun colis. La laisser compter
+     permettrait de « payer » la livraison offerte avec une carte à 90 €.
+     ⚠ À aligner avec Shopify (Paramètres → Expédition) : le tarif gratuit
+     doit lui aussi se calculer sur les seules pièces physiques. */
+  const shippable = lines.filter((l) => !l.isGiftCard && l.requiresShipping);
+  const shippableSubtotal = shippable.reduce((sum, l) => sum + l.price * l.quantity, 0);
+  const onlyDigital = total > 0 && shippable.length === 0;
+  const ratio = Math.min(1, shippableSubtotal / FREE_SHIPPING_TARGET);
   const pct = Math.round(ratio * 100);
-  const remaining = Math.max(0, FREE_SHIPPING_TARGET - subtotal);
-  const shippingFree = subtotal >= FREE_SHIPPING_TARGET;
+  const remaining = Math.max(0, FREE_SHIPPING_TARGET - shippableSubtotal);
+  const shippingFree = !onlyDigital && shippableSubtotal >= FREE_SHIPPING_TARGET;
+  const articleCount = loaded ? (cart?.totalQuantity ?? 0) : count;
+  const articleLabel = `${articleCount} article${articleCount !== 1 ? "s" : ""}`;
 
   const prev = () => setCurrent((i) => (i - 1 + total) % total);
   const next = () => setCurrent((i) => (i + 1) % total);
@@ -347,7 +363,7 @@ export function CartPage() {
           <div className="oc-summary" style={panierHeight != null ? { height: panierHeight } : undefined}>
             <div className="oc-win95-outer oc-summary-win">
               <div className="oc-win95-titlebar">
-                <span className="oc-win95-title">MON PANIER · {total} article{total !== 1 ? "s" : ""}</span>
+                <span className="oc-win95-title">MON PANIER · {articleLabel}</span>
                 <div className="account-win95-chrome">
                   <span>_</span>
                   <span>□</span>
@@ -359,7 +375,7 @@ export function CartPage() {
                   Même instrument que le STYLE SCAN de la fenêtre de gauche :
                   en-tête LCD, piste à blocs bleus, verdict en grandes lettres.
                   Le seuil vient de FREE_SHIPPING_TARGET. */}
-              {total > 0 && (
+              {total > 0 && !onlyDigital && (
                 <div className="oc-ship-meter" role="status">
                   <span className="oc-scan-header">Livraison offerte</span>
 
@@ -379,7 +395,9 @@ export function CartPage() {
 
               <div className="oc-summary-body">
                 {total === 0 ? (
-                  <p className="oc-summary-empty">{loaded ? "Panier vide." : "Chargement…"}</p>
+                  <p className="oc-summary-empty" role={loaded ? undefined : "status"}>
+                    {loaded ? "Panier vide." : count > 0 ? `Chargement de vos ${count} article${count > 1 ? "s" : ""}…` : "Chargement…"}
+                  </p>
                 ) : (
                   <ul className="m-0 flex list-none flex-col gap-2 p-0">
                     {lines.map((line, i) => {
@@ -415,17 +433,21 @@ export function CartPage() {
                               </button>
 
                               <div className="flex flex-wrap gap-1.5">
-                                {(line.variantTitle || line.size) && (
+                                {line.isGiftCard ? (
+                                  <span className={`${MONO} max-w-full rounded border border-[#c6c2d8] bg-[#f0eefa] px-1.5 py-0.5 text-[0.8125rem] text-[#6b6480] [overflow-wrap:anywhere]`}>
+                                    Carte cadeau{/^\d+([.,]\d+)?$/.test(line.variantTitle) ? ` · ${line.variantTitle} €` : ""} · envoi par e-mail
+                                  </span>
+                                ) : (line.variantTitle || line.size) && (
                                   <span className={`${MONO} max-w-full rounded border border-[#c6c2d8] bg-[#f0eefa] px-1.5 py-0.5 text-[0.8125rem] text-[#6b6480] [overflow-wrap:anywhere]`}>
                                     Taille : {line.variantTitle || line.size}
                                   </span>
                                 )}
-                                {line.etat && (
+                                {!line.isGiftCard && line.etat && (
                                   <span className={`${MONO} max-w-full rounded border border-[#c6c2d8] bg-[#f0eefa] px-1.5 py-0.5 text-[0.8125rem] text-[#6b6480] [overflow-wrap:anywhere]`}>
                                     État : {line.etat}
                                   </span>
                                 )}
-                                {line.vendor && (
+                                {!line.isGiftCard && line.vendor && (
                                   <span className={`${MONO} max-w-full rounded border border-[#c6c2d8] bg-[#f0eefa] px-1.5 py-0.5 text-[0.8125rem] text-[#6b6480] [overflow-wrap:anywhere]`}>
                                     Marque : {line.vendor}
                                   </span>
@@ -474,12 +496,22 @@ export function CartPage() {
                       </span>
                     </div>
                     <div className="mt-2 flex items-center justify-between gap-3 border-t border-dashed border-gray-400 pt-2 text-[0.8125rem] tracking-[0.04em] text-[#6b6480] uppercase">
-                      <span>{cart?.totalQuantity ?? 0} article{(cart?.totalQuantity ?? 0) !== 1 ? "s" : ""}</span>
-                      <span>{shippingFree ? "LIVRAISON : 0.00€" : "LIVRAISON : AU CHECKOUT"}</span>
+                      <span>{articleLabel}</span>
+                      <span>
+                        {onlyDigital ? "ENVOI PAR E-MAIL" : shippingFree ? "LIVRAISON OFFERTE ♥" : "LIVRAISON : AU PAIEMENT"}
+                      </span>
                     </div>
                   </div>
 
-                  <p className={`${MONO} m-0 text-[0.8125rem] leading-snug text-[#6b6480]`}>{t.cart.subtotalNote}</p>
+                  {/* Une seule phrase sur la livraison, jamais deux qui se contredisent :
+                      offerte, on ne promet plus de la « calculer au paiement ». */}
+                  <p className={`${MONO} m-0 text-[0.8125rem] leading-snug text-[#6b6480]`}>
+                    {onlyDigital
+                      ? "Carte cadeau numérique : aucun frais de livraison. Taxes calculées au paiement."
+                      : shippingFree
+                        ? "Livraison offerte. Taxes calculées au paiement."
+                        : t.cart.subtotalNote}
+                  </p>
 
                   {/* CHECKOUT_PROTOCOL : gros bouton chunky 3D violet / rose néon */}
                   <button
@@ -491,6 +523,16 @@ export function CartPage() {
                   >
                     [ ⚡ DÉMARRER LE TRANSFERT (PAYER {subtotal.toFixed(2)}€) ]
                   </button>
+
+                  {promoLive && (
+                    <p className={`${MONO} m-0 rounded border border-dashed border-[#d3016d] bg-[#fff0f8] px-2.5 py-1.5 text-center text-[0.8125rem] leading-snug text-[#8c1046]`}>
+                      🖤 BLACK FRIDAY : -20 % avec le code <strong>{PROMO_CODE}</strong> à saisir au paiement
+                    </p>
+                  )}
+
+                  <p className={`${MONO} m-0 text-center text-[0.8125rem] leading-snug text-[#6b6480]`}>
+                    🔒 Paiement sécurisé · Visa · Mastercard · Amex · Klarna · Alma
+                  </p>
                 </div>
               )}
             </div>

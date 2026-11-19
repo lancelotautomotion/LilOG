@@ -410,6 +410,7 @@ export const PRODUCT_BY_HANDLE_QUERY = /* GraphQL */ `
       id
       handle
       title
+      vendor
       productType
       descriptionHtml
       tags
@@ -573,6 +574,7 @@ const CART_FRAGMENT = /* GraphQL */ `
               id
               title
               availableForSale
+              requiresShipping
               price {
                 amount
                 currencyCode
@@ -585,6 +587,7 @@ const CART_FRAGMENT = /* GraphQL */ `
                 title
                 handle
                 vendor
+                isGiftCard
                 etat: metafield(namespace: "custom", key: "etat") {
                   value
                 }

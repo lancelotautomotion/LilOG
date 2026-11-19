@@ -85,9 +85,10 @@ export async function getCartAction(): Promise<Cart | null> {
   const cartId = (await cookies()).get(CART_COOKIE)?.value;
   if (!cartId) return null;
   try {
-    const node = await getCartNode(cartId);
+    /* Le panier et la session se lisent en parallèle : l'un attendait
+       l'autre pour rien, et chaque aller-retour compte sur cette page. */
+    const [node, token] = await Promise.all([getCartNode(cartId), currentShopifyToken()]);
     if (!node) return null;
-    const token = await currentShopifyToken();
     if (token && node.buyerIdentity?.customer?.id == null) {
       const linked = await ensureLinkedToCustomer(cartId, token);
       if (linked) return linked;

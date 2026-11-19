@@ -5,7 +5,7 @@ import { CategoryPage } from "@/components/category-page";
 import { getCategoryProducts } from "@/lib/shopify/products";
 import { CATEGORIES, CAT_VIBES } from "@/lib/categories";
 
-const SITE_URL = "https://lilog.shop";
+import { SITE_URL } from "@/lib/site";
 
 export async function generateMetadata({
   params,

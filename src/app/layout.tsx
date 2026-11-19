@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, VT323 } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import { LanguageProvider } from "@/lib/i18n-context";
 import { CartProvider } from "@/lib/cart-context";
 import { SessionProvider } from "@/components/session-provider";
@@ -10,6 +10,7 @@ import { CookieConsent } from "@/components/cookie-consent";
 import { BlackFridayPopup } from "@/components/black-friday-popup";
 import { WelcomePopup } from "@/components/welcome-popup";
 import { MetaPixel } from "@/components/meta-pixel";
+import { ConsentGatedAnalytics } from "@/components/analytics";
 import "./globals.css";
 
 const serif = IBM_Plex_Mono({
@@ -41,9 +42,30 @@ const gothic = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://lilog.shop"),
+  metadataBase: new URL(SITE_URL),
   title: "Lil'OG · Pre-loved Y2K",
   description: "Vintage Y2K de seconde main, une pièce à la fois · Paris.",
+  /* Canonique relative : chaque page se déclare elle-même (sans ses
+     paramètres), ce qui évite que les variantes `?utm_…` soient comptées
+     comme des pages distinctes. Les fiches et les rayons posent la leur. */
+  alternates: { canonical: "./" },
+  /* Aperçu d'un lien partagé (DM Instagram, WhatsApp, iMessage, TikTok) :
+     sans ces balises, le lien s'affiche nu, sans image ni titre. Les pages
+     qui ont leur propre visuel (les fiches produit) surchargent l'image. */
+  openGraph: {
+    siteName: SITE_NAME,
+    locale: "fr_FR",
+    type: "website",
+    title: "Lil'OG · Pre-loved Y2K",
+    description: "Vintage Y2K de seconde main, une pièce à la fois · Paris.",
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Lil'OG · Pre-loved Y2K",
+    description: "Vintage Y2K de seconde main, une pièce à la fois · Paris.",
+    images: [DEFAULT_OG_IMAGE.url],
+  },
   /* Revendication du domaine chez Pinterest : la plateforme lit cette
      balise sur la page d'accueil pour confirmer que le site nous
      appartient. Ce n'est pas un secret — elle est publique par
@@ -126,8 +148,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </SessionProvider>
         <CookieConsent />
         <MetaPixel />
+        {gaId && <ConsentGatedAnalytics gaId={gaId} />}
       </body>
-      {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   );
 }

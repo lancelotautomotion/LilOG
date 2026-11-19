@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Commande confirmée · Lil'OG",
+  robots: { index: false },
+};
 
 export default async function CheckoutSuccessPage() {
   return (

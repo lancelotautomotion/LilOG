@@ -40,6 +40,7 @@ import {
 } from "@/components/y2k/kit";
 import type { Product } from "@/lib/shopify/types";
 import { CAT_VIBES } from "@/lib/categories";
+import { sizeFilterKey } from "@/lib/sizes";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const PER_PAGE = 20;
@@ -222,7 +223,7 @@ export function CategoryPage({
     list = list.filter((p) => p.price >= priceMin && p.price <= priceMax);
     if (activeColors.size > 0) list = list.filter((p) => p.colors.some((c) => activeColors.has(c)));
     if (activeTypes.size > 0) list = list.filter((p) => activeTypes.has(p.productType));
-    if (activeSizes.size > 0) list = list.filter((p) => p.sizes.some((s) => activeSizes.has(s)));
+    if (activeSizes.size > 0) list = list.filter((p) => p.sizes.some((s) => activeSizes.has(sizeFilterKey(p, s))));
     if (activeMaterials.size > 0) list = list.filter((p) => p.materials.some((m) => activeMaterials.has(m)));
 
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
