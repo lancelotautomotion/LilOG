@@ -99,6 +99,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/:path*", headers: securityHeaders },
       { source: "/selection/:path*", headers: noIndexHeaders },
+      // Pages d'essai (brouillons de design), jamais destinées aux moteurs.
+      { source: "/labo/:path*", headers: noIndexHeaders },
     ];
   },
 };

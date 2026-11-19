@@ -56,7 +56,7 @@ const DESC_SECTIONS: { re: RegExp; label: string; accordion: boolean }[] = [
   { re: /à propos de notre sélection/i,    label: "À propos de notre sélection", accordion: true },
 ];
 
-function parseDescription(html: string): {
+export function parseDescription(html: string): {
   sections: { label: string | null; content: string; accordion: boolean }[];
 } {
   /* Le HTML arrive déjà assaini : sanitizeDescription s'en charge dans

@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
          robots.txt étant lui-même public. C'est la troisième barrière, après
          le `noindex` des métadonnées de la page et l'en-tête HTTP
          X-Robots-Tag posé dans next.config.ts. */
-      disallow: ["/api/", "/account/", "/admin/", "/selection/"],
+      disallow: ["/api/", "/account/", "/admin/", "/selection/", "/labo/"],
     },
     sitemap: "https://lilog.shop/sitemap.xml",
   };
